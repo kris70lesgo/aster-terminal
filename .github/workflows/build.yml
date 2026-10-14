@@ -1,0 +1,26 @@
+name: build-and-acceptance
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  acceptance:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-14]
+    runs-on: ${{ matrix.os }}
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.402'
+      - run: dotnet restore Aster.slnx --locked-mode
+      - run: dotnet build Aster.slnx -c Release --no-restore
+      - run: dotnet test Aster.slnx -c Release --no-build --logger "trx;LogFileName=acceptance.trx" --results-directory artifacts/tests
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: acceptance-${{ matrix.os }}
+          path: artifacts/tests

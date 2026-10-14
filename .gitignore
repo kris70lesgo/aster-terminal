@@ -1,0 +1,7 @@
+.research/
+**/bin/
+**/obj/
+artifacts/
+.DS_Store
+*.user
+TestResults/

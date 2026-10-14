@@ -1,0 +1,124 @@
+// iTerm2 metadata behavior adapted 2026-10-14 from VT100Terminal.m,
+// commit 069b6e0dd8f3f0d82fc08ea5d294d28f7c5b986e.
+// Copyright George Nachman and contributors. GPL-3.0-or-later.
+using System.Text;
+using Devolutions.Terminal.Core;
+
+namespace Aster.Sessions.Protocols;
+
+/// <summary>Uses the established VT parser and engine, adapting only iTerm2 OSC behavior.</summary>
+public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
+{
+    private readonly TerminalEngine _inner;
+    private readonly IVtDispatch _dispatch;
+    private readonly VtParser _parser;
+    public string? RemoteHost { get; private set; }
+    public int? LastCommandExitCode { get; private set; }
+    public event EventHandler? MetadataChanged;
+
+    public ItermTerminalEngine(int columns = 80, int rows = 24, int historySize = 10000)
+    {
+        _inner = new TerminalEngine(columns, rows, historySize);
+        _dispatch = _inner;
+        _parser = new VtParser(this);
+        _inner.ConfigureOptionalFeatures(false, false);
+    }
+
+    public void Feed(ReadOnlySpan<byte> data)
+    {
+        _parser.Process(data);
+        // Runs the engine's image pruning and synchronized-output invalidation policy.
+        _inner.Feed(ReadOnlySpan<byte>.Empty);
+    }
+    public void Feed(string text) => Feed(Encoding.UTF8.GetBytes(text));
+    public void Reset() { _parser.Reset(); _inner.Reset(); RemoteHost = null; LastCommandExitCode = null; }
+    public void Dispose() => _inner.Dispose();
+
+    public void OscDispatch(int command, ReadOnlySpan<char> data)
+    {
+        if (command == 133 && data.Length <= 4096 && (data.SequenceEqual("D") || data.StartsWith("D;")))
+        {
+            LastCommandExitCode = ItermSemanticPrompt.ExitCode(data.ToString());
+            // The underlying engine stores unsigned status; negative/noninteger status stays unknown.
+            var normalized = LastCommandExitCode is >= 0 ? $"D;{LastCommandExitCode}" : "D";
+            _dispatch.OscDispatch(command, normalized);
+            MetadataChanged?.Invoke(this, EventArgs.Empty);
+            return;
+        }
+        if (command == 1337 && data.Length <= 4096)
+        {
+            var separator = data.IndexOf('=');
+            if (separator > 0)
+            {
+                var key = data[..separator];
+                var value = data[(separator + 1)..];
+                if (key.SequenceEqual("CurrentDir"))
+                {
+                    // Display-only metadata: never change the shell or host working directory.
+                    _dispatch.OscDispatch(7, value);
+                    MetadataChanged?.Invoke(this, EventArgs.Empty);
+                    return;
+                }
+                if (key.SequenceEqual("RemoteHost"))
+                {
+                    RemoteHost = value.ToString();
+                    MetadataChanged?.Invoke(this, EventArgs.Empty);
+                    return;
+                }
+            }
+        }
+        _dispatch.OscDispatch(command, data);
+    }
+
+    public void Print(Rune rune) => _dispatch.Print(rune);
+    public void ExecuteC0(byte control) => _dispatch.ExecuteC0(control);
+    public void EscDispatch(char final, byte intermediate) => _dispatch.EscDispatch(final, intermediate);
+    public void EscDispatch(char final, ReadOnlySpan<byte> intermediates) => _dispatch.EscDispatch(final, intermediates);
+    public void Vt52Dispatch(char final, byte row = 0, byte column = 0) => _dispatch.Vt52Dispatch(final, row, column);
+    public void CsiDispatch(char final, ReadOnlySpan<int> parameters, byte intermediate, bool privateMarker) => _dispatch.CsiDispatch(final, parameters, intermediate, privateMarker);
+    public void CsiDispatch(char final, ReadOnlySpan<int> parameters, byte intermediate, byte privateMarker) => _dispatch.CsiDispatch(final, parameters, intermediate, privateMarker);
+    public void CsiDispatch(char final, ReadOnlySpan<int> parameters, ReadOnlySpan<bool> subparameters, byte intermediate, byte privateMarker) => _dispatch.CsiDispatch(final, parameters, subparameters, intermediate, privateMarker);
+    public void DcsDispatch(char final, ReadOnlySpan<int> parameters, ReadOnlySpan<byte> intermediates, byte privateMarker, ReadOnlySpan<byte> data) => _dispatch.DcsDispatch(final, parameters, intermediates, privateMarker, data);
+    public void ApcDispatch(ReadOnlySpan<char> data) => _dispatch.ApcDispatch(data);
+
+    public TerminalEngineCapabilities Capabilities => _inner.Capabilities;
+    public TextBuffer Buffer => _inner.Buffer;
+    public ColorScheme Scheme { get => _inner.Scheme; set => _inner.Scheme = value; }
+    public string Title => _inner.Title;
+    public string? WorkingDirectory => _inner.WorkingDirectory;
+    public bool AlternateBufferActive => _inner.AlternateBufferActive;
+    public bool CursorVisible => _inner.CursorVisible;
+    public bool CursorBlinking => _inner.CursorBlinking;
+    public int CursorStyle => _inner.CursorStyle;
+    public bool ApplicationCursorKeys => _inner.ApplicationCursorKeys;
+    public bool BracketedPaste => _inner.BracketedPaste;
+    public bool MouseTracking => _inner.MouseTracking;
+    public TerminalMouseTrackingMode MouseTrackingMode => _inner.MouseTrackingMode;
+    public bool SgrMouse => _inner.SgrMouse;
+    public bool FocusTracking => _inner.FocusTracking;
+    public bool AutoWrap => _inner.AutoWrap;
+    public bool InsertMode => _inner.InsertMode;
+    public bool ReverseVideo => _inner.ReverseVideo;
+    public TerminalInputMode InputMode => _inner.InputMode;
+    public int Columns => _inner.Columns;
+    public int Rows => _inner.Rows;
+    public int CursorX => _inner.CursorX;
+    public int CursorY => _inner.CursorY;
+    public int HistoryCount => _inner.HistoryCount;
+    public int ScrollOffset => _inner.ScrollOffset;
+    public void Resize(int columns, int rows, double cellWidth = 1, double cellHeight = 1) => _inner.Resize(columns, rows, cellWidth, cellHeight);
+    public void SetScrollOffset(int offset) => _inner.SetScrollOffset(offset);
+    public void ConfigureOptionalFeatures(bool allowClipboardWrite, bool allowNotifications, bool allowKittyKeyboard = true) => _inner.ConfigureOptionalFeatures(allowClipboardWrite, allowNotifications, allowKittyKeyboard);
+    public TerminalSnapshot CreateSnapshot(bool includeHistory = false) => _inner.CreateSnapshot(includeHistory);
+    public string WrapPaste(string text) => _inner.WrapPaste(text);
+
+    public event EventHandler? Invalidated { add => _inner.Invalidated += value; remove => _inner.Invalidated -= value; }
+    public event EventHandler<string>? TitleChanged { add => _inner.TitleChanged += value; remove => _inner.TitleChanged -= value; }
+    public event EventHandler<string?>? WorkingDirectoryChanged { add => _inner.WorkingDirectoryChanged += value; remove => _inner.WorkingDirectoryChanged -= value; }
+    public event EventHandler? ShellIntegrationChanged { add => _inner.ShellIntegrationChanged += value; remove => _inner.ShellIntegrationChanged -= value; }
+    public event EventHandler<string>? ClipboardWriteRequested { add => _inner.ClipboardWriteRequested += value; remove => _inner.ClipboardWriteRequested -= value; }
+    public event EventHandler<TerminalNotification>? NotificationRequested { add => _inner.NotificationRequested += value; remove => _inner.NotificationRequested -= value; }
+    public event EventHandler<TerminalEngineDiagnostic>? Diagnostic { add => _inner.Diagnostic += value; remove => _inner.Diagnostic -= value; }
+    public event EventHandler? Bell { add => _inner.Bell += value; remove => _inner.Bell -= value; }
+    public event EventHandler<byte[]>? ResponseReady { add => _inner.ResponseReady += value; remove => _inner.ResponseReady -= value; }
+}

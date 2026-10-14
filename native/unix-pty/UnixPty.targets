@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <BuildUnixPty Condition="'$(BuildUnixPty)' == '' and !$([MSBuild]::IsOSPlatform('Windows'))">true</BuildUnixPty>
+    <UnixPtyOutput>$(MSBuildProjectDirectory)/obj/pty/$(Configuration)/$(RuntimeIdentifier)/dt-pty-host</UnixPtyOutput>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(BuildUnixPty)' == 'true'">
+    <None Include="$(UnixPtyOutput)" Link="dt-pty-host" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+  <Target Name="BuildUnixPtyHost" BeforeTargets="PrepareForBuild;ComputeFilesToPublish"
+          Condition="'$(BuildUnixPty)' == 'true'"
+          Inputs="$(MSBuildThisFileDirectory)dt-pty-host.c;$(MSBuildThisFileDirectory)build.sh"
+          Outputs="$(UnixPtyOutput)">
+    <Exec Command="/bin/sh &quot;$(MSBuildThisFileDirectory)build.sh&quot; &quot;$(MSBuildThisFileDirectory)dt-pty-host.c&quot; &quot;$(UnixPtyOutput)&quot; &quot;$(RuntimeIdentifier)&quot;" />
+  </Target>
+</Project>

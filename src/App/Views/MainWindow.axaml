@@ -1,0 +1,36 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Aster.App.Views.MainWindow" Title="Aster Terminal"
+        Width="1080" Height="680" MinWidth="560" MinHeight="320"
+        Background="#171A20">
+  <Grid RowDefinitions="Auto,Auto,*,Auto">
+    <Border Background="#22262D" Padding="8,6">
+      <DockPanel LastChildFill="False">
+        <StackPanel Orientation="Horizontal" Spacing="5">
+          <Button Content="New tab" Click="NewTabClicked" ToolTip.Tip="⌘T / Ctrl+Shift+T" />
+          <Button Content="Split right" Click="SplitRightClicked" ToolTip.Tip="⌘D / Ctrl+Shift+D" />
+          <Button Content="Split below" Click="SplitBelowClicked" ToolTip.Tip="⌘Shift+D / Ctrl+Shift+Alt+D" />
+          <Button Content="Find" Click="FindClicked" ToolTip.Tip="⌘F / Ctrl+Shift+F" />
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="5">
+          <Button Content="Copy" Click="CopyClicked" />
+          <Button Content="Paste" Click="PasteClicked" />
+          <Button Content="Close pane" Click="ClosePaneClicked" ToolTip.Tip="⌘W / Ctrl+Shift+W" />
+        </StackPanel>
+      </DockPanel>
+    </Border>
+    <Border x:Name="SearchBar" Grid.Row="1" IsVisible="False" Background="#282D35" Padding="8,6">
+      <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
+        <TextBox x:Name="SearchBox" PlaceholderText="Search active terminal scrollback" KeyDown="SearchKeyDown" />
+        <Button Grid.Column="1" Content="Previous" Click="PreviousClicked" Margin="6,0,0,0" />
+        <Button Grid.Column="2" Content="Next" Click="NextClicked" Margin="6,0,0,0" />
+        <TextBlock x:Name="SearchStatus" Grid.Column="3" VerticalAlignment="Center" Margin="10,0" />
+        <Button Grid.Column="4" Content="Done" Click="DoneClicked" />
+      </Grid>
+    </Border>
+    <TabControl x:Name="Tabs" Grid.Row="2" SelectionChanged="TabChanged" />
+    <Border Grid.Row="3" Background="#22262D" Padding="10,5">
+      <TextBlock x:Name="WindowStatus" FontSize="12" Foreground="#B5BEC9" Text="Starting local shell…" />
+    </Border>
+  </Grid>
+</Window>

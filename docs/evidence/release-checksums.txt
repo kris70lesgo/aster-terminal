@@ -1,0 +1,3 @@
+444e6f9fe71f1ab2dddc645342267c7394510bf7d17a1eb36410568cbc4eedb9  aster-terminal-0.2.0-linux-x64.tar.gz
+7107af0d35b12380e9e641bf2f1e01cb61a86008c1ab4abb153aee196db24884  aster-terminal-0.2.0-osx-arm64.zip
+b6de6a50e849d810d7adb590aff48f8a1f8dbdc287457a9a9214de589dd9c81e  aster-terminal-0.2.0-win-x64.zip

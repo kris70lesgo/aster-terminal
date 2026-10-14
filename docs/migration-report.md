@@ -1,11 +1,41 @@
-# Migration report — first execution
+# Migration report — competition release 0.2.0
 
-**Aster Terminal is a functioning first slice of an iTerm2 behavior migration to C#/Avalonia. It is not competition-ready or a complete port.**
+Aster Terminal delivers the competition subset of an iTerm2 behavior migration:
+real local terminals, profiles, tabs, nested panes, search, themes, persisted
+configuration/layouts and original opt-in shell integration. Full upstream parity
+remains Milestone B. The README contains the mandatory public write-up.
 
-1. **Difficulty/completeness:** iTerm2's Objective-C/Swift parser, mutable screen state, Metal rendering, AppKit hierarchy and long-lived process servers do not map directly to a portable UI. We directly adapted semantic prompt status parsing and cwd/host metadata. Other terminal functionality currently comes from an established terminal component; advanced iTerm2 behaviors remain in the parity matrix.
-2. **Application quality:** actual shells render and execute commands. There are independent tabs and both split directions, find, selection/copy/paste and resize. Native screenshot inspection confirms layout and pane borders; preferences, light theme, accessibility and physical-input coverage still need work.
-3. **Cross-platform implementation:** shared Avalonia host, OS selection isolated in a factory, ConPTY versus native forkpty relay. Verified on macOS only. Windows/Linux CI and acceptance definitions exist but are not runtime evidence.
-4. **Engineering quality:** pinned SDK/packages/source commits, lockfiles, bounded parser strings/input queues, async disposal and serialized layout mutation; 19 automated tests pass and a Windows-specific test is skipped. Real-process tests include vim, interrupt, resize, independent sessions and clean close. No performance parity claim.
-5. **Usefulness/costs:** log records concrete choices and failures, including missing NuGet Unix helper and Headless/xUnit version mismatch. No tracked human hours or AI cost ledger exists, so costs are unmeasured. GPL mismatch is explained with upstream grant evidence. Licence inventory and final runtime payload notices need review before distribution.
+1. **Difficulty/completeness:** iTerm2 combines Objective-C/Swift VT state,
+   AppKit/Metal drawing and persistent native process servers. Aster rewrites
+   desktop/session boundaries, directly adapts the OSC133 exit-code scan and
+   OSC1337 metadata, and bundles original bash/zsh integration. It reuses the
+   MIT Devolutions parser/render/control rather than pretending that those are
+   translations of iTerm2's Metal code. The parity matrix records advanced gaps.
+2. **Application quality:** genuine shells, independent tabs/panes, close
+   confirmation, focus/zoom, save scrollback, find, copy/paste, profiles, actual
+   font/colour updates and dark/light/system themes. Preferences are transactional;
+   malformed settings recover with preserved originals. Native rendered snapshots
+   cover initial shell, tabs, splits, search and preferences on three OSes.
+3. **Cross-platform implementation:** one Avalonia/C# host; ConPTY for Windows
+   cmd/PowerShell and a compiled MIT forkpty helper on macOS/Linux. All targeted
+   packages launch and exercise their native backend on their own OS in CI.
+   Linux is verified through X11/Xvfb; physical Windows 11/Wayland/multi-monitor
+   coverage is not substituted by hosted tests. See test-matrix.md.
+4. **Engineering quality:** pinned SDK/packages/upstream commits, lockfiles,
+   atomic persistence, validation, bounded queues/history/control strings,
+   serialized layout changes, real child cleanup and final-binary smoke tests.
+   Linux cleanup handles background process groups in the PTY's own session.
+   Terminal controls detach and drain pending UI rendering before async disposal.
+   Test regressions exercise failures as well as success. Performance numbers
+   describe actual workloads and expose the expense of full-history snapshots.
+5. **Usefulness/costs:** migration-log.md records concrete failures/repairs.
+   Human hours and AI credit costs were not tracked and remain unmeasured.
+   Public GPL source/build scripts and full dependency notices accompany binaries.
+   Upstream GPL mismatch is resolved from the explicit COPYING grant; exact
+   dependency sources and native licence alternatives are documented separately.
 
-Build/run instructions and migration synopsis belong in README for contest submission. Public GitHub repository, platform downloads, final matched before/after screenshots, finished write-up and form submission remain outstanding. Milestone A ends only with verified contest evidence; Milestone B continues deeper parity after that release.
+Milestone A release deliverables: source, runnable three-platform archives with
+checksums, before/after evidence, tests and write-up. Entrant declarations and
+contest form submission remain separate human steps; no submission is asserted.
+Milestone B includes reconnectable processes, native tmux -CC, iTerm2 DVR,
+triggers, Python API, global hotkeys and broader graphics/compatibility coverage.

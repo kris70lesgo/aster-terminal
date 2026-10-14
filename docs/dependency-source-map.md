@@ -28,7 +28,7 @@ JPEG, WebP, zlib, Expat and piex (plus platform-specific DNG/FreeType). Native
 package notices contain their permissive grants and are shipped intact.
 
 The broad notices also list old optional microhttpd and tri-licensed Mozilla
-material. microhttpd is absent from the pinned Skia DEPS/native build targets;
+material. microhttpd is commented out in pinned Skia DEPS and absent from enabled native build targets;
 it is not a new application dependency. For tri-licensed material the
 GPLv2-or-later option is compatible with elected GPLv3; FreeType's FTL alternative
 is selected where included. All original attributions remain in the bundle,

@@ -1,17 +1,48 @@
-# First-execution evidence
+# Screenshot and runtime evidence
 
-Captured 2026-10-14 with cua-driver window capture, inspected locally. Native screenshots are real application output, not designs. Aster screenshots show actual user zsh startup; terminal tools shown are shell configuration, not Aster features.
+## Release captures
 
-- `iterm2-original.png`: installed iTerm2 **3.6.6**, copyright George Nachman/contributors, local startup reference. It is a different version from the pinned source audit and a smaller window; do not imply identical builds or geometry.
-- `aster-initial.png`: first running Avalonia window with a live zsh prompt.
-- `aster-final.png`: final developer publish after setting the native application name and reducing tab text size; captures real startup output, not an input acceptance test.
-- `aster-tabs.png`: native Cmd+T produced a second session tab.
-- `aster-splits.png`: native Cmd+D and Cmd+Shift+D produced three panes.
-- `aster-search.png`: native Cmd+F opened the search bar; matching functionality is tested separately.
-- `aster-pane-close.png`: native Cmd+W closed one pane and collapsed its split.
-- `aster-native-command.png`: per-pid native key events typed `pwd` and Return, and the actual zsh output appeared in the selected split pane. The first bulk AX text attempts were no-ops; separate key events succeeded after pane focus and a later render capture.
-- `first-slice.trx`: versioned latest automated test run. Tests named EngineTests, PtyTests and DesktopTests.
-- `iterm2-COPYING.txt`: upstream pinned grant explaining GPLv2-or-later/effective GPLv3.
-- `dependency-licenses.json`: package metadata inventory; not a complete native-payload audit.
+`release-macos/` contains the final local self-contained package's native rendered
+windows on macOS 26.7.2/Apple M5: dark/light initial shell, tabs, nested horizontal/
+vertical panes, search and preferences. `native-smoke.json` records successful
+input/resize/layout/render/cleanup and scoped startup/memory measurements;
+`benchmark.json` records the engine workload; `acceptance.trx` is the full suite.
+`release-osx-arm64`, `release-win-x64` and `release-linux-x64` contain the hosted
+release-code run's native renders, JSON and TRX on each actual target OS.
 
-Intermediate driver captures where typing produced no result have no successful-input evidentiary value. Final competition screenshots still need identical terminal commands/geometry, clean profiles, light/dark and preference states. Current screenshots must not be used as proof of full feature parity or cross-platform runtime support.
+Images use Avalonia RenderTargetBitmap on visible native windows from a running
+OS backend and genuine local shell processes. They capture the client surface,
+excluding system titlebar/Dock decorations. Linux uses X11/Xvfb. They are neither
+mockups nor proof of physical keyboard/IME/multi-monitor coverage. Shell commands
+produce the visible acceptance text; no simulated output is substituted.
+The isolated fixture's deterministic prompt avoids user rc files/personal data.
+
+`iterm2-original.png` is the installed original **iTerm2 3.6.6**, copyright George
+Nachman/contributors, captured with native window capture on 2026-10-14. Its
+version, startup profile and window geometry differ from the source audit and
+final Aster fixture. It is a before reference, not a pixel-equivalent benchmark.
+Final Aster captures allow direct inspection of the migrated workflows/themes;
+the original AppKit/Metal rendering implementation is not claimed to be reused.
+
+## Historical first-slice captures
+
+Preserved, accurately dated evidence from before preferences/release hardening:
+
+- `aster-initial.png` / `aster-final.png`: real user zsh startup in first developer builds.
+- `aster-tabs.png` / `aster-splits.png`: native shortcuts created independent tabs and nested panes.
+- `aster-search.png` / `aster-pane-close.png`: search UI and split collapse.
+- `aster-native-command.png`: individual per-pid native keys executed `pwd` in a live zsh pane. Bulk AX text insertion was a no-op and receives no evidentiary credit.
+- `first-slice.trx`: the original 19-pass/1-Windows-skip run, not current results.
+- `iterm2-COPYING.txt`: pinned upstream licence grant.
+- `dependency-licenses.json`: restored NuGet metadata; native audit is in ../dependency-source-map.md.
+- `ci-38520129077.json`: first complete hosted three-platform pass before final hardening.
+
+Use current release evidence for release claims; historical startup images are
+not tests of features that were implemented later. Native renders supplement
+engine/UI/process acceptance and do not replace it.
+
+Linux's first final capture exposed an absent CJK font in the minimal runner
+image (a missing glyph box despite correct Unicode buffer cells). The native
+verification environment now installs fonts-noto-cjk; Linux installation guidance
+includes this font requirement. This is system font fallback, not a fabricated
+replacement in the screenshot.

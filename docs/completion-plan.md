@@ -9,3 +9,11 @@ Continue from verified baseline 8665b31. User authorised full local setup and re
 5. Preserve all required third-party notices and corresponding source references. Publish public GPL source and only passing release artifacts. Complete README migration report and dated rule checklist. Do not assert unsupported advanced iTerm2 parity or a submission that did not occur.
 
 Advanced iTerm2 DVR, native tmux control-mode, live server reconnection and Python API remain separate long-term acceptance targets. The current milestone is a complete usable competition subset with explicit boundaries, not a claim of all upstream features.
+
+Completion record (2026-10-14): profile/settings/layout/UI work, original shell
+integration, real compatibility tests, native package acceptance, public source,
+notice/source audit, screenshots and write-up are implemented. Final native
+checks pass on macOS, Linux and Windows, including PowerShell host output.
+Release archives are published only from successful native jobs. The form has
+not been submitted; entrant identity and form-only declarations are unverified.
+Full iTerm2 parity remains Milestone B as specified by the original request.

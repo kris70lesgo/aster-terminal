@@ -13,7 +13,7 @@ import zipfile
 
 root = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
-parser.add_argument("--rid", required=True, choices=["osx-arm64", "osx-x64", "win-x64", "linux-x64", "linux-arm64"])
+parser.add_argument("--rid", required=True, choices=["osx-arm64", "win-x64", "linux-x64"])
 parser.add_argument("--smoke", action="store_true")
 args = parser.parse_args()
 rid = args.rid
@@ -25,7 +25,7 @@ out = root / "artifacts/packages" / rid
 payload = out / "payload"
 if payload.exists(): shutil.rmtree(payload)
 payload.mkdir(parents=True)
-subprocess.run([dotnet, "publish", str(root / "src/App/App.csproj"), "-c", "Release", "-r", rid, "--self-contained", "true", "-o", str(payload)], cwd=root, check=True)
+subprocess.run([dotnet, "publish", str(root / "src/App/App.csproj"), "-c", "Release", "-r", rid, "--self-contained", "true", "-p:RestoreLockedMode=true", "-o", str(payload)], cwd=root, check=True)
 shutil.copy2(root / "LICENSE", payload / "LICENSE")
 shutil.copy2(root / "NOTICE.md", payload / "NOTICE.md")
 shutil.copy2(root / "docs/licensing.md", payload / "LICENSING.md")

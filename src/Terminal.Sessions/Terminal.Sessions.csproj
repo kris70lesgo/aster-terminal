@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RuntimeIdentifiers>osx-arm64;win-x64;linux-x64</RuntimeIdentifiers>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Devolutions.Terminal.Control" Version="2026.3.4" />
   </ItemGroup>

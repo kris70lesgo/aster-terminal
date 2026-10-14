@@ -128,3 +128,11 @@ Release verification follow-ups:
 - Rechecked the official competition announcement at release preparation:
   public GPL source/builds, screenshots/write-up and deadline requirements are
   unchanged. Form/team declaration and actual submission remain separate.
+
+- First 0.3.0 CI run `38570345791`: macOS and Windows native packages passed;
+  Linux failed the older vim fixture. Its output showed capability/CPR queries
+  during startup. The fixture had no engine-response routing and typed as soon
+  as alternate-screen mode began. Added the same reply routing as TermControl
+  and waited for vim's rendered startup screen before input. Also placed the
+  widened divider above panes so its overlapping pointer target is reachable.
+  Final all-platform rerun is required after these changes.

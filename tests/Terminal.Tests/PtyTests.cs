@@ -40,6 +40,9 @@ public sealed class PtyTests
 
         public Shell()
         {
+            // Terminal applications query capabilities/cursor/palette during
+            // startup. Mirror TermControl's response routing in this PTY fixture.
+            Engine.ResponseReady += (_, response) => { if (Connection.IsRunning) Connection.Write(response); };
             Connection.OutputReceived += (_, data) =>
             {
                 lock (_gate)
@@ -208,7 +211,7 @@ public sealed class PtyTests
         await using var shell = new Shell();
         await shell.Start();
         shell.Connection.Write("vim -Nu NONE -n -i NONE\n");
-        await shell.Until(() => shell.Engine.AlternateBufferActive);
+        await shell.Until(() => shell.Engine.AlternateBufferActive && shell.Snapshot().Contains("VIM - Vi IMproved"));
         shell.Connection.Write("iASTER_VIM_ACCEPTANCE\u001b");
         await shell.Until(() => shell.Snapshot().Contains("ASTER_VIM_ACCEPTANCE"));
         shell.Connection.Resize(100, 35);

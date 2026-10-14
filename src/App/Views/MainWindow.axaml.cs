@@ -183,6 +183,7 @@ public partial class MainWindow : Window
         else split.ColumnDefinitions = new ColumnDefinitions(definitions);
         var divider = new GridSplitter
         {
+            ZIndex = 1,
             Background = Avalonia.Media.Brush.Parse("#555761"),
             ResizeDirection = below ? GridResizeDirection.Rows : GridResizeDirection.Columns,
             HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch

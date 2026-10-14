@@ -51,12 +51,17 @@ public sealed class PtyTests
             Connection.Exited += (_, code) => Exit.TrySetResult(code);
             Connection.Faulted += (_, error) => Fault.TrySetResult(error);
         }
-        public Task Start(string command = "exec /bin/sh") => Connection.StartAsync(new TerminalLaunchOptions
+        private const string TestShellCommand = "export PS1='__ASTER_PROMPT__ '; exec /bin/sh";
+        public async Task Start(string command = TestShellCommand)
         {
-            CommandLine = command,
-            WorkingDirectory = Path.GetTempPath(), Columns = 80, Rows = 24,
-            EnvironmentVariables = new Dictionary<string, string?> { ["TERM"] = "xterm-256color", ["PS1"] = "" }
-        });
+            await Connection.StartAsync(new TerminalLaunchOptions
+            {
+                CommandLine = command,
+                WorkingDirectory = Path.GetTempPath(), Columns = 80, Rows = 24,
+                EnvironmentVariables = new Dictionary<string, string?> { ["TERM"] = "xterm-256color" }
+            });
+            if (command == TestShellCommand) await Until(() => Snapshot().Contains("__ASTER_PROMPT__"));
+        }
         public Task StartProfile(TerminalProfile profile)
         {
             var settings = ShellIntegrationLauncher.Prepare(profile, false);
@@ -88,9 +93,13 @@ public sealed class PtyTests
         shell.Connection.Resize(101, 41);
         shell.Connection.Write("stty size\n");
         await shell.Until(() => shell.Output.Contains("41 101"));
-        shell.Connection.Write("printf '%s%s\\n' '__ASTER_' 'SLEEP__'; sleep 30\n");
+        // Emit readiness from inside the foreground job, not before it is spawned.
+        shell.Connection.Write("sh -c \"printf '%s%s\\n' '__ASTER_' 'SLEEP__'; exec sleep 30\"\n");
         await shell.Until(() => shell.Output.Contains("__ASTER_SLEEP__"));
+        var prompts = Regex.Matches(shell.Snapshot(), "__ASTER_PROMPT__").Count;
         shell.Connection.Write("\u0003");
+        // SIGINT/termios may flush input; type only after the shell resumes.
+        await shell.Until(() => Regex.Matches(shell.Snapshot(), "__ASTER_PROMPT__").Count > prompts);
         shell.Connection.Write("printf '%s%s\\n' '__ASTER_' 'INTERRUPTED__'\n");
         await shell.Until(() => shell.Output.Contains("__ASTER_INTERRUPTED__"));
         shell.Connection.Write("exit 7\n");

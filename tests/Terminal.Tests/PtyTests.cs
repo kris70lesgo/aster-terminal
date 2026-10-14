@@ -210,6 +210,20 @@ public sealed class PtyTests
     }
 
     [WindowsFact]
+    public async Task PowerShellConPtyExecutesUnicodeAndCleansUp()
+    {
+        await using var shell = new Shell();
+        await shell.Start("powershell.exe -NoLogo -NoProfile");
+        shell.Connection.Write("[Console]::WriteLine('POWER' + 'SHELL_OK'); [Console]::WriteLine([char]0x754c)\r");
+        await shell.Until(() => shell.Snapshot().Contains("POWERSHELL_OK") && shell.Snapshot().Contains("界"));
+        shell.Connection.Resize(90, 30);
+        Assert.Equal(90, shell.Connection.Columns);
+        shell.Connection.Write("exit 0\r");
+        Assert.Equal(0, await shell.Exit.Task.WaitAsync(TimeSpan.FromSeconds(10)));
+        Assert.False(shell.Connection.IsRunning);
+    }
+
+    [WindowsFact]
     public async Task CmdConPtyCommandResizeAndExit()
     {
         await using var shell = new Shell();

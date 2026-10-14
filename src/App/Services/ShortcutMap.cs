@@ -15,7 +15,7 @@ public static class ShortcutMap
             ["Preferences"] = command + "+OemComma", ["ZoomPane"] = command + "+Enter",
             ["NextTab"] = "Control+Tab", ["PreviousTab"] = "Control+Shift+Tab",
             ["NextPane"] = command + "+OemCloseBrackets", ["PreviousPane"] = command + "+OemOpenBrackets",
-            ["LargerFont"] = command + "+OemPlus", ["SmallerFont"] = command + "+OemMinus", ["ResetFont"] = command + "+D0",
+            ["LargerFont"] = command + (OperatingSystem.IsMacOS() ? "+Shift" : "") + "+OemPlus", ["SmallerFont"] = command + "+OemMinus", ["ResetFont"] = command + "+D0",
             ["PreviousMark"] = command + "+Up", ["NextMark"] = command + "+Down", ["OpenQuickly"] = command + "+Shift+O",
         };
     }

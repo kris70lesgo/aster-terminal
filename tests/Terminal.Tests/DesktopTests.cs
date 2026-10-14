@@ -23,6 +23,25 @@ public static class DesktopTestApplication
 
 public sealed partial class DesktopTests
 {
+    [AvaloniaFact]
+    public async Task HyperlinksRequireUserActionAndBlockUnsafeSchemes()
+    {
+        var pane = new TerminalPane(new TerminalProfile("links", "unused", Path.GetTempPath()));
+        var window = new Window { Content = pane }; window.Show();
+        try
+        {
+            var requests = 0;
+            pane.Terminal.HyperlinkOpenRequested += (_, _) => requests++;
+            pane.Terminal.Engine.Feed("\u001b]8;;https://iterm2.com\u001b\\web\u001b]8;;\u001b\\ \u001b]8;;file:///tmp/test\u001b\\file\u001b]8;;\u001b\\");
+            Assert.Equal(0, requests);
+            Assert.True(pane.Terminal.HitTestHyperlink(0, 0)!.CanOpen);
+            var unsafeLink = pane.Terminal.HitTestHyperlink(4, 0)!;
+            Assert.False(unsafeLink.CanOpen);
+            await Assert.ThrowsAsync<InvalidOperationException>(() => pane.Terminal.OpenHyperlinkAsync(unsafeLink));
+        }
+        finally { window.Close(); await pane.CloseAsync(); }
+    }
+
     private static void SendKey(Window window, Key key, RawInputModifiers modifiers = RawInputModifiers.None)
     {
         window.KeyPress(key, modifiers, PhysicalKey.None, null);

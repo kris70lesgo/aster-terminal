@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using Aster.App.Views;
 using Aster.App.Services;
 using Aster.Sessions;
+using Aster.Sessions.Persistence;
 
 namespace Aster.App;
 
@@ -17,11 +18,14 @@ public sealed class App : Application
             if (desktop.Args?.Contains("--smoke-test") == true)
             {
                 desktop.ShutdownMode = Avalonia.Controls.ShutdownMode.OnExplicitShutdown;
-                var window = new MainWindow(new TerminalProfile("Native acceptance", OperatingSystem.IsWindows() ? "cmd.exe /Q" : "exec /bin/sh", Path.GetTempPath()));
-                desktop.MainWindow = window;
                 var index = Array.IndexOf(desktop.Args, "--smoke-report");
                 var destination = index >= 0 && index + 1 < desktop.Args.Length ? desktop.Args[index + 1] : "artifacts/native-smoke";
-                window.Opened += async (_, _) => await DesktopSmoke.Run(window, desktop, Path.GetFullPath(destination));
+                var store = new SettingsStore(Path.Combine(Path.GetTempPath(), "aster-native-" + Guid.NewGuid().ToString("N"), "settings.json"));
+                var profile = new TerminalProfile("Native acceptance", OperatingSystem.IsWindows() ? "cmd.exe /Q" : "exec /bin/sh", Path.GetTempPath());
+                store.Save(store.Settings with { Profiles = [profile], DefaultProfileId = profile.Id, RestoreLayout = false, ConfirmClose = false });
+                var window = new MainWindow(store);
+                desktop.MainWindow = window;
+                window.Opened += async (_, _) => await DesktopSmoke.Run(window, desktop, Path.GetFullPath(destination), store);
             }
             else desktop.MainWindow = new MainWindow();
         }

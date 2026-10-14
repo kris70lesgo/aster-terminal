@@ -1,19 +1,27 @@
 # Aster Terminal notices
 
-Aster Terminal is an independent iTerm2 migration. No upstream endorsement.
-Aster-authored code is licensed GPL-3.0-or-later; see LICENSE. No warranty.
+Independent iTerm2 migration; no upstream endorsement. Aster-authored and
+adapted code is GPL-3.0-or-later. See LICENSE. No warranty.
 
-iTerm2 copyright George Nachman and contributors. The C# semantic exit-code
-scanner and OSC metadata handling adapt `sources/VT100/VT100Terminal.m`
-at commit `069b6e0dd8f3f0d82fc08ea5d294d28f7c5b986e` (GPLv2-or-later,
-electing GPLv3). Adapted 2026-10-14; source grants documented in `docs/licensing.md`.
+iTerm2 copyright George Nachman and contributors. Semantic exit-code scanning
+and OSC metadata adapt VT100Terminal.m at
+069b6e0dd8f3f0d82fc08ea5d294d28f7c5b986e (GPLv2-or-later, elect GPLv3).
+Bundled bash/zsh integration comes from iTerm2-shell-integration commit
+bcd52317a70f1a489b86fcfd1ee97df155741092 under the same grant.
+Original headers and included bash-preexec MIT notice are retained.
+The zsh TERM_PROGRAM gate was adapted for Aster Terminal on 2026-10-14.
 
-Devolutions Terminal copyright Devolutions Inc., portions copyright Microsoft
-Corporation. MIT licence retained in `licenses/Devolutions-MIT.txt`.
-The native helper is copied unchanged from the NuGet control's source commit.
-The control embeds Cascadia Mono and Noto Color Emoji (OFL-1.1);
-full licences are retained under `licenses/`. ConPTY notices are also retained.
+Devolutions Terminal copyright Devolutions Inc., portions copyright Microsoft.
+Its terminal control and Unix helper are MIT. The helper was modified on
+2026-10-14 to terminate Linux PTY session members on close. Source and licence
+are included in the public repository. Embedded Cascadia Mono and Noto Color
+Emoji remain OFL-1.1; full notices are under licenses/.
 
-Avalonia, SkiaSharp/HarfBuzzSharp, .NET and native runtime dependency notices
-must be collected from the actual release payload before public distribution.
-This notice is not a completed release licence audit.
+Full Avalonia, MicroCom, Tmds.DBus, Skia, SkiaSharp, HarfBuzzSharp, ANGLE,
+ConPTY and .NET runtime notices are included under licenses/. Native third-party
+notices are retained intact, including optional components not enabled by the
+pinned build. See LICENSING.md and DEPENDENCY-SOURCES.md in the release,
+or docs/licensing.md and docs/dependency-source-map.md in source.
+
+Complete Aster source and build scripts:
+https://github.com/kris70lesgo/aster-terminal

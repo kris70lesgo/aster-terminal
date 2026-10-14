@@ -47,6 +47,7 @@ public sealed class TerminalPane : Border
             ? DialogWindow.Confirm(owner, "Paste into shell", $"Paste {request.LineCount} lines ({request.CharacterCount} characters) into this shell?", "Paste")
             : Task.FromResult(false);
         _light = light;
+        _status.Foreground = Brush.Parse(light ? "#455368" : "#B5BEC9");
         Terminal.SizeChanged += (_, _) =>
         {
             if (Terminal.IsRunning) _status.Text = $"{profile.Name} · {Terminal.Engine.Columns} × {Terminal.Engine.Rows}";
@@ -91,6 +92,12 @@ public sealed class TerminalPane : Border
     private async Task CloseCoreAsync()
     {
         if (_start is not null) await _start;
+        // The dependency disposes its renderer after an off-thread connection await.
+        // Detach and drain queued UI render work first, so a visible control cannot
+        // enter Render during the renderer's disposal/flag update interval.
+        Terminal.IsVisible = false;
+        if (Terminal.Parent is Panel parent) parent.Children.Remove(Terminal);
+        await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
         await Terminal.CloseAsync();
     }
 }

@@ -29,6 +29,7 @@ subprocess.run([dotnet, "publish", str(root / "src/App/App.csproj"), "-c", "Rele
 shutil.copy2(root / "LICENSE", payload / "LICENSE")
 shutil.copy2(root / "NOTICE.md", payload / "NOTICE.md")
 shutil.copy2(root / "docs/licensing.md", payload / "LICENSING.md")
+shutil.copy2(root / "docs/dependency-source-map.md", payload / "DEPENDENCY-SOURCES.md")
 for unwanted in payload.glob("ShellIntegration/zsh/.zsh_history*"): unwanted.unlink()
 version = "0.2.0"
 name = f"aster-terminal-{version}-{rid}"
@@ -41,7 +42,7 @@ if rid.startswith("osx"):
     shutil.copytree(payload, contents / "MacOS")
     (contents / "Resources").mkdir()
     with (contents / "Info.plist").open("wb") as stream:
-        plistlib.dump({"CFBundleName": "Aster Terminal", "CFBundleDisplayName": "Aster Terminal", "CFBundleExecutable": "Aster.Terminal", "CFBundleIdentifier": "io.asterterminal.desktop", "CFBundlePackageType": "APPL", "CFBundleShortVersionString": version, "CFBundleVersion": version, "NSHighResolutionCapable": True, "LSMinimumSystemVersion": "13.0"}, stream)
+        plistlib.dump({"CFBundleName": "Aster Terminal", "CFBundleDisplayName": "Aster Terminal", "CFBundleExecutable": "Aster.Terminal", "CFBundleIdentifier": "io.asterterminal.desktop", "CFBundlePackageType": "APPL", "CFBundleShortVersionString": version, "CFBundleVersion": version, "NSHighResolutionCapable": True, "LSMinimumSystemVersion": "15.0"}, stream)
     subprocess.run(["codesign", "--force", "--deep", "--sign", "-", str(bundle)], check=True)
     package_root = bundle
     executable = contents / "MacOS/Aster.Terminal"
@@ -50,6 +51,7 @@ else:
     if rid.startswith("linux"):
         (payload / "aster-terminal.desktop").write_text("[Desktop Entry]\nType=Application\nName=Aster Terminal\nComment=Native terminal emulator\nExec=Aster.Terminal\nTerminal=false\nCategories=System;TerminalEmulator;\n")
 if args.smoke:
+    subprocess.run([str(executable), "--benchmark", str(out / "native-smoke/benchmark.json")], cwd=root, check=True, timeout=90)
     subprocess.run([str(executable), "--smoke-test", "--smoke-report", str(out / "native-smoke")], cwd=root, check=True, timeout=90)
     report = json.loads((out / "native-smoke/native-smoke.json").read_text())
     if not report["passed"]: raise SystemExit("Final package failed native acceptance.")

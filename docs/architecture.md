@@ -1,4 +1,4 @@
-# Aster Terminal architecture — first vertical slice
+# Aster Terminal architecture — competition release
 
 Working name: Aster Terminal. Independent iTerm2 behavior migration; no endorsement implied.
 
@@ -18,7 +18,7 @@ The selected NuGet package **does not bundle the Unix `dt-pty-host` executable**
 
 ## Boundaries
 
-`src/App`: Avalonia XAML window, session tabs/split layouts, focus, clipboard/search commands. `src/Terminal.Sessions`: platform factory, profiles and bounded iTerm2 protocol adapter. `native/unix-pty`: pinned forkpty host. `tests/Terminal.Tests`: engine regression tests, iTerm2 protocol tests, real PTY/process integration. Keep only two production assemblies initially.
+`src/App`: Avalonia XAML window, session tabs/split layouts, focus, clipboard/search commands. `src/Terminal.Sessions`: platform factory, profiles and bounded iTerm2 protocol adapter. `native/unix-pty`: pinned forkpty host. `tests/Terminal.Tests`: engine regression tests, iTerm2 protocol tests, real PTY/process integration. Two production assemblies keep these boundaries explicit without proliferating projects. Profiles/settings persistence, safe opt-in bash/zsh launch wrappers, and shortcut resolution belong in their dedicated classes. Preferences edit a transaction and apply validated appearance changes to existing panes; shell changes affect new processes. A binary pane tree captures layout ratios and starts fresh shells on reopen.
 
 Each pane owns one TermControl, one engine and one connection. The package processes output away from the UI thread, caps input queue at 4 MiB and posts invalidation to the dispatcher. UI close awaits asynchronous disposal of every session. Failed startup remains visible with its error; no simulated output. Independent sessions survive tab switching but not application exit; persistence is configuration only, never live process restoration.
 

@@ -6,6 +6,24 @@ namespace Aster.Tests;
 
 public sealed class EngineTests
 {
+    [Fact]
+    public void HyperlinksAndApplicationInputModesSurviveAdapter()
+    {
+        using var engine = new ItermTerminalEngine(40, 4);
+        engine.Feed("\u001b]8;id=reference;https://iterm2.com\u001b\\link\u001b]8;;\u001b\\ plain");
+        Assert.Equal("https://iterm2.com", engine.Buffer.GetCell(0, 0).HyperlinkUri);
+        Assert.Null(engine.Buffer.GetCell(5, 0).HyperlinkUri);
+        engine.Feed("\u001b[?1h\u001b[?1003h\u001b[?1006h");
+        Assert.True(engine.ApplicationCursorKeys);
+        Assert.True(engine.MouseTracking);
+        Assert.Equal(TerminalMouseTrackingMode.AllMotion, engine.MouseTrackingMode);
+        Assert.True(engine.SgrMouse);
+        engine.Feed("\u001b[?1l\u001b[?1003l\u001b[?1006l");
+        Assert.False(engine.ApplicationCursorKeys);
+        Assert.False(engine.MouseTracking);
+        Assert.False(engine.SgrMouse);
+    }
+
     [Theory]
     [InlineData("D;0", 0)]
     [InlineData("D;aid=opaque;23;k=s", 23)]

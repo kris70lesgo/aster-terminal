@@ -11,22 +11,26 @@ namespace Aster.App.Views;
 
 public sealed class TerminalPane : Border
 {
-    private readonly TextBlock _status = new() { FontSize = 11, Margin = new Thickness(8, 3), Foreground = Brushes.LightGray };
+    private readonly TextBlock _status = new() { FontSize = 11, Margin = new Thickness(8, 4), Foreground = Brushes.LightGray, IsVisible = false, TextWrapping = TextWrapping.Wrap };
+    private readonly DispatcherTimer _replayTimer;
+    private readonly ItermTerminalEngine _engine;
+    private bool _active;
     private Task? _start;
     private Task? _close;
     public TermControl Terminal { get; }
+    public Aster.Sessions.Replay.ScreenReplayBuffer Replay { get; } = new();
     public TerminalProfile Profile { get; private set; }
     public string SessionTitle { get; private set; }
     public event EventHandler? Activated;
     public event EventHandler<string>? TitleChanged;
 
-    public TerminalPane(TerminalProfile profile, bool light = false, bool copyOnSelect = false)
+    public TerminalPane(TerminalProfile profile, bool light = false, bool copyOnSelect = false, bool replayEnabled = true)
     {
         Profile = profile;
         SessionTitle = profile.Name;
-        BorderThickness = new Thickness(1);
-        BorderBrush = Brush.Parse("#343A44");
-        Terminal = new TermControl(new ItermTerminalEngine(historySize: profile.HistorySize))
+        BorderThickness = new Thickness(0);
+        _engine = new ItermTerminalEngine(historySize: profile.HistorySize);
+        Terminal = new TermControl(_engine)
         {
             ConnectionFactory = _ => PlatformConnectionFactory.Create(),
             AccessibleName = $"{profile.Name} terminal",
@@ -39,19 +43,16 @@ public sealed class TerminalPane : Border
         Child = layout;
         Terminal.GotFocus += (_, _) => Activated?.Invoke(this, EventArgs.Empty);
         Terminal.TitleChanged += (_, title) => { SessionTitle = string.Concat(title.Where(c => !char.IsControl(c))).Trim(); TitleChanged?.Invoke(this, SessionTitle); };
-        Terminal.SessionExited += (_, info) => _status.Text = $"Exited · code {info.ExitCode} · close this pane to dismiss";
-        Terminal.InteractionError += (_, _) => _status.Text = "Terminal interaction failed; check process state.";
-        Terminal.Engine.WorkingDirectoryChanged += (_, directory) => Dispatcher.UIThread.Post(() =>
-            _status.Text = $"{profile.Name} · {directory}");
+        Terminal.SessionExited += (_, info) => ShowMessage($"Session ended ({info.ExitCode}). Close this pane to dismiss.");
+        Terminal.InteractionError += (_, _) => ShowMessage("Terminal interaction failed; check process state.");
         Terminal.ConfirmPasteAsync = request => TopLevel.GetTopLevel(this) is Window owner
             ? DialogWindow.Confirm(owner, "Paste into shell", $"Paste {request.LineCount} lines ({request.CharacterCount} characters) into this shell?", "Paste")
             : Task.FromResult(false);
         _light = light;
         _status.Foreground = Brush.Parse(light ? "#455368" : "#B5BEC9");
-        Terminal.SizeChanged += (_, _) =>
-        {
-            if (Terminal.IsRunning) _status.Text = $"{profile.Name} · {Terminal.Engine.Columns} × {Terminal.Engine.Rows}";
-        };
+        _replayTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(250) };
+        _replayTimer.Tick += (_, _) => CaptureReplay();
+        SetReplayEnabled(replayEnabled);
     }
     private bool _light;
 
@@ -62,20 +63,40 @@ public sealed class TerminalPane : Border
         {
             var settings = ShellIntegrationLauncher.Prepare(Profile, _light);
             var cell = TermControl.MeasureCell(settings);
-            var columns = Math.Max(2, (int)((Bounds.Width - 20) / cell.Width));
-            var rows = Math.Max(2, (int)((Bounds.Height - 40) / cell.Height));
+            var columns = Math.Max(2, (int)((Terminal.Bounds.Width - 10) / cell.Width));
+            var rows = Math.Max(2, (int)((Terminal.Bounds.Height - 10) / cell.Height));
             await Terminal.StartAsync(settings, columns, rows);
             Terminal.Engine.Scheme = Profile.ResolveColors(_light);
-            _status.Text = $"{Profile.Name} · {Terminal.Engine.Columns} × {Terminal.Engine.Rows}";
+            _status.IsVisible = false;
             Terminal.Focus();
         }
         catch (Exception error)
         {
-            _status.Text = $"Shell startup failed: {error.Message}";
+            ShowMessage($"Shell startup failed: {error.Message}");
         }
     }
 
-    public void SetActive(bool active) => BorderBrush = Brush.Parse(active ? "#7EA8D8" : "#343A44");
+    public void SetActive(bool active)
+    {
+        _active = active;
+        Terminal.Opacity = active ? 1 : .92;
+    }
+    private void ShowMessage(string text) { _status.Text = text; _status.IsVisible = true; }
+    private long _capturedRevision = -1;
+    private bool _replayEnabled;
+    public void SetReplayEnabled(bool enabled)
+    {
+        _replayEnabled = enabled;
+        if (enabled && _close is null) _replayTimer.Start();
+        else { _replayTimer.Stop(); Replay.Clear(); _capturedRevision = -1; }
+    }
+    public void CaptureReplay()
+    {
+        if (!_replayEnabled || _close is not null || Terminal.Profile is null || _capturedRevision == _engine.Revision) return;
+        var (revision, snapshot) = _engine.CaptureScreen();
+        Replay.Append(snapshot, Terminal.Engine.Scheme, DateTimeOffset.UtcNow);
+        _capturedRevision = revision;
+    }
     public void ApplyAppearance(TerminalProfile profile, bool light, bool copyOnSelect)
     {
         Profile = profile; _light = light;
@@ -87,11 +108,13 @@ public sealed class TerminalPane : Border
             Terminal.ResetFontSize();
         }
         _status.Foreground = Brush.Parse(light ? "#455368" : "#B5BEC9");
+        Terminal.Opacity = _active ? 1 : .92;
     }
     public Task CloseAsync() => _close ??= CloseCoreAsync();
     private async Task CloseCoreAsync()
     {
         if (_start is not null) await _start;
+        _replayTimer.Stop(); Replay.Clear();
         // The dependency disposes its renderer after an off-thread connection await.
         // Detach and drain queued UI render work first, so a visible control cannot
         // enter Render during the renderer's disposal/flag update interval.

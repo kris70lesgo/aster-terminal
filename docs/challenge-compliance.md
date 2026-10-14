@@ -24,3 +24,7 @@ Authority for every contest rule below: [official announcement, published 2026-0
 Reverify at architectural eligibility changes, major milestones, release-artifact preparation, and immediately before submission. Retain this dated audit; do not refetch unchanged rules for routine edits.
 
 Ambiguities: form-specific declarations/terms are UNVERIFIED; no official guarantee of acceptance for a subset rewrite. Unused iTerm2 submodules are not imported or asserted fully audited; current reused components have their own source/notice audit. Public source is published. Entrant/team declaration and form submission remain separate from completing the app; recheck rules immediately before submission.
+
+0.3.0 preparation recheck: the official announcement remains unchanged. New
+UI/replay source and local tests are complete; final native builds/evidence and
+publishing are pending. The published 0.2.0 remains downloadable meanwhile.

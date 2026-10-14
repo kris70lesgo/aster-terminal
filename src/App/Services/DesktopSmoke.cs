@@ -52,6 +52,27 @@ public static class DesktopSmoke
             await Task.Delay(300);
             terminal.InvalidateVisual();
             SaveImage(window, Path.Combine(reportDirectory, "dark.png"));
+            var pane = Panes(window)[0]; pane.CaptureReplay();
+            var oldFrame = pane.Replay.Snapshot().Count - 1;
+            terminal.RaiseEvent(new TextInputEventArgs { RoutedEvent = InputElement.TextInputEvent, Text = OperatingSystem.IsWindows() ? "cls & echo CURRENT_SCREEN" : "printf '\\033[2J\\033[H%s%s\\r\\n' 'CURRENT_' 'SCREEN'" });
+            Enter(terminal);
+            await Until(() => TerminalBufferExport.ToPlainText(terminal.Engine.CreateSnapshot().Buffer).StartsWith("CURRENT_SCREEN")); pane.CaptureReplay();
+            terminal.RaiseEvent(new TextInputEventArgs { RoutedEvent = InputElement.TextInputEvent, Text = OperatingSystem.IsWindows() ? "ping -n 3 127.0.0.1 >nul & echo __REPLAY_LIVE__" : "sleep 1; printf '%s%s\\n' '__REPLAY_' 'LIVE__'" });
+            Enter(terminal);
+            var replay = new ReplayWindow(pane.Replay, pane.Profile);
+            var replayDialog = replay.ShowDialog(window); replay.SelectFrame(oldFrame);
+            await Until(() => TerminalBufferExport.ToPlainText(terminal.Engine.CreateSnapshot().Buffer).Split('\n').Any(line => line.Trim() == "__REPLAY_LIVE__"));
+            if (!TerminalBufferExport.ToPlainText(replay.DisplayEngine.CreateSnapshot().Buffer).Contains("NATIVE_ACCEPTANCE")) throw new InvalidOperationException("Replay changed while the live shell produced output.");
+            await Task.Delay(200); SaveImage(replay, Path.Combine(reportDirectory, "replay.png"));
+            replay.SelectFrame(replay.FrameCount - 1);
+            if (!TerminalBufferExport.ToPlainText(replay.DisplayEngine.CreateSnapshot().Buffer).Contains("CURRENT_SCREEN")) throw new InvalidOperationException("Replay seek failed.");
+            replay.Close(); await replayDialog;
+            checks.Add("Native screen replay seeks historical text while the real shell continues; independent read-only renderer");
+            if (OperatingSystem.IsMacOS())
+            {
+                if (window.FindControl<Menu>("MainMenu")!.IsVisible || NativeMenu.GetMenu(window)?.Items.Count != 5) throw new InvalidOperationException("macOS native menu export configuration missing.");
+                checks.Add("macOS native menu tree configured; in-window menu hidden");
+            }
             window.RequestedThemeVariant = ThemeVariant.Light;
             await Task.Delay(300);
             if (terminal.Engine.Scheme.Background != 0xFFFAFAFCu) throw new InvalidOperationException("Light appearance did not reach the terminal engine.");
@@ -76,6 +97,12 @@ public static class DesktopSmoke
             var dialog = preferences.ShowDialog(window);
             await Task.Delay(300);
             SaveImage(preferences, Path.Combine(reportDirectory, "preferences.png"));
+            preferences.FindControl<TabControl>("ProfileTabs")!.SelectedIndex = 1; await Task.Delay(150);
+            SaveImage(preferences, Path.Combine(reportDirectory, "preferences-text.png"));
+            preferences.FindControl<TabControl>("ProfileTabs")!.SelectedIndex = 2; await Task.Delay(150);
+            SaveImage(preferences, Path.Combine(reportDirectory, "preferences-colours.png"));
+            preferences.FindControl<TabControl>("SettingsTabs")!.SelectedIndex = 0; await Task.Delay(150);
+            SaveImage(preferences, Path.Combine(reportDirectory, "preferences-general.png"));
             preferences.Close();
             await dialog;
             checks.Add("Native preferences render");

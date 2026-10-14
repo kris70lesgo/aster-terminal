@@ -11,6 +11,7 @@ Aster-authored and iTerm2-adapted code is GPL-3.0-or-later. Preserve original at
 | Material | Basis | Treatment |
 |---|---|---|
 | iTerm2 OSC 133 exit-code scan and OSC 1337 metadata behavior | COPY­ING GPLv2-or-later, elect GPLv3; VT100Terminal.m `exitCodeFromArgs`, `executeXtermSetKvp` | C# adaptation, upstream attribution in source and NOTICE; generic LICENSE file is not copied as our GPLv3 licence |
+| iTerm2 bounded DVR design, capacity / oldest-frame eviction / half-capacity frame guard | `DVR.m` / `DVRBuffer.m` GPLv2-or-later, elect GPLv3, pinned same source SHA | New C# text keyframes; studied design attributed in source and NOTICE. No binary DVR codec or upstream assets copied |
 | Devolutions.Terminal.Control 2026.3.4 + bundled Core/Render/Connection/Settings | MIT, nuspec/source at `fa23083f1bda1a60fe2b322c6cfab4a616af9edb` | Retain MIT notice; only terminal APIs used, no cloud/ISE features |
 | `dt-pty-host.c` from same pinned source | Project MIT; Unix forkpty helper | Vendor source and MIT licence, retain notices, record local changes |
 | Avalonia 12.1.4 | MIT | Preserve framework notices with distribution |

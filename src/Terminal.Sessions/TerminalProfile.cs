@@ -4,10 +4,10 @@ using System.Globalization;
 
 namespace Aster.Sessions;
 
-public sealed record TerminalProfile(string Name, string Command, string Directory, double FontSize = 14)
+public sealed record TerminalProfile(string Name, string Command, string Directory, double FontSize = 12)
 {
     public string Id { get; init; } = Guid.NewGuid().ToString("N");
-    public string FontFamily { get; init; } = "Cascadia Mono";
+    public string FontFamily { get; init; } = OperatingSystem.IsMacOS() ? "Monaco" : "Cascadia Mono";
     public int HistorySize { get; init; } = 10000;
     public string CursorShape { get; init; } = "filledBox";
     public string? Foreground { get; init; }
@@ -31,11 +31,11 @@ public sealed record TerminalProfile(string Name, string Command, string Directo
         StartingDirectory = Directory,
         FontSize = FontSize,
         FontFace = FontFamily,
-        Foreground = Foreground ?? (light ? "#243044" : "#D8DEE9"),
-        Background = Background ?? (light ? "#FAFAFC" : "#171A20"),
-        CursorColor = light ? "#243044" : "#D8DEE9",
+        Foreground = Foreground ?? (light ? "#243044" : "#D5D5D5"),
+        Background = Background ?? (light ? "#FAFAFC" : "#14161E"),
+        CursorColor = light ? "#243044" : "#D5D5D5",
         SelectionBackground = light ? "#B9D3EF" : "#3B506B",
-        Padding = "10",
+        Padding = "5",
         CursorShape = CursorShape,
         HistorySize = HistorySize,
         CloseOnExit = CloseOnExitMode.Never,
@@ -60,9 +60,9 @@ public sealed record TerminalProfile(string Name, string Command, string Directo
         return new ColorScheme
         {
             Name = light ? "Aster Light" : "Aster Dark",
-            Foreground = Color(Foreground ?? (light ? "#243044" : "#D8DEE9")),
-            Background = Color(Background ?? (light ? "#FAFAFC" : "#171A20")),
-            Cursor = light ? 0xFF243044 : 0xFFD8DEE9,
+            Foreground = Color(Foreground ?? (light ? "#243044" : "#D5D5D5")),
+            Background = Color(Background ?? (light ? "#FAFAFC" : "#14161E")),
+            Cursor = light ? 0xFF243044 : 0xFFD5D5D5,
             SelectionBackground = light ? 0xFFB9D3EF : 0xFF3B506B,
             Table = ColorScheme.FromName("Campbell").Table.ToArray()
         };

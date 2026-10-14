@@ -2,10 +2,10 @@
 
 A real C#/Avalonia terminal bringing a documented subset of **iTerm2** workflows
 to macOS, Windows and Linux. Independent project; no iTerm2 endorsement.
-GPL-3.0-or-later. **Version 0.2.0 is the competition release; full iTerm2 parity
+GPL-3.0-or-later. **Version 0.3.0 is the competition release; full iTerm2 parity
 is a separate milestone.**
 
-[Download v0.2.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.2.0)
+[Download v0.3.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.3.0)
 · [Runtime evidence](docs/test-matrix.md) · [Feature boundaries](docs/iterm2-feature-parity.md)
 
 ## Install
@@ -15,9 +15,9 @@ folders; no SDK, account or subscription is required.
 
 | Download | Run | Platform scope |
 |---|---|---|
-| `aster-terminal-0.2.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26 |
-| `aster-terminal-0.2.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
-| `aster-terminal-0.2.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
+| `aster-terminal-0.3.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26 |
+| `aster-terminal-0.3.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
+| `aster-terminal-0.3.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
 
 Extract the Mac ZIP with Finder/Archive Utility (or `ditto`) to preserve signing
 metadata. macOS is ad-hoc signed, without Developer ID notarization. For a downloaded copy,
@@ -36,7 +36,7 @@ when installing it in your desktop menu. The native PTY helper is already includ
 ## Use
 
 Each pane starts an independent local shell: `$SHELL` on Unix, PowerShell on
-Windows. File → New tab with profile selects another installed shell, including
+Windows. Shell → New tab with profile selects another installed shell, including
 Command Prompt. Preferences configures profiles, command/cwd/environment, fonts,
 colours, cursor, history, theme, close confirmation and shortcuts. Settings save
 atomically with backup recovery. Reopening saved tabs/splits **starts fresh shells**;
@@ -52,10 +52,24 @@ processes do not survive quitting the app.
 | Next / previous tab | Ctrl+Tab / Ctrl+Shift+Tab | Ctrl+Tab / Ctrl+Shift+Tab |
 | Next / previous pane | Cmd+] / Cmd+[ | Ctrl+Shift+] / Ctrl+Shift+[ |
 | Zoom pane | Cmd+Enter | Ctrl+Shift+Enter |
+| Screen replay | Cmd+Alt+B | Ctrl+Shift+Alt+B |
 | Preferences | Cmd+, | Ctrl+Shift+, |
 | Larger / smaller font | Cmd+Shift+= / Cmd+minus | Ctrl+Shift+= / Ctrl+Shift+minus |
 | Previous / next command mark | Cmd+Up / Cmd+Down | Ctrl+Shift+Up / Ctrl+Shift+Down |
 | Interrupt a foreground process | Ctrl+C | Ctrl+C |
+
+The UI keeps the terminal in focus: no permanent toolbar or pane footer, an
+automatically hidden single-tab strip, thin split dividers and native macOS
+menus. Settings divides profile editing into General, Text and Colours. General
+can enable the optional status bar or always-visible tab strip. Existing profiles
+keep their chosen fonts; fresh macOS profiles use Monaco 12.
+
+Screen replay stores a bounded history of visible text screens in memory. Open
+Session → Instant replay, then seek with the slider or arrow keys; Escape closes
+it. Shells keep running. Recording stops and history clears when disabled in
+Settings → General or when a pane closes. Text, Unicode, colours, grid dimensions
+and cursor position/visibility are covered; images and binary iTerm2 DVR files
+are not. See the [architecture](docs/architecture.md) for capture and budget limits.
 
 Find uses Enter/Shift+Enter and Escape. Enable command marks in a bash or zsh
 profile to load the bundled original shell integration; user startup files are
@@ -121,7 +135,7 @@ different version and geometry from the source audit. Captures show actual
 applications. [Screenshot provenance](docs/evidence/README.md) distinguishes
 historical startup references from final native acceptance captures.
 
-Native tmux control mode, live process reconnection, iTerm2 Instant Replay,
+Native tmux control mode, live process reconnection, complete iTerm2 DVR compatibility,
 triggers, Python API compatibility, global hotkey windows and complete graphics
 parity remain **Milestone B**, with individual statuses in the parity matrix.
 Physical IME/AltGr, native clipboard gestures, multi-monitor/DPI and live SSH

@@ -1,65 +1,83 @@
 <Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        x:Class="Aster.App.Views.PreferencesWindow" x:CompileBindings="False" Title="Aster Terminal — Preferences"
-        Width="900" Height="760" MinWidth="740" MinHeight="600" Background="{DynamicResource WindowBackground}">
-  <Grid RowDefinitions="*,Auto,Auto" Margin="18">
-    <TabControl>
+        x:Class="Aster.App.Views.PreferencesWindow" x:CompileBindings="False" Title="Aster Terminal Settings"
+        Width="840" Height="580" MinWidth="700" MinHeight="500" Background="{DynamicResource ChromeBackground}">
+  <Window.Styles>
+    <Style Selector="TextBox"><Setter Property="MinHeight" Value="28" /><Setter Property="FontSize" Value="13" /></Style>
+    <Style Selector="Button"><Setter Property="MinHeight" Value="26" /><Setter Property="FontSize" Value="12" /><Setter Property="Padding" Value="9,3" /></Style>
+    <Style Selector="TextBlock"><Setter Property="FontSize" Value="12" /></Style>
+    <Style Selector="TabItem"><Setter Property="FontSize" Value="12" /><Setter Property="Padding" Value="12,6" /></Style>
+  </Window.Styles>
+  <Grid RowDefinitions="*,Auto,Auto" Margin="16,10">
+    <TabControl x:Name="SettingsTabs" SelectedIndex="1">
+      <TabItem Header="General">
+        <ScrollViewer>
+        <StackPanel Spacing="12" Margin="18,18">
+          <Grid ColumnDefinitions="130,*"><TextBlock Text="Appearance:" VerticalAlignment="Center" /><ComboBox Grid.Column="1" x:Name="ThemeBox" Width="180" HorizontalAlignment="Left" /></Grid>
+          <CheckBox x:Name="AlwaysShowTabBarBox" Content="Show tab bar even when there is only one tab" />
+          <CheckBox x:Name="ShowStatusBarBox" Content="Show status bar" />
+          <CheckBox x:Name="ReplayEnabledBox" Content="Keep screen replay in memory" />
+          <TextBlock Text="Replay keeps a bounded history of visible text screens. It is discarded when the pane closes." TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}" />
+          <Separator />
+          <CheckBox x:Name="RestoreLayoutBox" Content="Reopen tabs and split layouts on launch" />
+          <TextBlock Text="Reopened panes start new shells. Running processes do not survive quitting." TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}" />
+          <CheckBox x:Name="CopyOnSelectBox" Content="Copy text automatically after selection" />
+          <CheckBox x:Name="ConfirmCloseBox" Content="Confirm before closing running sessions" />
+          <TextBlock Text="Settings file:" Foreground="{DynamicResource MutedForeground}" /><TextBlock x:Name="SettingsPath" TextWrapping="Wrap" FontSize="11" />
+        </StackPanel>
+        </ScrollViewer>
+      </TabItem>
       <TabItem Header="Profiles">
-        <Grid ColumnDefinitions="190,20,*" Margin="0,12,0,0">
+        <Grid ColumnDefinitions="170,14,*" Margin="0,12,0,0">
           <Grid RowDefinitions="*,Auto">
-            <ListBox x:Name="ProfileList" SelectionChanged="ProfileSelected">
+            <ListBox x:Name="ProfileList">
               <ListBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding Name}" /></DataTemplate></ListBox.ItemTemplate>
             </ListBox>
             <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="5" Margin="0,8,0,0">
-              <Button Content="Add" Click="AddClicked" /><Button Content="Duplicate" Click="DuplicateClicked" /><Button Content="−" Click="RemoveClicked" />
+              <Button Content="+" ToolTip.Tip="Add profile" Click="AddClicked" /><Button Content="−" ToolTip.Tip="Remove profile" Click="RemoveClicked" /><Button Content="Duplicate" Click="DuplicateClicked" />
             </StackPanel>
           </Grid>
-          <ScrollViewer Grid.Column="2">
-            <StackPanel Spacing="8">
-              <TextBlock Text="Profile" FontWeight="SemiBold" FontSize="18" />
-              <TextBlock Text="Name" /><TextBox x:Name="ProfileName" />
-              <TextBlock Text="Shell command" /><TextBox x:Name="ShellCommand" />
-              <TextBlock Text="Starting directory" /><TextBox x:Name="StartingDirectory" />
-              <Grid ColumnDefinitions="*,16,120">
-                <StackPanel Spacing="5"><TextBlock Text="Font family" /><TextBox x:Name="FontFamilyBox" /></StackPanel>
-                <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="Size" /><NumericUpDown x:Name="FontSizeBox" Minimum="6" Maximum="48" Increment="1" /></StackPanel>
-              </Grid>
-              <Grid ColumnDefinitions="*,16,*">
-                <StackPanel Spacing="5"><TextBlock Text="Scrollback lines" /><NumericUpDown x:Name="HistorySizeBox" Minimum="100" Maximum="100000" Increment="100" /></StackPanel>
-                <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="Cursor" /><ComboBox x:Name="CursorBox" HorizontalAlignment="Stretch" /></StackPanel>
-              </Grid>
-              <Grid ColumnDefinitions="*,16,*">
-                <StackPanel Spacing="5"><TextBlock Text="Foreground (#RRGGBB, empty for theme)" FontSize="12" /><TextBox x:Name="ForegroundBox" /></StackPanel>
-                <StackPanel Grid.Column="2" Spacing="5"><TextBlock Text="Background (#RRGGBB, empty for theme)" FontSize="12" /><TextBox x:Name="BackgroundBox" /></StackPanel>
-              </Grid>
-              <CheckBox x:Name="DefaultProfileBox" Content="Use this profile for new sessions" />
-              <CheckBox x:Name="ShellIntegrationBox" Content="Enable command marks (bash and zsh)" />
-              <TextBlock Text="Environment variables (one NAME=value per line)" /><TextBox x:Name="EnvironmentBox" AcceptsReturn="True" MinHeight="70" />
-              <TextBlock Text="Shell and environment changes apply to new sessions. Fonts and colours apply immediately." TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}" />
-            </StackPanel>
-          </ScrollViewer>
+          <TabControl x:Name="ProfileTabs" Grid.Column="2">
+            <TabItem Header="General">
+              <ScrollViewer>
+                <StackPanel Spacing="10" Margin="10,14">
+                  <Grid ColumnDefinitions="115,*"><TextBlock Text="Name:" VerticalAlignment="Center" /><TextBox x:Name="ProfileName" Grid.Column="1" /></Grid>
+                  <Grid ColumnDefinitions="115,*"><TextBlock Text="Command:" VerticalAlignment="Center" /><TextBox x:Name="ShellCommand" Grid.Column="1" /></Grid>
+                  <Grid ColumnDefinitions="115,*"><TextBlock Text="Directory:" VerticalAlignment="Center" /><TextBox x:Name="StartingDirectory" Grid.Column="1" /></Grid>
+                  <CheckBox x:Name="DefaultProfileBox" Content="Use as default profile" />
+                  <CheckBox x:Name="ShellIntegrationBox" Content="Shell integration (bash and zsh)" />
+                  <TextBlock Text="Environment variables:" /><TextBox x:Name="EnvironmentBox" AcceptsReturn="True" MinHeight="100" FontFamily="monospace" />
+                  <TextBlock Text="One NAME=value per line. Command and environment changes apply to new sessions." TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}" />
+                </StackPanel>
+              </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Text">
+              <StackPanel Spacing="14" Margin="10,18">
+                <Grid ColumnDefinitions="115,*"><TextBlock Text="Font:" VerticalAlignment="Center" /><TextBox x:Name="FontFamilyBox" Grid.Column="1" /></Grid>
+                <Grid ColumnDefinitions="115,*"><TextBlock Text="Size:" VerticalAlignment="Center" /><NumericUpDown x:Name="FontSizeBox" Grid.Column="1" Width="120" HorizontalAlignment="Left" Minimum="6" Maximum="48" Increment="1" /></Grid>
+                <Grid ColumnDefinitions="115,*"><TextBlock Text="Cursor:" VerticalAlignment="Center" /><ComboBox x:Name="CursorBox" Grid.Column="1" Width="180" HorizontalAlignment="Left" /></Grid>
+                <Grid ColumnDefinitions="115,*"><TextBlock Text="Scrollback:" VerticalAlignment="Center" /><NumericUpDown x:Name="HistorySizeBox" Grid.Column="1" Width="180" HorizontalAlignment="Left" Minimum="100" Maximum="100000" Increment="100" /></Grid>
+                <TextBlock Text="Font changes apply immediately. Scrollback capacity applies to new sessions." TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}" />
+              </StackPanel>
+            </TabItem>
+            <TabItem Header="Colours">
+              <StackPanel Spacing="14" Margin="10,18">
+                <Grid ColumnDefinitions="115,*"><TextBlock Text="Foreground:" VerticalAlignment="Center" /><TextBox x:Name="ForegroundBox" Grid.Column="1" Width="160" HorizontalAlignment="Left" PlaceholderText="#RRGGBB" /></Grid>
+                <Grid ColumnDefinitions="115,*"><TextBlock Text="Background:" VerticalAlignment="Center" /><TextBox x:Name="BackgroundBox" Grid.Column="1" Width="160" HorizontalAlignment="Left" PlaceholderText="#RRGGBB" /></Grid>
+                <TextBlock Text="Leave colours empty to follow the application theme." TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}" />
+              </StackPanel>
+            </TabItem>
+          </TabControl>
         </Grid>
       </TabItem>
-      <TabItem Header="General">
-        <StackPanel Spacing="16" Margin="8,20">
-          <TextBlock Text="Appearance" FontSize="18" FontWeight="SemiBold" />
-          <ComboBox x:Name="ThemeBox" Width="220" HorizontalAlignment="Left" />
-          <CheckBox x:Name="RestoreLayoutBox" Content="Reopen tabs and split layouts on launch" />
-          <TextBlock Text="Reopened panes start new shells. Running processes do not survive app exit." TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}" />
-          <CheckBox x:Name="CopyOnSelectBox" Content="Copy text automatically after selection" />
-          <CheckBox x:Name="ConfirmCloseBox" Content="Confirm before closing running shell sessions" />
-          <TextBlock Text="Settings file" FontWeight="SemiBold" /><TextBlock x:Name="SettingsPath" TextWrapping="Wrap" FontSize="12" />
-        </StackPanel>
-      </TabItem>
-      <TabItem Header="Shortcuts">
-        <StackPanel Spacing="10" Margin="8,20">
-          <TextBlock Text="Keyboard shortcuts" FontSize="18" FontWeight="SemiBold" />
-          <TextBlock Text="One Action=Gesture per line. Use Meta on macOS, Control/Shift/Alt elsewhere. Each gesture must be unique." TextWrapping="Wrap" />
-          <TextBox x:Name="ShortcutsBox" AcceptsReturn="True" FontFamily="monospace" Height="440" />
-          <Button Content="Restore default shortcuts" HorizontalAlignment="Left" Click="ResetShortcutsClicked" />
-        </StackPanel>
+      <TabItem Header="Keys">
+        <Grid RowDefinitions="Auto,*,Auto" Margin="12,18,12,0">
+          <TextBlock Text="One Action=Gesture per line. Meta is Command on macOS. Each gesture must be unique." TextWrapping="Wrap" Margin="0,0,0,10" />
+          <TextBox x:Name="ShortcutsBox" Grid.Row="1" AcceptsReturn="True" FontFamily="monospace" />
+          <Button Grid.Row="2" Content="Restore default shortcuts" HorizontalAlignment="Left" Margin="0,10,0,0" Click="ResetShortcutsClicked" />
+        </Grid>
       </TabItem>
     </TabControl>
-    <TextBlock x:Name="ErrorText" Grid.Row="1" Foreground="#DF665E" TextWrapping="Wrap" Margin="0,10" />
+    <TextBlock x:Name="ErrorText" Grid.Row="1" Foreground="#DF665E" TextWrapping="Wrap" Margin="0,8" />
     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
       <Button Content="Cancel" Click="CancelClicked" /><Button Content="Save preferences" Click="SaveClicked" />
     </StackPanel>

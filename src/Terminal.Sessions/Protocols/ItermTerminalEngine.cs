@@ -12,6 +12,9 @@ public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
     private readonly TerminalEngine _inner;
     private readonly IVtDispatch _dispatch;
     private readonly VtParser _parser;
+    private readonly object _gate = new();
+    private long _revision;
+    public long Revision => Interlocked.Read(ref _revision);
     public string? RemoteHost { get; private set; }
     public int? LastCommandExitCode { get; private set; }
     public event EventHandler? MetadataChanged;
@@ -26,12 +29,16 @@ public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
 
     public void Feed(ReadOnlySpan<byte> data)
     {
-        _parser.Process(data);
-        // Runs the engine's image pruning and synchronized-output invalidation policy.
-        _inner.Feed(ReadOnlySpan<byte>.Empty);
+        lock (_gate)
+        {
+            _parser.Process(data);
+            // Runs the engine's image pruning and synchronized-output invalidation policy.
+            _inner.Feed(ReadOnlySpan<byte>.Empty);
+            if (!data.IsEmpty) _revision++;
+        }
     }
     public void Feed(string text) => Feed(Encoding.UTF8.GetBytes(text));
-    public void Reset() { _parser.Reset(); _inner.Reset(); RemoteHost = null; LastCommandExitCode = null; }
+    public void Reset() { lock (_gate) { _parser.Reset(); _inner.Reset(); RemoteHost = null; LastCommandExitCode = null; _revision++; } }
     public void Dispose() => _inner.Dispose();
 
     public void OscDispatch(int command, ReadOnlySpan<char> data)
@@ -83,7 +90,7 @@ public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
 
     public TerminalEngineCapabilities Capabilities => _inner.Capabilities;
     public TextBuffer Buffer => _inner.Buffer;
-    public ColorScheme Scheme { get => _inner.Scheme; set => _inner.Scheme = value; }
+    public ColorScheme Scheme { get => _inner.Scheme; set { lock (_gate) { _inner.Scheme = value; _revision++; } } }
     public string Title => _inner.Title;
     public string? WorkingDirectory => _inner.WorkingDirectory;
     public bool AlternateBufferActive => _inner.AlternateBufferActive;
@@ -106,10 +113,17 @@ public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
     public int CursorY => _inner.CursorY;
     public int HistoryCount => _inner.HistoryCount;
     public int ScrollOffset => _inner.ScrollOffset;
-    public void Resize(int columns, int rows, double cellWidth = 1, double cellHeight = 1) => _inner.Resize(columns, rows, cellWidth, cellHeight);
-    public void SetScrollOffset(int offset) => _inner.SetScrollOffset(offset);
+    public void Resize(int columns, int rows, double cellWidth = 1, double cellHeight = 1)
+    {
+        lock (_gate) { _inner.Resize(columns, rows, cellWidth, cellHeight); _revision++; }
+    }
+    public void SetScrollOffset(int offset)
+    {
+        lock (_gate) { var previous = _inner.ScrollOffset; _inner.SetScrollOffset(offset); if (_inner.ScrollOffset != previous) _revision++; }
+    }
     public void ConfigureOptionalFeatures(bool allowClipboardWrite, bool allowNotifications, bool allowKittyKeyboard = true) => _inner.ConfigureOptionalFeatures(allowClipboardWrite, allowNotifications, allowKittyKeyboard);
-    public TerminalSnapshot CreateSnapshot(bool includeHistory = false) => _inner.CreateSnapshot(includeHistory);
+    public TerminalSnapshot CreateSnapshot(bool includeHistory = false) { lock (_gate) return _inner.CreateSnapshot(includeHistory); }
+    public (long Revision, TerminalSnapshot Snapshot) CaptureScreen() { lock (_gate) return (Revision, _inner.CreateSnapshot()); }
     public string WrapPaste(string text) => _inner.WrapPaste(text);
 
     public event EventHandler? Invalidated { add => _inner.Invalidated += value; remove => _inner.Invalidated -= value; }

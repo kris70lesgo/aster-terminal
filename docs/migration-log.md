@@ -100,3 +100,31 @@ Release verification follow-ups:
 - Corrected a stale pane caption after startup: its measured initial row count
   could differ from the arranged engine grid by one row. Pane status now reads
   the actual engine dimensions after startup, matching the PTY resize path.
+
+
+## 0.3.0 — minimal iTerm-style UI and bounded replay
+
+- Compared the installed iTerm2 single session screenshot and pinned source:
+  terminal-first window, compact typography, no always-visible toolbar/footer.
+  Replaced Aster's redundant chrome with native macOS menus, auto-hidden single
+  tabs, optional status and compact General/Text/Colours settings. Thin dividers
+  retain a seven-pixel pointer target. Existing profile customizations are kept.
+- Studied pinned `sources/DVR/DVR.m` and `DVRBuffer.m`: timestamped screen state,
+  bounded storage, oldest eviction and a half-capacity oversized-frame guard.
+  Rewrote as portable cell keyframes. The AppKit/binary delta codec was not
+  imported. No new runtime dependency. Notices record the studied GPL design.
+- Added synchronized engine snapshots, per-pane opt-out/clear-on-close recorder,
+  and an independent read-only renderer. Seeking never replays into a live PTY.
+  Replay tests use real shell-generated screens and delayed output while viewing
+  history, plus Unicode/colour/grid preservation and capacity tests.
+- Local Release suite: 34 passed, 2 Windows-only skips, 0 failures (36 total).
+  Earlier native minimal UI captures passed. The later native/replay launch was
+  blocked before any window by CoreVideo -6661; an independent CoreGraphics probe
+  reported zero active displays and reproduced the same CoreVideo error. No
+  display/session settings were changed. Final native three-OS CI is pending.
+- Computer Use rejected iTerm2 app access for safety reasons after the initial
+  reference capture. Continued from the existing screenshot and pinned source;
+  no alternative route into the denied app was attempted.
+- Rechecked the official competition announcement at release preparation:
+  public GPL source/builds, screenshots/write-up and deadline requirements are
+  unchanged. Form/team declaration and actual submission remain separate.

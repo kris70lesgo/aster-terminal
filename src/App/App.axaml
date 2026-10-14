@@ -3,16 +3,36 @@
              x:Class="Aster.App.App" Name="Aster Terminal" RequestedThemeVariant="Dark">
   <Application.Resources>
     <ResourceDictionary>
+      <ControlTheme x:Key="TerminalTabTheme" TargetType="TabItem">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Padding" Value="12,4" />
+        <Setter Property="MinWidth" Value="130" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Background" Value="{DynamicResource ChromeBackground}" />
+        <Setter Property="Template">
+          <ControlTemplate>
+            <Border x:Name="TabBorder" Background="{TemplateBinding Background}" BorderBrush="{DynamicResource TabDivider}" BorderThickness="0,0,1,0" Padding="{TemplateBinding Padding}">
+              <ContentPresenter Name="PART_HeaderPresenter" Content="{TemplateBinding Header}" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+            </Border>
+          </ControlTemplate>
+        </Setter>
+        <Style Selector="^:selected /template/ Border#TabBorder"><Setter Property="Background" Value="{DynamicResource SelectedTabBackground}" /></Style>
+        <Style Selector="^:pointerover /template/ Border#TabBorder"><Setter Property="Background" Value="{DynamicResource SelectedTabBackground}" /></Style>
+      </ControlTheme>
       <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Dark">
-          <SolidColorBrush x:Key="WindowBackground">#171A20</SolidColorBrush>
-          <SolidColorBrush x:Key="ChromeBackground">#22262D</SolidColorBrush>
+          <SolidColorBrush x:Key="WindowBackground">#14161E</SolidColorBrush>
+          <SolidColorBrush x:Key="ChromeBackground">#252630</SolidColorBrush>
           <SolidColorBrush x:Key="MutedForeground">#B5BEC9</SolidColorBrush>
+          <SolidColorBrush x:Key="SelectedTabBackground">#363743</SolidColorBrush>
+          <SolidColorBrush x:Key="TabDivider">#454652</SolidColorBrush>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
           <SolidColorBrush x:Key="WindowBackground">#FAFAFC</SolidColorBrush>
-          <SolidColorBrush x:Key="ChromeBackground">#E9EDF3</SolidColorBrush>
+          <SolidColorBrush x:Key="ChromeBackground">#ECECEC</SolidColorBrush>
           <SolidColorBrush x:Key="MutedForeground">#455368</SolidColorBrush>
+          <SolidColorBrush x:Key="SelectedTabBackground">#FAFAFC</SolidColorBrush>
+          <SolidColorBrush x:Key="TabDivider">#C4C4C4</SolidColorBrush>
         </ResourceDictionary>
       </ResourceDictionary.ThemeDictionaries>
     </ResourceDictionary>

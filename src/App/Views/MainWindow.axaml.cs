@@ -49,19 +49,28 @@ public partial class MainWindow : Window
     {
         _settings = settings; _store = store;
         InitializeComponent();
+        MainMenu.IsVisible = !OperatingSystem.IsMacOS();
         Width = Math.Clamp(settings.WindowWidth, 620, 2400); Height = Math.Clamp(settings.WindowHeight, 320, 1800);
         ApplySettings(settings);
         Opened += (_, _) => Observe(ChangeLayoutAsync(InitializeSessionsAsync));
         Closing += OnClosing;
         ActualThemeVariantChanged += (_, _) => ApplyPaneAppearance();
         AddHandler(KeyDownEvent, OnShortcut, RoutingStrategies.Tunnel);
+        Activated += (_, _) => UpdateApplicationMenu();
+        Closed += (_, _) =>
+        {
+            if (!OperatingSystem.IsMacOS() || Application.Current is not { } app) return;
+            var other = (app.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows.OfType<MainWindow>().LastOrDefault(w => w != this && !w._closing);
+            if (other is not null) other.UpdateApplicationMenu();
+            else NativeMenu.SetMenu(app, null);
+        };
     }
 
     public void ApplySettings(AppSettings settings)
     {
         _settings = settings;
         try { _shortcuts = ShortcutMap.Resolve(settings.Shortcuts); }
-        catch (ArgumentException error) { _shortcuts = ShortcutMap.Resolve(new Dictionary<string, string>()); WindowStatus.Text = error.Message; }
+        catch (ArgumentException error) { _shortcuts = ShortcutMap.Resolve(new Dictionary<string, string>()); ShowError(error.Message); }
         RequestedThemeVariant = settings.Theme switch { "Light" => ThemeVariant.Light, "Dark" => ThemeVariant.Dark, _ => ThemeVariant.Default };
         ProfilesMenu.Items.Clear();
         foreach (var profile in settings.Profiles)
@@ -71,11 +80,16 @@ public partial class MainWindow : Window
             ProfilesMenu.Items.Add(item);
         }
         ApplyPaneAppearance();
+        RefreshChrome();
+        BuildNativeMenu();
     }
     private void ApplyPaneAppearance()
     {
         foreach (var pane in _workspaces.SelectMany(w => w.Panes))
+        {
             pane.ApplyAppearance(_settings.Profiles.FirstOrDefault(p => p.Id == pane.Profile.Id) ?? pane.Profile, Light, _settings.CopyOnSelect);
+            pane.SetReplayEnabled(_settings.ScreenReplayEnabled);
+        }
     }
 
     private async Task InitializeSessionsAsync()
@@ -94,26 +108,28 @@ public partial class MainWindow : Window
             Tabs.SelectedIndex = 0;
         }
         else await NewTabCoreAsync(DefaultProfile);
-        if (_store?.LoadWarning is { } warning) WindowStatus.Text = warning;
+        if (_store?.LoadWarning is { } warning) ShowError(warning);
     }
 
     private Workspace AddWorkspace(string? title = null)
     {
         var workspace = new Workspace { CustomTitle = title };
-        var header = new StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 8 };
-        header.Children.Add(workspace.Label);
-        var close = new Button { Content = "×", MinHeight = 20, Padding = new Thickness(3, 0), Background = Avalonia.Media.Brushes.Transparent };
+        var header = new DockPanel { LastChildFill = true };
+        var close = new Button { Content = "×", MinHeight = 18, MinWidth = 18, Padding = new Thickness(2, 0), Background = Avalonia.Media.Brushes.Transparent };
+        ToolTip.SetTip(close, "Close tab");
+        Avalonia.Automation.AutomationProperties.SetName(close, "Close tab");
         close.Click += (_, e) => { e.Handled = true; Observe(ChangeLayoutAsync(() => CloseTabCoreAsync(workspace))); };
-        header.Children.Add(close);
+        DockPanel.SetDock(close, Dock.Right); header.Children.Add(close); header.Children.Add(workspace.Label);
         workspace.Tab.Header = header;
         workspace.Tab.Content = workspace.Root;
         _workspaces.Add(workspace); Tabs.Items.Add(workspace.Tab);
+        RefreshChrome();
         return workspace;
     }
 
     private TerminalPane CreatePane(Workspace workspace, TerminalProfile profile)
     {
-        var pane = new TerminalPane(profile, Light, _settings.CopyOnSelect);
+        var pane = new TerminalPane(profile, Light, _settings.CopyOnSelect, _settings.ScreenReplayEnabled);
         workspace.Panes.Add(pane);
         pane.Activated += (_, _) => Activate(workspace, pane);
         pane.TitleChanged += (_, _) => { if (workspace.Active == pane) UpdateTitle(workspace); };
@@ -137,7 +153,8 @@ public partial class MainWindow : Window
     private void UpdateTitle(Workspace workspace)
     {
         workspace.Label.Text = workspace.CustomTitle ?? workspace.Active?.SessionTitle ?? "Terminal";
-        if (Current == workspace) Title = workspace.Label.Text + " — Aster Terminal";
+        Avalonia.Automation.AutomationProperties.SetName(workspace.Tab, workspace.Label.Text);
+        if (Current == workspace) Title = workspace.Label.Text;
     }
 
     private Task NewTabAsync(TerminalProfile? profile = null) => ChangeLayoutAsync(() => NewTabCoreAsync(profile ?? DefaultProfile));
@@ -161,15 +178,29 @@ public partial class MainWindow : Window
     private static Grid SplitGrid(bool below, double ratio = .5)
     {
         var split = new Grid();
-        var definitions = FormattableString.Invariant($"{ratio}*,5,{1 - ratio}*");
+        var definitions = FormattableString.Invariant($"{ratio}*,1,{1 - ratio}*");
         if (below) split.RowDefinitions = new RowDefinitions(definitions);
         else split.ColumnDefinitions = new ColumnDefinitions(definitions);
         var divider = new GridSplitter
         {
-            Background = Avalonia.Media.Brush.Parse("#7A8494"),
+            Background = Avalonia.Media.Brush.Parse("#555761"),
             ResizeDirection = below ? GridResizeDirection.Rows : GridResizeDirection.Columns,
             HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
         };
+        // Keep the visible line thin while offering a wider pointer target.
+        divider.Template = new Avalonia.Controls.Templates.FuncControlTemplate<GridSplitter>((_, _) => new Border
+        {
+            Background = Avalonia.Media.Brushes.Transparent,
+            Child = new Border
+            {
+                Background = Avalonia.Media.Brush.Parse("#555761"),
+                Width = below ? double.NaN : 1, Height = below ? 1 : double.NaN,
+                HorizontalAlignment = below ? Avalonia.Layout.HorizontalAlignment.Stretch : Avalonia.Layout.HorizontalAlignment.Center,
+                VerticalAlignment = below ? Avalonia.Layout.VerticalAlignment.Center : Avalonia.Layout.VerticalAlignment.Stretch
+            }
+        });
+        if (below) { divider.Height = 7; divider.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center; }
+        else { divider.Width = 7; divider.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center; }
         if (below) Grid.SetRow(divider, 1); else Grid.SetColumn(divider, 1);
         split.Children.Add(divider);
         return split;
@@ -221,6 +252,7 @@ public partial class MainWindow : Window
     private void RemoveWorkspace(Workspace workspace)
     {
         _workspaces.Remove(workspace); Tabs.Items.Remove(workspace.Tab);
+        RefreshChrome();
         if (_workspaces.Count == 0) { Close(); return; }
         Tabs.SelectedItem = _workspaces[^1].Tab; Current?.Active?.Terminal.Focus();
     }
@@ -292,7 +324,7 @@ public partial class MainWindow : Window
             foreach (var pane in _workspaces.SelectMany(w => w.Panes).ToArray()) await pane.CloseAsync();
             _closed = true; Close();
         }
-        catch (Exception error) { _closing = false; WindowStatus.Text = $"Session cleanup failed: {error.Message}"; }
+        catch (Exception error) { _closing = false; ShowError($"Session cleanup failed: {error.Message}"); }
         finally { _layoutMutation.Release(); }
     }
 
@@ -324,6 +356,7 @@ public partial class MainWindow : Window
             case "PreviousMark": Active?.Terminal.ScrollToMark(ScrollToMarkDirection.Previous); break;
             case "NextMark": Active?.Terminal.ScrollToMark(ScrollToMarkDirection.Next); break;
             case "OpenQuickly": Observe(OpenQuicklyAsync()); break;
+            case "Replay": ReplayClicked(null, new RoutedEventArgs()); break;
         }
     }
 
@@ -336,7 +369,7 @@ public partial class MainWindow : Window
     }
     private async Task PreferencesAsync()
     {
-        if (_store is null) { WindowStatus.Text = "Preferences are unavailable in an isolated test session."; return; }
+        if (_store is null) { ShowError("Preferences are unavailable in an isolated test session."); return; }
         if (_preferences is not null) { _preferences.Activate(); return; }
         _preferences = new PreferencesWindow(_store) { RequestedThemeVariant = RequestedThemeVariant };
         try
@@ -381,7 +414,7 @@ public partial class MainWindow : Window
         if (_store is not null) _store.Save(settings);
         ApplySettings(settings);
     }
-    private async void Observe(Task task) { try { await task; } catch (Exception error) { WindowStatus.Text = error.Message; } }
+    private async void Observe(Task task) { try { await task; } catch (Exception error) { ShowError(error.Message); } }
     private void ShowSearch() { SearchBar.IsVisible = true; SearchBox.Focus(); }
     private void HideSearch() { SearchBar.IsVisible = false; Active?.Terminal.Search.Clear(); Active?.Terminal.SetSearchHighlights([]); Active?.Terminal.Focus(); }
     private void Search(bool previous)
@@ -424,8 +457,8 @@ public partial class MainWindow : Window
     private void SmallerFontClicked(object? sender, RoutedEventArgs e) => Active?.Terminal.AdjustFontSize(-1);
     private void ResetFontClicked(object? sender, RoutedEventArgs e) => Active?.Terminal.ResetFontSize();
     private void FullScreenClicked(object? sender, RoutedEventArgs e) => WindowState = WindowState == WindowState.FullScreen ? WindowState.Normal : WindowState.FullScreen;
-    private void DarkThemeClicked(object? sender, RoutedEventArgs e) { try { SetTheme("Dark"); } catch (Exception error) { WindowStatus.Text = error.Message; } }
-    private void LightThemeClicked(object? sender, RoutedEventArgs e) { try { SetTheme("Light"); } catch (Exception error) { WindowStatus.Text = error.Message; } }
+    private void DarkThemeClicked(object? sender, RoutedEventArgs e) { try { SetTheme("Dark"); } catch (Exception error) { ShowError(error.Message); } }
+    private void LightThemeClicked(object? sender, RoutedEventArgs e) { try { SetTheme("Light"); } catch (Exception error) { ShowError(error.Message); } }
     private void SaveBufferClicked(object? sender, RoutedEventArgs e) => Observe(SaveBufferAsync());
     private void QuitClicked(object? sender, RoutedEventArgs e)
     {
@@ -434,5 +467,42 @@ public partial class MainWindow : Window
         else Close();
     }
     private void AboutClicked(object? sender, RoutedEventArgs e) =>
-        Observe(DialogWindow.Confirm(this, "About Aster Terminal", "Aster Terminal 0.2\nIndependent iTerm2 migration to Avalonia.\nGPL-3.0-or-later. No warranty.\nTerminal component: Devolutions (MIT).\nSee LICENSE and bundled notices.", "Done"));
+        Observe(DialogWindow.Confirm(this, "About Aster Terminal", "Aster Terminal 0.3.0\nIndependent iTerm2 migration to Avalonia.\nGPL-3.0-or-later. No warranty.\nTerminal component: Devolutions (MIT).\nSee LICENSE and bundled notices.", "Done"));
+
+    private void ShowError(string message) { AlertText.Text = message; AlertBar.IsVisible = true; }
+    private void DismissAlertClicked(object? sender, RoutedEventArgs e) => AlertBar.IsVisible = false;
+    private void RefreshChrome()
+    {
+        Tabs.Classes.Set("single", !_settings.AlwaysShowTabBar && _workspaces.Count <= 1);
+        StatusBar.IsVisible = _settings.ShowStatusBar;
+        StatusBarMenuItem.IsChecked = _settings.ShowStatusBar;
+        TabBarMenuItem.IsChecked = _settings.AlwaysShowTabBar;
+    }
+    private void SaveChrome(AppSettings settings)
+    {
+        _store?.Save(settings);
+        _settings = settings; RefreshChrome(); BuildNativeMenu();
+    }
+    private void StatusBarClicked(object? sender, RoutedEventArgs e) { try { SaveChrome(_settings with { ShowStatusBar = !_settings.ShowStatusBar }); } catch (Exception error) { ShowError(error.Message); } }
+    private void TabBarClicked(object? sender, RoutedEventArgs e) { try { SaveChrome(_settings with { AlwaysShowTabBar = !_settings.AlwaysShowTabBar }); } catch (Exception error) { ShowError(error.Message); } }
+
+    private void BuildNativeMenu()
+    {
+        if (!OperatingSystem.IsMacOS()) return;
+        NativeMenu.SetMenu(this, NativeMenuBridge.FromMenu(MainMenu, _shortcuts));
+        UpdateApplicationMenu();
+    }
+    private void UpdateApplicationMenu()
+    {
+        if (!OperatingSystem.IsMacOS() || Application.Current is not { } app) return;
+        var menu = new NativeMenu();
+        var about = new NativeMenuItem("About Aster Terminal"); about.Click += (_, _) => AboutClicked(null, new RoutedEventArgs()); menu.Add(about);
+        var preferences = new NativeMenuItem("Settings…") { Gesture = _shortcuts.GetValueOrDefault("Preferences") };
+        preferences.Click += (_, _) => Observe(PreferencesAsync()); menu.Add(preferences);
+        NativeMenu.SetMenu(app, menu);
+    }
+    private void ReplayClicked(object? sender, RoutedEventArgs e)
+    {
+        if (Active is { } pane) { pane.CaptureReplay(); Observe(new ReplayWindow(pane.Replay, pane.Profile).ShowDialog(this)); }
+    }
 }

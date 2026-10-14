@@ -1,4 +1,19 @@
-# Verification matrix — release 0.2.0, 2026-10-14
+# Verification matrix — 0.3.0 candidate, 2026-10-14
+
+New minimal UI/replay release: local Release build has zero warnings/errors;
+36 tests total, **34 passed, 2 Windows-only skips, 0 failures**. Added tests
+verify historical Unicode/colour/cursor/grid state, bounded eviction/oversize
+handling, monotonic timestamps, live PTY output while seeking, disabling and
+pane-close history cleanup. Native smoke now checks replay and captures profile
+Text/Colours and application General pages. Final three-OS CI is pending.
+
+Local native replay verification is currently blocked before window creation:
+macOS reports zero active displays; both Avalonia and an independent CoreVideo
+probe return -6661. Earlier minimal UI-only native captures succeeded. Those
+captures do not establish native replay support. The previous release evidence
+below remains valid for 0.2.0, not a replacement for final 0.3.0 acceptance.
+
+## Previous release 0.2.0 evidence
 
 Local host: Apple M5 arm64, macOS 26.7.2, SDK 10.0.402/runtime 10.0.13,
 Avalonia 12.1.4. Hosted evidence is separate from this workstation.

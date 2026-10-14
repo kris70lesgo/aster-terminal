@@ -23,6 +23,10 @@ public partial class PreferencesWindow : Window
         _profiles = store.Settings.Profiles.ToList();
         _defaultId = store.Settings.DefaultProfileId;
         InitializeComponent();
+        ProfileList.SelectionChanged += ProfileSelected;
+        AlwaysShowTabBarBox.IsChecked = store.Settings.AlwaysShowTabBar;
+        ShowStatusBarBox.IsChecked = store.Settings.ShowStatusBar;
+        ReplayEnabledBox.IsChecked = store.Settings.ScreenReplayEnabled;
         ThemeBox.ItemsSource = new[] { "Dark", "Light", "System" };
         ThemeBox.SelectedItem = store.Settings.Theme;
         CursorBox.ItemsSource = new[] { "filledBox", "bar", "underscore" };
@@ -113,6 +117,8 @@ public partial class PreferencesWindow : Window
         var settings = _store.Settings with
         {
             Profiles = _profiles.ToList(), DefaultProfileId = _defaultId, Theme = ThemeBox.SelectedItem as string ?? "Dark",
+            AlwaysShowTabBar = AlwaysShowTabBarBox.IsChecked == true, ShowStatusBar = ShowStatusBarBox.IsChecked == true,
+            ScreenReplayEnabled = ReplayEnabledBox.IsChecked == true,
             RestoreLayout = RestoreLayoutBox.IsChecked == true, CopyOnSelect = CopyOnSelectBox.IsChecked == true,
             ConfirmClose = ConfirmCloseBox.IsChecked == true, Shortcuts = shortcuts,
         };

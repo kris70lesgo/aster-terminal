@@ -25,3 +25,30 @@ Each pane owns one TermControl, one engine and one connection. The package proce
 iTerm2-specific migration first targets OSC 133 exit-code parsing (including attributes) and OSC 1337 CurrentDir/RemoteHost metadata. Port the upstream parsing algorithm and translate only bounded approved metadata to the engine's supported protocol. Remote output is data; it cannot change profiles, steal focus, execute commands, access files or write clipboard. VT clipboard writes and notifications disabled by profile. Bracketed paste follows engine mode.
 
 Milestone A: verified shell, tabs/panes, search/selection, profiles and keyboard navigation, three-OS runtime evidence, packages and contest documents. Milestone B: deeper tmux, replay, graphics, scripting and reconnect architecture. First acceptance: real PTY command, Unicode/formatting, resize/SIGWINCH, Ctrl-C, exit and clean close; GUI launch and screenshot supplement tests.
+
+
+## Minimal desktop and screen replay, 0.3.0
+
+The terminal fills the window by default. macOS commands are exported through
+Avalonia NativeMenu; Windows/Linux retain a compact desktop menu. The tab strip
+appears for multiple tabs, with an optional always-visible setting. A status bar
+is optional, while errors remain visible in a dismissible overlay. A thin split
+line has a wider transparent pointer target. Settings separate application,
+profile General/Text/Colours, and shortcut editing.
+
+Each pane records changed visible text screens at most four times per second,
+with at most 256 frames and a 16 MiB conservative estimated retention budget.
+Screens larger than half the budget are rejected, following the upstream DVR
+capacity guard. This is a managed keyframe model, not a byte-for-byte DVR port.
+Snapshot capture and output feed share an engine lock; storage lives in Sessions.
+A replay viewer uses a separate engine without a connection, so seeking never
+sends bytes or changes the live buffer. Closing a pane or disabling recording
+clears its history. A viewer holds its frozen frame selection until closed.
+
+Frames preserve cells, Unicode, text attributes, palette, grid size, cursor
+position/visibility, reverse video and line rendition. Graphics and DRCS payloads,
+per-frame cursor shape, binary DVR import/export and disk recording are outside
+this subset. Recording a scrolled view captures that view; no full scrollback
+history is stored in each frame. Fast intermediate output can occur between
+captures. The budget is an estimate of retained managed objects, not a claim that
+the process working set is capped at 16 MiB.

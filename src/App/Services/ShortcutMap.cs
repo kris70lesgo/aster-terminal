@@ -17,6 +17,7 @@ public static class ShortcutMap
             ["NextPane"] = command + "+OemCloseBrackets", ["PreviousPane"] = command + "+OemOpenBrackets",
             ["LargerFont"] = command + (OperatingSystem.IsMacOS() ? "+Shift" : "") + "+OemPlus", ["SmallerFont"] = command + "+OemMinus", ["ResetFont"] = command + "+D0",
             ["PreviousMark"] = command + "+Up", ["NextMark"] = command + "+Down", ["OpenQuickly"] = command + "+Shift+O",
+            ["Replay"] = command + "+Alt+B",
         };
     }
 

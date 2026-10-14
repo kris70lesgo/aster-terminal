@@ -6,6 +6,10 @@ adapted code is GPL-3.0-or-later. See LICENSE. No warranty.
 iTerm2 copyright George Nachman and contributors. Semantic exit-code scanning
 and OSC metadata adapt VT100Terminal.m at
 069b6e0dd8f3f0d82fc08ea5d294d28f7c5b986e (GPLv2-or-later, elect GPLv3).
+The bounded screen replay design studies DVR.m/DVRBuffer.m at that same
+commit (copyright George Nachman, GPLv2-or-later, elect GPLv3): capacity,
+oldest-frame eviction and rejection of frames over half the budget. The C#
+keyframe implementation is new and does not read iTerm2 binary DVR files.
 Bundled bash/zsh integration comes from iTerm2-shell-integration commit
 bcd52317a70f1a489b86fcfd1ee97df155741092 under the same grant.
 Original headers and included bash-preexec MIT notice are retained.

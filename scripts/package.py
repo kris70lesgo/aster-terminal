@@ -51,6 +51,8 @@ else:
     if rid.startswith("linux"):
         (payload / "aster-terminal.desktop").write_text("[Desktop Entry]\nType=Application\nName=Aster Terminal\nComment=Native terminal emulator\nExec=Aster.Terminal\nTerminal=false\nCategories=System;TerminalEmulator;\n")
 if args.smoke:
+    smoke_directory = out / "native-smoke"
+    if smoke_directory.exists(): shutil.rmtree(smoke_directory)
     subprocess.run([str(executable), "--benchmark", str(out / "native-smoke/benchmark.json")], cwd=root, check=True, timeout=90)
     subprocess.run([str(executable), "--smoke-test", "--smoke-report", str(out / "native-smoke")], cwd=root, check=True, timeout=90)
     report = json.loads((out / "native-smoke/native-smoke.json").read_text())

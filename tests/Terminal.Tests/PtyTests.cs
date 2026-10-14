@@ -214,7 +214,9 @@ public sealed class PtyTests
     {
         await using var shell = new Shell();
         await shell.Start("powershell.exe -NoLogo -NoProfile");
-        shell.Connection.Write("[Console]::WriteLine('POWER' + 'SHELL_OK'); [Console]::WriteLine([char]0x754c)\r");
+        // Use PowerShell's host output; legacy .NET Console.WriteLine chooses
+        // the shell's OEM code page and can replace non-ASCII before ConPTY.
+        shell.Connection.Write("Write-Output ('POWER' + 'SHELL_OK'); Write-Output ([char]0x754c)\r");
         await shell.Until(() => shell.Snapshot().Contains("POWERSHELL_OK") && shell.Snapshot().Contains("界"));
         shell.Connection.Resize(90, 30);
         Assert.Equal(90, shell.Connection.Columns);

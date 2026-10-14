@@ -29,6 +29,9 @@ public static class DesktopSmoke
             await Until(() => Panes(window).Length == 1 && Panes(window)[0].Terminal.IsRunning);
             var terminal = Panes(window)[0].Terminal;
             allPanes.Add(Panes(window)[0]);
+            // A PTY may be running before an interactive shell finishes setting
+            // terminal attributes. Wait for the fixture's real prompt before typing.
+            await Until(() => TerminalBufferExport.ToPlainText(terminal.Engine.CreateSnapshot().Buffer).Contains("ASTER_READY>"));
             terminal.Focus();
             terminal.RaiseEvent(new TextInputEventArgs { RoutedEvent = InputElement.TextInputEvent, Text = OperatingSystem.IsWindows() ? "echo __NATIVE_OK__" : "printf '%s%s\\n' '__NATIVE_' 'OK__'" });
             Enter(terminal);
@@ -77,7 +80,12 @@ public static class DesktopSmoke
             await dialog;
             checks.Add("Native preferences render");
         }
-        catch (Exception error) { failure = error; }
+        catch (Exception error)
+        {
+            failure = error;
+            File.WriteAllText(Path.Combine(reportDirectory, "failure-buffer.txt"), string.Join("\n--- pane ---\n", Panes(window).Select(p => TerminalBufferExport.ToPlainText(p.Terminal.Engine.CreateSnapshot(true).Buffer))));
+            SaveImage(window, Path.Combine(reportDirectory, "failure.png"));
+        }
         finally
         {
             window.Close();

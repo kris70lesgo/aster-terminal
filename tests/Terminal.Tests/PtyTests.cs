@@ -171,11 +171,16 @@ public sealed class PtyTests
         await using var shell = new Shell(); await shell.Start();
         var socket = "aster-acceptance-" + Guid.NewGuid().ToString("N");
         // A unique server avoids touching the user's existing tmux sessions.
-        shell.Connection.Write($"tmux -L {socket} -f /dev/null new-session -s acceptance\n");
-        await shell.Until(() => shell.Engine.AlternateBufferActive);
+        shell.Connection.Write($"tmux -L {socket} -f /dev/null new-session -s acceptance \"env PS1='__TMUX_READY__ ' /bin/sh\"\n");
+        await shell.Until(() => shell.Engine.AlternateBufferActive && shell.Snapshot().Contains("__TMUX_READY__"));
         shell.Connection.Write("printf '%s%s\\n' '__TMUX_' 'OK__'\n");
         await shell.Until(() => shell.Snapshot().Contains("__TMUX_OK__"));
-        shell.Connection.Resize(105, 35); shell.Connection.Write("exit\n");
+        // Match the control's grid/PTY resize and wait for a real command in the
+        // resized tmux pane before exiting, so capability replies are consumed.
+        shell.Engine.Resize(105, 35); shell.Connection.Resize(105, 35);
+        shell.Connection.Write("stty size; printf '%s%s\\n' '__TMUX_RESIZED_' 'READY__'\n");
+        await shell.Until(() => shell.Snapshot().Contains("34 105") && shell.Snapshot().Contains("__TMUX_RESIZED_READY__"));
+        shell.Connection.Write("exit\n");
         await shell.Until(() => !shell.Engine.AlternateBufferActive);
         shell.Connection.Write("printf 'FIRST\\nSECOND\\n' | less -+F\n");
         await shell.Until(() => shell.Engine.AlternateBufferActive);

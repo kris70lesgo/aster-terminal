@@ -123,7 +123,18 @@ public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
     }
     public void ConfigureOptionalFeatures(bool allowClipboardWrite, bool allowNotifications, bool allowKittyKeyboard = true) => _inner.ConfigureOptionalFeatures(allowClipboardWrite, allowNotifications, allowKittyKeyboard);
     public TerminalSnapshot CreateSnapshot(bool includeHistory = false) { lock (_gate) return _inner.CreateSnapshot(includeHistory); }
-    public (long Revision, TerminalSnapshot Snapshot) CaptureScreen() { lock (_gate) return (Revision, _inner.CreateSnapshot()); }
+    public (long Revision, TerminalSnapshot Snapshot, ColorScheme Scheme) CaptureScreen()
+    {
+        lock (_gate)
+        {
+            var colors = _inner.Scheme;
+            return (Revision, _inner.CreateSnapshot(), new ColorScheme
+            {
+                Name = colors.Name, Foreground = colors.Foreground, Background = colors.Background,
+                Cursor = colors.Cursor, SelectionBackground = colors.SelectionBackground, Table = colors.Table.ToArray()
+            });
+        }
+    }
     public string WrapPaste(string text) => _inner.WrapPaste(text);
 
     public event EventHandler? Invalidated { add => _inner.Invalidated += value; remove => _inner.Invalidated -= value; }

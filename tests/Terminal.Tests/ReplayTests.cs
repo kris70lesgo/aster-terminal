@@ -46,5 +46,10 @@ public sealed class ReplayTests
         Assert.False(replay.Append(engine.CreateSnapshot(), engine.Scheme, time));
         Assert.Equal(3, replay.Snapshot().Count);
         replay.Clear(); Assert.Empty(replay.Snapshot()); Assert.Equal(0, replay.RetainedBytes);
+        engine.Resize(20, 3);
+        var singleFrame = new ScreenReplayBuffer(20000, 1);
+        singleFrame.Append(engine.CreateSnapshot(), engine.Scheme, time);
+        singleFrame.Append(engine.CreateSnapshot(), engine.Scheme, time.AddSeconds(-10));
+        Assert.Equal(time, Assert.Single(singleFrame.Snapshot()).Timestamp);
     }
 }

@@ -7,6 +7,7 @@ available source. Package lockfiles preserve exact restored versions/hashes.
 | Distributed material | Original source / version | Licence and notice treatment |
 |---|---|---|
 | iTerm2 OSC algorithms | gnachman/iTerm2 `069b6e0dd8f3f0d82fc08ea5d294d28f7c5b986e`, VT100Terminal.m | GPLv2-or-later, elect GPLv3; adaptation attribution in source and NOTICE |
+| iTerm2 bounded DVR design | Same pinned iTerm2 SHA, `sources/DVR/DVR.m` and `DVRBuffer.m` | GPLv2-or-later, elect GPLv3; studied capacity/eviction/oversize behavior attributed in source and NOTICE; independent C# keyframes, no binary codec copied |
 | iTerm2 bash/zsh integration | gnachman/iTerm2-shell-integration `bcd52317a70f1a489b86fcfd1ee97df155741092` | GPLv2-or-later, elect GPLv3; original headers retained, zsh gate change marked; included bash-preexec MIT notice retained |
 | Devolutions control and internal Core/Render/Connection/Settings | https://github.com/Devolutions/devolutions-terminal/tree/fa23083f1bda1a60fe2b322c6cfab4a616af9edb | MIT; full notice retained. Native helper modified for Linux session cleanup and included as source |
 | Avalonia 12.1.4 (all UI backends) | https://github.com/AvaloniaUI/Avalonia/tree/12.1.4 | MIT; `licenses/Avalonia-MIT.txt` |

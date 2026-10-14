@@ -39,11 +39,11 @@ public sealed class ScreenReplayBuffer
         var colors = new ColorScheme { Name = scheme.Name, Foreground = scheme.Foreground, Background = scheme.Background, Cursor = scheme.Cursor, SelectionBackground = scheme.SelectionBackground, Table = scheme.Table.ToArray() };
         lock (_gate)
         {
+            if (_frames.Last is { } last && timestamp < last.Value.Timestamp) timestamp = last.Value.Timestamp;
             while (_frames.Count > 0 && (_bytes + bytes > CapacityBytes || _frames.Count >= MaximumFrames))
             {
                 _bytes -= _frames.First!.Value.EstimatedBytes; _frames.RemoveFirst();
             }
-            if (_frames.Last is { } last && timestamp < last.Value.Timestamp) timestamp = last.Value.Timestamp;
             _frames.AddLast(new ScreenReplayFrame(++_sequence, timestamp, copy, colors, bytes)); _bytes += bytes;
         }
         return true;

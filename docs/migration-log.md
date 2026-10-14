@@ -136,3 +136,12 @@ Release verification follow-ups:
   and waited for vim's rendered startup screen before input. Also placed the
   widened divider above panes so its overlapping pointer target is reachable.
   Final all-platform rerun is required after these changes.
+
+- Rerun `38571046459`: Linux/Windows native packages passed; macOS exposed
+  the tmux fixture exiting immediately after a resize, allowing query replies
+  into the outer shell. The fixture now selects a deterministic inner sh prompt,
+  resizes both engine and PTY, and confirms the inner pane reports 34×105 (one
+  status row) before exit. It still requires return to the shell and less output.
+- Replay palette and text are captured under the same lock. Fixed timestamp
+  clamping before eviction for a one-frame buffer. Cursor labels in Settings
+  now read Block, Vertical bar and Underline; persisted values are unchanged.

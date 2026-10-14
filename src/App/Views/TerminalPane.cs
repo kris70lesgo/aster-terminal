@@ -93,8 +93,8 @@ public sealed class TerminalPane : Border
     public void CaptureReplay()
     {
         if (!_replayEnabled || _close is not null || Terminal.Profile is null || _capturedRevision == _engine.Revision) return;
-        var (revision, snapshot) = _engine.CaptureScreen();
-        Replay.Append(snapshot, Terminal.Engine.Scheme, DateTimeOffset.UtcNow);
+        var (revision, snapshot, scheme) = _engine.CaptureScreen();
+        Replay.Append(snapshot, scheme, DateTimeOffset.UtcNow);
         _capturedRevision = revision;
     }
     public void ApplyAppearance(TerminalProfile profile, bool light, bool copyOnSelect)

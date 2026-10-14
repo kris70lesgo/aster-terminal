@@ -13,6 +13,7 @@ public partial class PreferencesWindow : Window
     private int _selected = -1;
     private string _defaultId;
     private bool _loading;
+    private static readonly string[] CursorShapes = ["filledBox", "bar", "underscore"];
     public AppSettings? Result { get; private set; }
 
     public PreferencesWindow() : this(new SettingsStore()) { }
@@ -29,7 +30,7 @@ public partial class PreferencesWindow : Window
         ReplayEnabledBox.IsChecked = store.Settings.ScreenReplayEnabled;
         ThemeBox.ItemsSource = new[] { "Dark", "Light", "System" };
         ThemeBox.SelectedItem = store.Settings.Theme;
-        CursorBox.ItemsSource = new[] { "filledBox", "bar", "underscore" };
+        CursorBox.ItemsSource = new[] { "Block", "Vertical bar", "Underline" };
         RestoreLayoutBox.IsChecked = store.Settings.RestoreLayout;
         CopyOnSelectBox.IsChecked = store.Settings.CopyOnSelect;
         ConfirmCloseBox.IsChecked = store.Settings.ConfirmClose;
@@ -53,7 +54,7 @@ public partial class PreferencesWindow : Window
         var p = _profiles[index];
         ProfileName.Text = p.Name; ShellCommand.Text = p.Command; StartingDirectory.Text = p.Directory;
         FontFamilyBox.Text = p.FontFamily; FontSizeBox.Value = (decimal)p.FontSize; HistorySizeBox.Value = p.HistorySize;
-        CursorBox.SelectedItem = p.CursorShape; ForegroundBox.Text = p.Foreground; BackgroundBox.Text = p.Background;
+        CursorBox.SelectedIndex = Array.IndexOf(CursorShapes, p.CursorShape); ForegroundBox.Text = p.Foreground; BackgroundBox.Text = p.Background;
         DefaultProfileBox.IsChecked = p.Id == _defaultId; ShellIntegrationBox.IsChecked = p.ShellIntegration;
         EnvironmentBox.Text = string.Join('\n', p.EnvironmentVariables.Select(p => p.Key + "=" + p.Value));
     }
@@ -66,8 +67,8 @@ public partial class PreferencesWindow : Window
         {
             Name = ProfileName.Text?.Trim() ?? "", Command = ShellCommand.Text?.Trim() ?? "",
             Directory = StartingDirectory.Text?.Trim() ?? "", FontFamily = FontFamilyBox.Text?.Trim() ?? "",
-            FontSize = (double)(FontSizeBox.Value ?? 14), HistorySize = (int)(HistorySizeBox.Value ?? 10000),
-            CursorShape = CursorBox.SelectedItem as string ?? "filledBox",
+            FontSize = (double)(FontSizeBox.Value ?? 12), HistorySize = (int)(HistorySizeBox.Value ?? 10000),
+            CursorShape = CursorShapes[Math.Clamp(CursorBox.SelectedIndex, 0, CursorShapes.Length - 1)],
             Foreground = EmptyToNull(ForegroundBox.Text), Background = EmptyToNull(BackgroundBox.Text),
             ShellIntegration = ShellIntegrationBox.IsChecked == true, EnvironmentVariables = environment,
         };

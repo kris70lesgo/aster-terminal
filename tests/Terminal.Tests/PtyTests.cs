@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Aster.Sessions;
 using Aster.Sessions.Protocols;
+using Aster.Sessions.ShellIntegration;
 using Devolutions.Terminal.Connection;
 using Devolutions.Terminal.Core;
 
@@ -56,6 +57,11 @@ public sealed class PtyTests
             WorkingDirectory = Path.GetTempPath(), Columns = 80, Rows = 24,
             EnvironmentVariables = new Dictionary<string, string?> { ["TERM"] = "xterm-256color", ["PS1"] = "" }
         });
+        public Task StartProfile(TerminalProfile profile)
+        {
+            var settings = ShellIntegrationLauncher.Prepare(profile, false);
+            return Connection.StartAsync(new TerminalLaunchOptions { CommandLine = settings.Commandline, WorkingDirectory = profile.Directory, Columns = 80, Rows = 24, EnvironmentVariables = settings.Environment });
+        }
         public string Snapshot() { lock (_gate) return TerminalBufferExport.ToPlainText(Engine.CreateSnapshot(true).Buffer); }
         public async Task Until(Func<bool> condition)
         {
@@ -109,6 +115,62 @@ public sealed class PtyTests
         Assert.False(first.Connection.IsRunning);
         Assert.True(second.Connection.IsRunning);
         Assert.Throws<ArgumentException>(() => Process.GetProcessById(helperPid));
+    }
+
+    [UnixFact]
+    public async Task UpstreamBashIntegrationTracksCommandStatusDirectoryAndMarks()
+    {
+        await VerifyIntegration("/bin/bash");
+    }
+
+    [UnixFact]
+    public async Task UpstreamZshIntegrationTracksCommandStatusDirectoryAndMarks()
+    {
+        if (!File.Exists("/bin/zsh")) Assert.Skip("zsh is not installed on this Unix runner.");
+        await VerifyIntegration("/bin/zsh");
+    }
+
+    private static async Task VerifyIntegration(string executable)
+    {
+        var directory = Path.Combine(Path.GetTempPath(), "aster-hooks-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(directory);
+        try
+        {
+            await using var shell = new Shell();
+            await shell.StartProfile(new TerminalProfile("hooks", executable + " -i", directory)
+            {
+                ShellIntegration = true, EnvironmentVariables = new() { ["HOME"] = directory, ["ZDOTDIR"] = directory, ["PS1"] = "$ " }
+            });
+            await shell.Until(() => shell.Engine.WorkingDirectory?.Contains(directory, StringComparison.Ordinal) == true);
+            shell.Connection.Write("false\n");
+            await shell.Until(() => shell.Engine.LastCommandExitCode == 1);
+            var child = Path.Combine(directory, "child"); Directory.CreateDirectory(child);
+            shell.Connection.Write("cd child\n");
+            await shell.Until(() => shell.Engine.WorkingDirectory?.Contains("child", StringComparison.Ordinal) == true);
+            Assert.NotEmpty(TerminalBufferExport.GetShellCommandRanges(shell.Engine.CreateSnapshot(true).Buffer));
+            shell.Connection.Write("exit\n"); await shell.Exit.Task.WaitAsync(TimeSpan.FromSeconds(10));
+        }
+        finally { Directory.Delete(directory, true); }
+    }
+
+    [UnixFact]
+    public async Task OrdinaryTmuxAndLessReturnToInteractiveShell()
+    {
+        await using var shell = new Shell(); await shell.Start();
+        var socket = "aster-acceptance-" + Guid.NewGuid().ToString("N");
+        // A unique server avoids touching the user's existing tmux sessions.
+        shell.Connection.Write($"tmux -L {socket} -f /dev/null new-session -s acceptance\n");
+        await shell.Until(() => shell.Engine.AlternateBufferActive);
+        shell.Connection.Write("printf '%s%s\\n' '__TMUX_' 'OK__'\n");
+        await shell.Until(() => shell.Snapshot().Contains("__TMUX_OK__"));
+        shell.Connection.Resize(105, 35); shell.Connection.Write("exit\n");
+        await shell.Until(() => !shell.Engine.AlternateBufferActive);
+        shell.Connection.Write("printf 'FIRST\\nSECOND\\n' | less -+F\n");
+        await shell.Until(() => shell.Engine.AlternateBufferActive);
+        await shell.Until(() => shell.Snapshot().Contains("SECOND"));
+        shell.Connection.Write("q"); await shell.Until(() => !shell.Engine.AlternateBufferActive);
+        shell.Connection.Write("printf '%s%s\\n' '__AFTER_' 'COMPAT__'\n");
+        await shell.Until(() => shell.Output.Contains("__AFTER_COMPAT__"));
     }
 
     [UnixFact]

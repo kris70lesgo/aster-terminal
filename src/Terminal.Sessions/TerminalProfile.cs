@@ -4,6 +4,14 @@ namespace Aster.Sessions;
 
 public sealed record TerminalProfile(string Name, string Command, string Directory, double FontSize = 14)
 {
+    public string Id { get; init; } = Guid.NewGuid().ToString("N");
+    public string FontFamily { get; init; } = "Cascadia Mono";
+    public int HistorySize { get; init; } = 10000;
+    public string CursorShape { get; init; } = "filledBox";
+    public string? Foreground { get; init; }
+    public string? Background { get; init; }
+    public bool ShellIntegration { get; init; }
+    public Dictionary<string, string> EnvironmentVariables { get; init; } = new();
     public static TerminalProfile Default()
     {
         var shell = OperatingSystem.IsWindows() ? "powershell.exe" : Environment.GetEnvironmentVariable("SHELL");
@@ -14,24 +22,46 @@ public sealed record TerminalProfile(string Name, string Command, string Directo
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
     }
 
-    public ProfileSettings ToControlProfile() => new()
+    public ProfileSettings ToControlProfile(bool light = false) => new()
     {
         Name = Name,
         Commandline = Command,
         StartingDirectory = Directory,
         FontSize = FontSize,
-        FontFace = "Cascadia Mono",
-        Foreground = "#D8DEE9",
-        Background = "#171A20",
-        CursorColor = "#D8DEE9",
-        SelectionBackground = "#3B506B",
+        FontFace = FontFamily,
+        Foreground = Foreground ?? (light ? "#243044" : "#D8DEE9"),
+        Background = Background ?? (light ? "#FAFAFC" : "#171A20"),
+        CursorColor = light ? "#243044" : "#D8DEE9",
+        SelectionBackground = light ? "#B9D3EF" : "#3B506B",
         Padding = "10",
-        CursorShape = "filledBox",
-        HistorySize = 10000,
+        CursorShape = CursorShape,
+        HistorySize = HistorySize,
         CloseOnExit = CloseOnExitMode.Never,
         AllowVtClipboardWrite = false,
         AllowOscNotifications = false,
         ReloadEnvironmentVariables = false,
-        Environment = new() { ["TERM"] = "xterm-256color", ["COLORTERM"] = "truecolor" }
+        Environment = BuildEnvironment()
     };
+
+    private Dictionary<string, string?> BuildEnvironment()
+    {
+        var result = EnvironmentVariables.ToDictionary(pair => pair.Key, pair => (string?)pair.Value);
+        result["TERM"] = "xterm-256color";
+        result["COLORTERM"] = "truecolor";
+        result["TERM_PROGRAM"] = "AsterTerminal";
+        return result;
+    }
+
+    public static IReadOnlyList<TerminalProfile> InstalledDefaults()
+    {
+        var primary = Default();
+        var profiles = new List<TerminalProfile> { primary };
+        if (OperatingSystem.IsWindows())
+            profiles.Add(new("Command Prompt", "cmd.exe", primary.Directory));
+        else
+            foreach (var shell in new[] { "/bin/bash", "/bin/zsh", "/bin/sh", "/usr/bin/fish" })
+                if (File.Exists(shell) && !primary.Command.StartsWith($"'{shell}'", StringComparison.Ordinal))
+                    profiles.Add(new(Path.GetFileName(shell), $"'{shell}' -l", primary.Directory));
+        return profiles;
+    }
 }

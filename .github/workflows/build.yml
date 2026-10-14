@@ -4,23 +4,53 @@ permissions:
   contents: read
 jobs:
   acceptance:
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-14]
+        include:
+          - os: ubuntu-24.04
+            rid: linux-x64
+          - os: windows-latest
+            rid: win-x64
+          - os: macos-14
+            rid: osx-arm64
     runs-on: ${{ matrix.os }}
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      ASTER_DOTNET: dotnet
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.402'
+      - name: Linux runtime and terminal applications
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y build-essential libfontconfig1 libx11-6 libice6 libsm6 libxrender1 libxi6 libxrandr2 libxcursor1 libegl1 libgl1 xvfb xauth vim tmux less zsh
+      - name: macOS terminal applications
+        if: runner.os == 'macOS'
+        run: HOMEBREW_NO_AUTO_UPDATE=1 brew install tmux
       - run: dotnet restore Aster.slnx --locked-mode
       - run: dotnet build Aster.slnx -c Release --no-restore
       - run: dotnet test Aster.slnx -c Release --no-build --logger "trx;LogFileName=acceptance.trx" --results-directory artifacts/tests
+      - name: Native Linux package acceptance
+        if: runner.os == 'Linux'
+        run: xvfb-run -a python3 scripts/package.py --rid ${{ matrix.rid }} --smoke
+      - name: Native Windows/macOS package acceptance
+        if: runner.os != 'Linux'
+        run: python scripts/package.py --rid ${{ matrix.rid }} --smoke
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: acceptance-${{ matrix.os }}
-          path: artifacts/tests
+          name: evidence-${{ matrix.rid }}
+          path: |
+            artifacts/tests
+            artifacts/packages/${{ matrix.rid }}/native-smoke
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: package-${{ matrix.rid }}
+          path: |
+            artifacts/packages/*.zip
+            artifacts/packages/*.tar.gz
+            artifacts/packages/*.sha256

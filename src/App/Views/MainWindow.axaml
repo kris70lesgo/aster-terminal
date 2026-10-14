@@ -1,25 +1,45 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="Aster.App.Views.MainWindow" Title="Aster Terminal"
-        Width="1080" Height="680" MinWidth="560" MinHeight="320"
-        Background="#171A20">
-  <Grid RowDefinitions="Auto,Auto,*,Auto">
-    <Border Background="#22262D" Padding="8,6">
+        Width="1080" Height="680" MinWidth="620" MinHeight="320" Background="{DynamicResource WindowBackground}">
+  <Grid RowDefinitions="Auto,Auto,Auto,*,Auto">
+    <Menu Background="{DynamicResource ChromeBackground}">
+      <MenuItem Header="_File">
+        <MenuItem Header="New tab" Click="NewTabClicked" /><MenuItem Header="New window" Click="NewWindowClicked" />
+        <MenuItem x:Name="ProfilesMenu" Header="New tab with profile" /><Separator />
+        <MenuItem Header="Close pane" Click="ClosePaneClicked" /><MenuItem Header="Close tab" Click="CloseTabClicked" />
+        <MenuItem Header="Save scrollback…" Click="SaveBufferClicked" /><Separator />
+        <MenuItem Header="Preferences…" Click="PreferencesClicked" /><MenuItem Header="Quit" Click="QuitClicked" />
+      </MenuItem>
+      <MenuItem Header="_Edit">
+        <MenuItem Header="Copy" Click="CopyClicked" /><MenuItem Header="Paste" Click="PasteClicked" />
+        <MenuItem Header="Select all" Click="SelectAllClicked" /><Separator />
+        <MenuItem Header="Find…" Click="FindClicked" /><MenuItem Header="Clear scrollback" Click="ClearBufferClicked" />
+      </MenuItem>
+      <MenuItem Header="_Session">
+        <MenuItem Header="Split right" Click="SplitRightClicked" /><MenuItem Header="Split below" Click="SplitBelowClicked" />
+        <MenuItem Header="Zoom active pane" Click="ZoomPaneClicked" /><MenuItem Header="Next pane" Click="NextPaneClicked" />
+        <MenuItem Header="Next tab" Click="NextTabClicked" /><MenuItem Header="Rename tab…" Click="RenameClicked" />
+        <MenuItem Header="Open quickly…" Click="OpenQuicklyClicked" /><Separator />
+        <MenuItem Header="Add command mark" Click="AddMarkClicked" /><MenuItem Header="Previous mark" Click="PreviousMarkClicked" />
+        <MenuItem Header="Next mark" Click="NextMarkClicked" />
+      </MenuItem>
+      <MenuItem Header="_View">
+        <MenuItem Header="Larger font" Click="LargerFontClicked" /><MenuItem Header="Smaller font" Click="SmallerFontClicked" />
+        <MenuItem Header="Reset font size" Click="ResetFontClicked" /><MenuItem Header="Toggle full screen" Click="FullScreenClicked" />
+        <MenuItem Header="Dark theme" Click="DarkThemeClicked" /><MenuItem Header="Light theme" Click="LightThemeClicked" />
+      </MenuItem>
+      <MenuItem Header="_Help"><MenuItem Header="About Aster Terminal" Click="AboutClicked" /></MenuItem>
+    </Menu>
+    <Border Grid.Row="1" Background="{DynamicResource ChromeBackground}" Padding="8,5">
       <DockPanel LastChildFill="False">
         <StackPanel Orientation="Horizontal" Spacing="5">
-          <Button Content="New tab" Click="NewTabClicked" ToolTip.Tip="⌘T / Ctrl+Shift+T" />
-          <Button Content="Split right" Click="SplitRightClicked" ToolTip.Tip="⌘D / Ctrl+Shift+D" />
-          <Button Content="Split below" Click="SplitBelowClicked" ToolTip.Tip="⌘Shift+D / Ctrl+Shift+Alt+D" />
-          <Button Content="Find" Click="FindClicked" ToolTip.Tip="⌘F / Ctrl+Shift+F" />
+          <Button Content="New tab" Click="NewTabClicked" /><Button Content="Split right" Click="SplitRightClicked" />
+          <Button Content="Split below" Click="SplitBelowClicked" /><Button Content="Find" Click="FindClicked" />
         </StackPanel>
-        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="5">
-          <Button Content="Copy" Click="CopyClicked" />
-          <Button Content="Paste" Click="PasteClicked" />
-          <Button Content="Close pane" Click="ClosePaneClicked" ToolTip.Tip="⌘W / Ctrl+Shift+W" />
-        </StackPanel>
+        <Button DockPanel.Dock="Right" Content="Preferences" Click="PreferencesClicked" />
       </DockPanel>
     </Border>
-    <Border x:Name="SearchBar" Grid.Row="1" IsVisible="False" Background="#282D35" Padding="8,6">
+    <Border x:Name="SearchBar" Grid.Row="2" IsVisible="False" Background="{DynamicResource ChromeBackground}" Padding="8,6">
       <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
         <TextBox x:Name="SearchBox" PlaceholderText="Search active terminal scrollback" KeyDown="SearchKeyDown" />
         <Button Grid.Column="1" Content="Previous" Click="PreviousClicked" Margin="6,0,0,0" />
@@ -28,9 +48,9 @@
         <Button Grid.Column="4" Content="Done" Click="DoneClicked" />
       </Grid>
     </Border>
-    <TabControl x:Name="Tabs" Grid.Row="2" SelectionChanged="TabChanged" />
-    <Border Grid.Row="3" Background="#22262D" Padding="10,5">
-      <TextBlock x:Name="WindowStatus" FontSize="12" Foreground="#B5BEC9" Text="Starting local shell…" />
+    <TabControl x:Name="Tabs" Grid.Row="3" SelectionChanged="TabChanged" />
+    <Border Grid.Row="4" Background="{DynamicResource ChromeBackground}" Padding="10,5">
+      <TextBlock x:Name="WindowStatus" FontSize="12" Foreground="{DynamicResource MutedForeground}" Text="Starting local shell…" />
     </Border>
   </Grid>
 </Window>

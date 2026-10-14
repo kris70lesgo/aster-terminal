@@ -21,7 +21,7 @@ public static class DesktopTestApplication
         .UseSkia().UseHeadless(new AvaloniaHeadlessPlatformOptions { UseHeadlessDrawing = false });
 }
 
-public sealed class DesktopTests
+public sealed partial class DesktopTests
 {
     private static void SendKey(Window window, Key key, RawInputModifiers modifiers = RawInputModifiers.None)
     {

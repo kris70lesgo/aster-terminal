@@ -1,6 +1,22 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Aster.App.App" Name="Aster Terminal" RequestedThemeVariant="Dark">
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Dark">
+          <SolidColorBrush x:Key="WindowBackground">#171A20</SolidColorBrush>
+          <SolidColorBrush x:Key="ChromeBackground">#22262D</SolidColorBrush>
+          <SolidColorBrush x:Key="MutedForeground">#B5BEC9</SolidColorBrush>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Light">
+          <SolidColorBrush x:Key="WindowBackground">#FAFAFC</SolidColorBrush>
+          <SolidColorBrush x:Key="ChromeBackground">#E9EDF3</SolidColorBrush>
+          <SolidColorBrush x:Key="MutedForeground">#455368</SolidColorBrush>
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+    </ResourceDictionary>
+  </Application.Resources>
   <Application.Styles>
     <FluentTheme />
     <Style Selector="Button">

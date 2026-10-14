@@ -26,7 +26,7 @@ jobs:
           dotnet-version: '10.0.402'
       - name: Linux runtime and terminal applications
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y build-essential libfontconfig1 libx11-6 libice6 libsm6 libxrender1 libxi6 libxrandr2 libxcursor1 libegl1 libgl1 xvfb xauth vim tmux less zsh
+        run: sudo apt-get update && sudo apt-get install -y build-essential libfontconfig1 fonts-noto-cjk libx11-6 libice6 libsm6 libxrender1 libxi6 libxrandr2 libxcursor1 libegl1 libgl1 xvfb xauth vim tmux less zsh
       - name: macOS terminal applications
         if: runner.os == 'macOS'
         run: HOMEBREW_NO_AUTO_UPDATE=1 brew install tmux

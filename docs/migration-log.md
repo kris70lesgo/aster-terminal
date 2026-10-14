@@ -152,3 +152,11 @@ Release verification follow-ups:
   input, resize, replay/continuing output, renders and cleanup. Versioned
   evidence is retained under `docs/evidence/v0.3.0-{rid}`. Mac deep/strict signing
   metadata survives archive extraction and the extracted app passes acceptance.
+
+- Audited all downloaded CI archives against their shipped SHA-256 files and
+  required GPL/dependency/runtime/font notices; no user settings, shell history
+  or test assemblies ship. Linux executable modes are intact. Mac extraction
+  and installed deep/strict signatures pass; bundle version 0.3.0 is installed
+  at `/Applications/Aster Terminal.app`. The previous bundle is backed up in
+  ignored artifacts. Existing sessions/settings are preserved; local relaunch
+  waits for an active display. Audit hashes are in `evidence/payload-v0.3.0.json`.

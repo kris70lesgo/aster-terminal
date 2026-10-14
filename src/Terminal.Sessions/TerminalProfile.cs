@@ -1,4 +1,6 @@
 using Devolutions.Terminal.Settings;
+using Devolutions.Terminal.Core;
+using System.Globalization;
 
 namespace Aster.Sessions;
 
@@ -50,6 +52,20 @@ public sealed record TerminalProfile(string Name, string Command, string Directo
         result["COLORTERM"] = "truecolor";
         result["TERM_PROGRAM"] = "AsterTerminal";
         return result;
+    }
+
+    public ColorScheme ResolveColors(bool light)
+    {
+        static uint Color(string text) => 0xFF000000u | uint.Parse(text.AsSpan(1), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+        return new ColorScheme
+        {
+            Name = light ? "Aster Light" : "Aster Dark",
+            Foreground = Color(Foreground ?? (light ? "#243044" : "#D8DEE9")),
+            Background = Color(Background ?? (light ? "#FAFAFC" : "#171A20")),
+            Cursor = light ? 0xFF243044 : 0xFFD8DEE9,
+            SelectionBackground = light ? 0xFFB9D3EF : 0xFF3B506B,
+            Table = ColorScheme.FromName("Campbell").Table.ToArray()
+        };
     }
 
     public static IReadOnlyList<TerminalProfile> InstalledDefaults()

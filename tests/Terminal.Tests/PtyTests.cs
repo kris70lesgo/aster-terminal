@@ -137,7 +137,7 @@ public sealed class PtyTests
         try
         {
             await using var shell = new Shell();
-            await shell.StartProfile(new TerminalProfile("hooks", executable + " -i", directory)
+            await shell.StartProfile(new TerminalProfile("hooks", executable + (executable.EndsWith("zsh", StringComparison.Ordinal) ? " -d -i" : " -i"), directory)
             {
                 ShellIntegration = true, EnvironmentVariables = new() { ["HOME"] = directory, ["ZDOTDIR"] = directory, ["PS1"] = "$ " }
             });

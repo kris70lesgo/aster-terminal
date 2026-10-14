@@ -64,6 +64,7 @@ public sealed class TerminalPane : Border
             var columns = Math.Max(2, (int)((Bounds.Width - 20) / cell.Width));
             var rows = Math.Max(2, (int)((Bounds.Height - 40) / cell.Height));
             await Terminal.StartAsync(settings, columns, rows);
+            Terminal.Engine.Scheme = Profile.ResolveColors(_light);
             _status.Text = $"{Profile.Name} · {columns} × {rows}";
             Terminal.Focus();
         }
@@ -78,7 +79,12 @@ public sealed class TerminalPane : Border
     {
         Profile = profile; _light = light;
         Terminal.InteractionOptions = Terminal.InteractionOptions with { CopyOnSelect = copyOnSelect };
-        if (_close is null && Terminal.Profile is not null) Terminal.ApplyAppearance(profile.ToControlProfile(light));
+        if (_close is null && Terminal.Profile is not null)
+        {
+            Terminal.Engine.Scheme = profile.ResolveColors(light);
+            Terminal.ApplyAppearance(profile.ToControlProfile(light));
+            Terminal.ResetFontSize();
+        }
         _status.Foreground = Brush.Parse(light ? "#455368" : "#B5BEC9");
     }
     public Task CloseAsync() => _close ??= CloseCoreAsync();

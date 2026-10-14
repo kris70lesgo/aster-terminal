@@ -117,6 +117,11 @@ public partial class MainWindow : Window
         workspace.Panes.Add(pane);
         pane.Activated += (_, _) => Activate(workspace, pane);
         pane.TitleChanged += (_, _) => { if (workspace.Active == pane) UpdateTitle(workspace); };
+        pane.Terminal.ViewportChanged += (_, _) =>
+        {
+            if (Current == workspace && workspace.Active == pane)
+                WindowStatus.Text = $"{pane.Profile.Name} · {workspace.Panes.Count} pane(s) · {pane.Terminal.Engine.Columns} × {pane.Terminal.Engine.Rows}";
+        };
         return pane;
     }
     private void Activate(Workspace workspace, TerminalPane pane)

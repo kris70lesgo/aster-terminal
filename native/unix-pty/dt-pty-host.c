@@ -20,6 +20,40 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#if defined(__linux__)
+#include <dirent.h>
+#endif
+
+/* Aster modification, 2026-10-14: close every process in our Linux PTY
+ * session. Interactive background jobs can have distinct process groups;
+ * signalling just the shell's group leaves their slave descriptors open. */
+static void close_session(pid_t child) {
+#if defined(__linux__)
+    DIR *processes = opendir("/proc");
+    if (processes) {
+        struct dirent *entry;
+        while ((entry = readdir(processes)) != NULL) {
+            char *end;
+            long pid = strtol(entry->d_name, &end, 10);
+            if (pid <= 0 || *end != '\0') continue;
+            char path[128], status[4096];
+            snprintf(path, sizeof(path), "/proc/%ld/stat", pid);
+            FILE *file = fopen(path, "r");
+            if (!file) continue;
+            char *line = fgets(status, sizeof(status), file);
+            fclose(file);
+            if (!line) continue;
+            char *after_name = strrchr(status, ')');
+            char state;
+            int parent, group, session;
+            if (after_name && sscanf(after_name + 1, " %c %d %d %d", &state, &parent, &group, &session) == 4 && session == child)
+                kill((pid_t)pid, SIGHUP);
+        }
+        closedir(processes);
+    }
+#endif
+    kill(-child, SIGHUP);
+}
 
 static bool nonblocking(int fd) {
     int flags = fcntl(fd, F_GETFL);
@@ -155,7 +189,7 @@ int main(int argc, char **argv) {
             ssize_t count = read(STDIN_FILENO, input, capacity);
             if (count == 0) {
                 input_open = false;
-                kill(-child, SIGHUP);
+                close_session(child);
                 continue;
             }
 
@@ -210,7 +244,7 @@ int main(int argc, char **argv) {
                 }
             } else if (strcmp(header, "C") == 0) {
                 input_open = false;
-                kill(-child, SIGHUP);
+                close_session(child);
             }
         }
     }

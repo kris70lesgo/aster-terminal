@@ -21,12 +21,12 @@ public static partial class ShellIntegrationLauncher
         {
             settings.Environment["ASTER_USER_ZDOTDIR"] = profile.EnvironmentVariables.GetValueOrDefault("ZDOTDIR") ?? Environment.GetEnvironmentVariable("ZDOTDIR") ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             settings.Environment["ZDOTDIR"] = Path.Combine(root, "zsh");
-            settings.Commandline = Quote(shell) + (settings.Environment["ASTER_LOGIN_SHELL"] == "1" ? " -l -i" : " -i");
+            settings.Commandline = Quote(shell) + (profile.Command.Contains(" -d", StringComparison.Ordinal) ? " -d" : "") + (settings.Environment["ASTER_LOGIN_SHELL"] == "1" ? " -l -i" : " -i");
         }
         else settings.Commandline = Quote(shell) + " --rcfile " + Quote(Path.Combine(root, "aster.bash")) + " -i";
         return settings;
     }
     private static string Quote(string text) => "'" + text.Replace("'", "'\\''") + "'";
-    [GeneratedRegex("^\\s*(?:exec\\s+)?['\"]?(?<shell>(?:/[^'\"\\s]+/)?(?:bash|zsh))['\"]?(?:\\s+(?:-l|-i|-il|-li|--login))*\\s*$")]
+    [GeneratedRegex("^\\s*(?:exec\\s+)?['\"]?(?<shell>(?:/[^'\"\\s]+/)?(?:bash|zsh))['\"]?(?:\\s+(?:-l|-i|-d|-il|-li|--login))*\\s*$")]
     private static partial Regex LocalShell();
 }

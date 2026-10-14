@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-10-14T13:29:31.687994+00:00",
+  "os": "macOS 15.7.9",
+  "architecture": "Arm64",
+  "runtime": ".NET 10.0.13",
+  "scope": "Single warmed engine; 120x35, 10000-line bounded history. No PTY/GPU/desktop; not a comparative benchmark.",
+  "outputBytes": 3145728,
+  "outputMs": 700.4859,
+  "outputCpuMs": 751.092,
+  "outputMiBPerSecond": 4.282741451326857,
+  "historyLines": 9995,
+  "meanFullHistorySnapshotAndSearchMs": 157.280315,
+  "meanAlternatingResizeMs": 76.658732,
+  "workingSetBytes": 299712512,
+  "peakWorkingSetBytes": null
+}

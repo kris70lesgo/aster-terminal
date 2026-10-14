@@ -16,10 +16,10 @@ remains Milestone B. The README contains the mandatory public write-up.
    confirmation, focus/zoom, save scrollback, find, copy/paste, profiles, actual
    font/colour updates and dark/light/system themes. Preferences are transactional;
    malformed settings recover with preserved originals. Native rendered snapshots
-   cover initial shell, tabs, splits, search and preferences on three OSes in
-   0.2.0. The 0.3.0 interface removes permanent chrome, exports macOS commands
-   to the system menu and reorganizes compact settings. New native evidence
-   for replay and revised settings is pending final CI.
+   cover initial shell, tabs, splits, search, compact settings and replay on
+   three OSes in 0.3.0. The interface removes permanent chrome and exports
+   macOS commands to the system menu. Screen replay uses bounded portable
+   keyframes and an independent renderer; the live shell keeps running.
 3. **Cross-platform implementation:** one Avalonia/C# host; ConPTY for Windows
    cmd/PowerShell and a compiled MIT forkpty helper on macOS/Linux. All targeted
    packages launch and exercise their native backend on their own OS in CI.

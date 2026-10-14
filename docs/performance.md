@@ -1,5 +1,26 @@
 # Measured performance — 2026-10-14
 
+## Release 0.3.0
+
+Native final-package reports from run 38572021565, on each actual target OS.
+Each startup/resize is a single acceptance observation including routed input
+and polling; engine measurements are warmed, exclude GUI/PTY and use the same
+120×35 / 10k-history workload. Hardware/runner load differs; results are not ranked.
+
+| Host | Startup to shell | Grid resize | Initial working set | Engine output | Full history snapshot/search | Engine reflow |
+|---|---:|---:|---:|---:|---:|---:|
+
+| osx-arm64 | 1670.9 ms | 71.4 ms | 193.0 MiB | 4.28 MiB/s | 157.3 ms | 76.7 ms |
+| win-x64 | 1599.0 ms | 56.9 ms | 138.8 MiB | 3.20 MiB/s | 156.9 ms | 92.8 ms |
+| linux-x64 | 2567.6 ms | 80.2 ms | 207.9 MiB | 3.84 MiB/s | 144.7 ms | 72.4 ms |
+
+Raw JSON and scoped environments are in `evidence/v0.3.0-{rid}`. Native acceptance
+includes replay operation, but this does not measure replay recorder CPU under
+sustained output or guarantee a 16 MiB process working set. The replay byte
+budget estimates retained frame objects; the frame-count bound is also enforced.
+
+## Historical 0.2.0 local observation
+
 Local environment: Apple M5, arm64, macOS 26.7.2; self-contained Release binary,
 .NET 10.0.13/Avalonia 12.1.4. Raw JSON is in
 [evidence/release-macos](evidence/release-macos). This is a reproducible acceptance

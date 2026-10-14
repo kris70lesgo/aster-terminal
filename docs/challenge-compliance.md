@@ -9,7 +9,7 @@ Authority for every contest rule below: [official announcement, published 2026-0
 | Someone else's application may be ported if its licence permits | 2026-10-14 | VERIFIED; audit complete for reused subset | `licensing.md`: upstream COPY­ING grants GPLv2-or-later, full application effectively GPLv3. Aster uses GPL-3.0-or-later. |
 | Copyleft port cannot be closed source | 2026-10-14 | VERIFIED; compliant public GPL source | GPL source and notices in this repository; no closed-source distribution planned. |
 | Open-source entry: public GitHub repository with OSI-approved licence | 2026-10-14 | COMPLETE | Public https://github.com/kris70lesgo/aster-terminal; LICENSE, source, adapted scripts/helper and build scripts. Dependency notices/source map reviewed. |
-| Downloadable builds for each targeted platform | 2026-10-14 | COMPLETE | All native final-binary checks pass; self-contained macOS arm64/Windows x64/Linux x64 archives and SHA-256 are published at https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.2.0. test-matrix.md and ci-release.json record evidence. |
+| Downloadable builds for each targeted platform | 2026-10-14 | COMPLETE | All native final-binary checks pass; self-contained macOS arm64/Windows x64/Linux x64 archives and SHA-256 are published at https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.3.0. test-matrix.md and ci-v0.3.0.json record evidence. |
 | Before-and-after screenshots | 2026-10-14 | COMPLETE with limits | Original iTerm2 3.6.6 and native Aster initial/tabs/splits/search/preferences/dark/light captures under docs/evidence. Different version/profile/geometry explicitly disclosed; no pixel identity asserted. |
 | Mandatory short migration write-up covering actual costs, in README for open source | 2026-10-14 | COMPLETE | README contains migration write-up, decisions/problems and unmeasured cost declaration; migration-log/report/performance provide supporting detail. |
 | Five judging dimensions: migration difficulty/completeness, application quality, cross-platform implementation, engineering quality, usefulness of write-up | 2026-10-14 | VERIFIED; evidence mapped | `migration-report.md`, `test-matrix.md`, feature matrix. |
@@ -25,6 +25,8 @@ Reverify at architectural eligibility changes, major milestones, release-artifac
 
 Ambiguities: form-specific declarations/terms are UNVERIFIED; no official guarantee of acceptance for a subset rewrite. Unused iTerm2 submodules are not imported or asserted fully audited; current reused components have their own source/notice audit. Public source is published. Entrant/team declaration and form submission remain separate from completing the app; recheck rules immediately before submission.
 
-0.3.0 preparation recheck: the official announcement remains unchanged. New
-UI/replay source and local tests are complete; final native builds/evidence and
-publishing are pending. The published 0.2.0 remains downloadable meanwhile.
+0.3.0 milestone recheck: the official announcement remains unchanged. Public GPL
+source and final self-contained package checks pass on all three OSes in run
+38572021565. Versioned evidence includes minimal UI, settings and text replay.
+The update retains explicit advanced-parity/manual-test gaps. Entrant identity,
+form-only declarations and actual submission remain separate.

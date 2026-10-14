@@ -145,3 +145,10 @@ Release verification follow-ups:
 - Replay palette and text are captured under the same lock. Fixed timestamp
   clamping before eviction for a one-frame buffer. Cursor labels in Settings
   now read Block, Vertical bar and Underline; persisted values are unchanged.
+
+- Final code run `38572021565`, source `66aac10d85d4e80845944bfccded96ac0385cd99`:
+  macOS/Linux 34 passed + 2 Windows-only skips; Windows 29 passed + 7 Unix-only
+  skips; all 36 total / 0 failures. Every native final package passed shell,
+  input, resize, replay/continuing output, renders and cleanup. Versioned
+  evidence is retained under `docs/evidence/v0.3.0-{rid}`. Mac deep/strict signing
+  metadata survives archive extraction and the extracted app passes acceptance.

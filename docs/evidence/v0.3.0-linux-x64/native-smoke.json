@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "os": "Ubuntu 24.04.5 LTS",
+  "architecture": "X64",
+  "timestamp": "2026-10-14T13:29:25.4554611+00:00",
+  "startupToShellOutputMs": 2567.6072,
+  "nativeResizeToGridMs": 80.1726,
+  "initialWorkingSetBytes": 218025984,
+  "measurementScope": "One native acceptance launch; startup includes sentinel command/polling. Resize includes dispatcher/polling. Not a cold-start or comparative benchmark.",
+  "checks": [
+    "Native window, PTY and routed text/Enter \u2192 real shell output",
+    "Native layout resized terminal grid",
+    "Native screen replay seeks historical text while the real shell continues; independent read-only renderer",
+    "Dark and light native render snapshots",
+    "Native shortcuts create tabs, nested panes and search",
+    "Native preferences render",
+    "Window/session cleanup completed"
+  ],
+  "error": null
+}

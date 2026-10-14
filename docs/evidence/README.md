@@ -1,6 +1,19 @@
 # Screenshot and runtime evidence
 
-## Release captures
+## Current release 0.3.0
+
+`v0.3.0-osx-arm64`, `v0.3.0-win-x64` and `v0.3.0-linux-x64` contain native
+client renders, JSON reports, engine benchmarks and the 36-test TRX suite from
+final run 38572021565/build 66aac10d85d4e80845944bfccded96ac0385cd99. Captures
+cover minimal single session, tabs/splits/find, dark/light themes, profile
+General/Text/Colours, application General, and historical text replay. Live
+shell output continues while replay seeks an independent historical screen.
+`ci-v0.3.0.json` records the passing jobs. macOS menu configuration is tested;
+these client captures exclude the system titlebar/menu bar and do not prove
+physical menu clicks. The local final GUI launch was blocked by zero active
+displays/CoreVideo -6661; final native Mac evidence comes from the hosted Mac.
+
+## Historical release 0.2.0 captures
 
 `release-macos/` contains the final local self-contained package's native rendered
 windows on macOS 26.7.2/Apple M5: dark/light initial shell, tabs, nested horizontal/

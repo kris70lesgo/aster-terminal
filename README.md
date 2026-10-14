@@ -127,8 +127,8 @@ GitHub Actions and local terminal tools. [Performance evidence](docs/performance
 is measured on a defined workload and makes no superiority claim.
 
 ![Original iTerm2 3.6.6 startup reference](docs/evidence/iterm2-original.png)
-![Aster native dark theme with actual shell output](docs/evidence/release-macos/dark.png)
-![Aster native preferences](docs/evidence/release-macos/preferences.png)
+![Aster native dark theme with actual shell output](docs/evidence/v0.3.0-osx-arm64/dark.png)
+![Aster native preferences](docs/evidence/v0.3.0-osx-arm64/preferences.png)
 
 Original screenshot © George Nachman/contributors; installed iTerm2 3.6.6 is a
 different version and geometry from the source audit. Captures show actual

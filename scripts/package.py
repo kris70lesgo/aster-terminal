@@ -44,6 +44,7 @@ if rid.startswith("osx"):
     with (contents / "Info.plist").open("wb") as stream:
         plistlib.dump({"CFBundleName": "Aster Terminal", "CFBundleDisplayName": "Aster Terminal", "CFBundleExecutable": "Aster.Terminal", "CFBundleIdentifier": "io.asterterminal.desktop", "CFBundlePackageType": "APPL", "CFBundleShortVersionString": version, "CFBundleVersion": version, "NSHighResolutionCapable": True, "LSMinimumSystemVersion": "15.0"}, stream)
     subprocess.run(["codesign", "--force", "--deep", "--sign", "-", str(bundle)], check=True)
+    subprocess.run(["codesign", "--verify", "--deep", "--strict", str(bundle)], check=True)
     package_root = bundle
     executable = contents / "MacOS/Aster.Terminal"
 else:
@@ -57,7 +58,20 @@ if args.smoke:
     subprocess.run([str(executable), "--smoke-test", "--smoke-report", str(out / "native-smoke")], cwd=root, check=True, timeout=90)
     report = json.loads((out / "native-smoke/native-smoke.json").read_text())
     if not report["passed"]: raise SystemExit("Final package failed native acceptance.")
-if rid.startswith("linux"):
+if rid.startswith("osx"):
+    artifact = out.parent / (name + ".zip")
+    # Managed .NET assemblies carry macOS signatures in extended attributes.
+    # A plain ZIP loses them; ditto retains them in AppleDouble metadata.
+    if artifact.exists(): artifact.unlink()
+    subprocess.run(["ditto", "-c", "-k", "--sequesterRsrc", "--keepParent", str(package_root), str(artifact)], check=True)
+    roundtrip = out / "archive-check"
+    if roundtrip.exists(): shutil.rmtree(roundtrip)
+    subprocess.run(["ditto", "-x", "-k", str(artifact), str(roundtrip)], check=True)
+    extracted = roundtrip / package_root.name
+    subprocess.run(["codesign", "--verify", "--deep", "--strict", str(extracted)], check=True)
+    if args.smoke:
+        subprocess.run([str(extracted / "Contents/MacOS/Aster.Terminal"), "--smoke-test", "--smoke-report", str(out / "native-smoke")], cwd=root, check=True, timeout=90)
+elif rid.startswith("linux"):
     artifact = out.parent / (name + ".tar.gz")
     with tarfile.open(artifact, "w:gz") as archive: archive.add(package_root, arcname=name)
 else:

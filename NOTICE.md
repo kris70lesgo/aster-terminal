@@ -39,3 +39,7 @@ https://github.com/kris70lesgo/aster-terminal
 The explicit tmux control client studies iTerm2 TmuxGateway.m and
 VT100TmuxParser.m at the same pinned source. Independent C# implementation;
 no tmux source or executable is included.
+
+Native summon hotkeys study iTerm2 iTermCarbonHotKeyController.m at the pinned
+source and platform SDK APIs. Independent C# registration/window lifecycle code;
+no upstream hotkey classes or application assets are copied.

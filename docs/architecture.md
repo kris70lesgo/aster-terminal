@@ -146,3 +146,30 @@ must exactly partition its parent. Commands have a 10-second deadline; a timeout
 detaches the client to preserve response correlation. Input is bounded at 4 MiB
 and 128 queued chunks; byte commands are at most 512 bytes each. Unknown
 notifications are ignored. No new package/native dependency is introduced.
+
+## Opt-in system-wide summon window, 0.6.0 work
+
+A fixed Control+Alt+Space chord registers with Carbon on macOS, RegisterHotKey
+on a dedicated Windows message thread, or checked XCB passive grabs on X11.
+There is no raw keyboard hook or arbitrary keystroke recording. Registration is
+opt-in, can fail visibly on a collision, and is disposed on disable/exit. Linux
+Wayland is explicitly unsupported until a portal-based implementation exists.
+X11 handles Caps Lock / conventional Num Lock and suppresses autorepeat pairs.
+
+The app service posts a registered chord to the UI dispatcher. It lazily creates
+a dedicated MainWindow with real hosted sessions. An active window hides on the
+next chord, preserving its panes/processes; another chord shows and focuses it.
+Normal close still confirms/cleans up, and the next summon creates a fresh shell.
+This window neither adopts detached normal sessions nor overwrites the normal
+saved layout. Opened initialization runs once, including across hide/show.
+Disabling the binding makes a hidden window accessible; an explicit Shell menu
+also shows it. Upstream per-profile gestures, animated dropdown geometry and
+complete multi-monitor/sleep/keyboard-layout parity remain separate work.
+
+Native acceptance registers/unregisters real backends. macOS checks Carbon event
+dispatch without changing the user's foreground. CI alone may launch an isolated
+peer and inject a physical chord for cross-application summon, retained-variable
+hide/show and cleanup. macOS Post Event access is preflighted; denied access is
+reported as a skipped physical-focus test, never an invented pass. A separate
+manual fixture can wait for a human physical chord without injecting one. Linux
+CI uses Xvfb/Openbox and xdotool; these are test tools, not bundled runtime assets.

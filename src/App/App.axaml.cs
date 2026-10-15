@@ -15,7 +15,8 @@ public sealed class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            if (desktop.Args?.Contains("--tmux-smoke") == true) desktop.MainWindow = TmuxSmoke.Configure(desktop, desktop.Args);
+            if (desktop.Args?.Any(arg => arg is "--hotkey-smoke" or "--hotkey-peer" or "--hotkey-manual") == true) desktop.MainWindow = HotkeySmoke.Configure(desktop, desktop.Args);
+            else if (desktop.Args?.Contains("--tmux-smoke") == true) desktop.MainWindow = TmuxSmoke.Configure(desktop, desktop.Args);
             else if (desktop.Args?.Any(arg => arg is "--recovery-start" or "--recovery-resume") == true) desktop.MainWindow = RecoverySmoke.Configure(desktop, desktop.Args);
             else if (desktop.Args?.Contains("--smoke-test") == true)
             {
@@ -33,7 +34,12 @@ public sealed class App : Application
                 desktop.MainWindow = window;
                 window.Opened += async (_, _) => await DesktopSmoke.Run(window, desktop, Path.GetFullPath(destination), store);
             }
-            else desktop.MainWindow = new MainWindow();
+            else
+            {
+                var store = new SettingsStore(); var window = new MainWindow(store); desktop.MainWindow = window;
+                try { HotkeyWindowService.Shared.Configure(store); } catch (IOException error) { window.ReportApplicationError(error.Message); }
+            }
+            desktop.Exit += (_, _) => HotkeyWindowService.Shared.Dispose();
         }
         base.OnFrameworkInitializationCompleted();
     }

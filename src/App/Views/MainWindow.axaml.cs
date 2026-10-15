@@ -33,9 +33,10 @@ public partial class MainWindow : Window
     private readonly SettingsStore? _store;
     private readonly SessionCatalog? _sessions;
     private bool _detachOnClose;
+    private readonly bool _hotkeyWindow;
     private AppSettings _settings;
     private Dictionary<string, KeyGesture> _shortcuts = [];
-    private bool _closing, _closed;
+    private bool _closing, _closed, _initialized;
     private PreferencesWindow? _preferences;
     private static NativeMenu? _applicationMenu;
     private static NativeMenuItem? _applicationPreferences;
@@ -46,20 +47,20 @@ public partial class MainWindow : Window
     private TerminalProfile DefaultProfile => _settings.Profiles.FirstOrDefault(p => p.Id == _settings.DefaultProfileId) ?? _settings.Profiles[0];
 
     public MainWindow() : this(new SettingsStore()) { }
-    public MainWindow(SettingsStore store) : this(store.Settings, store) { }
+    public MainWindow(SettingsStore store, bool hotkeyWindow = false) : this(store.Settings, store, hotkeyWindow) { }
     public MainWindow(TerminalProfile profile) : this(new AppSettings
     {
         Profiles = [profile], DefaultProfileId = profile.Id, RestoreLayout = false, ConfirmClose = false
     }, null) { }
-    private MainWindow(AppSettings settings, SettingsStore? store)
+    private MainWindow(AppSettings settings, SettingsStore? store, bool hotkeyWindow = false)
     {
-        _settings = settings; _store = store;
+        _settings = settings; _store = store; _hotkeyWindow = hotkeyWindow;
         _sessions = store is null ? null : new SessionCatalog(Path.Combine(Path.GetDirectoryName(store.Path)!, "sessions"));
         InitializeComponent();
         MainMenu.IsVisible = !OperatingSystem.IsMacOS();
         Width = Math.Clamp(settings.WindowWidth, 620, 2400); Height = Math.Clamp(settings.WindowHeight, 320, 1800);
         ApplySettings(settings);
-        Opened += (_, _) => Observe(ChangeLayoutAsync(InitializeSessionsAsync));
+        Opened += (_, _) => { if (_initialized) return; _initialized = true; Observe(ChangeLayoutAsync(InitializeSessionsAsync)); };
         Closing += OnClosing;
         ActualThemeVariantChanged += (_, _) => ApplyPaneAppearance();
         AddHandler(KeyDownEvent, OnShortcut, RoutingStrategies.Tunnel);
@@ -101,6 +102,7 @@ public partial class MainWindow : Window
 
     private async Task InitializeSessionsAsync()
     {
+        if (_hotkeyWindow) { await NewTabCoreAsync(DefaultProfile); return; }
         if (_settings.KeepSessionsAlive && _sessions is not null)
         {
             var recoverable = await _sessions.DetachedAsync();
@@ -339,11 +341,13 @@ public partial class MainWindow : Window
         if (_closed) return;
         e.Cancel = true; if (_closing) return;
         _closing = true;
+        if (_hotkeyWindow && !IsVisible && _settings.ConfirmClose && !_detachOnClose && _workspaces.SelectMany(w => w.Panes).Any(p => p.Terminal.IsRunning))
+        { ShowActivated = false; Show(); }
         if (!await ConfirmCloseAsync(_workspaces.SelectMany(w => w.Panes))) { _closing = false; return; }
         await _layoutMutation.WaitAsync();
         try
         {
-            if (_store is not null && _store.LoadWarning is null)
+            if (!_hotkeyWindow && _store is not null && _store.LoadWarning is null)
                 try { _store.Save(_store.Settings with { Layout = CaptureLayout(), WindowWidth = Width, WindowHeight = Height }); }
                 catch (Exception error) { Console.Error.WriteLine("Settings save failed: " + error.Message); }
             foreach (var pane in _workspaces.SelectMany(w => w.Panes).ToArray()) { if (_detachOnClose) pane.DetachOnClose(); await pane.CloseAsync(); }
@@ -403,6 +407,7 @@ public partial class MainWindow : Window
             if (_preferences.Result is { } settings)
             {
                 ApplySettings(settings);
+                try { HotkeyWindowService.Shared.Configure(_store); } catch (IOException error) { ShowError(error.Message); }
                 if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
                     foreach (var window in lifetime.Windows.OfType<MainWindow>().Where(w => w != this && w._store?.Path == _store.Path)) window.ApplySettings(settings);
             }
@@ -440,6 +445,7 @@ public partial class MainWindow : Window
         ApplySettings(settings);
     }
     private async void Observe(Task task) { try { await task; } catch (Exception error) { ShowError(error.Message); } }
+    internal void ReportApplicationError(string text) => ShowError(text);
     private void ShowSearch() { SearchBar.IsVisible = true; SearchBox.Focus(); }
     private void HideSearch() { SearchBar.IsVisible = false; Active?.Terminal.Search.Clear(); Active?.Terminal.SetSearchHighlights([]); Active?.Terminal.Focus(); }
     private void Search(bool previous)
@@ -561,6 +567,13 @@ public partial class MainWindow : Window
             var profile = _settings.Profiles.FirstOrDefault(p => p.Id == session.ProfileId) ?? DefaultProfile with { Name = session.Name };
             Observe(ChangeLayoutAsync(() => NewTabCoreAsync(profile, session)));
         }
+    }
+    private void ShowHotkeyWindowClicked(object? sender, RoutedEventArgs e)
+    {
+        if (_store is null) return;
+        try { HotkeyWindowService.Shared.Configure(_store); }
+        catch (IOException error) { ShowError(error.Message); }
+        HotkeyWindowService.Shared.Show();
     }
     private async void AttachTmuxClicked(object? sender, RoutedEventArgs e)
     {

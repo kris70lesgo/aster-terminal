@@ -31,7 +31,7 @@ shutil.copy2(root / "NOTICE.md", payload / "NOTICE.md")
 shutil.copy2(root / "docs/licensing.md", payload / "LICENSING.md")
 shutil.copy2(root / "docs/dependency-source-map.md", payload / "DEPENDENCY-SOURCES.md")
 for unwanted in payload.glob("ShellIntegration/zsh/.zsh_history*"): unwanted.unlink()
-version = "0.5.0"
+version = "0.6.0"
 name = f"aster-terminal-{version}-{rid}"
 package_root = payload
 if rid.startswith("osx"):
@@ -58,6 +58,11 @@ if args.smoke:
     subprocess.run([str(executable), "--smoke-test", "--smoke-report", str(out / "native-smoke")], cwd=root, check=True, timeout=90)
     report = json.loads((out / "native-smoke/native-smoke.json").read_text())
     if not report["passed"]: raise SystemExit("Final package failed native acceptance.")
+    hotkey_report = smoke_directory / "hotkey"
+    hotkey_args = [str(executable), "--hotkey-smoke", "--hotkey-report", str(hotkey_report)]
+    if os.environ.get("CI") == "true": hotkey_args.append("--hotkey-global-test")
+    subprocess.run(hotkey_args, cwd=root, check=True, timeout=90)
+    if not json.loads((hotkey_report / "hotkey.json").read_text())["passed"]: raise SystemExit("Native hotkey acceptance failed.")
     recovery = smoke_directory / "recovery"
     before = subprocess.run([str(executable), "--recovery-start", "--recovery-report", str(recovery)], cwd=root, timeout=60)
     if before.returncode != 73: raise SystemExit("Native recovery fixture did not exit abruptly as expected.")

@@ -25,11 +25,12 @@ public sealed partial class DesktopTests
             dialog.FindControl<TextBox>("ProfileName")!.Text = "Configured profile";
             dialog.FindControl<NumericUpDown>("FontSizeBox")!.Value = 18;
             dialog.FindControl<ComboBox>("ThemeBox")!.SelectedItem = "Light";
+            dialog.FindControl<CheckBox>("HotkeyWindowBox")!.IsChecked = true;
             var save = dialog.GetVisualDescendants().OfType<Button>().Single(b => Equals(b.Content, "Save preferences"));
             save.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             Assert.NotNull(dialog.Result); Assert.False(dialog.IsVisible);
             Assert.Equal("Configured profile", new SettingsStore(store.Path).Settings.Profiles[0].Name);
-            Assert.Equal("Light", store.Settings.Theme);
+            Assert.Equal("Light", store.Settings.Theme); Assert.True(store.Settings.HotkeyWindowEnabled);
             var cancel = new PreferencesWindow(store); cancel.Show(); cancel.FindControl<TextBox>("ProfileName")!.Text = "Not saved"; cancel.Close();
             Assert.Equal("Configured profile", store.Settings.Profiles[0].Name);
             var invalid = new PreferencesWindow(store); invalid.Show(); invalid.FindControl<TextBox>("ForegroundBox")!.Text = "broken";

@@ -16,6 +16,7 @@
         <MenuItem x:Name="ProfilesMenu" Header="New tab with profile" /><Separator />
         <MenuItem Header="Close pane" Click="ClosePaneClicked" /><MenuItem Header="Close tab" Click="CloseTabClicked" />
         <MenuItem Header="Detach and close window" Click="DetachWindowClicked" /><MenuItem Header="Recover live sessions…" Click="RecoverSessionsClicked" />
+        <MenuItem Header="Show hotkey window" Click="ShowHotkeyWindowClicked" />
         <MenuItem Header="Attach tmux session…" Click="AttachTmuxClicked" />
         <MenuItem Header="Save scrollback…" Click="SaveBufferClicked" /><Separator />
         <MenuItem Header="Preferences…" Click="PreferencesClicked" /><MenuItem Header="Quit" Click="QuitClicked" />

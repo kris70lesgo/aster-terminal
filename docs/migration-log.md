@@ -377,3 +377,24 @@ versioned JSON/TRX/captures and CI provenance accompany the source. Performance
 reports distinguish UI-only working set from unmeasured process-tree memory.
 Automatic in-shell -CC, remote attach, Python API, global hotkeys and broader
 manual/platform/graphics parity remain explicit. No form submission is asserted.
+
+## 2026-10-15 — system-wide summon window work
+
+Studied pinned iTerm2 iTermCarbonHotKeyController.m and OS SDK headers / primary
+Win32/XCB documentation. Added opt-in native registrations with explicit errors
+and cleanup, one lazy dedicated real-terminal window, settings persistence and
+a manual show command. No package is added; system libraries remain OS-provided.
+Wayland, custom global gestures and upstream profile/dropdown styling are outside
+this first subset. Terminal output cannot enable or invoke the global shortcut.
+
+The real-shell hide/show test caught Opened firing again after a hidden window
+returned: startup was replacing its session. Initialization is now guarded once
+per MainWindow. Tests verify the same pane/session and shell variable, disabled-
+binding accessibility, normal close/recreation, preserved normal layouts and
+visible registration failure. Native backend/physical-focus verification pending.
+
+Local full hotkey-work suite: 57 passed, 2 Windows-only skips, zero failures /
+59 total. Native macOS 26.7.2 at 2× scaling registers/unregisters the actual
+Carbon backend and sends a typed native hotkey event through its dispatcher to
+the checked callback. No local global physical key was injected and foreground
+was preserved. Actual cross-application focus remains pending CI/manual evidence.

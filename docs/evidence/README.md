@@ -79,3 +79,14 @@ image (a missing glyph box despite correct Unicode buffer cells). The native
 verification environment now installs fonts-noto-cjk; Linux installation guidance
 includes this font requirement. This is system font fallback, not a fabricated
 replacement in the screenshot.
+
+Version 0.5.0: `v0.5.0-{rid}` contains final combined CI test/native/recovery/tmux
+evidence from the source/run in ci-v0.5.0.json. Windows has no local tmux claim.
+`v0.5.0-macos-retina` repeats acceptance on the exact extracted/installed CI Mac
+archive at 2× scaling. All published new captures use isolated fixture settings
+and /bin/sh tmux panes; no personal shell startup captures are included. Earlier
+0.5.0 candidate grid/resize-loop/Windows failures remain separate and accurately
+scoped. The standalone `v0.5.0-tmux-local` is an earlier passing local candidate,
+not the final package provenance.
+
+Public TRX files normalize Windows CRLF line endings; test values are unchanged.

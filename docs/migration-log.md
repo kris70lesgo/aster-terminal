@@ -354,3 +354,26 @@ user shell startup files from published evidence. Final local native Retina acce
 
 The official challenge announcement was reread at this milestone on 2026-10-15
 (curl fallback after web-reader timeout); requirements remain unchanged.
+
+## 2026-10-15 — final 0.5.0 delivery verification
+
+Final source **96a90b4f3fdf45f78d108cc6b4dba5768285e103**, three-target CI
+**38752301646**: macOS/Linux 55 pass + 2 Windows-only skips; Windows 48 pass +
+9 Unix-only skips; all 57 total, zero failures. Every extracted native package
+passes baseline and abrupt crash/reopen with the same shell/process; Unix also
+passes real tmux native splits, input/Unicode, kernel dimensions, exact grid fit
+and same-shell reattachment. Native menu/keyboard close/find share handlers.
+
+All final archives passed SHA-256 comparison, ZIP CRC/TAR inventory, complete
+notice/source/font checks, absence of user settings/history/test assemblies,
+and Linux executable permissions. The exact CI Mac archive was extracted with
+ditto, signature-verified before/after staged installation, version-checked and
+tested again at 2× Retina: baseline, abrupt UI exit/reopen and native tmux all
+pass. Prior installed bundle is backed up; existing user processes/settings
+are untouched. Public captures use isolated fixture settings and plain shells.
+
+Final payload hashes and signature/installation scope are in payload-v0.5.0.json;
+versioned JSON/TRX/captures and CI provenance accompany the source. Performance
+reports distinguish UI-only working set from unmeasured process-tree memory.
+Automatic in-shell -CC, remote attach, Python API, global hotkeys and broader
+manual/platform/graphics parity remain explicit. No form submission is asserted.

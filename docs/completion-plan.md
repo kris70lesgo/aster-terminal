@@ -27,3 +27,11 @@ bounded line history and navigation, verified inline image subsets, and a fix
 for incoming output moving a scrolled view. The 48-test suite and expanded
 native smoke cover these additions. Full trigger action/plist compatibility,
 reconnect, native tmux -CC, Python API and global hotkeys remain separate targets.
+
+0.5.0 continues with authenticated current-user session hosts (same live shell
+after UI loss/explicit detach) and native explicit local Unix tmux control
+attach. Final three-OS package acceptance includes crash/reopen; Unix native
+checks additionally verify independent nested tmux panes, kernel dimensions,
+exact grid fit and same-shell reattachment. Automatic in-shell -CC, remote
+attach, complete terminal checkpoint/DVR compatibility, Python API and global
+hotkeys remain separate long-term targets.

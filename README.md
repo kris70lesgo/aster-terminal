@@ -2,10 +2,10 @@
 
 A real C#/Avalonia terminal bringing a documented subset of **iTerm2** workflows
 to macOS, Windows and Linux. Independent project; no iTerm2 endorsement.
-GPL-3.0-or-later. **Version 0.4.0 is the competition release; full iTerm2 parity
+GPL-3.0-or-later. **Version 0.5.0 is the competition release; full iTerm2 parity
 is a separate milestone.**
 
-[Download v0.4.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.4.0)
+[Download v0.5.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.5.0)
 · [Runtime evidence](docs/test-matrix.md) · [Feature boundaries](docs/iterm2-feature-parity.md)
 
 ## Install
@@ -15,9 +15,9 @@ folders; no SDK, account or subscription is required.
 
 | Download | Run | Platform scope |
 |---|---|---|
-| `aster-terminal-0.4.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26 |
-| `aster-terminal-0.4.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
-| `aster-terminal-0.4.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
+| `aster-terminal-0.5.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26 |
+| `aster-terminal-0.5.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
+| `aster-terminal-0.5.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
 
 Extract the Mac ZIP with Finder/Archive Utility (or `ditto`) to preserve signing
 metadata. macOS is ad-hoc signed, without Developer ID notarization. For a downloaded copy,
@@ -39,8 +39,12 @@ Each pane starts an independent local shell: `$SHELL` on Unix, PowerShell on
 Windows. Shell → New tab with profile selects another installed shell, including
 Command Prompt. Preferences configures profiles, command/cwd/environment, fonts,
 colours, cursor, history, theme, close confirmation and shortcuts. Settings save
-atomically with backup recovery. Reopening saved tabs/splits **starts fresh shells**;
-processes do not survive quitting the app.
+atomically with backup recovery. Saved layouts start fresh shells. With live
+recovery enabled (the default), separate local hosts keep actual shell processes
+alive across UI loss; startup reconnects detached sessions. Shell → Detach and
+close window preserves them intentionally. Normal pane/window close terminates
+them. Settings → General can disable hosting for new panes. Host/OS termination
+is not survived; an 8 MiB in-memory journal has explicit text-checkpoint limits.
 
 | Action | macOS | Windows/Linux |
 |---|---|---|
@@ -80,6 +84,14 @@ it. Shells keep running. Recording stops and history clears when disabled in
 Settings → General or when a pane closes. Text, Unicode, colours, grid dimensions
 and cursor position/visibility are covered; images and binary iTerm2 DVR files
 are not. See the [architecture](docs/architecture.md) for capture and budget limits.
+
+On macOS/Linux with tmux installed, create a session (for example,
+`tmux new-session -d -s work`), then choose Shell → Attach tmux session and enter
+`work`. Its windows and panes appear as native controls. The tmux menu creates
+windows/splits, closes panes, finds text and detaches; common tab/split/copy/paste/
+find/close shortcuts work. Closing the control window detaches while tmux keeps
+the shells. This is explicit local `-C` control attach; automatic in-shell `-CC`,
+SSH/WSL attach and complete historical VT/graphics hydration remain unfinished.
 
 Find uses Enter/Shift+Enter and Escape. Enable command marks in a bash or zsh
 profile to load the bundled original shell integration; user startup files are
@@ -124,7 +136,10 @@ This is a behavior migration, not a literal translation of the Metal renderer.
 Practical problems included a missing Unix helper in the NuGet package, an
 Avalonia Headless/xUnit version mismatch, Linux background jobs retaining the PTY,
 font/colour settings that the control did not apply automatically, and renderer
-disposal racing a queued draw. Each was reproduced and repaired. The hosted
+disposal racing a queued draw. Recovery exposed ConPTY terminating a live shell
+when frontend detach cancelled an accepted write; host-lifetime input fixed it.
+Native tmux required byte-preserving parsing, ordered server-owned grids and
+correct pixel padding/divider budgets. Each was reproduced and repaired. The hosted
 pipeline runs real-process tests and launches the final package on all three OSes;
 it verifies more than compilation. Tests cover UTF-8/VT state, malformed output,
 profiles/recovery, clipboard/search, independent panes, full-screen vim/tmux/less,
@@ -137,16 +152,17 @@ GitHub Actions and local terminal tools. [Performance evidence](docs/performance
 is measured on a defined workload and makes no superiority claim.
 
 ![Original iTerm2 3.6.6 startup reference](docs/evidence/iterm2-original.png)
-![Aster native dark theme with actual shell output](docs/evidence/v0.4.0-osx-arm64/dark.png)
-![Aster native profile output rules](docs/evidence/v0.4.0-osx-arm64/preferences-triggers.png)
-![Aster shell-generated inline graphics](docs/evidence/v0.4.0-osx-arm64/graphics.png)
+![Aster native dark theme with actual shell output](docs/evidence/v0.5.0-osx-arm64/dark.png)
+![Aster native profile output rules](docs/evidence/v0.5.0-osx-arm64/preferences-triggers.png)
+![Aster shell-generated inline graphics](docs/evidence/v0.5.0-osx-arm64/graphics.png)
+![Aster native tmux control panes](docs/evidence/v0.5.0-osx-arm64/tmux/tmux-splits.png)
 
 Original screenshot © George Nachman/contributors; installed iTerm2 3.6.6 is a
 different version and geometry from the source audit. Captures show actual
 applications. [Screenshot provenance](docs/evidence/README.md) distinguishes
 historical startup references from final native acceptance captures.
 
-Native tmux control mode, live process reconnection, complete iTerm2 DVR compatibility,
+Automatic in-shell tmux `-CC`, remote control attach, complete iTerm2 DVR compatibility,
 full trigger action/plist compatibility, Python API compatibility, global hotkey windows and complete graphics
 parity remain **Milestone B**, with individual statuses in the parity matrix.
 Physical IME/AltGr, native clipboard gestures, multi-monitor/DPI and live SSH

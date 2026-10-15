@@ -1,9 +1,10 @@
-# Migration report — competition release 0.4.0
+# Migration report — competition release 0.5.0
 
 Aster Terminal delivers the competition subset of an iTerm2 behavior migration:
 real local terminals, profiles, tabs, nested panes, search, themes, persisted
 configuration/layouts, original opt-in shell integration, bounded text-screen
-replay and safe profile output rules. Full upstream parity
+replay, safe profile output rules, live local shell recovery and explicit native
+Unix tmux control attach. Full upstream parity
 remains Milestone B. The README contains the mandatory public write-up.
 
 1. **Difficulty/completeness:** iTerm2 combines Objective-C/Swift VT state,
@@ -17,7 +18,7 @@ remains Milestone B. The README contains the mandatory public write-up.
    font/colour updates and dark/light/system themes. Preferences are transactional;
    malformed settings recover with preserved originals. Native rendered snapshots
    cover initial shell, tabs, splits, search, compact settings and replay on
-   three OSes in 0.4.0 (final run 38700844528). Local macOS acceptance also
+   three OSes in 0.5.0 (final combined provenance in test-matrix.md). Local macOS acceptance also
    passes at 2× Retina scaling after repairing historical viewer reflow. The interface removes permanent chrome and exports
    macOS commands to the system menu. Screen replay uses bounded portable
    keyframes and an independent renderer; the live shell keeps running. Profile
@@ -34,6 +35,10 @@ remains Milestone B. The README contains the mandatory public write-up.
    serialized layout changes, real child cleanup and final-binary smoke tests.
    Linux cleanup handles background process groups in the PTY's own session.
    Terminal controls detach and drain pending UI rendering before async disposal.
+   Current-user authenticated hosts preserve real shells across frontend loss;
+   accepted PTY input uses host lifetime to avoid killing ConPTY on detach.
+   Bounded tmux control framing preserves raw bytes between UTF-8 fragments;
+   server-owned grids and pixel sizing prevent fullscreen pane clipping.
    Test regressions exercise failures as well as success. Performance numbers
    describe actual workloads and expose the expense of full-history snapshots.
 5. **Usefulness/costs:** migration-log.md records concrete failures/repairs.
@@ -45,5 +50,5 @@ remains Milestone B. The README contains the mandatory public write-up.
 Milestone A release deliverables: source, runnable three-platform archives with
 checksums, before/after evidence, tests and write-up. Entrant declarations and
 contest form submission remain separate human steps; no submission is asserted.
-Milestone B includes reconnectable processes, native tmux -CC, full binary/image DVR compatibility,
+Milestone B includes automatic in-shell tmux -CC / remote attach, full binary/image DVR compatibility,
 full trigger action/plist compatibility, Python API, global hotkeys and broader graphics/compatibility coverage.

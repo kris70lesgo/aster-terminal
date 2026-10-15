@@ -1,20 +1,30 @@
-# Work in progress — recovery and explicit tmux attach, 0.5.0
+# Verification matrix — release 0.5.0, 2026-10-15
 
-Live recovery source **5e78e93e45f2536111cec7d1504cbf6dd1e8655a**, run
-[38749039608](https://github.com/kris70lesgo/aster-terminal/actions/runs/38749039608):
-all three target jobs pass tests and native crash/reopen acceptance. macOS/Linux
-52 pass + 2 skips; Windows 47 pass + 7 skips; 54 total. Local native Mac at 2×
-Retina verifies the actual same shell variable/Unix PID, metadata, input, resize
-and normal close cleanup. Failed Windows candidates and the host-lifetime input
-repair are retained in migration-log.md / ci-first-recovery-v0.5.0.json.
+Final source **96a90b4f3fdf45f78d108cc6b4dba5768285e103**, run
+[38752301646](https://github.com/kris70lesgo/aster-terminal/actions/runs/38752301646):
+macOS/Linux **55 passed + 2 Windows-only skips**; Windows **48 passed + 9
+Unix-only skips**; all **57 total, zero failures**. All three final packages
+pass native baseline and abrupt UI crash/reopen. Unix packages additionally
+pass native tmux control attach. Versioned reports/images/TRX are under
+`evidence/v0.5.0-{rid}`, with local installed Retina checks in
+`evidence/v0.5.0-macos-retina`; provenance is in `ci-v0.5.0.json`.
 
-New explicit Unix tmux control attach: local full suite **55 passed, 2
-Windows-only skips, zero failures / 57 total**. TmuxTests covers strict layouts,
-octal and split-UTF8 bytes, independent real panes, resize, new/close windows,
-Vim edit/return and live detach/reattach. TmuxDesktopTests covers native controls
-through actual layout changes. Native Retina acceptance additionally checks
-input, nested splits, stty dimensions, grid/cell fit and same-shell reattachment.
-Hosted native tmux and final combined package verification are pending.
+| New acceptance | Evidence |
+|---|---|
+| Actual live shell variable/process identity survives detach; exclusive owner and rejected token | HostedSessionTests |
+| Window detach/reopen recovers same pane; normal close terminates host/PTY | RecoveryDesktopTests |
+| Native abrupt UI exit/reopen retains actual shell variable, metadata and Unix PID; input/resize/cleanup | recovery/recovery.json and before/after.png on all three OSes |
+| Frame/grid bounds, journal compaction, cell pixel geometry and inline images | HostProtocolTests; baseline native graphics colours |
+| Strict tmux layouts, raw octal/split-UTF8 bytes, independent panes, resize/new/close, Vim edit/return and live reattach | TmuxTests on macOS/Linux; explicit Windows skips |
+| Real tmux native controls survive nested splits | TmuxDesktopTests |
+| Native tmux split/input/Unicode/kernel resize; exact grid fits without clipping; same-shell reattach | tmux/tmux.json and captures on macOS/Linux, local 2× Retina |
+
+Recovery bounds and text-checkpoint limits, and explicit local tmux `-C` scope,
+are in architecture.md. Automatic in-shell `-CC`, remote/WSL attach, complete
+checkpoint/DVR/graphics parity, Python API and global hotkeys remain unfinished.
+Physical IME/AltGr, native clipboard/mouse gestures, multi-monitor, Windows 11
+and Wayland retain explicit verification gaps. The failed Windows recovery and
+native tmux candidates are preserved in migration-log.md / evidence.
 
 ## Verification matrix — release 0.4.0, 2026-10-15
 

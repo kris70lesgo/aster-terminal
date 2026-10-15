@@ -1,5 +1,20 @@
 # Measured performance — 2026-10-15
 
+## Release 0.5.0
+
+Combined native-package evidence is under `evidence/v0.5.0-{rid}`. Each startup/
+resize observation includes real hosted-shell/input/polling; the UI process
+working set excludes the separate shell host, PTY helper and shell, so it is
+**not total application memory**. No comparative speed or memory claim is made.
+The warmed engine benchmark still excludes GUI/PTY/hosting. Detailed process-tree
+memory and recovery/long-soak performance remain unmeasured.
+
+| Host | Startup to shell | Grid resize | UI working set only | Engine output | Full history snapshot/search | Engine reflow |
+|---|---:|---:|---:|---:|---:|---:|
+| osx-arm64 | 2241.9 ms | 82.2 ms | 200.8 MiB | 3.79 MiB/s | 151.2 ms | 75.5 ms |
+| win-x64 | 1528.8 ms | 59.3 ms | 153.1 MiB | 4.64 MiB/s | 110.6 ms | 61.3 ms |
+| linux-x64 | 3208.9 ms | 50.9 ms | 224.0 MiB | 3.27 MiB/s | 139.5 ms | 73.0 ms |
+
 ## Release 0.4.0
 
 Final-package run 38700844528, each actual target OS. Single native startup/resize

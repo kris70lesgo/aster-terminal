@@ -2,11 +2,18 @@
 
 A real C#/Avalonia terminal bringing a documented subset of **iTerm2** workflows
 to macOS, Windows and Linux. Independent project; no iTerm2 endorsement.
-GPL-3.0-or-later. **Version 0.5.0 is the competition release; full iTerm2 parity
+GPL-3.0-or-later. **Version 0.6.0 is the competition release; full iTerm2 parity
 is a separate milestone.**
 
-[Download v0.5.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.5.0)
+[Download v0.6.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.6.0)
 · [Runtime evidence](docs/test-matrix.md) · [Feature boundaries](docs/iterm2-feature-parity.md)
+
+Enable the optional summon window in Preferences → General with
+**Ctrl+Alt+Space** (Control+Option+Space on macOS). The chord shows a dedicated
+terminal; pressing it while active hides it while its shell keeps running.
+Global summon/hide/show passes on macOS, Windows and Linux X11 in native CI.
+Wayland is unsupported; key conflicts are reported. A physical attempt on the
+local macOS 26 workstation was not detected and remains unverified.
 
 ## Install
 
@@ -15,9 +22,9 @@ folders; no SDK, account or subscription is required.
 
 | Download | Run | Platform scope |
 |---|---|---|
-| `aster-terminal-0.5.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26 |
-| `aster-terminal-0.5.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
-| `aster-terminal-0.5.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
+| `aster-terminal-0.6.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26 |
+| `aster-terminal-0.6.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
+| `aster-terminal-0.6.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
 
 Extract the Mac ZIP with Finder/Archive Utility (or `ditto`) to preserve signing
 metadata. macOS is ad-hoc signed, without Developer ID notarization. For a downloaded copy,
@@ -152,10 +159,10 @@ GitHub Actions and local terminal tools. [Performance evidence](docs/performance
 is measured on a defined workload and makes no superiority claim.
 
 ![Original iTerm2 3.6.6 startup reference](docs/evidence/iterm2-original.png)
-![Aster native dark theme with actual shell output](docs/evidence/v0.5.0-osx-arm64/dark.png)
-![Aster native profile output rules](docs/evidence/v0.5.0-osx-arm64/preferences-triggers.png)
-![Aster shell-generated inline graphics](docs/evidence/v0.5.0-osx-arm64/graphics.png)
-![Aster native tmux control panes](docs/evidence/v0.5.0-osx-arm64/tmux/tmux-splits.png)
+![Aster native dark theme with actual shell output](docs/evidence/v0.6.0-osx-arm64/dark.png)
+![Aster native profile output rules](docs/evidence/v0.6.0-osx-arm64/preferences-triggers.png)
+![Aster shell-generated inline graphics](docs/evidence/v0.6.0-osx-arm64/graphics.png)
+![Aster native tmux control panes](docs/evidence/v0.6.0-osx-arm64/tmux/tmux-splits.png)
 
 Original screenshot © George Nachman/contributors; installed iTerm2 3.6.6 is a
 different version and geometry from the source audit. Captures show actual
@@ -163,7 +170,7 @@ applications. [Screenshot provenance](docs/evidence/README.md) distinguishes
 historical startup references from final native acceptance captures.
 
 Automatic in-shell tmux `-CC`, remote control attach, complete iTerm2 DVR compatibility,
-full trigger action/plist compatibility, Python API compatibility, global hotkey windows and complete graphics
+full trigger action/plist compatibility, Python API compatibility, customizable hotkeys/Wayland support and complete graphics
 parity remain **Milestone B**, with individual statuses in the parity matrix.
 Physical IME/AltGr, native clipboard gestures, multi-monitor/DPI and live SSH
 coverage are still manual test gaps. A running dependency feature is not credited

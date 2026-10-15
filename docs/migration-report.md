@@ -1,4 +1,4 @@
-# Migration report — competition release 0.5.0
+# Migration report — competition release 0.6.0
 
 Aster Terminal delivers the competition subset of an iTerm2 behavior migration:
 real local terminals, profiles, tabs, nested panes, search, themes, persisted
@@ -51,4 +51,13 @@ Milestone A release deliverables: source, runnable three-platform archives with
 checksums, before/after evidence, tests and write-up. Entrant declarations and
 contest form submission remain separate human steps; no submission is asserted.
 Milestone B includes automatic in-shell tmux -CC / remote attach, full binary/image DVR compatibility,
-full trigger action/plist compatibility, Python API, global hotkeys and broader graphics/compatibility coverage.
+full trigger action/plist compatibility, Python API, configurable hotkeys/Wayland and broader graphics/compatibility coverage.
+
+0.6.0 adds an opt-in native global summon window: registered Carbon / Win32 /
+XCB chord, dedicated real terminal, retained shell through hide/show, visible
+conflicts and release on disable/exit. Final source c651f5b / run 38763544008
+passes all three native packages including another-process foreground injection.
+Local Retina package checks pass; the human chord attempt on macOS 26 remains
+unverified. Verification also found/fixed a detach-output disposal race that could
+end the supposedly persistent shell. The failure and 120-cycle regression evidence
+are retained in migration-log.md. No new runtime dependency was introduced.

@@ -1,0 +1,54 @@
+Test run for /Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:17.63]     Aster.Tests.HostedSessionTests.ExplicitDetachAcknowledgesLastQueuedInputBeforeReattachment [FAIL]
+  Failed Aster.Tests.HostedSessionTests.ExplicitDetachAcknowledgesLastQueuedInputBeforeReattachment [17 s]
+  Error Message:
+   System.TimeoutException : Last-input iteration 3, state=Failed; info=The operation was canceled.Attachment ended: writer=RanToCompletion; reader=RanToCompletion; reason=; failure=
+Attachment ended: writer=RanToCompletion; reader=WaitingForActivation; reason=; failure=
+Attachment ended: writer=RanToCompletion; reader=WaitingForActivation; reason=The 128-frame live output queue overflowed.; failure=
+Attachment ended: writer=RanToCompletion; reader=RanToCompletion; reason=The 128-frame live output queue overflowed.; failure=
+Session host PTY fault: System.ObjectDisposedException: The CancellationTokenSource has been disposed.
+   at System.Threading.CancellationTokenSource.Cancel()
+   at Aster.Sessions.Hosting.SessionHost.Publish(HostFrame frame) in /Users/agastya/Documents/ChatGPT/alvonia real/src/Terminal.Sessions/Hosting/SessionHost.cs:line 228
+   at Aster.Sessions.Hosting.SessionHost.<.ctor>b__14_0(Object _, ReadOnlyMemory`1 data) in /Users/agastya/Documents/ChatGPT/alvonia real/src/Terminal.Sessions/Hosting/SessionHost.cs:line 35
+   at Devolutions.Terminal.Connection.LinuxPtyConnection.ReadOutputAsync(Stream output, CancellationToken cancellationToken)
+Attachment ended: writer=Canceled; reader=WaitingForActivation; reason=The 128-frame live output queue overflowed.; failure=
+Session host PTY exit: reason=Disposed, code=137
+; fault=System.IO.EndOfStreamException: Unable to read beyond the end of the stream.
+   at System.IO.Stream.ReadAtLeastAsyncCore(Memory`1 buffer, Int32 minimumBytes, Boolean throwOnEndOfStream, CancellationToken cancellationToken)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at Aster.Sessions.Hosting.HostProtocol.Read(Stream stream, CancellationToken token) in /Users/agastya/Documents/ChatGPT/alvonia real/src/Terminal.Sessions/Hosting/HostProtocol.cs:line 50
+   at Aster.Sessions.Hosting.HostedConnection.ReadLoopAsync() in /Users/agastya/Documents/ChatGPT/alvonia real/src/Terminal.Sessions/Hosting/HostedConnection.cs:line 149: ASTER_READY> ASTER_LAST_INPUT=0
+ASTER_READY> printf '__LAST_INPUT__%s\n' "$ASTER_LAST_INPUT"
+__LAST_INPUT__0
+ASTER_READY> ASTER_LAST_INPUT=1
+ASTER_READY> printf '__LAST_INPUT__%s\n' "$ASTER_LAST_INPUT"
+__LAST_INPUT__1
+ASTER_READY> ASTER_LAST_INPUT=2
+ASTER_READY> printf '__LAST_INPUT__%s\n' "$ASTER_LAST_INPUT"
+__LAST_INPUT__2
+ASTER_READY> ASTER_LAST_INPUT=3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---- System.TimeoutException : Hosted session acceptance timed out.
+  Stack Trace:
+     at Aster.Tests.HostedSessionTests.ExplicitDetachAcknowledgesLastQueuedInputBeforeReattachment() in /Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/HostedSessionTests.cs:line 106
+   at Aster.Tests.HostedSessionTests.ExplicitDetachAcknowledgesLastQueuedInputBeforeReattachment() in /Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/HostedSessionTests.cs:line 113
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at Aster.Tests.HostedSessionTests.Until(Func`1 condition) in /Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/HostedSessionTests.cs:line 118
+   at Aster.Tests.HostedSessionTests.ExplicitDetachAcknowledgesLastQueuedInputBeforeReattachment() in /Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/HostedSessionTests.cs:line 101
+
+Failed!  - Failed:     1, Passed:     0, Skipped:     0, Total:     1, Duration: 17 s - Terminal.Tests.dll (net10.0)

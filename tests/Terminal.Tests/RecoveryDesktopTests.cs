@@ -42,7 +42,8 @@ public sealed partial class DesktopTests
             }
             var recovered = Panes(second)[0]; Assert.Equal(id, recovered.HostedSession!.Id); Assert.Equal(process, recovered.Terminal.ProcessMetadata);
             Command(recovered, OperatingSystem.IsWindows() ? "echo __WINDOW_RECOVERED__%ASTER_RECOVERY_VALUE%" : "printf '__WINDOW_RECOVERED__%s\\n' \"$ASTER_RECOVERY_VALUE\"");
-            await Until(() => Text(recovered).Contains("__WINDOW_RECOVERED__kept"));
+            try { await Until(() => Text(recovered).Contains("__WINDOW_RECOVERED__kept")); }
+            catch (TimeoutException error) { throw new TimeoutException($"Recovered shell did not confirm its value: state={recovered.Terminal.ConnectionState}; {Text(recovered)}", error); }
             second.Close(); await Until(() => !second.IsVisible && !recovered.Terminal.IsRunning);
             var catalog = new SessionCatalog(Path.Combine(directory, "sessions"));
             await Until(() => !File.Exists(catalog.FilePath(id)));

@@ -408,3 +408,62 @@ macOS to activate it. The CI-only peer helper now explicitly reactivates its
 own peer before the next injected chord. This is fixture focus preparation,
 not a removed assertion or a local foreground action. The failing report and
 run remain in hotkey-macos-peer-before-fix.json / ci-first-hotkey-v0.6.0.json.
+
+Second hotkey CI 38756865651: macOS and Windows pass all native/global checks.
+Linux also summons/focuses its terminal and executes the retained-variable
+command, but dash can print the next prompt immediately before its output when
+two queued commands are entered together. The fixture's exact-line assertion
+rejected `ASTER_READY> __HOTKEY_READY__retained` even though the expanded value
+was correct. It now checks the actual expanded sentinel without requiring a
+line-start position. That complete sentinel cannot come from the echoed input,
+which contains the unexpanded variable / printf placeholder. Session identity,
+retained variable, physical global focus and cleanup assertions remain intact.
+The failing JSON and actual native image are retained separately.
+
+Run 38758404103 passes all global-hotkey checks (including Linux), then Linux's
+subsequent crash/reopen fixture encounters the same queued-dash prompt prefix
+before its before-crash sentinel. The actual value is present; its strict
+line-start wait times out. Recovery fixture printf output now starts with an
+explicit newline, preserving its existing strict sentinel/PID assertions.
+The failed report remains in recovery-linux-prompt-before-fix.json. This change
+only delimits isolated fixture output; it does not change terminal behavior.
+
+## 2026-10-15 — detach output/disposal race found during 0.6.0 verification
+
+The Linux candidate run 38759175327 failed the real-shell window recovery test.
+An isolated immediate-input/detach/reattach regression also failed on this Mac.
+Opt-in temporary lifecycle tracing identified late PTY output reaching an already
+completed subscriber queue and calling Cancel on its disposed attachment source.
+That ObjectDisposedException escaped the output callback into the native adapter,
+which reported a PTY fault and shut down the host. The retained failing trace is
+`evidence/detach-disposal-before-fix.txt`; it contains only isolated fixture output.
+
+Attachment cleanup now removes both publish references under the same gate as
+PTY output, before completing the channel or disposing cancellation. Both reader
+and writer tasks are awaited even when one faults. Explicit detach additionally
+waits for a host acknowledgement after prior native input writes complete; the
+optional greeting capability preserves connection to older hosts. The regression
+performs eight immediate queued-input/detach/reattach cycles against one real
+shell and checks its expanded variable after each reconnect. Temporary trace-file
+support was removed after diagnosis. Local full suite passed 58 + 2 skips / 60;
+15 focused runs (120 immediate detach/reconnect cycles) also passed. Final
+native/three-OS checks are pending below.
+
+The local human hotkey attempt was not detected; its 180-second fixture expired.
+It is unverified, not a physical-focus pass. A later read-only macOS check reported
+secure event input disabled; that does not establish its state at the attempted
+keypress. Earlier CI global-key checks are recorded separately.
+
+## 2026-10-16 — 0.6.0 final package verification
+
+Source c651f5bad692a55f1fd36c27442e4aa5c2da1400 / run 38763544008 passes
+macOS/Linux 58 + 2 skips and Windows 51 + 9 skips, all 60 total and zero
+failures. Every self-contained package passes native baseline, abrupt UI
+crash/reopen and actual global chord with isolated peer foreground; Unix also
+passes tmux. Exact CI Mac archive was extracted with ditto, signature checked,
+installed and retested at 2× Retina. Native baseline/recovery/tmux/registration
+pass. Its human physical attempt remains unverified. Archive checksums, CRC/tar
+inventory, Linux executable modes, notices, absence of user/test payload and
+installed/extracted Mac signatures pass; payload-v0.6.0.json records hashes.
+Official challenge announcement reread at this milestone; requirements unchanged.
+Entrant declarations and form submission remain separate and unperformed.

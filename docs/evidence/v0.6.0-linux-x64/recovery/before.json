@@ -1,0 +1,12 @@
+{
+  "SessionId": "06baa6a4-7ccb-4eb9-9a17-a5eeef6e0575",
+  "Process": {
+    "SessionId": "cdac1e1c-10ce-45f7-8680-ed24b5b1bb9e",
+    "ProcessId": 5044,
+    "CommandLine": "export PS1=\u0027ASTER_READY\u003E \u0027; exec /bin/sh",
+    "WorkingDirectory": "/tmp/",
+    "StartedAt": "2026-10-15T15:50:57.6480642+00:00"
+  },
+  "StateDirectory": "/tmp/aster-native-recovery-4ba0e4934be74959aef8c9c671de1683",
+  "ShellPid": "5046"
+}

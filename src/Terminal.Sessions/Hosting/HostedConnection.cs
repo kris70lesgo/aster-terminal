@@ -16,10 +16,13 @@ public sealed class HostedConnection : IRestartableTerminalConnection
     private readonly SemaphoreSlim _send = new(1, 1);
     private readonly Channel<HostFrame> _input = Channel.CreateBounded<HostFrame>(128);
     private Task? _reader, _writer, _close;
-    private bool _attached, _detaching, _disposed;
+    private bool _attached, _detaching, _disposed, _supportsDetachAck;
+    private readonly TaskCompletionSource _detachAck = new(TaskCreationOptions.RunContinuationsAsynchronously);
     private long _queuedBytes;
     public HostedSession? Session { get; private set; }
     public bool WasRecovered { get; }
+    internal bool SupportsDetachAck => _supportsDetachAck;
+    internal bool DetachAcknowledged => _detachAck.Task.IsCompletedSuccessfully;
     public string? RecoveryNotice { get; private set; }
     public event EventHandler? Restoring;
     public event EventHandler<(int Columns, int Rows, int PixelWidth, int PixelHeight)>? GridChanged;
@@ -66,7 +69,7 @@ public sealed class HostedConnection : IRestartableTerminalConnection
             var ready = HostProtocol.Decode<HostReady>(frame.Data);
             if (ready.Error is not null) throw new IOException(ready.Error);
             ProcessMetadata = ready.Process ?? throw new IOException("The session host has no running process.");
-            _attached = true; Columns = ready.Columns; Rows = ready.Rows;
+            _attached = true; _supportsDetachAck = ready.SupportsDetachAck; Columns = ready.Columns; Rows = ready.Rows;
             if (ready.Checkpointed) RecoveryNotice = "Recovered the same live shell. Older display output exceeded the 8 MiB journal; only a text checkpoint and newer output were restored. Graphics and full prior terminal state may need a redraw.";
             Restoring?.Invoke(this, EventArgs.Empty);
             while (true)
@@ -144,7 +147,7 @@ public sealed class HostedConnection : IRestartableTerminalConnection
             while (!_lifetime.IsCancellationRequested)
             {
                 var frame = await HostProtocol.Read(_pipe!, _lifetime.Token); HandleFrame(frame);
-                if (frame.Kind == HostProtocol.Exit) return;
+                if (frame.Kind is HostProtocol.Exit or HostProtocol.Detached) return;
             }
         }
         catch (Exception error) when (error is IOException or OperationCanceledException or ObjectDisposedException)
@@ -157,6 +160,7 @@ public sealed class HostedConnection : IRestartableTerminalConnection
             case HostProtocol.Output: OutputReceived?.Invoke(this, frame.Data); break;
             case HostProtocol.Grid:
                 (Columns, Rows) = HostProtocol.ReadGrid(frame.Data); (_pixelWidth, _pixelHeight) = HostProtocol.ReadPixels(frame.Data); GridChanged?.Invoke(this, (Columns, Rows, _pixelWidth, _pixelHeight)); break;
+            case HostProtocol.Detached: _detachAck.TrySetResult(); break;
             case HostProtocol.Exit:
                 LastExitInfo = HostProtocol.Decode<TerminalExitInfo>(frame.Data); IsRunning = false; State = TerminalConnectionState.Closed;
                 Exited?.Invoke(this, LastExitInfo.ExitCode ?? 0); SessionExited?.Invoke(this, LastExitInfo); break;
@@ -178,7 +182,11 @@ public sealed class HostedConnection : IRestartableTerminalConnection
         var terminateSent = false;
         if (_attached && LastExitInfo is null && _pipe?.IsConnected == true)
         {
-            try { await SendAsync(_detaching ? HostProtocol.Detach : HostProtocol.Terminate, [], token).WaitAsync(TimeSpan.FromSeconds(5), token); terminateSent = !_detaching; }
+            try
+            {
+                await SendAsync(_detaching ? HostProtocol.Detach : HostProtocol.Terminate, [], token).WaitAsync(TimeSpan.FromSeconds(5), token); terminateSent = !_detaching;
+                if (_detaching && _supportsDetachAck) await _detachAck.Task.WaitAsync(TimeSpan.FromSeconds(5), token);
+            }
             catch (Exception error) when (error is IOException or OperationCanceledException or TimeoutException or ObjectDisposedException) { }
         }
         if (_attached && LastExitInfo is null && !_detaching && !terminateSent && Session is not null && File.Exists(_catalog.FilePath(Session.Id)))

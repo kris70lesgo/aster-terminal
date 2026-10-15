@@ -53,7 +53,7 @@ public static class RecoverySmoke
             if (!resume)
             {
                 Command(pane, OperatingSystem.IsWindows() ? "set ASTER_RECOVERY_VALUE=retained" : "ASTER_RECOVERY_VALUE=retained");
-                Command(pane, OperatingSystem.IsWindows() ? "echo __RECOVERY_BEFORE__%ASTER_RECOVERY_VALUE%" : "printf '__RECOVERY_BEFORE__%s__PID__%s\\n' \"$ASTER_RECOVERY_VALUE\" \"$$\"");
+                Command(pane, OperatingSystem.IsWindows() ? "echo __RECOVERY_BEFORE__%ASTER_RECOVERY_VALUE%" : "printf '\\n__RECOVERY_BEFORE__%s__PID__%s\\n' \"$ASTER_RECOVERY_VALUE\" \"$$\"");
                 await Until(() => Text(pane).Split('\n').Any(l => l.Trim().StartsWith("__RECOVERY_BEFORE__retained", StringComparison.Ordinal)));
                 var line = Text(pane).Split('\n').First(l => l.Trim().StartsWith("__RECOVERY_BEFORE__retained", StringComparison.Ordinal)).Trim();
                 var pid = OperatingSystem.IsWindows() ? pane.Terminal.ProcessMetadata!.ProcessId.ToString() : line.Split("__PID__")[1];
@@ -65,7 +65,7 @@ public static class RecoverySmoke
             }
             var before = JsonSerializer.Deserialize<Before>(File.ReadAllText(Path.Combine(report, "before.json")))!;
             if (pane.HostedSession?.Id != before.SessionId || pane.Terminal.ProcessMetadata != before.Process) throw new InvalidOperationException("Reopen launched a replacement process instead of recovering the live shell.");
-            Command(pane, OperatingSystem.IsWindows() ? "echo __RECOVERY_AFTER__%ASTER_RECOVERY_VALUE%" : "printf '__RECOVERY_AFTER__%s__PID__%s\\n' \"$ASTER_RECOVERY_VALUE\" \"$$\"");
+            Command(pane, OperatingSystem.IsWindows() ? "echo __RECOVERY_AFTER__%ASTER_RECOVERY_VALUE%" : "printf '\\n__RECOVERY_AFTER__%s__PID__%s\\n' \"$ASTER_RECOVERY_VALUE\" \"$$\"");
             await Until(() => Text(pane).Split('\n').Any(l => l.Trim().StartsWith("__RECOVERY_AFTER__retained", StringComparison.Ordinal)));
             var after = Text(pane).Split('\n').First(l => l.Trim().StartsWith("__RECOVERY_AFTER__retained", StringComparison.Ordinal)).Trim();
             if (!OperatingSystem.IsWindows() && after.Split("__PID__")[1] != before.ShellPid) throw new InvalidOperationException("Recovered shell PID changed.");

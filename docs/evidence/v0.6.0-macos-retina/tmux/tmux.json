@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "timestamp": "2026-10-15T18:54:31.391909+00:00",
+  "os": "macOS 26.7.2",
+  "renderScaling": 2,
+  "checks": [
+    "Native Avalonia panes mirror actual tmux nested splits; independent routed input and Unicode output",
+    "Native window resize reaches tmux PTYs and stty reports matching dimensions",
+    "Every native pane uses tmux\u0027s exact PTY grid and fits its cells without clipping",
+    "Closing the native control window detaches; a new native window recovers the same live shell variable"
+  ],
+  "expectedSize": "22 42",
+  "error": null
+}

@@ -82,7 +82,7 @@ public static class HotkeySmoke
             var pane = Pane(terminalWindow)!; var session = pane.HostedSession!.Id;
             Command(pane, OperatingSystem.IsWindows() ? "set ASTER_HOTKEY_VALUE=retained" : "ASTER_HOTKEY_VALUE=retained");
             Command(pane, OperatingSystem.IsWindows() ? "echo __HOTKEY_READY__%ASTER_HOTKEY_VALUE%" : "printf '__HOTKEY_READY__%s\\n' \"$ASTER_HOTKEY_VALUE\"");
-            await Until(() => Text(pane).Split('\n').Any(l => l.Trim() == "__HOTKEY_READY__retained"));
+            await Until(() => Text(pane).Contains("__HOTKEY_READY__retained", StringComparison.Ordinal));
             checks.Add(manual ? "Human physical shortcut summons and focuses the real terminal from another foreground application" : "Injected global chord summons and focuses a real terminal while the isolated peer process owns foreground focus");
             if (global)
             {
@@ -90,7 +90,7 @@ public static class HotkeySmoke
                 await FocusPeer(peer!); await InjectChord(); await Until(() => terminalWindow.IsVisible && terminalWindow.IsActive);
                 if (pane.HostedSession!.Id != session || Pane(terminalWindow) != pane) throw new InvalidOperationException("Summon replaced the existing pane/session.");
                 Command(pane, OperatingSystem.IsWindows() ? "echo __HOTKEY_AGAIN__%ASTER_HOTKEY_VALUE%" : "printf '__HOTKEY_AGAIN__%s\\n' \"$ASTER_HOTKEY_VALUE\"");
-                await Until(() => Text(pane).Split('\n').Any(l => l.Trim() == "__HOTKEY_AGAIN__retained"));
+                await Until(() => Text(pane).Contains("__HOTKEY_AGAIN__retained", StringComparison.Ordinal));
                 checks.Add("Global chord hides/summons the same live shell with retained variables and session identity");
             }
             await Task.Delay(150); Image(terminalWindow, Path.Combine(report, "hotkey-window.png"));

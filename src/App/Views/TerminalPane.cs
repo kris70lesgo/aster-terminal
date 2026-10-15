@@ -62,7 +62,7 @@ public sealed class TerminalPane : Border
         try
         {
             var settings = ShellIntegrationLauncher.Prepare(Profile, _light);
-            var cell = TermControl.MeasureCell(settings);
+            var cell = TermControl.MeasureCell(settings, TopLevel.GetTopLevel(this)?.RenderScaling ?? 1);
             var columns = Math.Max(2, (int)((Terminal.Bounds.Width - 10) / cell.Width));
             var rows = Math.Max(2, (int)((Terminal.Bounds.Height - 10) / cell.Height));
             await Terminal.StartAsync(settings, columns, rows);

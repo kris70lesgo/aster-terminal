@@ -177,3 +177,8 @@ its actual render scale and refreshes on open. Tests cover attempted layout/inpu
 mutation, and native acceptance resizes the viewer while asserting old text/grid
 remain intact. The first corrected local Retina package passes native replay,
 shell output, render and cleanup acceptance. Expanded final CI is pending.
+
+The initial PTY grid also measures glyphs at the actual window render scale,
+avoiding a 1× estimate before a Retina shell starts. Physical per-pid Cmd+T
+created exactly one tab, and native p/w/d/Return keys executed pwd in a normal
+local zsh session. Personal shell screenshots remain local, outside public evidence.

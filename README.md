@@ -2,10 +2,10 @@
 
 A real C#/Avalonia terminal bringing a documented subset of **iTerm2** workflows
 to macOS, Windows and Linux. Independent project; no iTerm2 endorsement.
-GPL-3.0-or-later. **Version 0.3.0 is the competition release; full iTerm2 parity
+GPL-3.0-or-later. **Version 0.4.0 is the competition release; full iTerm2 parity
 is a separate milestone.**
 
-[Download v0.3.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.3.0)
+[Download v0.4.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.4.0)
 · [Runtime evidence](docs/test-matrix.md) · [Feature boundaries](docs/iterm2-feature-parity.md)
 
 ## Install
@@ -15,9 +15,9 @@ folders; no SDK, account or subscription is required.
 
 | Download | Run | Platform scope |
 |---|---|---|
-| `aster-terminal-0.3.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26 |
-| `aster-terminal-0.3.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
-| `aster-terminal-0.3.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
+| `aster-terminal-0.4.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26 |
+| `aster-terminal-0.4.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
+| `aster-terminal-0.4.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
 
 Extract the Mac ZIP with Finder/Archive Utility (or `ditto`) to preserve signing
 metadata. macOS is ad-hoc signed, without Developer ID notarization. For a downloaded copy,
@@ -60,9 +60,19 @@ processes do not survive quitting the app.
 
 The UI keeps the terminal in focus: no permanent toolbar or pane footer, an
 automatically hidden single-tab strip, thin split dividers and native macOS
-menus. Settings divides profile editing into General, Text and Colours. General
+menus. Settings divides profile editing into General, Text, Colours and Triggers. General
 can enable the optional status bar or always-visible tab strip. Existing profiles
 keep their chosen fonts; fresh macOS profiles use Monaco 12.
+
+Profiles can highlight matching output or bookmark completed lines. Configure
+Settings → Profiles → Triggers; **Triggered lines** appears in a pane after a
+match and navigates back to its retained scrollback. Rules never execute host
+actions. See [output rules](docs/output-rules.md) for examples and bounds.
+Incoming output preserves a scrolled view until those lines leave history.
+
+Inline graphics acceptance covers sixel, iTerm2 OSC1337 PNG and direct-data kitty
+RGBA, including actual rendered pixels from real shell output on each target.
+Other image variants/animation and graphics in replay remain unverified.
 
 Screen replay stores a bounded history of visible text screens in memory. Open
 Session → Instant replay, then seek with the slider or arrow keys; Escape closes
@@ -127,8 +137,9 @@ GitHub Actions and local terminal tools. [Performance evidence](docs/performance
 is measured on a defined workload and makes no superiority claim.
 
 ![Original iTerm2 3.6.6 startup reference](docs/evidence/iterm2-original.png)
-![Aster native dark theme with actual shell output](docs/evidence/v0.3.0-osx-arm64/dark.png)
-![Aster native preferences](docs/evidence/v0.3.0-osx-arm64/preferences.png)
+![Aster native dark theme with actual shell output](docs/evidence/v0.4.0-osx-arm64/dark.png)
+![Aster native profile output rules](docs/evidence/v0.4.0-osx-arm64/preferences-triggers.png)
+![Aster shell-generated inline graphics](docs/evidence/v0.4.0-osx-arm64/graphics.png)
 
 Original screenshot © George Nachman/contributors; installed iTerm2 3.6.6 is a
 different version and geometry from the source audit. Captures show actual
@@ -136,7 +147,7 @@ applications. [Screenshot provenance](docs/evidence/README.md) distinguishes
 historical startup references from final native acceptance captures.
 
 Native tmux control mode, live process reconnection, complete iTerm2 DVR compatibility,
-triggers, Python API compatibility, global hotkey windows and complete graphics
+full trigger action/plist compatibility, Python API compatibility, global hotkey windows and complete graphics
 parity remain **Milestone B**, with individual statuses in the parity matrix.
 Physical IME/AltGr, native clipboard gestures, multi-monitor/DPI and live SSH
 coverage are still manual test gaps. A running dependency feature is not credited

@@ -1,6 +1,6 @@
 # Avalonia Port Challenge compliance
 
-Verified 2026-10-14; rechecked 2026-10-15 (Asia/Kolkata) for the final 0.3.0 milestone. This is a completed project checklist with explicit remaining entrant/form items, not a claim of submission.
+Verified 2026-10-14; rechecked 2026-10-15 (Asia/Kolkata) for the final 0.4.0 milestone. This is a completed project checklist with explicit remaining entrant/form items, not a claim of submission.
 Authority for every contest rule below: [official announcement, published 2026-08-28](https://avaloniaui.net/blog/avalonia-port-challenge).
 
 | Rule / requirement | Verification date | Status | Repository evidence / remaining work |
@@ -9,7 +9,7 @@ Authority for every contest rule below: [official announcement, published 2026-0
 | Someone else's application may be ported if its licence permits | 2026-10-14 | VERIFIED; audit complete for reused subset | `licensing.md`: upstream COPY­ING grants GPLv2-or-later, full application effectively GPLv3. Aster uses GPL-3.0-or-later. |
 | Copyleft port cannot be closed source | 2026-10-14 | VERIFIED; compliant public GPL source | GPL source and notices in this repository; no closed-source distribution planned. |
 | Open-source entry: public GitHub repository with OSI-approved licence | 2026-10-14 | COMPLETE | Public https://github.com/kris70lesgo/aster-terminal; LICENSE, source, adapted scripts/helper and build scripts. Dependency notices/source map reviewed. |
-| Downloadable builds for each targeted platform | 2026-10-14 | COMPLETE | All native final-binary checks pass; self-contained macOS arm64/Windows x64/Linux x64 archives and SHA-256 are published at https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.3.0. test-matrix.md and ci-v0.3.0.json record evidence. |
+| Downloadable builds for each targeted platform | 2026-10-14 | COMPLETE | All native final-binary checks pass; self-contained macOS arm64/Windows x64/Linux x64 archives and SHA-256 are published at https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.4.0. test-matrix.md and ci-v0.4.0.json record evidence. |
 | Before-and-after screenshots | 2026-10-14 | COMPLETE with limits | Original iTerm2 3.6.6 and native Aster initial/tabs/splits/search/preferences/dark/light captures under docs/evidence. Different version/profile/geometry explicitly disclosed; no pixel identity asserted. |
 | Mandatory short migration write-up covering actual costs, in README for open source | 2026-10-14 | COMPLETE | README contains migration write-up, decisions/problems and unmeasured cost declaration; migration-log/report/performance provide supporting detail. |
 | Five judging dimensions: migration difficulty/completeness, application quality, cross-platform implementation, engineering quality, usefulness of write-up | 2026-10-14 | VERIFIED; evidence mapped | `migration-report.md`, `test-matrix.md`, feature matrix. |
@@ -30,3 +30,11 @@ source and final self-contained package checks pass on all three OSes in run
 38693452893. Versioned evidence includes minimal UI, settings and text replay.
 The update retains explicit advanced-parity/manual-test gaps. Entrant identity,
 form-only declarations and actual submission remain separate.
+
+2026-10-15 0.4.0 milestone recheck: the same official announcement was read
+again and requirements are unchanged. Source 1cf4a149 / run 38700844528 adds
+safe output rules, verified inline graphics and anchored scrollback. All three
+native packages and the installed Retina Mac pass. SHA-256, executable modes,
+macOS extracted/installed signatures and complete notices were audited before
+publication. GPL corresponding source and evidence accompany the downloads;
+entrant declarations and submission remain unverified/unperformed.

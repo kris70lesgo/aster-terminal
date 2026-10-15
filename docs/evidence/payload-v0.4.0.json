@@ -1,0 +1,65 @@
+{
+  "timestamp": "2026-10-15T07:48:33.421667+00:00",
+  "buildSource": "1cf4a149b9f6c17df2b9e7ad4e4a591dc3d61851",
+  "ciRun": 38700844528,
+  "payloads": {
+    "osx-arm64": {
+      "archive": "aster-terminal-0.4.0-osx-arm64.zip",
+      "sha256": "4dd26c656ed9683c27ef20e7a161a7c50d5277293227c5d9b4bb21d4d33bccd9",
+      "requiredNoticesPresent": [
+        "Avalonia-MIT.txt",
+        "Cascadia-OFL.txt",
+        "DEPENDENCY-SOURCES.md",
+        "Devolutions-MIT.txt",
+        "Dotnet-MIT.txt",
+        "Dotnet-ThirdParty.txt",
+        "LICENSE",
+        "LICENSING.md",
+        "NOTICE.md",
+        "NotoEmoji-OFL.txt"
+      ],
+      "userSettingsHistoryAndTestPayloadAbsent": true,
+      "archiveExtractionSignatureVerified": true,
+      "installedPath": "/Applications/Aster Terminal.app",
+      "installedVersion": "0.4.0",
+      "installedSignatureVerified": true,
+      "localGuiRelaunch": "PASS exact installed CI archive, macOS 26.7.2, 2x Retina; evidence/v0.4.0-macos-retina/native-smoke.json"
+    },
+    "win-x64": {
+      "archive": "aster-terminal-0.4.0-win-x64.zip",
+      "sha256": "837367aa876c3ab270f884d8c65341e3c8c43a52d174e18e80387d18cb2bd0dc",
+      "requiredNoticesPresent": [
+        "Avalonia-MIT.txt",
+        "Cascadia-OFL.txt",
+        "ConPTY.txt",
+        "DEPENDENCY-SOURCES.md",
+        "Devolutions-MIT.txt",
+        "Dotnet-MIT.txt",
+        "Dotnet-ThirdParty.txt",
+        "LICENSE",
+        "LICENSING.md",
+        "NOTICE.md",
+        "NotoEmoji-OFL.txt"
+      ],
+      "userSettingsHistoryAndTestPayloadAbsent": true
+    },
+    "linux-x64": {
+      "archive": "aster-terminal-0.4.0-linux-x64.tar.gz",
+      "sha256": "a6cfc1fd3c0902e04d12673f6ddb2cc611cc2ee08056fb32553bff8ef1aa928c",
+      "requiredNoticesPresent": [
+        "Avalonia-MIT.txt",
+        "Cascadia-OFL.txt",
+        "DEPENDENCY-SOURCES.md",
+        "Devolutions-MIT.txt",
+        "Dotnet-MIT.txt",
+        "Dotnet-ThirdParty.txt",
+        "LICENSE",
+        "LICENSING.md",
+        "NOTICE.md",
+        "NotoEmoji-OFL.txt"
+      ],
+      "userSettingsHistoryAndTestPayloadAbsent": true,
+      "executablePermissionsPresent": true
+    }
+  }
+}

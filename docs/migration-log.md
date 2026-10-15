@@ -253,3 +253,19 @@ evaluation, keeping the first ordinary line eligible despite JIT/capture setup.
 Nonbacktracking regexes have a 100 ms timeout (including cold runner costs), with
 the following per-Feed work limited by the 25 ms budget. This is an execution
 policy repair, not a weakened Unicode assertion. The failure is retained in CI.
+
+Final 0.4.0 source **1cf4a149b9f6c17df2b9e7ad4e4a591dc3d61851**, CI
+**38700844528**: macOS/Linux 46 passed + 2 Windows-only skips; Windows 41 passed
++ 7 Unix-only skips; all 48 total, zero failures. All extracted native packages
+pass replay, real shell, input/resize, output rule, three inline image colour
+pixels, menus/settings/renders and cleanup. The final macOS CI archive is
+installed and passes the same acceptance on this Mac at 2× scaling (558.2 ms
+startup sentinel, 27.4 ms grid resize; single noncomparative observations).
+
+All downloaded archives passed CRC and SHA-256 comparison, notice/source/font
+inventory, absent personal settings/history/test-assembly checks and Linux
+executable modes. Mac ditto extraction/staging/installation passed deep/strict
+signature verification with the prior bundle backed up. Final hashes are in
+`evidence/payload-v0.4.0.json`. Versioned public evidence uses isolated fixtures;
+existing user sessions/settings are preserved. Source/evidence and all six
+archive/checksum assets accompany 0.4.0. Remaining advanced parity stays explicit.

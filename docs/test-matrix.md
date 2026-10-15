@@ -1,4 +1,36 @@
-# Verification matrix — release 0.3.0, 2026-10-15
+# Verification matrix — release 0.4.0, 2026-10-15
+
+The 0.3.0 baseline below remains covered. Version 0.4.0 adds profile output rules,
+inline image pixel acceptance and anchored scrollback during incoming output.
+Local full suite: **46 passed, 2 Windows-only skips, 0 failures / 48 total**.
+The final extracted self-contained package passes native acceptance at 2× Retina
+scaling on macOS 26.7.2/M5. Final run
+[38700844528](https://github.com/kris70lesgo/aster-terminal/actions/runs/38700844528),
+source `1cf4a149b9f6c17df2b9e7ad4e4a591dc3d61851`, passes all three targets:
+macOS/Linux **46 passed + 2 Windows-only skips**, Windows **41 passed + 7
+Unix-only skips**; all **48 total, zero failures**. Every final native package
+also passes shell/input/resize/replay/rule/graphics/settings/render/cleanup.
+Reports, images and TRX are in `evidence/v0.4.0-{rid}`, plus the installed local
+Retina check in `evidence/v0.4.0-macos-retina`. `ci-v0.4.0.json` records provenance.
+The first candidate's Windows cold-start rule failure is preserved in
+`ci-first-trigger-v0.4.0.json` and migration-log.md.
+
+| New acceptance | Evidence |
+|---|---|
+| Completed-line regex, fragmented/wrapped Unicode, rewritten text, cell highlighting | TriggerTests |
+| Bookmark navigation after reflow; bounded records; eviction/reset/disable | TriggerTests |
+| Profile rule validation, persistence, save/cancel; real shell and history UI | TriggerDesktopTests / SettingsStore |
+| Sixel / OSC1337 PNG / direct-data kitty RGBA through adapter | GraphicsTests: fragmented bytes plus actual Skia red pixels, reset |
+| Malformed/oversize graphics and rejected kitty file transfer | GraphicsTests: no image, continued text |
+| Scrolled content survives new output until eviction; history clear | EngineTests |
+| Native real-shell rule, three image colours, profile Triggers page | native-smoke.json / triggers.png / graphics.png / preferences-triggers.png |
+
+Rule bounds and unsupported actions are in [output-rules.md](output-rules.md).
+Graphics variants/animation, IME, physical native clipboard/mouse gestures,
+multi-monitor, Windows 11 and Wayland retain explicit gaps. Live reconnection,
+native tmux -CC, Python API and global hotkeys remain unimplemented.
+
+## Historical release 0.3.0, 2026-10-15
 
 Local: Apple M5 arm64, macOS 26.7.2, SDK 10.0.402/runtime 10.0.13,
 Avalonia 12.1.4. Hosted native evidence is separate from this workstation.
@@ -79,7 +111,7 @@ build `6708f88905bafc9e7ed43e34b613cdd5a987fb63`: macOS/Linux 31 passed + 2 skip
 Windows 26 passed + 7 skips, all 0 failures / 33 total. Its evidence remains in
 `release-macos` and `release-{rid}`. The first complete three-platform run
 `38520129077` and first-slice captures remain accurately scoped. Use the versioned
-0.3.0 evidence for current release claims. See [performance.md](performance.md)
+0.3.0 evidence for historical 0.3.0 claims. See [performance.md](performance.md)
 for workload and measurement limits.
 
 The earlier 1× candidate passed hosted acceptance but failed local 2× replay.

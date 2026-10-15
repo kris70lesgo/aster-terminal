@@ -21,3 +21,9 @@ Full iTerm2 parity remains Milestone B as specified by the original request.
 0.3.0 extends the completed subset with the minimal desktop/settings design and
 bounded text keyframe replay. Final native three-platform run 38693452893 passes.
 Full binary/image DVR compatibility remains a separate target.
+
+0.4.0 continues Milestone B with safe profile output rules (highlight/bookmark),
+bounded line history and navigation, verified inline image subsets, and a fix
+for incoming output moving a scrolled view. The 48-test suite and expanded
+native smoke cover these additions. Full trigger action/plist compatibility,
+reconnect, native tmux -CC, Python API and global hotkeys remain separate targets.

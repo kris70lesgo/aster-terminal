@@ -1,9 +1,9 @@
-# Migration report — competition release 0.3.0
+# Migration report — competition release 0.4.0
 
 Aster Terminal delivers the competition subset of an iTerm2 behavior migration:
 real local terminals, profiles, tabs, nested panes, search, themes, persisted
-configuration/layouts, original opt-in shell integration and bounded text-screen
-replay. Full upstream parity
+configuration/layouts, original opt-in shell integration, bounded text-screen
+replay and safe profile output rules. Full upstream parity
 remains Milestone B. The README contains the mandatory public write-up.
 
 1. **Difficulty/completeness:** iTerm2 combines Objective-C/Swift VT state,
@@ -17,10 +17,13 @@ remains Milestone B. The README contains the mandatory public write-up.
    font/colour updates and dark/light/system themes. Preferences are transactional;
    malformed settings recover with preserved originals. Native rendered snapshots
    cover initial shell, tabs, splits, search, compact settings and replay on
-   three OSes in 0.3.0 (final run 38693452893). Local macOS acceptance also
+   three OSes in 0.4.0 (final run 38700844528). Local macOS acceptance also
    passes at 2× Retina scaling after repairing historical viewer reflow. The interface removes permanent chrome and exports
    macOS commands to the system menu. Screen replay uses bounded portable
-   keyframes and an independent renderer; the live shell keeps running.
+   keyframes and an independent renderer; the live shell keeps running. Profile
+   rules add matched-cell highlights/bookmarks with bounded history navigation.
+   Sixel, OSC1337 PNG and direct-data kitty RGBA have adapter and native pixel
+   acceptance, while broader graphics compatibility remains unverified.
 3. **Cross-platform implementation:** one Avalonia/C# host; ConPTY for Windows
    cmd/PowerShell and a compiled MIT forkpty helper on macOS/Linux. All targeted
    packages launch and exercise their native backend on their own OS in CI.
@@ -43,4 +46,4 @@ Milestone A release deliverables: source, runnable three-platform archives with
 checksums, before/after evidence, tests and write-up. Entrant declarations and
 contest form submission remain separate human steps; no submission is asserted.
 Milestone B includes reconnectable processes, native tmux -CC, full binary/image DVR compatibility,
-triggers, Python API, global hotkeys and broader graphics/compatibility coverage.
+full trigger action/plist compatibility, Python API, global hotkeys and broader graphics/compatibility coverage.

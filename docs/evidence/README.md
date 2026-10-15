@@ -1,6 +1,21 @@
 # Screenshot and runtime evidence
 
-## Current release 0.3.0
+## Current release 0.4.0
+
+`v0.4.0-osx-arm64`, `v0.4.0-win-x64`, and `v0.4.0-linux-x64` contain final
+48-test TRX, native reports/renders and engine benchmarks from run 38700844528,
+source 1cf4a149b9f6c17df2b9e7ad4e4a591dc3d61851. In addition to the 0.3.0
+baseline, `triggers.png` shows a real shell line highlighted by a profile rule,
+`graphics.png` shows shell-generated sixel/OSC1337 PNG/kitty RGBA with verified
+red/green/blue pixels, and `preferences-triggers.png` shows the profile editor.
+`v0.4.0-macos-retina` records acceptance from the installed final CI macOS archive
+on macOS 26.7.2/M5 at 2× scaling. These are native client renders; no simulated
+terminal output, OS menu clicks, physical IME or multi-monitor coverage is implied.
+`ci-v0.4.0.json` is the successful final run; `ci-first-trigger-v0.4.0.json`
+preserves the Windows cold-start policy failure from the first candidate.
+Payload checksums/signature/notice audit is in `payload-v0.4.0.json`.
+
+## Historical release 0.3.0
 
 `v0.3.0-osx-arm64`, `v0.3.0-win-x64` and `v0.3.0-linux-x64` contain native
 client renders, JSON reports, engine benchmarks and the 36-test TRX suite from

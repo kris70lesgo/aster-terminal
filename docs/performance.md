@@ -1,5 +1,23 @@
 # Measured performance — 2026-10-15
 
+## Release 0.4.0
+
+Final-package run 38700844528, each actual target OS. Single native startup/resize
+observations include routed input/polling. Warmed engine workload is unchanged;
+hardware and runner load differ. No ranking or comparative speed claim is made.
+
+| Host | Startup to shell | Grid resize | Initial working set | Engine output | Full history snapshot/search | Engine reflow |
+|---|---:|---:|---:|---:|---:|---:|
+| osx-arm64 | 974.5 ms | 98.9 ms | 202.8 MiB | 4.72 MiB/s | 110.0 ms | 55.2 ms |
+| win-x64 | 1174.6 ms | 42.7 ms | 144.1 MiB | 4.59 MiB/s | 105.0 ms | 60.0 ms |
+| linux-x64 | 2575.1 ms | 30.9 ms | 210.7 MiB | 3.93 MiB/s | 183.7 ms | 62.8 ms |
+
+The engine benchmark runs without profile rules. Native acceptance uses one rule
+and verifies graphics/replay correctness, not sustained rule/graphics throughput.
+Ordinary trigger lines copy one row; wrapped triggers map retained history and
+have additional snapshot allocation cost. Burst matching can skip lines under
+its documented work budget; no lossless monitoring or long-soak claim is made.
+
 ## Release 0.3.0
 
 Native final-package reports from run 38693452893, on each actual target OS.

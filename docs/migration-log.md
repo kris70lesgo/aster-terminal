@@ -398,3 +398,13 @@ Local full hotkey-work suite: 57 passed, 2 Windows-only skips, zero failures /
 Carbon backend and sends a typed native hotkey event through its dispatcher to
 the checked callback. No local global physical key was injected and foreground
 was preserved. Actual cross-application focus remains pending CI/manual evidence.
+
+First hotkey CI 38756104154: Windows and Linux X11 pass the complete native
+cross-process global chord, real-shell hide/show retention and cleanup. macOS
+also registers, dispatches the actual injected chord from another foreground
+process and summons/focuses a real shell. Its subsequent hide passes, but the
+fixture then waited for the previous peer to regain foreground without asking
+macOS to activate it. The CI-only peer helper now explicitly reactivates its
+own peer before the next injected chord. This is fixture focus preparation,
+not a removed assertion or a local foreground action. The failing report and
+run remain in hotkey-macos-peer-before-fix.json / ci-first-hotkey-v0.6.0.json.

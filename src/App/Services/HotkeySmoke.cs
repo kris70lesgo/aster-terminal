@@ -148,7 +148,12 @@ public static class HotkeySmoke
             await Tool("xdotool", "windowfocus", "--sync", ids[0]);
             var pid = (await Tool("xdotool", "getwindowfocus", "getwindowpid")).Trim(); if (pid != peer.Id.ToString()) throw new IOException("X11 focus does not belong to the isolated peer.");
         }
-        else if (OperatingSystem.IsMacOS()) await Until(() => MacForegroundPid() == peer.Id);
+        else if (OperatingSystem.IsMacOS())
+        {
+            var app = SendPointerInt(objc_getClass("NSRunningApplication"), sel_registerName("runningApplicationWithProcessIdentifier:"), peer.Id);
+            if (app == IntPtr.Zero || !SendBoolUnsigned(app, sel_registerName("activateWithOptions:"), 2)) throw new IOException("The macOS focus peer could not be activated.");
+            await Until(() => MacForegroundPid() == peer.Id);
+        }
     }
     private static async Task InjectChord()
     {
@@ -187,6 +192,8 @@ public static class HotkeySmoke
         var workspace = SendPointer(objc_getClass("NSWorkspace"), sel_registerName("sharedWorkspace"));
         var app = SendPointer(workspace, sel_registerName("frontmostApplication")); return SendInt(app, sel_registerName("processIdentifier"));
     }
+    [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")] private static extern IntPtr SendPointerInt(IntPtr receiver, IntPtr selector, int value);
+    [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")] [return: MarshalAs(UnmanagedType.I1)] private static extern bool SendBoolUnsigned(IntPtr receiver, IntPtr selector, nuint value);
     private static bool CanPostMacEvents() => CGPreflightPostEventAccess();
     [DllImport(Carbon)] private static extern int CreateEvent(IntPtr allocator, uint eventClass, uint kind, double when, uint attributes, out IntPtr ev);
     [DllImport(Carbon)] private static extern int SetEventParameter(IntPtr ev, uint name, uint type, nuint size, ref HotkeyId id);

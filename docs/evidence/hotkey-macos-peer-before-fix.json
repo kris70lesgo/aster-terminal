@@ -1,0 +1,14 @@
+{
+  "passed": false,
+  "timestamp": "2026-10-15T15:00:02.552025+00:00",
+  "os": "macOS 15.7.9",
+  "renderScaling": 1,
+  "checks": [
+    "Native system-wide Control\u002BAlt\u002BSpace registration succeeds",
+    "macOS Carbon event dispatcher routes the registered signature/id to the native callback",
+    "Native unregister/re-register succeeds without leaking the binding",
+    "Injected global chord summons and focuses a real terminal while the isolated peer process owns foreground focus"
+  ],
+  "skips": [],
+  "error": "System.TimeoutException: Native hotkey acceptance timed out.\n   at Aster.App.Services.HotkeySmoke.Until(Func\u00601 condition, Int32 seconds) in /Users/runner/work/aster-terminal/aster-terminal/src/App/Services/HotkeySmoke.cs:line 125\n   at Aster.App.Services.HotkeySmoke.FocusPeer(Process peer) in /Users/runner/work/aster-terminal/aster-terminal/src/App/Services/HotkeySmoke.cs:line 151\n   at Aster.App.Services.HotkeySmoke.Run(Window owner, IClassicDesktopStyleApplicationLifetime desktop, String report, Boolean global, Boolean manual) in /Users/runner/work/aster-terminal/aster-terminal/src/App/Services/HotkeySmoke.cs:line 90"
+}

@@ -160,3 +160,20 @@ Release verification follow-ups:
   at `/Applications/Aster Terminal.app`. The previous bundle is backed up in
   ignored artifacts. Existing sessions/settings are preserved; local relaunch
   waits for an active display. Audit hashes are in `evidence/payload-v0.3.0.json`.
+
+
+## 2026-10-15 — Retina replay correction before publication
+
+The display became available and installed-package acceptance exposed a real
+Retina-only viewer defect. TermControl's layout reflowed the historical engine
+using different rounded font metrics at 2× scaling; with no history, this could
+remove historical rows. The 1× hosted run had passed. Release 0.3.0 remains a
+draft until this is fixed and all packages are replaced; prior hashes/evidence
+are candidate records, not the final published build.
+
+A fixed-grid ReplayTerminalEngine now accepts only explicit historical frames;
+control input/reset/resize cannot mutate them. Viewer sizing measures glyphs at
+its actual render scale and refreshes on open. Tests cover attempted layout/input
+mutation, and native acceptance resizes the viewer while asserting old text/grid
+remain intact. The first corrected local Retina package passes native replay,
+shell output, render and cleanup acceptance. Expanded final CI is pending.

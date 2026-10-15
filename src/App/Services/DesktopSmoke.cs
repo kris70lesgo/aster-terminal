@@ -22,6 +22,7 @@ public static class DesktopSmoke
         var checks = new List<string>();
         Exception? failure = null;
         double? startupMs = null, resizeMs = null;
+        var renderScaling = window.RenderScaling;
         long? workingSetBytes = null;
         var allPanes = new List<TerminalPane>();
         try
@@ -63,11 +64,16 @@ public static class DesktopSmoke
             var replayDialog = replay.ShowDialog(window); replay.SelectFrame(oldFrame);
             await Until(() => TerminalBufferExport.ToPlainText(terminal.Engine.CreateSnapshot().Buffer).Split('\n').Any(line => line.Trim() == "__REPLAY_LIVE__"));
             if (!TerminalBufferExport.ToPlainText(replay.DisplayEngine.CreateSnapshot().Buffer).Contains("NATIVE_ACCEPTANCE")) throw new InvalidOperationException("Replay changed while the live shell produced output.");
+            var historicalColumns = replay.DisplayEngine.Columns; var historicalRows = replay.DisplayEngine.Rows;
+            replay.Width = 620; replay.Height = 360; await Task.Delay(150);
+            if (replay.DisplayEngine.Columns != historicalColumns || replay.DisplayEngine.Rows != historicalRows || !TerminalBufferExport.ToPlainText(replay.DisplayEngine.CreateSnapshot().Buffer).Contains("NATIVE_ACCEPTANCE")) throw new InvalidOperationException("Viewer layout reflowed the historical frame.");
+            replay.Width = 920; replay.Height = 620; await Task.Delay(150);
             await Task.Delay(200); SaveImage(replay, Path.Combine(reportDirectory, "replay.png"));
             replay.SelectFrame(replay.FrameCount - 1);
             if (!TerminalBufferExport.ToPlainText(replay.DisplayEngine.CreateSnapshot().Buffer).Contains("CURRENT_SCREEN")) throw new InvalidOperationException("Replay seek failed.");
             replay.Close(); await replayDialog;
             checks.Add("Native screen replay seeks historical text while the real shell continues; independent read-only renderer");
+            checks.Add("Historical grid survives viewer resize without reflow");
             if (OperatingSystem.IsMacOS())
             {
                 if (window.FindControl<Menu>("MainMenu")!.IsVisible || NativeMenu.GetMenu(window)?.Items.Count != 5) throw new InvalidOperationException("macOS native menu export configuration missing.");
@@ -122,7 +128,7 @@ public static class DesktopSmoke
             {
                 passed = failure is null, os = System.Runtime.InteropServices.RuntimeInformation.OSDescription,
                 architecture = System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture.ToString(),
-                timestamp = DateTimeOffset.UtcNow, startupToShellOutputMs = startupMs, nativeResizeToGridMs = resizeMs, initialWorkingSetBytes = workingSetBytes,
+                timestamp = DateTimeOffset.UtcNow, renderScaling, startupToShellOutputMs = startupMs, nativeResizeToGridMs = resizeMs, initialWorkingSetBytes = workingSetBytes,
                 measurementScope = "One native acceptance launch; startup includes sentinel command/polling. Resize includes dispatcher/polling. Not a cold-start or comparative benchmark.",
                 checks, error = failure?.ToString()
             }, new JsonSerializerOptions { WriteIndented = true }));

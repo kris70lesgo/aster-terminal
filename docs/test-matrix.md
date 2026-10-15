@@ -80,3 +80,8 @@ Windows 26 passed + 7 skips, all 0 failures / 33 total. Its evidence remains in
 `38520129077` and first-slice captures remain accurately scoped. Use the versioned
 0.3.0 evidence for current release claims. See [performance.md](performance.md)
 for workload and measurement limits.
+
+0.3.0 publication hold (2026-10-15): local 2× Retina acceptance exposed historical
+viewer reflow after the previously passing 1× hosted candidate. The corrected
+fixed-grid viewer passes local native acceptance; expanded three-OS CI and final
+replacement packages are pending. Earlier run/hash references are candidate evidence.

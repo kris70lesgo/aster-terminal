@@ -16,7 +16,7 @@ namespace Aster.App.Views;
 public sealed class ReplayWindow : Window
 {
     private readonly IReadOnlyList<ScreenReplayFrame> _frames;
-    private readonly TerminalEngine _engine = new(historySize: 0);
+    private readonly ReplayTerminalEngine _engine = new();
     private readonly TermControl _screen;
     private readonly Slider _timeline = new() { Minimum = 0, TickFrequency = 1, IsSnapToTickEnabled = true };
     private readonly TextBlock _timestamp = new() { VerticalAlignment = VerticalAlignment.Center, FontSize = 12 };
@@ -51,6 +51,7 @@ public sealed class ReplayWindow : Window
             if (e.Key == Key.Right) { SelectFrame(SelectedFrameIndex + 1); e.Handled = true; }
             if (e.Key == Key.Escape) { Close(); e.Handled = true; }
         }, RoutingStrategies.Tunnel);
+        Opened += (_, _) => SelectFrame(SelectedFrameIndex);
         Closing += async (_, e) =>
         {
             if (_closed) return; e.Cancel = true; if (_closing) return; _closing = true;
@@ -67,12 +68,8 @@ public sealed class ReplayWindow : Window
         if (_frames.Count == 0 || _closing) return;
         SelectedFrameIndex = Math.Clamp(index, 0, _frames.Count - 1);
         var frame = _frames[SelectedFrameIndex]; var snapshot = frame.Snapshot; var buffer = snapshot.Buffer;
-        _engine.Reset(); _engine.Scheme = frame.Scheme;
-        _engine.Resize(buffer.Columns, buffer.Rows);
-        _engine.Feed(snapshot.CursorVisible ? "\u001b[?25h" : "\u001b[?25l");
-        if (snapshot.ReverseVideo) _engine.Feed("\u001b[?5h");
-        _engine.Buffer.ReplaceViewport(buffer.Lines.Select(line => new TextBufferProjectionRow(line.Cells.ToArray(), line.Wrapped, line.Marks) { Rendition = line.Rendition }).ToArray(), buffer.CursorX, buffer.CursorY);
-        var cell = TermControl.MeasureCell(_profile.ToControlProfile());
+        _engine.ShowFrame(frame);
+        var cell = TermControl.MeasureCell(_profile.ToControlProfile(), RenderScaling);
         _screen.Width = Math.Ceiling(buffer.Columns * cell.Width + 10); _screen.Height = Math.Ceiling(buffer.Rows * cell.Height + 10);
         _screen.InvalidateVisual();
         _timestamp.Text = $"{frame.Timestamp.ToLocalTime():HH:mm:ss.fff} · {SelectedFrameIndex + 1}/{_frames.Count}";

@@ -22,6 +22,10 @@ public sealed class ReplayTests
         Assert.Equal(4, frames[0].Snapshot.Buffer.CursorX);
         Assert.StartsWith("a界e\u0301", TerminalBufferExport.ToPlainText(frames[0].Snapshot.Buffer));
         Assert.Equal(TermColor.FromRgb(12, 34, 56), frames[0].Snapshot.Buffer.Lines[0].Cells[0].Attributes.Foreground);
+        using var display = new ReplayTerminalEngine(); display.ShowFrame(frames[0]);
+        display.Resize(1, 1, 2, 2); display.Feed("unwanted input"); display.Reset();
+        Assert.Equal(30, display.Columns); Assert.Equal(4, display.Rows);
+        Assert.StartsWith("a界e\u0301", TerminalBufferExport.ToPlainText(display.CreateSnapshot().Buffer));
         Assert.Equal(50, frames[1].Snapshot.Buffer.Columns);
         Assert.StartsWith("new screen", TerminalBufferExport.ToPlainText(frames[1].Snapshot.Buffer));
     }

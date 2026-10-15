@@ -41,7 +41,9 @@ with at most 256 frames and a 16 MiB conservative estimated retention budget.
 Screens larger than half the budget are rejected, following the upstream DVR
 capacity guard. This is a managed keyframe model, not a byte-for-byte DVR port.
 Snapshot capture and output feed share an engine lock; storage lives in Sessions.
-A replay viewer uses a separate engine without a connection, so seeking never
+A replay viewer uses a separate fixed-grid engine without a connection. Control
+layout/input/reset cannot mutate historical frames, and glyph sizing uses the
+viewer render scale to handle Retina metrics. Seeking never
 sends bytes or changes the live buffer. Closing a pane or disabling recording
 clears its history. A viewer holds its frozen frame selection until closed.
 

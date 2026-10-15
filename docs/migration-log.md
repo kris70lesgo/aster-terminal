@@ -408,3 +408,14 @@ macOS to activate it. The CI-only peer helper now explicitly reactivates its
 own peer before the next injected chord. This is fixture focus preparation,
 not a removed assertion or a local foreground action. The failing report and
 run remain in hotkey-macos-peer-before-fix.json / ci-first-hotkey-v0.6.0.json.
+
+Second hotkey CI 38756865651: macOS and Windows pass all native/global checks.
+Linux also summons/focuses its terminal and executes the retained-variable
+command, but dash can print the next prompt immediately before its output when
+two queued commands are entered together. The fixture's exact-line assertion
+rejected `ASTER_READY> __HOTKEY_READY__retained` even though the expanded value
+was correct. It now checks the actual expanded sentinel without requiring a
+line-start position. That complete sentinel cannot come from the echoed input,
+which contains the unexpanded variable / printf placeholder. Session identity,
+retained variable, physical global focus and cleanup assertions remain intact.
+The failing JSON and actual native image are retained separately.

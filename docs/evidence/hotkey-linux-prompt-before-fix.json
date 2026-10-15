@@ -1,0 +1,12 @@
+{
+  "passed": false,
+  "timestamp": "2026-10-15T15:05:06.9372415+00:00",
+  "os": "Ubuntu 24.04.5 LTS",
+  "renderScaling": 1,
+  "checks": [
+    "Native system-wide Control\u002BAlt\u002BSpace registration succeeds",
+    "Native unregister/re-register succeeds without leaking the binding"
+  ],
+  "skips": [],
+  "error": "System.TimeoutException: Native hotkey acceptance timed out.\n   at Aster.App.Services.HotkeySmoke.Until(Func\u00601 condition, Int32 seconds) in /home/runner/work/aster-terminal/aster-terminal/src/App/Services/HotkeySmoke.cs:line 125\n   at Aster.App.Services.HotkeySmoke.Run(Window owner, IClassicDesktopStyleApplicationLifetime desktop, String report, Boolean global, Boolean manual) in /home/runner/work/aster-terminal/aster-terminal/src/App/Services/HotkeySmoke.cs:line 85"
+}

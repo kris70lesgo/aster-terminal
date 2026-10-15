@@ -427,3 +427,29 @@ line-start wait times out. Recovery fixture printf output now starts with an
 explicit newline, preserving its existing strict sentinel/PID assertions.
 The failed report remains in recovery-linux-prompt-before-fix.json. This change
 only delimits isolated fixture output; it does not change terminal behavior.
+
+## 2026-10-15 — detach output/disposal race found during 0.6.0 verification
+
+The Linux candidate run 38759175327 failed the real-shell window recovery test.
+An isolated immediate-input/detach/reattach regression also failed on this Mac.
+Opt-in temporary lifecycle tracing identified late PTY output reaching an already
+completed subscriber queue and calling Cancel on its disposed attachment source.
+That ObjectDisposedException escaped the output callback into the native adapter,
+which reported a PTY fault and shut down the host. The retained failing trace is
+`evidence/detach-disposal-before-fix.txt`; it contains only isolated fixture output.
+
+Attachment cleanup now removes both publish references under the same gate as
+PTY output, before completing the channel or disposing cancellation. Both reader
+and writer tasks are awaited even when one faults. Explicit detach additionally
+waits for a host acknowledgement after prior native input writes complete; the
+optional greeting capability preserves connection to older hosts. The regression
+performs eight immediate queued-input/detach/reattach cycles against one real
+shell and checks its expanded variable after each reconnect. Temporary trace-file
+support was removed after diagnosis. Local full suite passed 58 + 2 skips / 60;
+15 focused runs (120 immediate detach/reconnect cycles) also passed. Final
+native/three-OS checks are pending below.
+
+The local human hotkey attempt was not detected; its 180-second fixture expired.
+It is unverified, not a physical-focus pass. A later read-only macOS check reported
+secure event input disabled; that does not establish its state at the attempted
+keypress. Earlier CI global-key checks are recorded separately.

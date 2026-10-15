@@ -92,6 +92,12 @@ uses the user's local application-data ACL and same-user/elevation pipe checks.
 Descriptors contain identity/profile/capability, never output or environment.
 There is no network listener. Only one frontend may attach at a time.
 
+Explicit detach drains queued frontend input and, when advertised by the host,
+waits for an ordered acknowledgement after native writes complete. Older hosts
+without that capability retain their earlier best-effort detach behavior. Host
+attachment cleanup removes output references under the output gate before queue
+completion/cancellation disposal, so late PTY output stays in the journal.
+
 Normal pane/window close sends explicit terminate and awaits owned host cleanup.
 Lost IPC leaves the shell alive; Shell → Detach and close window requests that
 behavior intentionally. Startup and Recover live sessions reconnect detached

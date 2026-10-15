@@ -5,12 +5,12 @@ using Devolutions.Terminal.Connection;
 namespace Aster.Sessions.Hosting;
 
 internal sealed record HostHello(string Token, string Action, TerminalLaunchOptions? Options = null, int PixelWidth = 0, int PixelHeight = 0);
-internal sealed record HostReady(TerminalProcessMetadata? Process, int Columns, int Rows, bool Attached, bool Checkpointed, string? Error = null);
-internal sealed record HostFrame(byte Kind, byte[] Data);
+internal sealed record HostReady(TerminalProcessMetadata? Process, int Columns, int Rows, bool Attached, bool Checkpointed, string? Error = null, bool SupportsDetachAck = false);
+internal sealed record HostFrame(byte Kind, byte[] Data, TaskCompletionSource? Written = null);
 
 internal static class HostProtocol
 {
-    public const byte Hello = 1, Ready = 2, Output = 3, Input = 4, Grid = 5, Exit = 6, Terminate = 7, Detach = 8, ReplayEnd = 9;
+    public const byte Hello = 1, Ready = 2, Output = 3, Input = 4, Grid = 5, Exit = 6, Terminate = 7, Detach = 8, ReplayEnd = 9, Detached = 10;
     public const int MaxFrame = 1024 * 1024;
     public static readonly JsonSerializerOptions Json = new() { MaxDepth = 16 };
     public static byte[] Encode<T>(T value) => JsonSerializer.SerializeToUtf8Bytes(value, Json);

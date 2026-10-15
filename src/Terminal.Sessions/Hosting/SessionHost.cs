@@ -37,16 +37,14 @@ public sealed class SessionHost
         _engine.ResponseReady += (_, bytes) => { if (_native.IsRunning) _native.Write(bytes); };
         _native.SessionExited += (_, info) =>
         {
-            Console.Error.WriteLine($"Session host PTY exit: reason={info.Reason}, code={info.ExitCode}");
             lock (_gate) _subscriber?.Writer.TryWrite(new(HostProtocol.Exit, HostProtocol.Encode(info)));
             _ended.TrySetResult();
         };
-        _native.Faulted += (_, error) => { Console.Error.WriteLine("Session host PTY fault: " + error); _ended.TrySetResult(); };
+        _native.Faulted += (_, _) => _ended.TrySetResult();
     }
     public static async Task<int> RunAsync(string descriptor)
     {
-        var host = new SessionHost(descriptor);
-        return await host.RunCoreAsync();
+        var host = new SessionHost(descriptor); return await host.RunCoreAsync();
     }
     private async Task<int> RunCoreAsync()
     {
@@ -133,7 +131,7 @@ public sealed class SessionHost
         }
         catch (Exception error) when (error is IOException or OperationCanceledException or ArgumentException or System.Text.Json.JsonException) { }
     }
-    private HostReady Ready(string? error = null) => new(_native.ProcessMetadata, _native.Columns, _native.Rows, _attached, _transcript.Checkpointed, error);
+    private HostReady Ready(string? error = null) => new(_native.ProcessMetadata, _native.Columns, _native.Rows, _attached, _transcript.Checkpointed, error, SupportsDetachAck: true);
     private async Task AttachAsync(Stream pipe, HostHello hello, CancellationToken token)
     {
         var options = hello.Options;
@@ -158,12 +156,24 @@ public sealed class SessionHost
             replay = _transcript.Snapshot(); _subscriber = channel; _attachment = lifetime;
             if (!_native.IsRunning && _native.LastExitInfo is { } exited) channel.Writer.TryWrite(new(HostProtocol.Exit, HostProtocol.Encode(exited)));
         }
-        await HostProtocol.Write(pipe, HostProtocol.Ready, HostProtocol.Encode(Ready()), token);
-        var writer = WriteOutputAsync(pipe, replay, channel.Reader, lifetime.Token);
-        var reader = ReadInputAsync(pipe, lifetime.Token);
-        await Task.WhenAny(writer, reader);
-        lifetime.Cancel(); channel.Writer.TryComplete();
-        try { await Task.WhenAll(writer, reader); } catch (Exception error) when (error is IOException or OperationCanceledException) { }
+        Task? writer = null, reader = null;
+        try
+        {
+            await HostProtocol.Write(pipe, HostProtocol.Ready, HostProtocol.Encode(Ready()), token);
+            writer = WriteOutputAsync(pipe, replay, channel.Reader, lifetime.Token);
+            reader = ReadInputAsync(pipe, channel.Writer, lifetime.Token);
+            await Task.WhenAny(writer, reader);
+        }
+        finally
+        {
+            // Publish runs under this same gate. Remove its references before
+            // completing the queue or disposing the attachment cancellation source:
+            // late PTY output is retained in the journal, not sent to a dead client.
+            lock (_gate) { _subscriber = null; _attachment = null; }
+            lifetime.Cancel(); channel.Writer.TryComplete();
+            try { await Task.WhenAll(new[] { writer, reader }.OfType<Task>()); }
+            catch (Exception error) when (error is IOException or OperationCanceledException) { }
+        }
     }
     private static async Task WriteOutputAsync(Stream pipe, IReadOnlyList<HostFrame> replay, ChannelReader<HostFrame> output, CancellationToken token)
     {
@@ -172,10 +182,11 @@ public sealed class SessionHost
         await foreach (var frame in output.ReadAllAsync(token))
         {
             await HostProtocol.Write(pipe, frame.Kind, frame.Data, token);
-            if (frame.Kind == HostProtocol.Exit) return;
+            frame.Written?.TrySetResult();
+            if (frame.Kind is HostProtocol.Exit or HostProtocol.Detached) return;
         }
     }
-    private async Task ReadInputAsync(Stream pipe, CancellationToken token)
+    private async Task ReadInputAsync(Stream pipe, ChannelWriter<HostFrame> output, CancellationToken token)
     {
         while (true)
         {
@@ -196,7 +207,13 @@ public sealed class SessionHost
                         else _engine.ResizeKeepingCellMetrics(columns, rows);
                         _native.Resize(columns, rows, pixels.Width, pixels.Height); Publish(frame);
                     } break;
-                case HostProtocol.Detach: return;
+                case HostProtocol.Detach:
+                    // Prior frames have completed their host-owned native writes.
+                    // Serialize an acknowledgement with normal output before the
+                    // frontend closes IPC, so buffered input cannot be discarded.
+                    var written = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                    await output.WriteAsync(new(HostProtocol.Detached, [], written), token);
+                    await written.Task.WaitAsync(token); return;
                 case HostProtocol.Terminate: await _native.CloseAsync(); _ended.TrySetResult(); return;
                 default: throw new InvalidDataException("Unsupported host request.");
             }

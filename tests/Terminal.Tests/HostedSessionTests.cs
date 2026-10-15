@@ -12,10 +12,12 @@ public sealed class HostedSessionTests
     private sealed class Client : IAsyncDisposable
     {
         public HostedConnection Connection { get; }
+        public Exception? Fault { get; private set; }
         public ItermTerminalEngine Engine { get; } = new(80, 24) { ProtocolResponsesEnabled = false };
         public Client(SessionCatalog catalog, HostedSession? session = null)
         {
             Connection = new(catalog, "test-profile", "Recovery test", session);
+            Connection.Faulted += (_, error) => Fault = error;
             Connection.Restoring += (_, _) => Engine.Reset();
             Connection.GridChanged += (_, grid) => Engine.Resize(grid.Columns, grid.Rows);
             Connection.OutputReceived += (_, bytes) => Engine.Feed(bytes.Span);
@@ -80,6 +82,34 @@ public sealed class HostedSessionTests
             await Until(() => first.Text.Contains("__STILL_OWNED__"));
         }
         finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+    [Fact]
+    public async Task ExplicitDetachAcknowledgesLastQueuedInputBeforeReattachment()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "aster-host-last-input-" + Guid.NewGuid().ToString("N"));
+        var catalog = new SessionCatalog(root); Client? current = null;
+        try
+        {
+            current = new(catalog); await current.Start(); var session = current.Connection.Session!;
+            for (var i = 0; i < 8; i++)
+            {
+                current.Command(OperatingSystem.IsWindows() ? $"set ASTER_LAST_INPUT={i}" : $"ASTER_LAST_INPUT={i}");
+                await current.Connection.DetachAsync(); Assert.True(current.Connection.SupportsDetachAck); Assert.True(current.Connection.DetachAcknowledged); await current.DisposeAsync();
+                await UntilAsync(async () => (await catalog.DetachedAsync()).Count == 1);
+                current = new(catalog, session); await current.Start();
+                current.Command(OperatingSystem.IsWindows() ? "echo __LAST_INPUT__%ASTER_LAST_INPUT%" : "printf '__LAST_INPUT__%s\\n' \"$ASTER_LAST_INPUT\"");
+                try { await Until(() => current.Text.Contains("__LAST_INPUT__" + i)); }
+                catch (TimeoutException error)
+                {
+                    throw new TimeoutException($"Last-input iteration {i}, state={current.Connection.State}; fault={current.Fault}: {current.Text}", error);
+                }
+            }
+        }
+        finally
+        {
+            if (current is not null) await current.DisposeAsync();
+            if (Directory.Exists(root)) Directory.Delete(root, true);
+        }
     }
     private static async Task Until(Func<bool> condition)
     {

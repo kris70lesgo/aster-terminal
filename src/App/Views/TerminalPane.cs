@@ -7,6 +7,8 @@ using Aster.Sessions.Hosting;
 using Aster.Sessions.Protocols;
 using Aster.Sessions.ShellIntegration;
 using Devolutions.Terminal;
+using Devolutions.Terminal.Connection;
+using Aster.Sessions.Tmux;
 
 namespace Aster.App.Views;
 
@@ -31,7 +33,7 @@ public sealed class TerminalPane : Border
     public event EventHandler? Activated;
     public event EventHandler<string>? TitleChanged;
 
-    public TerminalPane(TerminalProfile profile, bool light = false, bool copyOnSelect = false, bool replayEnabled = true, SessionCatalog? sessions = null, HostedSession? recovered = null)
+    public TerminalPane(TerminalProfile profile, bool light = false, bool copyOnSelect = false, bool replayEnabled = true, SessionCatalog? sessions = null, HostedSession? recovered = null, IRestartableTerminalConnection? connection = null)
     {
         Profile = profile;
         SessionTitle = profile.Name;
@@ -39,7 +41,12 @@ public sealed class TerminalPane : Border
         _engine = new ItermTerminalEngine(historySize: profile.HistorySize);
         _engine.ConfigureTriggers(profile.Triggers);
         _engine.TriggersChanged += TriggersChanged;
-        if (sessions is not null)
+        if (connection is TmuxPaneConnection tmux)
+        {
+            _engine.ProtocolResponsesEnabled = false; _engine.GridOwnedExternally = true;
+            tmux.GridChanged += (_, grid) => _engine.ResizeKeepingCellMetrics(grid.Columns, grid.Rows);
+        }
+        if (sessions is not null && connection is null)
         {
             _engine.ProtocolResponsesEnabled = false;
             _hosted = new(sessions, profile.Id, profile.Name, recovered);
@@ -52,7 +59,7 @@ public sealed class TerminalPane : Border
         }
         Terminal = new TermControl(_engine)
         {
-            ConnectionFactory = _ => _hosted is not null ? _hosted : PlatformConnectionFactory.Create(),
+            ConnectionFactory = _ => connection ?? (_hosted is not null ? _hosted : PlatformConnectionFactory.Create()),
             AccessibleName = $"{profile.Name} terminal",
             InteractionOptions = new() { CopyOnSelect = copyOnSelect }
         };

@@ -116,3 +116,33 @@ Dispose (exit 73), starts a new native UI, and verifies the same session/process
 shell-local variable, Unix shell PID, routed input, resize and final termination.
 No user session or settings are used by this test. Final target-OS evidence is
 required before support claims.
+
+## Explicit native tmux control attach, 0.5.0 work
+
+Shell → Attach tmux session opens a separate native window for an existing local
+Unix tmux session. A Sessions controller launches `tmux -C attach-session` with
+argument-list process startup and no shell interpolation. The original tmux
+server owns all PTYs. Its response blocks and octal-escaped output feed bounded
+parsing and a serialized command queue. Pane input is hexadecimal `send-keys`,
+not text concatenated into tmux commands. Only explicitly requested UI actions
+create/close/split/select tmux panes. Output does not execute host actions.
+
+Windows map to native tabs; strict classic-layout trees map to native panes.
+Existing pane controls survive rearrangement. The engine takes its grid from
+ordered tmux layout messages, while control layout updates only cell metrics.
+Native sizing accounts for per-pane padding and pixel dividers. Control clients have no rendered status rows.
+Focus changes send a selection only when the active pane changes. tmux dimensions bound the client
+resize; closing this window detaches and leaves shells alive. New panes bootstrap
+from real `capture-pane` output and queried cursor state, then consume ordered
+live notifications. The bootstrap is a text/colour viewport, not a full binary
+terminal checkpoint: existing graphics/history and every terminal mode are not
+reconstructed, and a busy pane's separately queried cursor can require redraw.
+New interactive programs use the ordinary live VT path. There is no automatic
+interception of arbitrary in-shell `-CC` DCS, remote/SSH/WSL attach or Windows
+local tmux claim. tmux must be installed separately; it is not bundled.
+
+Response blocks cap at 8 MiB; lines at 1 MiB; at most 64 windows/64 panes total, depth 16, 1000×500 with at most 100,000 cells per layout. Child geometry
+must exactly partition its parent. Commands have a 10-second deadline; a timeout
+detaches the client to preserve response correlation. Input is bounded at 4 MiB
+and 128 queued chunks; byte commands are at most 512 bytes each. Unknown
+notifications are ignored. No new package/native dependency is introduced.

@@ -63,6 +63,10 @@ if args.smoke:
     if before.returncode != 73: raise SystemExit("Native recovery fixture did not exit abruptly as expected.")
     subprocess.run([str(executable), "--recovery-resume", "--recovery-report", str(recovery)], cwd=root, check=True, timeout=60)
     if not json.loads((recovery / "recovery.json").read_text())["passed"]: raise SystemExit("Native live recovery failed.")
+    if not rid.startswith("win"):
+        tmux_report = smoke_directory / "tmux"
+        subprocess.run([str(executable), "--tmux-smoke", "--tmux-report", str(tmux_report)], cwd=root, check=True, timeout=90)
+        if not json.loads((tmux_report / "tmux.json").read_text())["passed"]: raise SystemExit("Native tmux control acceptance failed.")
 if rid.startswith("osx"):
     artifact = out.parent / (name + ".zip")
     # Managed .NET assemblies carry macOS signatures in extended attributes.

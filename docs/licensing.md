@@ -12,6 +12,7 @@ Aster-authored and iTerm2-adapted code is GPL-3.0-or-later. Preserve original at
 |---|---|---|
 | iTerm2 OSC 133 exit-code scan and OSC 1337 metadata behavior | COPY­ING GPLv2-or-later, elect GPLv3; VT100Terminal.m `exitCodeFromArgs`, `executeXtermSetKvp` | C# adaptation, upstream attribution in source and NOTICE; generic LICENSE file is not copied as our GPLv3 licence |
 | iTerm2 bounded DVR design, capacity / oldest-frame eviction / half-capacity frame guard | `DVR.m` / `DVRBuffer.m` GPLv2-or-later, elect GPLv3, pinned same source SHA | New C# text keyframes; studied design attributed in source and NOTICE. No binary DVR codec or upstream assets copied |
+| iTerm2 tmux control design study | `TmuxGateway.m`, `VT100TmuxParser.m`, same pinned GPL source | Independent C# explicit local control client; no upstream code or tmux binary bundled |
 | iTerm2 task/server design study | `iTermMonoServerJobManager.m`, `iTermMultiServerJobManager.m`, `iTermOrphanServerAdopter.m`, pinned same GPL source | New C# current-user pipe host; no upstream server code copied; design attribution in NOTICE |
 | iTerm2 output rule design | `Trigger.m`, `HighlightTrigger.m`, `MarkTrigger.m`, same pinned GPLv2-or-later source | New C# completed-line regex/highlight/bookmark implementation; preserve attribution in source/NOTICE; no native trigger classes copied |
 | Devolutions.Terminal.Control 2026.3.4 + bundled Core/Render/Connection/Settings | MIT, nuspec/source at `fa23083f1bda1a60fe2b322c6cfab4a616af9edb` | Retain MIT notice; only terminal APIs used, no cloud/ISE features |

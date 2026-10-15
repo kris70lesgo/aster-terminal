@@ -1,13 +1,20 @@
-# Work in progress — live recovery, 0.5.0
+# Work in progress — recovery and explicit tmux attach, 0.5.0
 
-Local full suite: **52 passed, 2 Windows-only skips, zero failures / 54 total**.
-Native macOS 26.7.2/M5 at 2× Retina passes abrupt UI exit/reopen, actual retained
-shell variable and Unix PID, same host/session metadata, input, acknowledged PTY
-resize and normal-close cleanup. Native baseline also passes all three inline
-image pixel checks after transporting cell pixel geometry. Three-OS verification
-is pending; the released 0.4.0 baseline remains below. HostProtocolTests,
-HostedSessionTests and RecoveryDesktopTests cover bounds, geometry, exclusive
-ownership, rejected capabilities, live state, detach/reopen and cleanup.
+Live recovery source **5e78e93e45f2536111cec7d1504cbf6dd1e8655a**, run
+[38749039608](https://github.com/kris70lesgo/aster-terminal/actions/runs/38749039608):
+all three target jobs pass tests and native crash/reopen acceptance. macOS/Linux
+52 pass + 2 skips; Windows 47 pass + 7 skips; 54 total. Local native Mac at 2×
+Retina verifies the actual same shell variable/Unix PID, metadata, input, resize
+and normal close cleanup. Failed Windows candidates and the host-lifetime input
+repair are retained in migration-log.md / ci-first-recovery-v0.5.0.json.
+
+New explicit Unix tmux control attach: local full suite **55 passed, 2
+Windows-only skips, zero failures / 57 total**. TmuxTests covers strict layouts,
+octal and split-UTF8 bytes, independent real panes, resize, new/close windows,
+Vim edit/return and live detach/reattach. TmuxDesktopTests covers native controls
+through actual layout changes. Native Retina acceptance additionally checks
+input, nested splits, stty dimensions, grid/cell fit and same-shell reattachment.
+Hosted native tmux and final combined package verification are pending.
 
 ## Verification matrix — release 0.4.0, 2026-10-15
 

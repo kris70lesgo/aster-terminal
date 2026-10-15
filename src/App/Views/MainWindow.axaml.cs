@@ -562,6 +562,14 @@ public partial class MainWindow : Window
             Observe(ChangeLayoutAsync(() => NewTabCoreAsync(profile, session)));
         }
     }
+    private async void AttachTmuxClicked(object? sender, RoutedEventArgs e)
+    {
+        if (OperatingSystem.IsWindows()) { ShowError("Local tmux requires a Unix host. WSL/SSH control attach is not available yet."); return; }
+        var target = await DialogWindow.Prompt(this, "Attach tmux session (name or ID)", "");
+        if (string.IsNullOrWhiteSpace(target)) return;
+        try { new TmuxWindow(new Aster.Sessions.Tmux.TmuxController(target), DefaultProfile) { RequestedThemeVariant = this.RequestedThemeVariant }.Show(); }
+        catch (Exception error) { ShowError(error.Message); }
+    }
     private void ReplayClicked(object? sender, RoutedEventArgs e)
     {
         if (Active is { } pane) { pane.CaptureReplay(); Observe(new ReplayWindow(pane.Replay, pane.Profile).ShowDialog(this)); }

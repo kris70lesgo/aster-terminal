@@ -313,3 +313,44 @@ attachment lifetime; the accepted frame can finish after UI loss. The pending
 frontend queue also drains before an explicit detach request. The failed runs
 38734958032 and 38735744022 remain evidence; repaired Windows verification is
 pending. macOS/Linux native crash/reopen passed both candidates.
+
+## 2026-10-15 — explicit native tmux control client
+
+Studied pinned iTerm2 TmuxGateway.m / VT100TmuxParser.m and tmux's control-mode
+manual. Implemented an independent C# explicit `-C` client, bounded response/
+escaped-output parsing, strict classic-layout trees, serialized hexadecimal
+input, real viewport hydration and separate native tabs/panes. The server owns
+shells; native control-window close detaches. No source or tmux executable is
+copied/bundled. Automatic in-shell `-CC`, remote/WSL and full terminal bootstrap
+state remain explicit gaps rather than ordinary-tmux parity claims.
+
+Local real isolated-server tests pass independent input/Unicode/colour, native
+layout control retention, nested splits, resize, new windows, pane removal and
+detach/reattach retaining a shell-local variable. Full suite: 55 passed plus 2
+Windows-only skips / 57 total. The first native fixture deadlocked by blocking
+Avalonia's initialization context on async process startup; ConfigureAwait(false)
+in its non-UI process helper repairs that fixture. Native acceptance pending.
+
+Recovery repair source 5e78e93 / CI 38749039608 passes all three targets: macOS/
+Linux 52 pass + 2 skips; Windows 47 pass + 7 skips, all 54 total. Each native
+package passes crash/reopen and baseline checks. This confirms the attachment-
+lifetime cancellation repair on Windows; no platform support is inferred from
+compilation alone.
+
+Tmux raw output may be invalid/incomplete UTF-8 between notifications. The
+controller now parses the protocol byte-preservingly with Latin-1 framing and
+only decodes command-response text as UTF-8; pane payloads go unchanged to the
+incremental engine. A real split-byte λ and Vim edit/alternate/return pass. Vim's
+welcome message is absent in narrow panes, so the fixture loads a real initial
+buffer marker rather than depending on a welcome banner.
+
+Strict native grid acceptance exposed a geometry mismatch and a focus/refresh
+loop. The tmux-owned grid is now applied before ordered output, control layout
+updates cell metrics only, native pixel layout accounts for padding/dividers/
+cell budgets (control clients have no rendered status row), and unchanged focus does not send repeated select-pane commands.
+Failed native reports remain in tmux-grid-before-fix.json and
+tmux-resize-loop-before-fix.json. Fixtures use /bin/sh for all panes to exclude
+user shell startup files from published evidence. Final local native Retina acceptance passes all four checks, including exact grid/cell fit and same-shell reattachment. Hosted combined verification is pending.
+
+The official challenge announcement was reread at this milestone on 2026-10-15
+(curl fallback after web-reader timeout); requirements remain unchanged.

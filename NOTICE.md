@@ -35,3 +35,7 @@ or docs/licensing.md and docs/dependency-source-map.md in source.
 
 Complete Aster source and build scripts:
 https://github.com/kris70lesgo/aster-terminal
+
+The explicit tmux control client studies iTerm2 TmuxGateway.m and
+VT100TmuxParser.m at the same pinned source. Independent C# implementation;
+no tmux source or executable is included.

@@ -15,7 +15,8 @@ public sealed class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            if (desktop.Args?.Any(arg => arg is "--recovery-start" or "--recovery-resume") == true) desktop.MainWindow = RecoverySmoke.Configure(desktop, desktop.Args);
+            if (desktop.Args?.Contains("--tmux-smoke") == true) desktop.MainWindow = TmuxSmoke.Configure(desktop, desktop.Args);
+            else if (desktop.Args?.Any(arg => arg is "--recovery-start" or "--recovery-resume") == true) desktop.MainWindow = RecoverySmoke.Configure(desktop, desktop.Args);
             else if (desktop.Args?.Contains("--smoke-test") == true)
             {
                 desktop.ShutdownMode = Avalonia.Controls.ShutdownMode.OnExplicitShutdown;

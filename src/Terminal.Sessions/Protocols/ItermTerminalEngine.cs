@@ -36,6 +36,7 @@ public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
         }
     }
     public bool ProtocolResponsesEnabled { get; set; } = true;
+    public bool GridOwnedExternally { get; set; }
     public long Revision => Interlocked.Read(ref _revision);
     public string? RemoteHost { get; private set; }
     public int? LastCommandExitCode { get; private set; }
@@ -159,7 +160,7 @@ public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
     public int ScrollOffset { get { lock (_gate) return _inner.ScrollOffset; } }
     public void Resize(int columns, int rows, double cellWidth = 1, double cellHeight = 1)
     {
-        lock (_gate) { _cellWidth = cellWidth; _cellHeight = cellHeight; _inner.Resize(columns, rows, cellWidth, cellHeight); _revision++; }
+        lock (_gate) { _cellWidth = cellWidth; _cellHeight = cellHeight; _inner.Resize(GridOwnedExternally ? _inner.Columns : columns, GridOwnedExternally ? _inner.Rows : rows, cellWidth, cellHeight); _revision++; }
     }
     public void SetScrollOffset(int offset)
     {

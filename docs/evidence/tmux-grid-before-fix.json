@@ -1,0 +1,12 @@
+{
+  "passed": false,
+  "timestamp": "2026-10-15T14:17:40.245901+00:00",
+  "os": "macOS 26.7.2",
+  "renderScaling": 2,
+  "checks": [
+    "Native Avalonia panes mirror actual tmux nested splits; independent routed input and Unicode output",
+    "Native window resize reaches tmux PTYs and stty reports matching dimensions"
+  ],
+  "expectedSize": "23 42",
+  "error": "System.InvalidOperationException: Native pane clips its tmux grid.\n   at Aster.App.Services.TmuxSmoke.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CConfigure\u003Eb__1\u003Ed.MoveNext() in /Users/agastya/Documents/ChatGPT/alvonia real/src/App/Services/TmuxSmoke.cs:line 55"
+}

@@ -245,3 +245,11 @@ real shell and checks coloured pixels; native three-platform results pending.
 The official challenge announcement was rechecked at this milestone, unchanged.
 No dependencies were added. Full reconnect, native tmux -CC, Python API and
 system-wide hotkey parity remain unfinished.
+
+First 0.4.0 candidate run 38700487961: macOS/Linux tests and native packages
+passed; Windows caught cold-start rule evaluation being skipped by the burst
+budget before its first regex ran. The budget now starts after the first rule
+evaluation, keeping the first ordinary line eligible despite JIT/capture setup.
+Nonbacktracking regexes have a 100 ms timeout (including cold runner costs), with
+the following per-Feed work limited by the 25 ms budget. This is an execution
+policy repair, not a weakened Unicode assertion. The failure is retained in CI.

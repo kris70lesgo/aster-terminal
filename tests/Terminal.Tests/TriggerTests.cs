@@ -17,6 +17,7 @@ public sealed class TriggerTests
         foreach (var b in Encoding.UTF8.GetBytes("prefix界éERROR")) engine.Feed(new[] { b });
         Assert.Empty(engine.TriggerMatches);
         engine.Feed("\r\n");
+        Assert.True(engine.TriggerMatches.Count == 1, engine.TriggerWarning ?? "Completed Unicode line did not match.");
         var hit = Assert.Single(engine.TriggerMatches);
         Assert.Contains("prefix界éERROR", hit.Text);
         var highlighted = engine.CreateSnapshot(true).Buffer.Lines.SelectMany(l => l.Cells).Where(c => c.Attributes.Background.Kind == ColorKind.Rgb).ToArray();

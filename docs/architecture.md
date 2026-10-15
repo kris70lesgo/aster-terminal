@@ -59,7 +59,7 @@ the process working set is capped at 16 MiB.
 
 Profiles hold up to 32 opt-in regex rules: highlight matched cells or bookmark
 completed lines. Rules use .NET NonBacktracking (no lookarounds/backreferences),
-10 ms regex timeouts and a 25 ms evaluation budget per Feed. A timeout pauses the
+100 ms regex timeouts and a 25 ms evaluation budget after the first rule per Feed. A timeout pauses the
 rule; burst-budget exhaustion leaves a visible warning. At most the first 512
 line-feed candidates per Feed and 4096 UTF-16 units per logical line are evaluated;
 oversize/truncated lines are skipped. Alternate-screen output is excluded. No

@@ -11,7 +11,7 @@ public sealed record OutputTrigger
     public string Foreground { get; init; } = "#FFFFFF";
     public string Background { get; init; } = "#9B3038";
 
-    public Regex Compile() => new(Pattern, RegexOptions.CultureInvariant | RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(10));
+    public Regex Compile() => new(Pattern, RegexOptions.CultureInvariant | RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(100));
 
     public void Validate()
     {

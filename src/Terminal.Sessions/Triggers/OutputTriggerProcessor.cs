@@ -20,7 +20,7 @@ internal sealed class OutputTriggerProcessor
     public void BeginFeed() => _feedStarted = 0;
     private bool BudgetExpired()
     {
-        if (_feedStarted == 0) { _feedStarted = Stopwatch.GetTimestamp(); return false; }
+        if (_feedStarted == 0) return false;
         if (Stopwatch.GetElapsedTime(_feedStarted).TotalMilliseconds < 25) return false;
         Warning = "Some output rules were skipped during a high-output burst."; return true;
     }
@@ -115,6 +115,7 @@ internal sealed class OutputTriggerProcessor
                 {
                     rule.Failed = true; Warning = $"Rule '{rule.Settings.Name}' was paused after its matching time limit."; changed = true;
                 }
+                finally { if (_feedStarted == 0) _feedStarted = Stopwatch.GetTimestamp(); }
             }
         }
         return changed;

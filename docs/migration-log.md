@@ -182,3 +182,16 @@ The initial PTY grid also measures glyphs at the actual window render scale,
 avoiding a 1× estimate before a Retina shell starts. Physical per-pid Cmd+T
 created exactly one tab, and native p/w/d/Return keys executed pwd in a normal
 local zsh session. Personal shell screenshots remain local, outside public evidence.
+
+Run 38692474887 passed macOS/Linux but caught the PowerShell fixture typing
+before PSReadLine had produced its prompt on a cold Windows runner. The fixture
+now waits up to 30 seconds for that real prompt before its command; command
+output/cleanup checks retain their original limits. Modal replay keyboard
+Left/Right navigation also passes via routed headless input. Background native
+replay key injection was inconclusive; it is not recorded as a physical seek pass.
+
+Native menu review found that Avalonia adds its standard macOS app commands
+only when creating the first exporter. Replacing the app menu on activation
+could discard Quit/Hide. Aster now reuses that menu and routes About/Settings
+through a weak active-window reference. Native smoke explicitly checks Quit
+remains after creating a tab. No window/session state is retained by menu closures.

@@ -34,6 +34,9 @@ public partial class MainWindow : Window
     private Dictionary<string, KeyGesture> _shortcuts = [];
     private bool _closing, _closed;
     private PreferencesWindow? _preferences;
+    private static NativeMenu? _applicationMenu;
+    private static NativeMenuItem? _applicationPreferences;
+    private static WeakReference<MainWindow>? _applicationMenuWindow;
     private Workspace? Current => _workspaces.FirstOrDefault(w => w.Tab == Tabs.SelectedItem);
     private TerminalPane? Active => Current?.Active;
     private bool Light => ActualThemeVariant == ThemeVariant.Light;
@@ -62,7 +65,7 @@ public partial class MainWindow : Window
             if (!OperatingSystem.IsMacOS() || Application.Current is not { } app) return;
             var other = (app.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows.OfType<MainWindow>().LastOrDefault(w => w != this && !w._closing);
             if (other is not null) other.UpdateApplicationMenu();
-            else NativeMenu.SetMenu(app, null);
+            else _applicationMenuWindow = null;
         };
     }
 
@@ -496,11 +499,29 @@ public partial class MainWindow : Window
     private void UpdateApplicationMenu()
     {
         if (!OperatingSystem.IsMacOS() || Application.Current is not { } app) return;
-        var menu = new NativeMenu();
-        var about = new NativeMenuItem("About Aster Terminal"); about.Click += (_, _) => AboutClicked(null, new RoutedEventArgs()); menu.Add(about);
-        var preferences = new NativeMenuItem("Settings…") { Gesture = _shortcuts.GetValueOrDefault("Preferences") };
-        preferences.Click += (_, _) => Observe(PreferencesAsync()); menu.Add(preferences);
-        NativeMenu.SetMenu(app, menu);
+        _applicationMenuWindow = new(this);
+        var menu = NativeMenu.GetMenu(app);
+        if (_applicationPreferences is null || menu != _applicationMenu)
+        {
+            // Avalonia adds standard macOS commands only to its first app menu.
+            // Reuse that object across activations instead of discarding Quit/Hide.
+            menu ??= new NativeMenu();
+            var defaultAbout = menu.Items.OfType<NativeMenuItem>().FirstOrDefault(item => item.Header == "About Avalonia");
+            if (defaultAbout is not null) menu.Items.Remove(defaultAbout);
+            var about = new NativeMenuItem("About Aster Terminal");
+            about.Click += (_, _) => { if (_applicationMenuWindow?.TryGetTarget(out var owner) == true) owner.AboutClicked(null, new RoutedEventArgs()); };
+            var preferences = new NativeMenuItem("Settings…");
+            preferences.Click += (_, _) => { if (_applicationMenuWindow?.TryGetTarget(out var owner) == true) owner.Observe(owner.PreferencesAsync()); };
+            menu.Items.Insert(0, about); menu.Items.Insert(1, preferences);
+            menu.NeedsUpdate += (_, _) =>
+            {
+                var available = _applicationMenuWindow?.TryGetTarget(out var owner) == true && !owner._closing;
+                about.IsEnabled = preferences.IsEnabled = available;
+            };
+            _applicationMenu = menu; _applicationPreferences = preferences;
+            if (NativeMenu.GetMenu(app) is null) NativeMenu.SetMenu(app, menu);
+        }
+        _applicationPreferences.Gesture = _shortcuts.GetValueOrDefault("Preferences");
     }
     private void ReplayClicked(object? sender, RoutedEventArgs e)
     {

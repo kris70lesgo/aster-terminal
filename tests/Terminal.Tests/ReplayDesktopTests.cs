@@ -36,7 +36,9 @@ public sealed partial class DesktopTests
             // Output arrives while the replay window has focus, without typing into
             // a disabled modal owner or sending anything from the replay renderer.
             Command(OperatingSystem.IsWindows() ? "ping -n 3 127.0.0.1 >nul & echo __LIVE_AFTER_REPLAY__" : "sleep 1; printf '%s%s\\n' '__LIVE_' 'AFTER_REPLAY__'");
-            viewer = new ReplayWindow(pane.Replay, pane.Profile); viewer.Show(); viewer.SelectFrame(firstIndex);
+            viewer = new ReplayWindow(pane.Replay, pane.Profile); _ = viewer.ShowDialog(window); viewer.SelectFrame(firstIndex);
+            SendKey(viewer, Key.Right); Assert.Equal(firstIndex + 1, viewer.SelectedFrameIndex);
+            SendKey(viewer, Key.Left); Assert.Equal(firstIndex, viewer.SelectedFrameIndex);
             Assert.StartsWith("FIRST_RECORDED", TerminalBufferExport.ToPlainText(viewer.DisplayEngine.CreateSnapshot().Buffer));
             Assert.Contains("SECOND_RECORDED", Text(pane)); Assert.True(pane.Terminal.IsRunning);
             await Until(() => Visible().Split('\n').Any(line => line.Trim() == "__LIVE_AFTER_REPLAY__"));

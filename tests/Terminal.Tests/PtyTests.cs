@@ -71,13 +71,13 @@ public sealed class PtyTests
             return Connection.StartAsync(new TerminalLaunchOptions { CommandLine = settings.Commandline, WorkingDirectory = profile.Directory, Columns = 80, Rows = 24, EnvironmentVariables = settings.Environment });
         }
         public string Snapshot() { lock (_gate) return TerminalBufferExport.ToPlainText(Engine.CreateSnapshot(true).Buffer); }
-        public async Task Until(Func<bool> condition)
+        public async Task Until(Func<bool> condition, TimeSpan? timeout = null)
         {
             var watch = Stopwatch.StartNew();
             while (!condition())
             {
                 if (Fault.Task.IsCompletedSuccessfully) throw new IOException("PTY fault", Fault.Task.Result);
-                if (watch.Elapsed > TimeSpan.FromSeconds(10)) throw new TimeoutException(Output);
+                if (watch.Elapsed > (timeout ?? TimeSpan.FromSeconds(10))) throw new TimeoutException(Output);
                 await Task.Delay(20);
             }
         }
@@ -231,6 +231,9 @@ public sealed class PtyTests
     {
         await using var shell = new Shell();
         await shell.Start("powershell.exe -NoLogo -NoProfile");
+        // Process creation precedes PSReadLine readiness. Do not type a command
+        // into PowerShell's startup/capability negotiation, especially on cold CI.
+        await shell.Until(() => shell.Snapshot().Contains("PS ") && shell.Snapshot().TrimEnd().EndsWith('>'), TimeSpan.FromSeconds(30));
         // Use PowerShell's host output; legacy .NET Console.WriteLine chooses
         // the shell's OEM code page and can replace non-ASCII before ConPTY.
         shell.Connection.Write("Write-Output ('POWER' + 'SHELL_OK'); Write-Output ([char]0x754c)\r");

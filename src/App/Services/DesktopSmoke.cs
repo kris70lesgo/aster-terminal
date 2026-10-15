@@ -86,6 +86,7 @@ public static class DesktopSmoke
             checks.Add("Dark and light native render snapshots");
             Shortcut(window, "NewTab");
             await Until(() => window.FindControl<TabControl>("Tabs")!.ItemCount == 2 && Panes(window).Any(p => p.Terminal.IsRunning));
+            if (OperatingSystem.IsMacOS() && NativeMenu.GetMenu(Application.Current!)?.Items.OfType<NativeMenuItem>().Any(item => item.Header == "Quit") != true) throw new InvalidOperationException("Standard macOS application commands were removed.");
             await Task.Delay(300);
             SaveImage(window, Path.Combine(reportDirectory, "tabs.png"));
             Shortcut(window, "SplitRight");

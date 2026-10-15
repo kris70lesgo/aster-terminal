@@ -35,3 +35,11 @@ checks additionally verify independent nested tmux panes, kernel dimensions,
 exact grid fit and same-shell reattachment. Automatic in-shell -CC, remote
 attach, complete terminal checkpoint/DVR compatibility, Python API and global
 hotkeys remain separate long-term targets.
+
+0.6.0 adds native global hotkey acceptance and fixes detach disposal/input races.
+0.7.0 completes the planned original Python API investigation with a useful,
+verified core: original client window/tab/pane creation, actual input, Unicode
+viewport reads, notifications and close, plus private authentication and explicit
+unsupported APIs. Final 66-test/native three-platform and installed Retina checks
+pass. This is a usable competition release satisfying the documented definition
+of done; full upstream parity remains the separately tracked long-term milestone.

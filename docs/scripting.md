@@ -67,9 +67,11 @@ they need to continue. Aster limits scripting to 16 windows / 64 live panes,
 and a request rate of 32/s (burst 64). Slow clients are disconnected.
 
 Acceptance uses iterm2 2.30 / protobuf 7.36.2 / websockets 17.2. The original
-client has passed local native Mac real-session listing, tab/split creation,
-shell-local variable + Unicode output reads, updated layout and owned-session
-close. Six focused C# tests additionally cover cookie/Origin/subprotocol refusal,
+client passes real native separate-window creation/close, session listing,
+tab/split creation, shell-local variable + Unicode output reads, updated layout
+and owned-session close on macOS, Windows and Linux in final run 38792785139.
+Six focused C# tests additionally cover cookie/Origin/subprotocol refusal,
 private credentials, exclusive ownership/restart, malformed/oversize frames,
-subscriptions, actual desktop operations, scroll preservation and preferences/exit lifecycle. Separate native window creation/close also passed locally. Three-platform
-final-package evidence is required before a release support claim.
+subscriptions, desktop operations, scroll preservation and preferences/exit
+lifecycle. Final packages and the exact installed Mac archive at 2× Retina pass;
+provenance and explicit remaining limits are in test-matrix.md.

@@ -1,4 +1,4 @@
-# Migration report — competition release 0.6.0
+# Migration report — competition release 0.7.0
 
 Aster Terminal delivers the competition subset of an iTerm2 behavior migration:
 real local terminals, profiles, tabs, nested panes, search, themes, persisted
@@ -51,7 +51,7 @@ Milestone A release deliverables: source, runnable three-platform archives with
 checksums, before/after evidence, tests and write-up. Entrant declarations and
 contest form submission remain separate human steps; no submission is asserted.
 Milestone B includes automatic in-shell tmux -CC / remote attach, full binary/image DVR compatibility,
-full trigger action/plist compatibility, Python API, configurable hotkeys/Wayland and broader graphics/compatibility coverage.
+full trigger action/plist compatibility, full Python API parity, configurable hotkeys/Wayland and broader graphics/compatibility coverage.
 
 0.6.0 adds an opt-in native global summon window: registered Carbon / Win32 /
 XCB chord, dedicated real terminal, retained shell through hide/show, visible
@@ -61,3 +61,13 @@ Local Retina package checks pass; the human chord attempt on macOS 26 remains
 unverified. Verification also found/fixed a detach-output disposal race that could
 end the supposedly persistent shell. The failure and 120-cycle regression evidence
 are retained in migration-log.md. No new runtime dependency was introduced.
+
+0.7.0 adds a disabled-by-default, authenticated original Python API core, using
+pinned protobuf/WebSocket libraries and a bundled transport-only launcher. The
+original iterm2 2.30 client now creates real windows/tabs/panes, sends commands,
+reads Unicode viewport contents and closes owned sessions on all three platforms.
+Six focused scripting tests and the full 66-test suite pass. Final source ef6d642 /
+run 38792785139, payload/license audit and exact installed 2× Retina evidence are
+recorded in test-matrix.md. The local test helper's virtualenv-path failure is
+preserved separately. Unsupported APIs and historical coordinate limits remain
+explicit in scripting.md; this is not a full AppleScript/iTerm2 API port.

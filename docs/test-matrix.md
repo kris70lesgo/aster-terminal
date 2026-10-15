@@ -1,4 +1,41 @@
-# Verification matrix — release 0.6.0, 2026-10-16
+# Verification matrix — release 0.7.0, 2026-10-16
+
+Final source **ef6d64269f4825ae1b9947b8269f052bb1cb114c**, run
+[38792785139](https://github.com/kris70lesgo/aster-terminal/actions/runs/38792785139):
+macOS/Linux **64 passed + 2 Windows-only skips**; Windows **57 passed + 9
+Unix-only skips**; **66 total, zero failures** on each target. All three native
+self-contained packages pass baseline, global hotkey, abrupt UI crash/reopen
+and original Python client acceptance; Unix additionally passes native tmux.
+Reports/images/TRX are in `evidence/v0.7.0-{rid}`; exact installed Mac archive
+passes at **2× Retina**, including Python 3.12.13, in `v0.7.0-macos-retina`.
+`ci-v0.7.0.json` and `payload-v0.7.0.json` record source and archive provenance.
+
+| New acceptance | Evidence |
+|---|---|
+| Private loopback cookie/Host/Origin/subprotocol, original protobuf IDs/notifications, malformed/oversize refusal, exclusive credential owner/restart | ScriptingServerTests |
+| Actual tab/split/input/Unicode viewport/styles, scroll offset retained, profile listing and owned-session close | ScriptingDesktopTests over real authenticated WebSocket / PTY |
+| Default off, preferences enable/idempotent update/disable/re-enable, rotated credentials and exit with a connected client | ScriptingPreferencesService test; settings/preferences persistence |
+| Original iterm2 2.30 creates a separate native window and closes its only tab while original shell survives; tab/split, real shell-local variable + wide/combining Unicode read, layout refresh and close | scripting/python-client.json + scripting.json + python-panes.png on all three native packages and installed Retina Mac |
+| Native remaining-window/PTY and credential cleanup | scripting.json; baseline/recovery/tmux/hotkey acceptance retained |
+| ASP.NET Core 10.0.13 and Google.Protobuf 3.36.2 present with full notices; compiler tools/test payload/credentials absent | payload-v0.7.0.json, aspnet-runtime-provenance.json and source map |
+
+CI uses Python 3.12.10 (macOS/Windows) and 3.12.15 (Linux); local original-client
+checks also pass 3.14.7. Protobuf 7.36.2 / websockets 17.2 are pinned. The local
+installed check initially timed out after its helper resolved the virtualenv
+Python symlink to the base interpreter, bypassing the pinned environment. The
+helper now retains the virtualenv path; the unchanged exact app archive passes
+with Python 3.12.13 at 2×. Failure report is preserved in
+`scripting-local-launcher-before-fix.json`; it is not counted as a pass.
+
+Supported API operations and explicit incompatible RPC/history/coordinate limits
+are in scripting.md. This establishes the core subset, not all iTerm2 scripting
+or AppleScript parity. Physical local macOS 26 global-key input remains unverified;
+final CI cross-application hotkeys pass. Wayland, IME/AltGr/native gestures,
+multi-monitor and broader compatibility gaps remain in the feature inventory.
+
+## Historical release 0.6.0
+
+### Verification matrix — release 0.6.0, 2026-10-16
 
 Final source **c651f5bad692a55f1fd36c27442e4aa5c2da1400**, run
 [38763544008](https://github.com/kris70lesgo/aster-terminal/actions/runs/38763544008):

@@ -52,3 +52,11 @@ and public GPL/build/screenshot/write-up requirements. Source c651f5b / native
 run 38763544008 passes all three platforms, including global summon and recovery.
 Exact archives/notices/checksums and installed Retina Mac verified. No new bundled
 dependency. Form submission and entrant declarations remain separate.
+
+2026-10-16 0.7.0 milestone recheck: same official deadline, public GPL,
+platform-download, screenshot and migration-write-up requirements. Final source
+ef6d642 / run 38792785139 passes all native targets including the original Python
+client core. New protobuf/ASP.NET/runtime and build-only tool licences/source
+provenance audited; exact release archives retain notices and source references.
+Installed Retina Mac passes. Entrant declarations and actual submission remain
+separate; no form submission was performed.

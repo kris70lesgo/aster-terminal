@@ -41,7 +41,7 @@ archives are unsigned. These distribution properties are disclosed in installati
 instructions. System libraries (macOS frameworks, Linux desktop/font libraries,
 Windows console components) are supplied by the host, not secretly relicensed.
 
-## Scripting work, 2026-10-15 (not yet released)
+## Scripting core, release 0.7.0, verified 2026-10-16
 
 Google.Protobuf 3.36.2: NuGet nuspec pins protocolbuffers/protobuf
 2c74169b34066ceb8ddb6b882fcb3fb32d737a55. Its full BSD-3-Clause LICENSE is
@@ -53,7 +53,7 @@ and must remain absent from runtime payloads.
 Microsoft.AspNetCore.App.Runtime.osx-arm64 10.0.13 nuspec pins dotnet/dotnet
 4099f83977f4d29604a9aeb971fb0a7bc1d5f699. Package LICENSE.txt and
 THIRD-PARTY-NOTICES.TXT are retained separately as AspNetCore-MIT.txt and
-AspNetCore-ThirdParty.txt. All three target runtime nuspecs pin that same source commit (evidence/aspnet-runtime-provenance.json). Final each-OS payload inventory is still required before release.
+AspNetCore-ThirdParty.txt. All three target runtime nuspecs pin that same source commit (evidence/aspnet-runtime-provenance.json). Final each-OS payload inventory, runtime versions, notices and compiler-tool absence pass in evidence/payload-v0.7.0.json.
 
 The upstream API schema is pinned/copyright-attributed in source and NOTICE.
 Python client tests use the original PyPI iterm2 2.30 in a separate process, with protobuf 7.36.2 / websockets 17.2 pinned in scripts/python/requirements.txt; the

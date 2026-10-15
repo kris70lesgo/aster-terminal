@@ -504,3 +504,22 @@ lifecycle; credentials rotate/remove correctly. Final run will repeat this added
 window and lifecycle coverage. macOS input-source shortcuts 60/61 were read-only
 checked and disabled; they do not explain the earlier undetected human hotkey.
 No OS shortcuts or security settings were changed.
+
+## 2026-10-16 — 0.7.0 final native/package acceptance
+
+Final source ef6d64269f4825ae1b9947b8269f052bb1cb114c / run 38792785139
+passes macOS/Linux 64 + 2 skips and Windows 57 + 9 skips, all 66 total, zero
+failures. All final native packages pass original Python client separate-window,
+tab/split/input/Unicode/layout/close acceptance plus baseline/recovery/hotkey;
+Unix additionally passes tmux. The exact Mac CI archive was ditto-extracted,
+signature checked, installed and retested at 2× Retina. Its first Python test
+helper mistakenly resolved the venv executable to base Python and timed out;
+that report is retained. Keeping the actual venv path fixes the helper, and the
+unchanged exact archive passes with Python 3.12.13 and all pinned dependencies.
+
+Archive SHA-256/CRC/tar inventory, Linux executable modes, installed/extracted Mac
+signatures, complete notices, ASP.NET/Protobuf runtime versions, and absence of
+compiler/test/user settings/API credential payloads pass. Payload hashes are in
+payload-v0.7.0.json. New runtime/build licences and source metadata are retained.
+Official rules rechecked via curl after a web-reader timeout; unchanged requirements.
+Entrant declarations/form submission remain separate and unperformed.

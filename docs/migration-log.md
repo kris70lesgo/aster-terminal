@@ -269,3 +269,39 @@ signature verification with the prior bundle backed up. Final hashes are in
 `evidence/payload-v0.4.0.json`. Versioned public evidence uses isolated fixtures;
 existing user sessions/settings are preserved. Source/evidence and all six
 archive/checksum assets accompany 0.4.0. Remaining advanced parity stays explicit.
+
+## 2026-10-15 — live process recovery work
+
+Added a separate C# PTY owner and authenticated current-user pipe transport, private
+capability catalog, exclusive reconnect, bounded queues/journal and detached-host
+expiry. Original native transports remain unchanged. The window owns/disposes its
+frontend; normal close still terminates processes, while crash/lost IPC or explicit
+detach keeps the real shell available. Pane startup can reconnect detached sessions.
+No environment/output is persisted and no network listener or NuGet dependency is
+added. iTerm2 process adoption/socket-handshake source informed the design; no
+upstream server code is copied. Journal-overflow text recovery limits are explicit.
+
+Local tests pass for retained shell variables/process metadata, detached output
+replay, resize, exclusive ownership, rejected capabilities, actual window detach/
+reopen, cleanup, invalid frame lengths and bounded checkpoint compaction. Added
+native abrupt-UI-exit/reopen acceptance; native/three-platform verification pending.
+A natural process exit initially caused an unnecessary termination reconnect during
+Dispose; Close now recognises its received exit before attempting that fallback.
+
+First native hosted candidate failed actual sixel pixels despite passing parser/
+transport tests: grid echoes reset cell geometry to 1×1. The pipe now carries
+pixel dimensions as well as columns/rows, initial host queries use actual cell
+metrics, and frontend replay preserves these metrics. Added a grid/image geometry
+regression; the failing report is retained as host-pixels-before-fix.json.
+
+The first native crash/reopen fixture recovered the same shell variable and Unix
+PID, but typed its stty check before the control's debounced PTY resize reached
+the host. Native verification now waits for the host grid acknowledgement before
+checking kernel dimensions, rather than accepting the local renderer grid alone.
+The earlier failure remains in recovery-before-resize-ack.json.
+
+Local final recovery suite: 52 passed, 2 Windows-only skips, zero failures / 54
+total. Native Mac at 2× Retina passes abrupt UI exit/reopen with actual same
+Unix PID, shell-local variable, host/session identity, input, acknowledged resize
+and normal-close host/PTY cleanup. Baseline native graphics also passes after
+the cell-pixel transport fix. Three-target CI is the next verification gate.

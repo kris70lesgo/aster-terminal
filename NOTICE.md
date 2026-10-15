@@ -10,6 +10,9 @@ The bounded screen replay design studies DVR.m/DVRBuffer.m at that same
 commit (copyright George Nachman, GPLv2-or-later, elect GPLv3): capacity,
 oldest-frame eviction and rejection of frames over half the budget. The C#
 keyframe implementation is new and does not read iTerm2 binary DVR files.
+Live host design studies the same pinned iTerm2 task/server adoption and socket
+handshake implementation. The C# named-pipe host is a new implementation; no
+upstream server code or binary is copied.
 Output rule design studies Trigger.m, HighlightTrigger.m and MarkTrigger.m at
 the same pinned source. Its C# regex/highlight/bookmark implementation is new;
 no host command or clipboard trigger actions are enabled.

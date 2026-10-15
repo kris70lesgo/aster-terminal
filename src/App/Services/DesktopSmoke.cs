@@ -46,7 +46,7 @@ public static class DesktopSmoke
             var columns = terminal.Engine.Columns;
             var resizeWatch = Stopwatch.StartNew();
             window.Width = 850; window.Height = 570;
-            await Until(() => terminal.Engine.Columns != columns);
+            await Until(() => terminal.Engine.Columns != columns && Panes(window)[0].IsHostGridSynchronized);
             resizeMs = resizeWatch.Elapsed.TotalMilliseconds;
             checks.Add("Native layout resized terminal grid");
             // Reprint through the shell after reflow so the visible screenshot contains the proof.

@@ -17,6 +17,7 @@ public sealed record AppSettings
     public List<TerminalProfile> Profiles { get; init; } = [];
     public string DefaultProfileId { get; init; } = "";
     public string Theme { get; init; } = "Dark";
+    public bool KeepSessionsAlive { get; init; } = true;
     public bool RestoreLayout { get; init; } = true;
     public bool CopyOnSelect { get; init; }
     public bool ShowStatusBar { get; init; }

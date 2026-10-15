@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "timestamp": "2026-10-15T09:27:16.566174+00:00",
+  "os": "macOS 26.7.2",
+  "renderScaling": 1,
+  "checks": [
+    "Abrupt native UI process exit and reopen recover the same host session/process metadata",
+    "Shell-local variable and actual Unix shell PID survive UI termination; fresh shells cannot satisfy this"
+  ],
+  "error": "System.TimeoutException: Native recovery acceptance timed out.\n   at Aster.App.Services.RecoverySmoke.Until(Func\u00601 condition) in /Users/agastya/Documents/ChatGPT/alvonia real/src/App/Services/RecoverySmoke.cs:line 107\n   at Aster.App.Services.RecoverySmoke.Run(MainWindow window, IClassicDesktopStyleApplicationLifetime lifetime, String state, String report, Boolean resume) in /Users/agastya/Documents/ChatGPT/alvonia real/src/App/Services/RecoverySmoke.cs:line 78"
+}

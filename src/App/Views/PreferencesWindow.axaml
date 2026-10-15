@@ -18,6 +18,8 @@
           <CheckBox x:Name="ReplayEnabledBox" Content="Keep screen replay in memory" />
           <TextBlock Text="Replay keeps a bounded history of visible text screens. It is discarded when the pane closes." TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}" />
           <Separator />
+          <CheckBox x:Name="KeepSessionsAliveBox" Content="Recover live shells after a crash or detached window" />
+          <TextBlock Text="Applies to new panes. Closing a pane or quitting normally still ends its processes. Detached hosts expire after 24 hours." TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}" />
           <CheckBox x:Name="RestoreLayoutBox" Content="Reopen tabs and split layouts on launch" />
           <TextBlock Text="Reopened panes start new shells. Running processes do not survive quitting." TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}" />
           <CheckBox x:Name="CopyOnSelectBox" Content="Copy text automatically after selection" />

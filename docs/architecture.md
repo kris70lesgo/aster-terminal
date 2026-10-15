@@ -20,7 +20,7 @@ The selected NuGet package **does not bundle the Unix `dt-pty-host` executable**
 
 `src/App`: Avalonia XAML window, session tabs/split layouts, focus, clipboard/search commands. `src/Terminal.Sessions`: platform factory, profiles and bounded iTerm2 protocol adapter. `native/unix-pty`: pinned forkpty host. `tests/Terminal.Tests`: engine regression tests, iTerm2 protocol tests, real PTY/process integration. Two production assemblies keep these boundaries explicit without proliferating projects. Profiles/settings persistence, safe opt-in bash/zsh launch wrappers, and shortcut resolution belong in their dedicated classes. Preferences edit a transaction and apply validated appearance changes to existing panes; shell changes affect new processes. A binary pane tree captures layout ratios and starts fresh shells on reopen.
 
-Each pane owns one TermControl, one engine and one connection. The package processes output away from the UI thread, caps input queue at 4 MiB and posts invalidation to the dispatcher. UI close awaits asynchronous disposal of every session. Failed startup remains visible with its error; no simulated output. Independent sessions survive tab switching but not application exit; persistence is configuration only, never live process restoration.
+Each pane owns one TermControl, one engine and one connection. The package processes output away from the UI thread, caps input queue at 4 MiB and posts invalidation to the dispatcher. UI close awaits asynchronous disposal of every session. Failed startup remains visible with its error; no simulated output. Independent sessions survive tab switching. Configuration restores fresh layouts; the separate local host architecture below additionally preserves live processes across UI loss when enabled. Normal close terminates sessions.
 
 iTerm2-specific migration first targets OSC 133 exit-code parsing (including attributes) and OSC 1337 CurrentDir/RemoteHost metadata. Port the upstream parsing algorithm and translate only bounded approved metadata to the engine's supported protocol. Remote output is data; it cannot change profiles, steal focus, execute commands, access files or write clipboard. VT clipboard writes and notifications disabled by profile. Bracketed paste follows engine mode.
 
@@ -81,3 +81,38 @@ Native smoke writes all three through a real shell and asserts red/green/blue
 pixels in the native client render. Kitty file/shared-memory transfers remain
 rejected by the pinned engine. This does not establish every image variant,
 animation, graphics replay or upstream binary compatibility.
+
+## Live local session hosts, 0.5.0 work
+
+A recoverable pane owns its frontend connection; a separate headless C# host
+owns the native PTY. Current-user-only .NET named pipes plus a random 256-bit
+capability authenticate every connection. Descriptors live in the settings
+folder's private sessions directory (0700, descriptor 0600 on Unix); Windows
+uses the user's local application-data ACL and same-user/elevation pipe checks.
+Descriptors contain identity/profile/capability, never output or environment.
+There is no network listener. Only one frontend may attach at a time.
+
+Normal pane/window close sends explicit terminate and awaits owned host cleanup.
+Lost IPC leaves the shell alive; Shell → Detach and close window requests that
+behavior intentionally. Startup and Recover live sessions reconnect detached
+hosts as tabs. Recovery keeps actual shell variables/jobs/process identities;
+it does not merely reopen a command. Pane layout recovery remains independent.
+New panes use hosts when KeepSessionsAlive is enabled; existing direct panes
+cannot be converted in place. Detached hosts expire after 24 hours, and the
+catalog caps descriptors at 64 with dead-host pruning.
+
+Framed messages are at most 1 MiB; input chunks at most 32 KiB and queued input
+at most 4 MiB / 128 frames. Slow frontends are detached rather than blocking PTY
+output. The in-memory display journal is capped at 8 MiB raw frame data and 4096
+frames, including ordered grid changes. Pixel dimensions travel with grid sizes so image anchors and window queries retain cell geometry. The host answers terminal queries;
+frontends suppress protocol replies so replay does not send duplicate responses.
+After journal overflow the host compacts to its real current text viewport;
+recovery explicitly warns that older history/graphics/full terminal state may
+need redraw. Shell state stays alive. This is not iTerm2's socket/server protocol
+or full binary terminal-state serialization, and host OS restart is not survived.
+
+Native acceptance deliberately exits a fixture UI process without Closing or
+Dispose (exit 73), starts a new native UI, and verifies the same session/process,
+shell-local variable, Unix shell PID, routed input, resize and final termination.
+No user session or settings are used by this test. Final target-OS evidence is
+required before support claims.

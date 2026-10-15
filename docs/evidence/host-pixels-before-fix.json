@@ -1,0 +1,20 @@
+{
+  "passed": false,
+  "os": "macOS 26.7.2",
+  "architecture": "Arm64",
+  "timestamp": "2026-10-15T09:21:10.631799+00:00",
+  "renderScaling": 2,
+  "startupToShellOutputMs": 846.6145,
+  "nativeResizeToGridMs": 25.3432,
+  "initialWorkingSetBytes": 216662016,
+  "measurementScope": "One native acceptance launch; startup includes sentinel command/polling. Resize includes dispatcher/polling. Not a cold-start or comparative benchmark.",
+  "checks": [
+    "Native window, PTY and routed text/Enter \u2192 real shell output",
+    "Native layout resized terminal grid",
+    "Native screen replay seeks historical text while the real shell continues; independent read-only renderer",
+    "Historical grid survives viewer resize without reflow",
+    "Profile output rule matches real shell output and exposes per-pane history",
+    "Window/session cleanup completed"
+  ],
+  "error": "System.InvalidOperationException: Native inline image pixels missing: red=1, green=552, blue=1591.\n   at Aster.App.Services.DesktopSmoke.Run(MainWindow window, IClassicDesktopStyleApplicationLifetime lifetime, String reportDirectory, SettingsStore store) in /Users/agastya/Documents/ChatGPT/alvonia real/src/App/Services/DesktopSmoke.cs:line 102"
+}

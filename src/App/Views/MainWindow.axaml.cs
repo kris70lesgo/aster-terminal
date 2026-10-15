@@ -8,6 +8,7 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using Aster.App.Services;
 using Aster.Sessions;
+using Aster.Sessions.Hosting;
 using Aster.Sessions.Persistence;
 using Devolutions.Terminal.Core;
 using Devolutions.Terminal.Settings;
@@ -30,6 +31,8 @@ public partial class MainWindow : Window
     private readonly List<Workspace> _workspaces = [];
     private readonly SemaphoreSlim _layoutMutation = new(1, 1);
     private readonly SettingsStore? _store;
+    private readonly SessionCatalog? _sessions;
+    private bool _detachOnClose;
     private AppSettings _settings;
     private Dictionary<string, KeyGesture> _shortcuts = [];
     private bool _closing, _closed;
@@ -51,6 +54,7 @@ public partial class MainWindow : Window
     private MainWindow(AppSettings settings, SettingsStore? store)
     {
         _settings = settings; _store = store;
+        _sessions = store is null ? null : new SessionCatalog(Path.Combine(Path.GetDirectoryName(store.Path)!, "sessions"));
         InitializeComponent();
         MainMenu.IsVisible = !OperatingSystem.IsMacOS();
         Width = Math.Clamp(settings.WindowWidth, 620, 2400); Height = Math.Clamp(settings.WindowHeight, 320, 1800);
@@ -97,6 +101,23 @@ public partial class MainWindow : Window
 
     private async Task InitializeSessionsAsync()
     {
+        if (_settings.KeepSessionsAlive && _sessions is not null)
+        {
+            var recoverable = await _sessions.DetachedAsync();
+            if (recoverable.Count == 0 && Directory.EnumerateFiles(_sessions.DirectoryPath, "*.json").Any())
+            {
+                await Task.Delay(150); recoverable = await _sessions.DetachedAsync();
+            }
+            if (recoverable.Count > 0)
+            {
+                foreach (var session in recoverable)
+                {
+                    var profile = _settings.Profiles.FirstOrDefault(p => p.Id == session.ProfileId) ?? DefaultProfile with { Name = session.Name };
+                    await NewTabCoreAsync(profile, session);
+                }
+                return;
+            }
+        }
         if (_settings.RestoreLayout && _settings.Layout.Count > 0)
         {
             foreach (var saved in _settings.Layout)
@@ -130,9 +151,9 @@ public partial class MainWindow : Window
         return workspace;
     }
 
-    private TerminalPane CreatePane(Workspace workspace, TerminalProfile profile)
+    private TerminalPane CreatePane(Workspace workspace, TerminalProfile profile, HostedSession? recovered = null)
     {
-        var pane = new TerminalPane(profile, Light, _settings.CopyOnSelect, _settings.ScreenReplayEnabled);
+        var pane = new TerminalPane(profile, Light, _settings.CopyOnSelect, _settings.ScreenReplayEnabled, _settings.KeepSessionsAlive || recovered is not null ? _sessions : null, recovered);
         workspace.Panes.Add(pane);
         pane.Activated += (_, _) => Activate(workspace, pane);
         pane.TitleChanged += (_, _) => { if (workspace.Active == pane) UpdateTitle(workspace); };
@@ -169,10 +190,10 @@ public partial class MainWindow : Window
         try { if (!_closing) await change(); }
         finally { _layoutMutation.Release(); }
     }
-    private async Task NewTabCoreAsync(TerminalProfile profile)
+    private async Task NewTabCoreAsync(TerminalProfile profile, HostedSession? recovered = null)
     {
         var workspace = AddWorkspace();
-        var pane = CreatePane(workspace, profile);
+        var pane = CreatePane(workspace, profile, recovered);
         workspace.Root.Children.Add(pane); Tabs.SelectedItem = workspace.Tab;
         Activate(workspace, pane);
         await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Loaded);
@@ -228,7 +249,7 @@ public partial class MainWindow : Window
     private async Task<bool> ConfirmCloseAsync(IEnumerable<TerminalPane> panes)
     {
         var count = panes.Count(p => p.Terminal.IsRunning);
-        return !_settings.ConfirmClose || count == 0 ||
+        return _detachOnClose || !_settings.ConfirmClose || count == 0 ||
             await DialogWindow.Confirm(this, "Close running sessions", $"Close {count} running shell session(s)? Their processes will end.");
     }
     private async Task ClosePaneCoreAsync()
@@ -325,7 +346,7 @@ public partial class MainWindow : Window
             if (_store is not null && _store.LoadWarning is null)
                 try { _store.Save(_store.Settings with { Layout = CaptureLayout(), WindowWidth = Width, WindowHeight = Height }); }
                 catch (Exception error) { Console.Error.WriteLine("Settings save failed: " + error.Message); }
-            foreach (var pane in _workspaces.SelectMany(w => w.Panes).ToArray()) await pane.CloseAsync();
+            foreach (var pane in _workspaces.SelectMany(w => w.Panes).ToArray()) { if (_detachOnClose) pane.DetachOnClose(); await pane.CloseAsync(); }
             _closed = true; Close();
         }
         catch (Exception error) { _closing = false; ShowError($"Session cleanup failed: {error.Message}"); }
@@ -471,7 +492,7 @@ public partial class MainWindow : Window
         else Close();
     }
     private void AboutClicked(object? sender, RoutedEventArgs e) =>
-        Observe(DialogWindow.Confirm(this, "About Aster Terminal", "Aster Terminal 0.4.0\nIndependent iTerm2 migration to Avalonia.\nGPL-3.0-or-later. No warranty.\nTerminal component: Devolutions (MIT).\nSee LICENSE and bundled notices.", "Done"));
+        Observe(DialogWindow.Confirm(this, "About Aster Terminal", "Aster Terminal 0.5.0\nIndependent iTerm2 migration to Avalonia.\nGPL-3.0-or-later. No warranty.\nTerminal component: Devolutions (MIT).\nSee LICENSE and bundled notices.", "Done"));
 
     private void ShowError(string message) { AlertText.Text = message; AlertBar.IsVisible = true; }
     private void DismissAlertClicked(object? sender, RoutedEventArgs e) => AlertBar.IsVisible = false;
@@ -522,6 +543,24 @@ public partial class MainWindow : Window
             if (NativeMenu.GetMenu(app) is null) NativeMenu.SetMenu(app, menu);
         }
         _applicationPreferences.Gesture = _shortcuts.GetValueOrDefault("Preferences");
+    }
+    public void DetachAndClose()
+    {
+        if (_workspaces.SelectMany(w => w.Panes).Any(p => !p.IsHosted && p.Terminal.IsRunning))
+        { ShowError("Some panes cannot be detached. Enable live recovery and open new panes first."); return; }
+        _detachOnClose = true; Close();
+    }
+    private void DetachWindowClicked(object? sender, RoutedEventArgs e) => DetachAndClose();
+    private async void RecoverSessionsClicked(object? sender, RoutedEventArgs e)
+    {
+        if (_sessions is null) return;
+        var sessions = await _sessions.DetachedAsync();
+        if (sessions.Count == 0) { ShowError("There are no detached live sessions to recover."); return; }
+        foreach (var session in sessions)
+        {
+            var profile = _settings.Profiles.FirstOrDefault(p => p.Id == session.ProfileId) ?? DefaultProfile with { Name = session.Name };
+            Observe(ChangeLayoutAsync(() => NewTabCoreAsync(profile, session)));
+        }
     }
     private void ReplayClicked(object? sender, RoutedEventArgs e)
     {

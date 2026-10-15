@@ -15,6 +15,9 @@ public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
     private readonly VtParser _parser;
     private readonly object _gate = new();
     private long _revision;
+    private double _cellWidth = 10, _cellHeight = 20;
+    public (double Width, double Height) CellPixels { get { lock (_gate) return (_cellWidth, _cellHeight); } }
+    public void ResizeKeepingCellMetrics(int columns, int rows) { lock (_gate) { _inner.Resize(columns, rows, _cellWidth, _cellHeight); _revision++; } }
     private readonly OutputTriggerProcessor _triggers = new();
     private int _triggerLinesThisFeed;
     private bool _triggerActivity;
@@ -32,6 +35,7 @@ public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
             _revision++; return true;
         }
     }
+    public bool ProtocolResponsesEnabled { get; set; } = true;
     public long Revision => Interlocked.Read(ref _revision);
     public string? RemoteHost { get; private set; }
     public int? LastCommandExitCode { get; private set; }
@@ -43,6 +47,7 @@ public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
         _dispatch = _inner;
         _parser = new VtParser(this);
         _inner.ConfigureOptionalFeatures(false, false);
+        _inner.ResponseReady += (_, data) => { if (ProtocolResponsesEnabled) ResponseReady?.Invoke(this, data); };
     }
 
     public void Feed(ReadOnlySpan<byte> data)
@@ -154,7 +159,7 @@ public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
     public int ScrollOffset { get { lock (_gate) return _inner.ScrollOffset; } }
     public void Resize(int columns, int rows, double cellWidth = 1, double cellHeight = 1)
     {
-        lock (_gate) { _inner.Resize(columns, rows, cellWidth, cellHeight); _revision++; }
+        lock (_gate) { _cellWidth = cellWidth; _cellHeight = cellHeight; _inner.Resize(columns, rows, cellWidth, cellHeight); _revision++; }
     }
     public void SetScrollOffset(int offset)
     {
@@ -184,5 +189,5 @@ public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
     public event EventHandler<TerminalNotification>? NotificationRequested { add => _inner.NotificationRequested += value; remove => _inner.NotificationRequested -= value; }
     public event EventHandler<TerminalEngineDiagnostic>? Diagnostic { add => _inner.Diagnostic += value; remove => _inner.Diagnostic -= value; }
     public event EventHandler? Bell { add => _inner.Bell += value; remove => _inner.Bell -= value; }
-    public event EventHandler<byte[]>? ResponseReady { add => _inner.ResponseReady += value; remove => _inner.ResponseReady -= value; }
+    public event EventHandler<byte[]>? ResponseReady;
 }

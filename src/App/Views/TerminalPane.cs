@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Aster.Sessions;
+using Aster.Sessions.Hosting;
 using Aster.Sessions.Protocols;
 using Aster.Sessions.ShellIntegration;
 using Devolutions.Terminal;
@@ -15,6 +16,11 @@ public sealed class TerminalPane : Border
     private readonly DispatcherTimer _replayTimer;
     private readonly Button _triggerHistory = new() { Content = "Triggered lines", IsVisible = false, FontSize = 11, MinHeight = 24, Padding = new Thickness(6, 2), HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right };
     private readonly ItermTerminalEngine _engine;
+    private readonly HostedConnection? _hosted;
+    public HostedSession? HostedSession => _hosted?.Session;
+    public bool IsHostGridSynchronized => _hosted is null || (_hosted.Columns == Terminal.Engine.Columns && _hosted.Rows == Terminal.Engine.Rows);
+    public bool IsHosted => _hosted is not null;
+    public void DetachOnClose() => _hosted?.DetachOnClose();
     private bool _active;
     private Task? _start;
     private Task? _close;
@@ -25,7 +31,7 @@ public sealed class TerminalPane : Border
     public event EventHandler? Activated;
     public event EventHandler<string>? TitleChanged;
 
-    public TerminalPane(TerminalProfile profile, bool light = false, bool copyOnSelect = false, bool replayEnabled = true)
+    public TerminalPane(TerminalProfile profile, bool light = false, bool copyOnSelect = false, bool replayEnabled = true, SessionCatalog? sessions = null, HostedSession? recovered = null)
     {
         Profile = profile;
         SessionTitle = profile.Name;
@@ -33,9 +39,20 @@ public sealed class TerminalPane : Border
         _engine = new ItermTerminalEngine(historySize: profile.HistorySize);
         _engine.ConfigureTriggers(profile.Triggers);
         _engine.TriggersChanged += TriggersChanged;
+        if (sessions is not null)
+        {
+            _engine.ProtocolResponsesEnabled = false;
+            _hosted = new(sessions, profile.Id, profile.Name, recovered);
+            _hosted.Restoring += (_, _) => _engine.Reset();
+            _hosted.GridChanged += (_, grid) =>
+            {
+                if (grid.PixelWidth > 0 && grid.PixelHeight > 0) _engine.Resize(grid.Columns, grid.Rows, (double)grid.PixelWidth / grid.Columns, (double)grid.PixelHeight / grid.Rows);
+                else _engine.ResizeKeepingCellMetrics(grid.Columns, grid.Rows);
+            };
+        }
         Terminal = new TermControl(_engine)
         {
-            ConnectionFactory = _ => PlatformConnectionFactory.Create(),
+            ConnectionFactory = _ => _hosted is not null ? _hosted : PlatformConnectionFactory.Create(),
             AccessibleName = $"{profile.Name} terminal",
             InteractionOptions = new() { CopyOnSelect = copyOnSelect }
         };
@@ -80,9 +97,14 @@ public sealed class TerminalPane : Border
             var cell = TermControl.MeasureCell(settings, TopLevel.GetTopLevel(this)?.RenderScaling ?? 1);
             var columns = Math.Max(2, (int)((Terminal.Bounds.Width - 10) / cell.Width));
             var rows = Math.Max(2, (int)((Terminal.Bounds.Height - 10) / cell.Height));
+            var scale = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1;
+            var pixelWidth = Math.Max(1, (int)Math.Round(cell.Width * scale)); var pixelHeight = Math.Max(1, (int)Math.Round(cell.Height * scale));
+            if (_hosted is not null) _hosted.InitialCellPixels = (pixelWidth, pixelHeight);
             await Terminal.StartAsync(settings, columns, rows);
+            _hosted?.Resize(columns, rows, columns * pixelWidth, rows * pixelHeight);
             Terminal.Engine.Scheme = Profile.ResolveColors(_light);
             _status.IsVisible = false;
+            if (_hosted?.RecoveryNotice is { } notice) ShowMessage(notice);
             Terminal.Focus();
         }
         catch (Exception error)

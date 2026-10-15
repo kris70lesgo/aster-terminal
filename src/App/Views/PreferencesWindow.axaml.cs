@@ -33,6 +33,7 @@ public partial class PreferencesWindow : Window
         ThemeBox.ItemsSource = new[] { "Dark", "Light", "System" };
         ThemeBox.SelectedItem = store.Settings.Theme;
         CursorBox.ItemsSource = new[] { "Block", "Vertical bar", "Underline" };
+        KeepSessionsAliveBox.IsChecked = store.Settings.KeepSessionsAlive;
         RestoreLayoutBox.IsChecked = store.Settings.RestoreLayout;
         CopyOnSelectBox.IsChecked = store.Settings.CopyOnSelect;
         ConfirmCloseBox.IsChecked = store.Settings.ConfirmClose;
@@ -123,7 +124,7 @@ public partial class PreferencesWindow : Window
             Profiles = _profiles.ToList(), DefaultProfileId = _defaultId, Theme = ThemeBox.SelectedItem as string ?? "Dark",
             AlwaysShowTabBar = AlwaysShowTabBarBox.IsChecked == true, ShowStatusBar = ShowStatusBarBox.IsChecked == true,
             ScreenReplayEnabled = ReplayEnabledBox.IsChecked == true,
-            RestoreLayout = RestoreLayoutBox.IsChecked == true, CopyOnSelect = CopyOnSelectBox.IsChecked == true,
+            KeepSessionsAlive = KeepSessionsAliveBox.IsChecked == true, RestoreLayout = RestoreLayoutBox.IsChecked == true, CopyOnSelect = CopyOnSelectBox.IsChecked == true,
             ConfirmClose = ConfirmCloseBox.IsChecked == true, Shortcuts = shortcuts,
         };
         _store.Save(settings);

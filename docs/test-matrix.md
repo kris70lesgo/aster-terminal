@@ -1,4 +1,15 @@
-# Verification matrix — release 0.4.0, 2026-10-15
+# Work in progress — live recovery, 0.5.0
+
+Local full suite: **52 passed, 2 Windows-only skips, zero failures / 54 total**.
+Native macOS 26.7.2/M5 at 2× Retina passes abrupt UI exit/reopen, actual retained
+shell variable and Unix PID, same host/session metadata, input, acknowledged PTY
+resize and normal-close cleanup. Native baseline also passes all three inline
+image pixel checks after transporting cell pixel geometry. Three-OS verification
+is pending; the released 0.4.0 baseline remains below. HostProtocolTests,
+HostedSessionTests and RecoveryDesktopTests cover bounds, geometry, exclusive
+ownership, rejected capabilities, live state, detach/reopen and cleanup.
+
+## Verification matrix — release 0.4.0, 2026-10-15
 
 The 0.3.0 baseline below remains covered. Version 0.4.0 adds profile output rules,
 inline image pixel acceptance and anchored scrollback during incoming output.
@@ -27,8 +38,8 @@ The first candidate's Windows cold-start rule failure is preserved in
 
 Rule bounds and unsupported actions are in [output-rules.md](output-rules.md).
 Graphics variants/animation, IME, physical native clipboard/mouse gestures,
-multi-monitor, Windows 11 and Wayland retain explicit gaps. Live reconnection,
-native tmux -CC, Python API and global hotkeys remain unimplemented.
+multi-monitor, Windows 11 and Wayland retain explicit gaps. Native tmux -CC, Python API and global hotkeys remain unimplemented.
+Live reconnection is under verification above.
 
 ## Historical release 0.3.0, 2026-10-15
 

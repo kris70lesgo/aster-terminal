@@ -20,6 +20,8 @@ public partial class MainWindow : Window
 {
     private sealed class Workspace
     {
+        private static int _nextScriptingId;
+        public int ScriptingId { get; } = Interlocked.Increment(ref _nextScriptingId);
         public TabItem Tab { get; } = new();
         public Grid Root { get; } = new();
         public TextBlock Label { get; } = new() { MaxWidth = 170, TextTrimming = Avalonia.Media.TextTrimming.CharacterEllipsis };
@@ -234,19 +236,21 @@ public partial class MainWindow : Window
     }
     private async Task SplitCoreAsync(bool below)
     {
-        if (Current is not { } workspace || Active is not { } old) return;
+        if (Current is { } workspace && Active is { } old) await SplitPaneCoreAsync(workspace, old, below);
+    }
+    private async Task<TerminalPane?> SplitPaneCoreAsync(Workspace workspace, TerminalPane old, bool below, bool before = false, TerminalProfile? profile = null)
+    {
         Unzoom(workspace);
-        if (old.Parent is not Grid parent) return;
-        var pane = CreatePane(workspace, old.Profile);
+        if (old.Parent is not Grid parent) return null;
+        var pane = CreatePane(workspace, profile ?? old.Profile);
         var split = SplitGrid(below);
         var row = Grid.GetRow(old); var col = Grid.GetColumn(old);
         parent.Children.Remove(old); Grid.SetRow(split, row); Grid.SetColumn(split, col); parent.Children.Add(split);
-        Grid.SetRow(old, 0); Grid.SetColumn(old, 0); split.Children.Add(old);
-        if (below) Grid.SetRow(pane, 2); else Grid.SetColumn(pane, 2);
-        split.Children.Add(pane);
-        Activate(workspace, pane);
+        Grid.SetRow(old, below && before ? 2 : 0); Grid.SetColumn(old, !below && before ? 2 : 0); split.Children.Add(old);
+        if (!before) { if (below) Grid.SetRow(pane, 2); else Grid.SetColumn(pane, 2); }
+        split.Children.Add(pane); Tabs.SelectedItem = workspace.Tab; Activate(workspace, pane);
         await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Loaded);
-        await pane.StartAsync();
+        await pane.StartAsync(); return pane;
     }
     private async Task<bool> ConfirmCloseAsync(IEnumerable<TerminalPane> panes)
     {
@@ -257,6 +261,10 @@ public partial class MainWindow : Window
     private async Task ClosePaneCoreAsync()
     {
         if (Current is not { } workspace || Active is not { } pane || !await ConfirmCloseAsync([pane])) return;
+        await RemovePaneCoreAsync(workspace, pane);
+    }
+    private async Task RemovePaneCoreAsync(Workspace workspace, TerminalPane pane)
+    {
         Unzoom(workspace);
         await pane.CloseAsync(); workspace.Panes.Remove(pane);
         if (workspace.Panes.Count == 0) { RemoveWorkspace(workspace); return; }
@@ -407,6 +415,8 @@ public partial class MainWindow : Window
             if (_preferences.Result is { } settings)
             {
                 ApplySettings(settings);
+                try { await ScriptingService.Shared.ConfigureAsync(_store); }
+                catch (Exception error) when (error is IOException or System.Net.Sockets.SocketException or UnauthorizedAccessException) { ShowError("Scripting API unavailable: " + error.Message); }
                 try { HotkeyWindowService.Shared.Configure(_store); } catch (IOException error) { ShowError(error.Message); }
                 if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
                     foreach (var window in lifetime.Windows.OfType<MainWindow>().Where(w => w != this && w._store?.Path == _store.Path)) window.ApplySettings(settings);

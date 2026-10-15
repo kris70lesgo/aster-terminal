@@ -134,6 +134,11 @@
           "SkiaSharp.NativeAssets.Linux": "3.119.4"
         }
       },
+      "Google.Protobuf": {
+        "type": "Transitive",
+        "resolved": "3.36.2",
+        "contentHash": "Ci1q1iJg74qAE5riTA2FbMS0wPbpruPQI/JQ9DrAsRo2VsSxgt1e/pmxGxgrci+pXJEgrSYg2vPl8rrStZkclQ=="
+      },
       "HarfBuzzSharp": {
         "type": "Transitive",
         "resolved": "8.3.1.5",
@@ -219,7 +224,8 @@
       "terminal.sessions": {
         "type": "Project",
         "dependencies": {
-          "Devolutions.Terminal.Control": "[2026.3.4, )"
+          "Devolutions.Terminal.Control": "[2026.3.4, )",
+          "Google.Protobuf": "[3.36.2, )"
         }
       }
     },

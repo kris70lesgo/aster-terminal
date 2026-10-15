@@ -15,7 +15,8 @@ public sealed class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            if (desktop.Args?.Any(arg => arg is "--hotkey-smoke" or "--hotkey-peer" or "--hotkey-manual") == true) desktop.MainWindow = HotkeySmoke.Configure(desktop, desktop.Args);
+            if (desktop.Args?.Contains("--scripting-smoke") == true) desktop.MainWindow = ScriptingSmoke.Configure(desktop, desktop.Args);
+            else if (desktop.Args?.Any(arg => arg is "--hotkey-smoke" or "--hotkey-peer" or "--hotkey-manual") == true) desktop.MainWindow = HotkeySmoke.Configure(desktop, desktop.Args);
             else if (desktop.Args?.Contains("--tmux-smoke") == true) desktop.MainWindow = TmuxSmoke.Configure(desktop, desktop.Args);
             else if (desktop.Args?.Any(arg => arg is "--recovery-start" or "--recovery-resume") == true) desktop.MainWindow = RecoverySmoke.Configure(desktop, desktop.Args);
             else if (desktop.Args?.Contains("--smoke-test") == true)
@@ -37,9 +38,14 @@ public sealed class App : Application
             else
             {
                 var store = new SettingsStore(); var window = new MainWindow(store); desktop.MainWindow = window;
+                window.Opened += async (_, _) =>
+                {
+                    try { await ScriptingService.Shared.ConfigureAsync(store); }
+                    catch (Exception error) when (error is IOException or System.Net.Sockets.SocketException or UnauthorizedAccessException) { window.ReportApplicationError("Scripting API unavailable: " + error.Message); }
+                };
                 try { HotkeyWindowService.Shared.Configure(store); } catch (IOException error) { window.ReportApplicationError(error.Message); }
             }
-            desktop.Exit += (_, _) => HotkeyWindowService.Shared.Dispose();
+            desktop.Exit += (_, _) => { HotkeyWindowService.Shared.Dispose(); ScriptingService.Shared.StopAtExit(); };
         }
         base.OnFrameworkInitializationCompleted();
     }

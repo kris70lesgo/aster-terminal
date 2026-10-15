@@ -14,6 +14,8 @@ namespace Aster.App.Views;
 
 public sealed class TerminalPane : Border
 {
+    internal ItermTerminalEngine ScriptingEngine => _engine;
+    internal string ScriptingId { get; } = Guid.NewGuid().ToString("N");
     private readonly TextBlock _status = new() { FontSize = 11, Margin = new Thickness(8, 4), Foreground = Brushes.LightGray, IsVisible = false, TextWrapping = TextWrapping.Wrap };
     private readonly DispatcherTimer _replayTimer;
     private readonly Button _triggerHistory = new() { Content = "Triggered lines", IsVisible = false, FontSize = 11, MinHeight = 24, Padding = new Thickness(6, 2), HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right };

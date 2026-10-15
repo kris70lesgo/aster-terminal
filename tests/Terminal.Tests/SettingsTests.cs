@@ -15,14 +15,14 @@ public sealed class SettingsTests : IDisposable
         var profile = store.Settings.Profiles[0] with { FontSize = 19, FontFamily = "monospace", EnvironmentVariables = new() { ["ASTER_TEST"] = "hello=world" } };
         var settings = store.Settings with
         {
-            Profiles = [profile], DefaultProfileId = profile.Id, Theme = "Light", HotkeyWindowEnabled = true,
+            Profiles = [profile], DefaultProfileId = profile.Id, Theme = "Light", HotkeyWindowEnabled = true, ScriptingEnabled = true, ScriptingPort = 1913,
             Layout = [new("Saved tab", new() { Direction = "Rows", Ratio = .3, Children = [new() { ProfileId = profile.Id }, new() { ProfileId = profile.Id }] })]
         };
         store.Save(settings);
         var loaded = new SettingsStore(FilePath).Settings;
         Assert.Equal("Light", loaded.Theme); Assert.Equal(19, loaded.Profiles[0].FontSize);
         Assert.Equal("hello=world", loaded.Profiles[0].EnvironmentVariables["ASTER_TEST"]);
-        Assert.Equal(.3, loaded.Layout[0].Root.Ratio); Assert.True(loaded.HotkeyWindowEnabled);
+        Assert.Equal(.3, loaded.Layout[0].Root.Ratio); Assert.True(loaded.HotkeyWindowEnabled); Assert.True(loaded.ScriptingEnabled); Assert.Equal(1913, loaded.ScriptingPort);
     }
     [Fact]
     public void DamagedSettingsRecoverBackupAndPreserveOriginal()

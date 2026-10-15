@@ -20,6 +20,11 @@
           <Separator />
           <CheckBox x:Name="HotkeyWindowBox" Content="Summon a terminal with Ctrl+Alt+Space (Control+Option+Space on Mac)" />
           <TextBlock Text="Works while Aster is running. Press again while the window is active to hide it; its shell keeps running. Linux requires X11. Shortcut conflicts are reported after saving." TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}" />
+          <Separator />
+          <CheckBox x:Name="ScriptingEnabledBox" Content="Allow trusted Python scripts to control Aster" />
+          <TextBlock Text="Scripts can read terminal contents, send commands and close sessions. Only local clients with your private Aster credential can connect. Disabled by default." TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}" />
+          <Grid ColumnDefinitions="130,*"><TextBlock Text="Local API port:" VerticalAlignment="Center" /><NumericUpDown x:Name="ScriptingPortBox" Grid.Column="1" Width="130" HorizontalAlignment="Left" Minimum="1024" Maximum="65535" Increment="1" /></Grid>
+          <Separator />
           <CheckBox x:Name="KeepSessionsAliveBox" Content="Recover live shells after a crash or detached window" />
           <TextBlock Text="Applies to new panes. Closing a pane or quitting normally still ends its processes. Detached hosts expire after 24 hours." TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}" />
           <CheckBox x:Name="RestoreLayoutBox" Content="Reopen tabs and split layouts on launch" />

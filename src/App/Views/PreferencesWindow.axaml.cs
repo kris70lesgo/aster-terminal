@@ -33,6 +33,8 @@ public partial class PreferencesWindow : Window
         ThemeBox.ItemsSource = new[] { "Dark", "Light", "System" };
         ThemeBox.SelectedItem = store.Settings.Theme;
         CursorBox.ItemsSource = new[] { "Block", "Vertical bar", "Underline" };
+        ScriptingEnabledBox.IsChecked = store.Settings.ScriptingEnabled;
+        ScriptingPortBox.Value = store.Settings.ScriptingPort;
         HotkeyWindowBox.IsChecked = store.Settings.HotkeyWindowEnabled;
         KeepSessionsAliveBox.IsChecked = store.Settings.KeepSessionsAlive;
         RestoreLayoutBox.IsChecked = store.Settings.RestoreLayout;
@@ -125,6 +127,8 @@ public partial class PreferencesWindow : Window
             Profiles = _profiles.ToList(), DefaultProfileId = _defaultId, Theme = ThemeBox.SelectedItem as string ?? "Dark",
             AlwaysShowTabBar = AlwaysShowTabBarBox.IsChecked == true, ShowStatusBar = ShowStatusBarBox.IsChecked == true,
             ScreenReplayEnabled = ReplayEnabledBox.IsChecked == true,
+            ScriptingEnabled = ScriptingEnabledBox.IsChecked == true,
+            ScriptingPort = (int)(ScriptingPortBox.Value ?? 1912),
             HotkeyWindowEnabled = HotkeyWindowBox.IsChecked == true,
             KeepSessionsAlive = KeepSessionsAliveBox.IsChecked == true, RestoreLayout = RestoreLayoutBox.IsChecked == true, CopyOnSelect = CopyOnSelectBox.IsChecked == true,
             ConfirmClose = ConfirmCloseBox.IsChecked == true, Shortcuts = shortcuts,

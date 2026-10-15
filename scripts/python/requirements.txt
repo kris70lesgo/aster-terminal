@@ -1,0 +1,4 @@
+# Original upstream client plus transport/codec pins, verified on PyPI 2026-10-16.
+iterm2==2.30
+protobuf==7.36.2
+websockets==17.2

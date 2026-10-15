@@ -10,6 +10,10 @@ Aster-authored and iTerm2-adapted code is GPL-3.0-or-later. Preserve original at
 
 | Material | Basis | Treatment |
 |---|---|---|
+| iTerm2 API schema | `proto/api.proto` at pinned upstream SHA, project COPYING GPLv2-or-later | Copied with attribution / GPLv3 election and C# namespace-only option; generated C# stays in obj; original Python client is tested out of process, not bundled |
+| Google.Protobuf 3.36.2 | BSD-3-Clause; nuspec source `2c74169b34066ceb8ddb6b882fcb3fb32d737a55` | Runtime serializer; full upstream licence retained |
+| Grpc.Tools 2.84.0 | Apache-2.0 plus component notices; nuspec source `3252a89f10d8e92997862167ca7d095ecda85973` | Build-only compiler, PrivateAssets=all, no runtime/tool binary payload; full source LICENSE retained |
+| ASP.NET Core shared runtime 10.0.13 | MIT / third-party notices; runtime nuspec dotnet/dotnet source `4099f83977f4d29604a9aeb971fb0a7bc1d5f699` | Kestrel only for opt-in loopback API; full runtime licence/notices retained; final each-OS payload audit required |
 | iTerm2 OSC 133 exit-code scan and OSC 1337 metadata behavior | COPY­ING GPLv2-or-later, elect GPLv3; VT100Terminal.m `exitCodeFromArgs`, `executeXtermSetKvp` | C# adaptation, upstream attribution in source and NOTICE; generic LICENSE file is not copied as our GPLv3 licence |
 | iTerm2 bounded DVR design, capacity / oldest-frame eviction / half-capacity frame guard | `DVR.m` / `DVRBuffer.m` GPLv2-or-later, elect GPLv3, pinned same source SHA | New C# text keyframes; studied design attributed in source and NOTICE. No binary DVR codec or upstream assets copied |
 | iTerm2 hotkey design study | `iTermCarbonHotKeyController.m`, same pinned GPL source; platform SDK APIs | Independent C# OS registrations/window lifecycle; no upstream class, library binary or asset copied |

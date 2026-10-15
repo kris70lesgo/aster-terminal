@@ -17,6 +17,8 @@ public sealed record AppSettings
     public List<TerminalProfile> Profiles { get; init; } = [];
     public string DefaultProfileId { get; init; } = "";
     public string Theme { get; init; } = "Dark";
+    public bool ScriptingEnabled { get; init; }
+    public int ScriptingPort { get; init; } = 1912;
     public bool HotkeyWindowEnabled { get; init; }
     public bool KeepSessionsAlive { get; init; } = true;
     public bool RestoreLayout { get; init; } = true;

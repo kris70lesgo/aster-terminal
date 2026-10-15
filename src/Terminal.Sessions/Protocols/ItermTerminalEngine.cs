@@ -180,6 +180,16 @@ public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
             });
         }
     }
+    /// <summary>Read the live screen without changing the user's scrolled view.</summary>
+    public (TerminalSnapshot Snapshot, ColorScheme Scheme) CaptureLiveScreen()
+    {
+        lock (_gate)
+        {
+            var offset = _inner.Buffer.ScrollOffset;
+            try { _inner.Buffer.ScrollOffset = 0; var captured = CaptureScreen(); return (captured.Snapshot, captured.Scheme); }
+            finally { _inner.Buffer.ScrollOffset = offset; }
+        }
+    }
     public string WrapPaste(string text) => _inner.WrapPaste(text);
 
     public event EventHandler? Invalidated { add => _inner.Invalidated += value; remove => _inner.Invalidated -= value; }

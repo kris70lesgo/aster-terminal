@@ -43,3 +43,12 @@ no tmux source or executable is included.
 Native summon hotkeys study iTerm2 iTermCarbonHotKeyController.m at the pinned
 source and platform SDK APIs. Independent C# registration/window lifecycle code;
 no upstream hotkey classes or application assets are copied.
+
+iTerm2 proto/api.proto is copied from 069b6e0dd8f3f0d82fc08ea5d294d28f7c5b986e
+(George Nachman and contributors), under upstream COPYING GPLv2-or-later with
+Aster's GPLv3 election. The C# namespace and attribution comments are adapted;
+wire field numbers/types are preserved. Generated C# is built from this schema.
+Google.Protobuf 3.36.2 is BSD-3-Clause; Grpc.Tools 2.84.0 is build-only Apache-2.0
+with its retained component notices. ASP.NET Core 10.0.13 provides only local
+scripting transport and is MIT with third-party notices. Full notices are in
+licenses/. No Python client is bundled in the application payload.

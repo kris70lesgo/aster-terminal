@@ -4,6 +4,10 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Devolutions.Terminal.Control" Version="2026.3.4" />
+    <PackageReference Include="Google.Protobuf" Version="3.36.2" />
+    <PackageReference Include="Grpc.Tools" Version="2.84.0" PrivateAssets="all" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <Protobuf Include="Scripting/api.proto" GrpcServices="None" />
   </ItemGroup>
   <ItemGroup>
     <None Update="ShellIntegration/*.bash;ShellIntegration/*.zsh" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />

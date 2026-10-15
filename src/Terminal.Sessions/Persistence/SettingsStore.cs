@@ -74,6 +74,7 @@ public sealed partial class SettingsStore
 
     public static void Validate(AppSettings settings)
     {
+        if (settings.ScriptingPort is < 1024 or > 65535) throw new ArgumentException("Scripting port must be 1024–65535.");
         if (settings.Version != 1) throw new ArgumentException("Unsupported settings version.");
         if (settings.Profiles is null || settings.Profiles.Count is < 1 or > 100) throw new ArgumentException("Keep between 1 and 100 profiles.");
         if (settings.Profiles.Any(p => p is null)) throw new ArgumentException("A profile is damaged.");

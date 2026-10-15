@@ -40,3 +40,23 @@ macOS packaging uses ad-hoc signing, not Developer ID notarization. Windows
 archives are unsigned. These distribution properties are disclosed in installation
 instructions. System libraries (macOS frameworks, Linux desktop/font libraries,
 Windows console components) are supplied by the host, not secretly relicensed.
+
+## Scripting work, 2026-10-15 (not yet released)
+
+Google.Protobuf 3.36.2: NuGet nuspec pins protocolbuffers/protobuf
+2c74169b34066ceb8ddb6b882fcb3fb32d737a55. Its full BSD-3-Clause LICENSE is
+retained in Protobuf-BSD.txt. Grpc.Tools 2.84.0 pins grpc/grpc
+3252a89f10d8e92997862167ca7d095ecda85973; its full LICENSE (Apache-2.0 and
+component notices) is retained in Grpc-Tools-Apache-2.0.txt. Tools are build-only
+and must remain absent from runtime payloads.
+
+Microsoft.AspNetCore.App.Runtime.osx-arm64 10.0.13 nuspec pins dotnet/dotnet
+4099f83977f4d29604a9aeb971fb0a7bc1d5f699. Package LICENSE.txt and
+THIRD-PARTY-NOTICES.TXT are retained separately as AspNetCore-MIT.txt and
+AspNetCore-ThirdParty.txt. Final Windows/Linux runtime provenance and payload
+inventory are pending; no new package is released from this worktree yet.
+
+The upstream API schema is pinned/copyright-attributed in source and NOTICE.
+Python client tests use pinned upstream source in a separate process; the
+client is not incorporated into the application runtime. The launcher adapts
+transport/auth only so it never asks a separate running iTerm2 for credentials.

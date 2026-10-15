@@ -453,3 +453,17 @@ The local human hotkey attempt was not detected; its 180-second fixture expired.
 It is unverified, not a physical-focus pass. A later read-only macOS check reported
 secure event input disabled; that does not establish its state at the attempted
 keypress. Earlier CI global-key checks are recorded separately.
+
+## 2026-10-16 — 0.6.0 final package verification
+
+Source c651f5bad692a55f1fd36c27442e4aa5c2da1400 / run 38763544008 passes
+macOS/Linux 58 + 2 skips and Windows 51 + 9 skips, all 60 total and zero
+failures. Every self-contained package passes native baseline, abrupt UI
+crash/reopen and actual global chord with isolated peer foreground; Unix also
+passes tmux. Exact CI Mac archive was extracted with ditto, signature checked,
+installed and retested at 2× Retina. Native baseline/recovery/tmux/registration
+pass. Its human physical attempt remains unverified. Archive checksums, CRC/tar
+inventory, Linux executable modes, notices, absence of user/test payload and
+installed/extracted Mac signatures pass; payload-v0.6.0.json records hashes.
+Official challenge announcement reread at this milestone; requirements unchanged.
+Entrant declarations and form submission remain separate and unperformed.

@@ -46,3 +46,9 @@ packages additionally pass actual native tmux control attach. Current-user
 recovery and explicit local control integration add no dependency/bundled tmux
 source. Release payloads retain GPL, runtime, dependency and font notices.
 Entrant declarations and actual form submission remain separate.
+
+2026-10-16 0.6.0 milestone recheck: official announcement reread, same deadline
+and public GPL/build/screenshot/write-up requirements. Source c651f5b / native
+run 38763544008 passes all three platforms, including global summon and recovery.
+Exact archives/notices/checksums and installed Retina Mac verified. No new bundled
+dependency. Form submission and entrant declarations remain separate.

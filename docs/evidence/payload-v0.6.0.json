@@ -1,0 +1,68 @@
+{
+  "timestamp": "2026-10-15T18:55:57.951751+00:00",
+  "buildSource": "c651f5bad692a55f1fd36c27442e4aa5c2da1400",
+  "ciRun": 38763544008,
+  "payloads": {
+    "osx-arm64": {
+      "archive": "aster-terminal-0.6.0-osx-arm64.zip",
+      "sha256": "617dbebd202e106e301ea1af78c800d52af63ac692c14ab75119551637bfa5e4",
+      "requiredNoticesPresent": [
+        "Avalonia-MIT.txt",
+        "Cascadia-OFL.txt",
+        "DEPENDENCY-SOURCES.md",
+        "Devolutions-MIT.txt",
+        "Dotnet-MIT.txt",
+        "Dotnet-ThirdParty.txt",
+        "LICENSE",
+        "LICENSING.md",
+        "NOTICE.md",
+        "NotoEmoji-OFL.txt"
+      ],
+      "userSettingsHistoryAndTestPayloadAbsent": true,
+      "archiveCrcOrTarInventoryVerified": true,
+      "archiveExtractionSignatureVerified": true,
+      "installedPath": "/Applications/Aster Terminal.app",
+      "installedVersion": "0.6.0",
+      "installedSignatureVerified": true,
+      "localGuiRelaunch": "PASS exact installed CI archive; macOS 26.7.2 / 2x Retina; baseline, recovery, tmux reports in evidence/v0.6.0-macos-retina"
+    },
+    "win-x64": {
+      "archive": "aster-terminal-0.6.0-win-x64.zip",
+      "sha256": "3860dce5bc8a05484fc17b32b6d3077d477eb30437c9a03226396738e4748d9e",
+      "requiredNoticesPresent": [
+        "Avalonia-MIT.txt",
+        "Cascadia-OFL.txt",
+        "ConPTY.txt",
+        "DEPENDENCY-SOURCES.md",
+        "Devolutions-MIT.txt",
+        "Dotnet-MIT.txt",
+        "Dotnet-ThirdParty.txt",
+        "LICENSE",
+        "LICENSING.md",
+        "NOTICE.md",
+        "NotoEmoji-OFL.txt"
+      ],
+      "userSettingsHistoryAndTestPayloadAbsent": true,
+      "archiveCrcOrTarInventoryVerified": true
+    },
+    "linux-x64": {
+      "archive": "aster-terminal-0.6.0-linux-x64.tar.gz",
+      "sha256": "c7f9681e026a221c2eb26f11ac6dd663433de0c0eb95a829e56ba89925d6761e",
+      "requiredNoticesPresent": [
+        "Avalonia-MIT.txt",
+        "Cascadia-OFL.txt",
+        "DEPENDENCY-SOURCES.md",
+        "Devolutions-MIT.txt",
+        "Dotnet-MIT.txt",
+        "Dotnet-ThirdParty.txt",
+        "LICENSE",
+        "LICENSING.md",
+        "NOTICE.md",
+        "NotoEmoji-OFL.txt"
+      ],
+      "userSettingsHistoryAndTestPayloadAbsent": true,
+      "archiveCrcOrTarInventoryVerified": true,
+      "executablePermissionsPresent": true
+    }
+  }
+}

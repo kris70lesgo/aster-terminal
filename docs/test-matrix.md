@@ -1,4 +1,32 @@
-# Verification matrix — release 0.5.0, 2026-10-15
+# Verification matrix — release 0.6.0, 2026-10-16
+
+Final source **c651f5bad692a55f1fd36c27442e4aa5c2da1400**, run
+[38763544008](https://github.com/kris70lesgo/aster-terminal/actions/runs/38763544008):
+macOS/Linux **58 passed + 2 Windows-only skips**; Windows **51 passed + 9
+Unix-only skips**; **60 total, zero failures** on each OS. All native packages
+pass baseline, global hotkey summon/hide/show and abrupt UI crash/reopen; Unix
+packages additionally pass native tmux. Versioned reports/images/TRX are in
+`evidence/v0.6.0-{rid}`, with exact installed-archive 2× Retina checks in
+`evidence/v0.6.0-macos-retina`. `ci-v0.6.0.json` and `payload-v0.6.0.json` record
+source and package provenance.
+
+| New acceptance | Evidence |
+|---|---|
+| Lazy dedicated terminal, hide/show retains actual shell, disable/close releases key and preserves normal layout | HotkeyDesktopTests, settings/preferences roundtrip |
+| Real OS registration, another foreground process, injected global chord, summon/hide/show with retained variable, normal cleanup | hotkey/hotkey.json and native image on all three OSes; no physical-focus skips in final CI |
+| Immediate queued-input/detach/reattach retains last actual shell value | HostedSessionTests, eight cycles per run; 15 focused local runs / 120 cycles |
+| Late output cannot reach disposed detach subscription | Reproduced trace in detach-disposal-before-fix.txt, corrected cleanup order, full suite/native recovery |
+
+Local macOS 26 verifies native registration/Carbon dispatch/unregister and the
+exact installed package at 2× Retina. Its human physical-key attempt was not
+detected before fixture expiry; local cross-app physical summon is **unverified**.
+Wayland, custom global chords, per-profile dropdown animation, keyboard-layout /
+sleep / multi-monitor and IME/native gesture coverage retain explicit gaps.
+The fixed chord is opt-in. Python API and automatic tmux -CC remain unfinished.
+
+## Historical release 0.5.0
+
+### Verification matrix — release 0.5.0, 2026-10-15
 
 Final source **96a90b4f3fdf45f78d108cc6b4dba5768285e103**, run
 [38752301646](https://github.com/kris70lesgo/aster-terminal/actions/runs/38752301646):

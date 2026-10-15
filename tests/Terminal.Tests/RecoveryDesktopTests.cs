@@ -38,7 +38,7 @@ public sealed partial class DesktopTests
             catch (TimeoutException error)
             {
                 var details = string.Join(" | ", second.GetVisualDescendants().OfType<TextBlock>().Select(t => t.Text));
-                throw new TimeoutException($"Recovered window did not start: panes={Panes(second).Length}; {details}", error);
+                throw new TimeoutException($"Recovered window did not start: panes={Panes(second).Length}; exits={string.Join(";", Panes(second).Select(p => p.Terminal.ConnectionState))}; {details}", error);
             }
             var recovered = Panes(second)[0]; Assert.Equal(id, recovered.HostedSession!.Id); Assert.Equal(process, recovered.Terminal.ProcessMetadata);
             Command(recovered, OperatingSystem.IsWindows() ? "echo __WINDOW_RECOVERED__%ASTER_RECOVERY_VALUE%" : "printf '__WINDOW_RECOVERED__%s\\n' \"$ASTER_RECOVERY_VALUE\"");

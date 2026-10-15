@@ -305,3 +305,11 @@ total. Native Mac at 2× Retina passes abrupt UI exit/reopen with actual same
 Unix PID, shell-local variable, host/session identity, input, acknowledged resize
 and normal-close host/PTY cleanup. Baseline native graphics also passes after
 the cell-pixel transport fix. Three-target CI is the next verification gate.
+
+The Windows recovery window fixture exposed cancellation of an accepted PTY
+write when its frontend detached. ConPTY treats in-flight input cancellation
+as a session cancellation. Host input writes now use host lifetime rather than
+attachment lifetime; the accepted frame can finish after UI loss. The pending
+frontend queue also drains before an explicit detach request. The failed runs
+38734958032 and 38735744022 remain evidence; repaired Windows verification is
+pending. macOS/Linux native crash/reopen passed both candidates.

@@ -37,10 +37,11 @@ public sealed class SessionHost
         _engine.ResponseReady += (_, bytes) => { if (_native.IsRunning) _native.Write(bytes); };
         _native.SessionExited += (_, info) =>
         {
+            Console.Error.WriteLine($"Session host PTY exit: reason={info.Reason}, code={info.ExitCode}");
             lock (_gate) _subscriber?.Writer.TryWrite(new(HostProtocol.Exit, HostProtocol.Encode(info)));
             _ended.TrySetResult();
         };
-        _native.Faulted += (_, _) => _ended.TrySetResult();
+        _native.Faulted += (_, error) => { Console.Error.WriteLine("Session host PTY fault: " + error); _ended.TrySetResult(); };
     }
     public static async Task<int> RunAsync(string descriptor)
     {
@@ -183,7 +184,9 @@ public sealed class SessionHost
             {
                 case HostProtocol.Input:
                     if (frame.Data.Length > 32768) throw new InvalidDataException("Input chunk is too large.");
-                    await _native.WriteAsync(frame.Data, token); break;
+                    // An accepted input frame belongs to the host. Cancelling it when
+                    // the UI pipe disconnects can terminate ConPTY mid-write.
+                    await _native.WriteAsync(frame.Data, _stop.Token); break;
                 case HostProtocol.Grid:
                     var (columns, rows) = HostProtocol.ReadGrid(frame.Data);
                     var pixels = HostProtocol.ReadPixels(frame.Data);

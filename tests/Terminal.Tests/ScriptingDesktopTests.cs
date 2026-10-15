@@ -15,6 +15,30 @@ namespace Aster.Tests;
 public sealed partial class DesktopTests
 {
     [AvaloniaFact]
+    public async Task ScriptingPreferencesServiceStartsOnlyWhenEnabledAndReleasesCredentialsOnDisableAndExit()
+    {
+        var directory = Path.Combine(Path.GetTempPath(), "aster-api-service-" + Guid.NewGuid().ToString("N"));
+        var store = new SettingsStore(Path.Combine(directory, "settings.json")); var service = new ScriptingService();
+        var endpointFile = ScriptingEndpoint.FilePath(directory);
+        using var reservation = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+        reservation.Start(); var port = ((System.Net.IPEndPoint)reservation.LocalEndpoint).Port; reservation.Stop();
+        try
+        {
+            Assert.False(store.Settings.ScriptingEnabled); await service.ConfigureAsync(store); Assert.False(File.Exists(endpointFile));
+            store.Save(store.Settings with { ScriptingEnabled = true, ScriptingPort = port }); await service.ConfigureAsync(store);
+            var first = ScriptingEndpoint.Read(endpointFile); Assert.Equal(port, first.Port);
+            await service.ConfigureAsync(store); Assert.Equal(first, ScriptingEndpoint.Read(endpointFile));
+            store.Save(store.Settings with { ScriptingEnabled = false }); await service.ConfigureAsync(store); Assert.False(File.Exists(endpointFile));
+            store.Save(store.Settings with { ScriptingEnabled = true }); await service.ConfigureAsync(store);
+            Assert.NotEqual(first.Token, ScriptingEndpoint.Read(endpointFile).Token);
+            using var client = new ClientWebSocket(); client.Options.AddSubProtocol("api.iterm2.com");
+            client.Options.SetRequestHeader("Origin", "ws://localhost/"); client.Options.SetRequestHeader("x-iterm2-cookie", ScriptingEndpoint.Read(endpointFile).Token);
+            await client.ConnectAsync(new Uri($"ws://127.0.0.1:{port}/"), TestContext.Current.CancellationToken);
+            service.StopAtExit(); Assert.False(File.Exists(endpointFile));
+        }
+        finally { service.StopAtExit(); if (Directory.Exists(directory)) Directory.Delete(directory, true); }
+    }
+    [AvaloniaFact]
     public async Task AuthenticatedScriptingControlsRealTabsPanesAndReadsUnicodeWithoutMovingScrollback()
     {
         var directory = Path.Combine(Path.GetTempPath(), "aster-api-desktop-" + Guid.NewGuid().ToString("N"));

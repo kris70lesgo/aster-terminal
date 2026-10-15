@@ -53,7 +53,7 @@ public static class ScriptingSmoke
                 if (!result.RootElement.GetProperty("passed").GetBoolean()) throw new IOException("Python client did not pass.");
                 if (!captured) throw new IOException("The native terminal never rendered the script's expanded Unicode output.");
                 checks.Add("Original Python client controls actual native tabs/panes, sends real shell commands and reads Unicode screen contents");
-                if (window.ScriptingSnapshot().Tabs.Count != 1 || window.ScriptingPanes.Count() != 1) throw new IOException("Script-created panes were not cleaned up.");
+                if (desktop.Windows.OfType<MainWindow>().Count(w => w.ScriptingReady) != 1 || window.ScriptingSnapshot().Tabs.Count != 1 || window.ScriptingPanes.Count() != 1) throw new IOException("Script-created panes were not cleaned up.");
                 checks.Add("Only the initial real shell remains after script closes its created tab and split");
                 await server.DisposeAsync();
                 if (File.Exists(ScriptingEndpoint.FilePath(state))) throw new IOException("API credentials remained after stop.");
@@ -65,8 +65,10 @@ public static class ScriptingSmoke
                 capture.Stop();
                 if (client is not null) { if (!client.HasExited) client.Kill(); await client.WaitForExitAsync(); client.Dispose(); }
                 await server.DisposeAsync(); target.Dispose();
-                var panes = window.ScriptingPanes.ToArray(); window.Close();
-                try { await Until(() => panes.All(p => !p.Terminal.IsRunning) && !window.IsVisible); checks.Add("Normal native window close cleans up remaining PTY"); }
+                var windows = desktop.Windows.OfType<MainWindow>().ToArray();
+                var panes = windows.SelectMany(w => w.ScriptingPanes).ToArray();
+                foreach (var owned in windows) owned.Close();
+                try { await Until(() => panes.All(p => !p.Terminal.IsRunning) && windows.All(w => !w.IsVisible)); checks.Add("Normal native window close cleans up remaining PTY"); }
                 catch (Exception error) { failure ??= error; }
                 File.WriteAllText(Path.Combine(report, "scripting.json"), JsonSerializer.Serialize(new { passed = failure is null, timestamp = DateTimeOffset.UtcNow, os = System.Runtime.InteropServices.RuntimeInformation.OSDescription, renderScaling, checks, error = failure?.ToString() }, new JsonSerializerOptions { WriteIndented = true }));
                 if (Directory.Exists(state)) try { Directory.Delete(state, true); } catch (IOException) { }

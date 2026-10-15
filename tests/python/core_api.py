@@ -23,6 +23,15 @@ async def main(connection):
     original = window.current_tab.current_session
     original_id = original.session_id
     checks.append("Original iterm2 2.30 async_get_app lists the real window/tab/session and subscribes to layout/focus notifications")
+    extra = await iterm2.Window.async_create(connection)
+    assert extra is not None and extra.window_id != window.window_id
+    await app.async_refresh()
+    assert len(app.windows) == 2
+    extra_session = extra.current_tab.current_session.session_id
+    await extra.current_tab.async_close(force=True)
+    await app.async_refresh()
+    assert app.get_session_by_id(extra_session) is None and len(app.windows) == 1
+    checks.append("Original client creates a separate native window and closes its only tab without ending the original window")
     tab = await window.async_create_tab()
     session = tab.current_session
     pane = await session.async_split_pane(vertical=True, before=True)

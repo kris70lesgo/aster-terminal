@@ -493,3 +493,14 @@ and incorrectly reset to 1; fixture now saves the scale at capture time. The fir
 report is retained as local candidate evidence, not a Retina claim. Combined
 post-0.6.0 local full suite: 63 passed + 2 Windows-only skips / 65 total. Final
 three-platform native/package and installed Retina verification remain pending.
+
+The first combined source 2ebb710 / run 38791979700 passed all three platforms,
+including native original Python client operations and existing recovery/hotkey/
+tmux acceptance. A further local original-client fixture creates a separate real
+window, closes its only tab, and confirms the original window/shell remains.
+Six focused scripting tests now include the preferences service's default-off,
+enable/idempotent reconfigure/disable/re-enable and exit-with-connected-client
+lifecycle; credentials rotate/remove correctly. Final run will repeat this added
+window and lifecycle coverage. macOS input-source shortcuts 60/61 were read-only
+checked and disabled; they do not explain the earlier undetected human hotkey.
+No OS shortcuts or security settings were changed.

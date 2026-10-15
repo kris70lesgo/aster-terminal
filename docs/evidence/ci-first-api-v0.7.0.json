@@ -1,0 +1,7 @@
+{
+  "run": 38791979700,
+  "buildSource": "2ebb710a4a8f082d3db20b5915151c0bf522b9b7",
+  "url": "https://github.com/kris70lesgo/aster-terminal/actions/runs/38791979700",
+  "conclusion": "success",
+  "scope": "All three native packages, original Python client tab/split/input/Unicode/layout/close. Additional separate-window/service-exit acceptance follows in final run."
+}

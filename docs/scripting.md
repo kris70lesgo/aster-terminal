@@ -31,20 +31,21 @@ remain in use. This is not an AppleScript or full API compatibility claim.
 
 ```python
 import iterm2
+import sys
 
 async def main(connection):
     app = await iterm2.async_get_app(connection)
     window = app.current_terminal_window
     tab = await window.async_create_tab()
     pane = await tab.current_session.async_split_pane(vertical=True)
-    await pane.async_send_text("echo hello\n")
+    await pane.async_send_text("echo hello" + ("\r" if sys.platform == "win32" else "\n"))
 
 iterm2.run_until_complete(main)
 ```
 
 | RPC / behavior | Scope |
 |---|---|
-| List sessions | Stable window/tab/pane IDs, split hierarchy, actual grid sizes and titles; ordinary MainWindow instances only |
+| List sessions | Window/tab/pane IDs stable for the current UI lifetime, split hierarchy, actual grid sizes and titles; ordinary MainWindow instances only |
 | Create tab/window | Default or named profile; per-session Command, Working Directory, Name and Custom Command=Yes; tab index / background tab in an existing window |
 | Split | Vertical/horizontal, before/after, default/named/custom profile |
 | Send text | Specific session, `active` or `all`; actual input, including control characters; Aster has no broadcast domains |
@@ -68,7 +69,7 @@ and a request rate of 32/s (burst 64). Slow clients are disconnected.
 Acceptance uses iterm2 2.30 / protobuf 7.36.2 / websockets 17.2. The original
 client has passed local native Mac real-session listing, tab/split creation,
 shell-local variable + Unicode output reads, updated layout and owned-session
-close. Five focused C# tests additionally cover cookie/Origin/subprotocol refusal,
+close. Six focused C# tests additionally cover cookie/Origin/subprotocol refusal,
 private credentials, exclusive ownership/restart, malformed/oversize frames,
-subscriptions, actual desktop operations and scroll preservation. Three-platform
+subscriptions, actual desktop operations, scroll preservation and preferences/exit lifecycle. Separate native window creation/close also passed locally. Three-platform
 final-package evidence is required before a release support claim.

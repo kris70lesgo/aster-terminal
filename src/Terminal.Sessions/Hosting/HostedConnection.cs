@@ -169,6 +169,12 @@ public sealed class HostedConnection : IRestartableTerminalConnection
     private async Task CloseCoreAsync(CancellationToken token)
     {
         State = TerminalConnectionState.Closing;
+        // Explicit detach preserves pending user input in order before the detach
+        // request. Abrupt IPC loss cannot make this guarantee.
+        _input.Writer.TryComplete();
+        if (_writer is not null && !_lifetime.IsCancellationRequested)
+            try { await _writer.WaitAsync(TimeSpan.FromSeconds(5), token); }
+            catch (Exception error) when (error is IOException or OperationCanceledException or TimeoutException) { }
         var terminateSent = false;
         if (_attached && LastExitInfo is null && _pipe?.IsConnected == true)
         {

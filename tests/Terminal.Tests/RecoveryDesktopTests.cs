@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
 using Avalonia.Input;
+using Avalonia.VisualTree;
 using Aster.App.Views;
 using Aster.Sessions;
 using Aster.Sessions.Hosting;
@@ -33,7 +34,12 @@ public sealed partial class DesktopTests
             var id = pane.HostedSession!.Id; var process = pane.Terminal.ProcessMetadata;
             first.DetachAndClose(); await Until(() => !first.IsVisible && !pane.Terminal.IsRunning);
             second = new(new SettingsStore(store.Path)); second.Show();
-            await Until(() => Panes(second).Length == 1 && Panes(second)[0].Terminal.IsRunning);
+            try { await Until(() => Panes(second).Length == 1 && Panes(second)[0].Terminal.IsRunning); }
+            catch (TimeoutException error)
+            {
+                var details = string.Join(" | ", second.GetVisualDescendants().OfType<TextBlock>().Select(t => t.Text));
+                throw new TimeoutException($"Recovered window did not start: panes={Panes(second).Length}; {details}", error);
+            }
             var recovered = Panes(second)[0]; Assert.Equal(id, recovered.HostedSession!.Id); Assert.Equal(process, recovered.Terminal.ProcessMetadata);
             Command(recovered, OperatingSystem.IsWindows() ? "echo __WINDOW_RECOVERED__%ASTER_RECOVERY_VALUE%" : "printf '__WINDOW_RECOVERED__%s\\n' \"$ASTER_RECOVERY_VALUE\"");
             await Until(() => Text(recovered).Contains("__WINDOW_RECOVERED__kept"));

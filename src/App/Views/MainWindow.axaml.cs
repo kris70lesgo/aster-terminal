@@ -508,7 +508,7 @@ public partial class MainWindow : Window
         else Close();
     }
     private void AboutClicked(object? sender, RoutedEventArgs e) =>
-        Observe(DialogWindow.Confirm(this, "About Aster Terminal", "Aster Terminal 0.5.0\nIndependent iTerm2 migration to Avalonia.\nGPL-3.0-or-later. No warranty.\nTerminal component: Devolutions (MIT).\nSee LICENSE and bundled notices.", "Done"));
+        Observe(DialogWindow.Confirm(this, "About Aster Terminal", "Aster Terminal 0.7.0\nIndependent iTerm2 migration to Avalonia.\nGPL-3.0-or-later. No warranty.\nTerminal component: Devolutions (MIT).\nSee LICENSE and bundled notices.", "Done"));
 
     private void ShowError(string message) { AlertText.Text = message; AlertBar.IsVisible = true; }
     private void DismissAlertClicked(object? sender, RoutedEventArgs e) => AlertBar.IsVisible = false;

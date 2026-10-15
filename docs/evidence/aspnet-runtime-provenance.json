@@ -1,0 +1,35 @@
+{
+  "verifiedDate": "2026-10-16",
+  "packages": [
+    {
+      "id": "microsoft.aspnetcore.app.runtime.osx-arm64",
+      "version": "10.0.13",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/dotnet/dotnet",
+        "commit": "4099f83977f4d29604a9aeb971fb0a7bc1d5f699"
+      },
+      "metadata": "https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.app.runtime.osx-arm64/10.0.13/microsoft.aspnetcore.app.runtime.osx-arm64.nuspec"
+    },
+    {
+      "id": "microsoft.aspnetcore.app.runtime.win-x64",
+      "version": "10.0.13",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/dotnet/dotnet",
+        "commit": "4099f83977f4d29604a9aeb971fb0a7bc1d5f699"
+      },
+      "metadata": "https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.app.runtime.win-x64/10.0.13/microsoft.aspnetcore.app.runtime.win-x64.nuspec"
+    },
+    {
+      "id": "microsoft.aspnetcore.app.runtime.linux-x64",
+      "version": "10.0.13",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/dotnet/dotnet",
+        "commit": "4099f83977f4d29604a9aeb971fb0a7bc1d5f699"
+      },
+      "metadata": "https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.app.runtime.linux-x64/10.0.13/microsoft.aspnetcore.app.runtime.linux-x64.nuspec"
+    }
+  ]
+}

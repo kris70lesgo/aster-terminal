@@ -1,6 +1,6 @@
 {
-  "verified_date": "2026-10-14",
-  "scope": "NuGet metadata only; native runtime and embedded font review still required",
+  "verified_date": "2026-10-16",
+  "scope": "NuGet metadata only; application_project_reference includes build tools and is not proof of runtime payload inclusion. Native runtime/font payloads are audited separately.",
   "packages": [
     {
       "id": "Avalonia.Desktop",
@@ -8,7 +8,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/AvaloniaUI/Avalonia/",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "Avalonia.Themes.Fluent",
@@ -16,7 +16,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/AvaloniaUI/Avalonia/",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "Avalonia",
@@ -24,7 +24,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/AvaloniaUI/Avalonia/",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "Avalonia.Angle.Windows.Natives",
@@ -32,7 +32,7 @@
       "license": "LICENSE",
       "license_type": "file",
       "source": "https://github.com/AvaloniaUI/angle/",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "Avalonia.BuildServices",
@@ -40,7 +40,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/AvaloniaUI/Avalonia.BuildServices",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "Avalonia.FreeDesktop",
@@ -48,7 +48,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/AvaloniaUI/Avalonia/",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "Avalonia.FreeDesktop.AtSpi",
@@ -56,7 +56,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/AvaloniaUI/Avalonia/",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "Avalonia.HarfBuzz",
@@ -64,7 +64,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/AvaloniaUI/Avalonia/",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "Avalonia.Native",
@@ -72,7 +72,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/AvaloniaUI/Avalonia/",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "Avalonia.Remote.Protocol",
@@ -80,7 +80,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/AvaloniaUI/Avalonia/",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "Avalonia.Skia",
@@ -88,7 +88,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/AvaloniaUI/Avalonia/",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "Avalonia.Win32",
@@ -96,7 +96,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/AvaloniaUI/Avalonia/",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "Avalonia.X11",
@@ -104,7 +104,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/AvaloniaUI/Avalonia/",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "Devolutions.Terminal.Control",
@@ -112,7 +112,15 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/Devolutions/devolutions-terminal",
-      "runtime_dependency": true
+      "application_project_reference": true
+    },
+    {
+      "id": "Google.Protobuf",
+      "version": "3.36.2",
+      "license": "BSD-3-Clause",
+      "license_type": "expression",
+      "source": "https://github.com/protocolbuffers/protobuf.git",
+      "application_project_reference": true
     },
     {
       "id": "HarfBuzzSharp",
@@ -120,7 +128,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://go.microsoft.com/fwlink/?linkid=868515",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "HarfBuzzSharp.NativeAssets.Linux",
@@ -128,7 +136,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://go.microsoft.com/fwlink/?linkid=868515",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "HarfBuzzSharp.NativeAssets.macOS",
@@ -136,7 +144,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://go.microsoft.com/fwlink/?linkid=868515",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "HarfBuzzSharp.NativeAssets.WebAssembly",
@@ -144,7 +152,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://go.microsoft.com/fwlink/?linkid=868515",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "HarfBuzzSharp.NativeAssets.Win32",
@@ -152,7 +160,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://go.microsoft.com/fwlink/?linkid=868515",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "MicroCom.Runtime",
@@ -160,7 +168,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/kekekeks/MicroCom",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "Microsoft.Windows.Console.ConPTY",
@@ -168,7 +176,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": null,
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "SkiaSharp",
@@ -176,7 +184,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://go.microsoft.com/fwlink/?linkid=868515",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "SkiaSharp.HarfBuzz",
@@ -184,7 +192,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://go.microsoft.com/fwlink/?linkid=868515",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "SkiaSharp.NativeAssets.Linux",
@@ -192,7 +200,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://go.microsoft.com/fwlink/?linkid=868515",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "SkiaSharp.NativeAssets.macOS",
@@ -200,7 +208,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://go.microsoft.com/fwlink/?linkid=868515",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "SkiaSharp.NativeAssets.WebAssembly",
@@ -208,7 +216,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://go.microsoft.com/fwlink/?linkid=868515",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "SkiaSharp.NativeAssets.Win32",
@@ -216,7 +224,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://go.microsoft.com/fwlink/?linkid=868515",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "Tmds.DBus.Protocol",
@@ -224,7 +232,15 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/tmds/Tmds.DBus.git",
-      "runtime_dependency": true
+      "application_project_reference": true
+    },
+    {
+      "id": "Grpc.Tools",
+      "version": "2.84.0",
+      "license": "Apache-2.0",
+      "license_type": "expression",
+      "source": "https://github.com/grpc/grpc.git",
+      "application_project_reference": true
     },
     {
       "id": "Avalonia",
@@ -232,7 +248,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/AvaloniaUI/Avalonia/",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "Avalonia.Remote.Protocol",
@@ -240,7 +256,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/AvaloniaUI/Avalonia/",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "Avalonia.Skia",
@@ -248,7 +264,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/AvaloniaUI/Avalonia/",
-      "runtime_dependency": true
+      "application_project_reference": true
     },
     {
       "id": "Avalonia.Headless.XUnit",
@@ -256,7 +272,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/AvaloniaUI/Avalonia/",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "Microsoft.NET.Test.Sdk",
@@ -264,7 +280,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/microsoft/vstest",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "xunit.runner.visualstudio",
@@ -272,7 +288,7 @@
       "license": "Apache-2.0",
       "license_type": "expression",
       "source": "https://github.com/xunit/visualstudio.xunit",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "xunit.v3",
@@ -280,7 +296,7 @@
       "license": "Apache-2.0",
       "license_type": "expression",
       "source": "https://github.com/xunit/xunit",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "Avalonia.Fonts.Inter",
@@ -288,7 +304,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/AvaloniaUI/Avalonia/",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "Avalonia.Headless",
@@ -296,7 +312,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/AvaloniaUI/Avalonia/",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "Microsoft.ApplicationInsights",
@@ -304,7 +320,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/Microsoft/ApplicationInsights-dotnet",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "Microsoft.Bcl.AsyncInterfaces",
@@ -312,7 +328,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/dotnet/runtime",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "Microsoft.CodeCoverage",
@@ -320,7 +336,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/microsoft/vstest",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "Microsoft.Testing.Extensions.Telemetry",
@@ -328,7 +344,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/microsoft/testfx",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "Microsoft.Testing.Extensions.TrxReport.Abstractions",
@@ -336,7 +352,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/microsoft/testfx",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "Microsoft.Testing.Platform",
@@ -344,7 +360,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/microsoft/testfx",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "Microsoft.Testing.Platform.MSBuild",
@@ -352,7 +368,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/microsoft/testfx",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "Microsoft.TestPlatform.ObjectModel",
@@ -360,7 +376,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/microsoft/vstest",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "Microsoft.TestPlatform.TestHost",
@@ -368,7 +384,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/microsoft/vstest",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "Microsoft.Win32.Registry",
@@ -376,7 +392,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "git://github.com/dotnet/runtime",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "Newtonsoft.Json",
@@ -384,7 +400,7 @@
       "license": "MIT",
       "license_type": "expression",
       "source": "https://github.com/JamesNK/Newtonsoft.Json",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "xunit.analyzers",
@@ -392,7 +408,7 @@
       "license": "Apache-2.0",
       "license_type": "expression",
       "source": "https://github.com/xunit/xunit.analyzers",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "xunit.v3.assert",
@@ -400,7 +416,7 @@
       "license": "Apache-2.0",
       "license_type": "expression",
       "source": "https://github.com/xunit/xunit",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "xunit.v3.common",
@@ -408,7 +424,7 @@
       "license": "Apache-2.0",
       "license_type": "expression",
       "source": "https://github.com/xunit/xunit",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "xunit.v3.core.mtp-v1",
@@ -416,7 +432,7 @@
       "license": "Apache-2.0",
       "license_type": "expression",
       "source": "https://github.com/xunit/xunit",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "xunit.v3.extensibility.core",
@@ -424,7 +440,7 @@
       "license": "Apache-2.0",
       "license_type": "expression",
       "source": "https://github.com/xunit/xunit",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "xunit.v3.mtp-v1",
@@ -432,7 +448,7 @@
       "license": "Apache-2.0",
       "license_type": "expression",
       "source": "https://github.com/xunit/xunit",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "xunit.v3.runner.common",
@@ -440,7 +456,7 @@
       "license": "Apache-2.0",
       "license_type": "expression",
       "source": "https://github.com/xunit/xunit",
-      "runtime_dependency": false
+      "application_project_reference": false
     },
     {
       "id": "xunit.v3.runner.inproc.console",
@@ -448,7 +464,7 @@
       "license": "Apache-2.0",
       "license_type": "expression",
       "source": "https://github.com/xunit/xunit",
-      "runtime_dependency": false
+      "application_project_reference": false
     }
   ]
 }

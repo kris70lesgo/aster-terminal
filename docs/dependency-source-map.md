@@ -53,10 +53,9 @@ and must remain absent from runtime payloads.
 Microsoft.AspNetCore.App.Runtime.osx-arm64 10.0.13 nuspec pins dotnet/dotnet
 4099f83977f4d29604a9aeb971fb0a7bc1d5f699. Package LICENSE.txt and
 THIRD-PARTY-NOTICES.TXT are retained separately as AspNetCore-MIT.txt and
-AspNetCore-ThirdParty.txt. Final Windows/Linux runtime provenance and payload
-inventory are pending; no new package is released from this worktree yet.
+AspNetCore-ThirdParty.txt. All three target runtime nuspecs pin that same source commit (evidence/aspnet-runtime-provenance.json). Final each-OS payload inventory is still required before release.
 
 The upstream API schema is pinned/copyright-attributed in source and NOTICE.
-Python client tests use pinned upstream source in a separate process; the
+Python client tests use the original PyPI iterm2 2.30 in a separate process, with protobuf 7.36.2 / websockets 17.2 pinned in scripts/python/requirements.txt; the
 client is not incorporated into the application runtime. The launcher adapts
 transport/auth only so it never asks a separate running iTerm2 for credentials.

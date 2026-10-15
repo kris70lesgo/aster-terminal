@@ -3,7 +3,7 @@
     <OutputType>WinExe</OutputType>
     <AssemblyName>Aster.Terminal</AssemblyName>
     <RootNamespace>Aster.App</RootNamespace>
-    <Version>0.6.0</Version>
+    <Version>0.7.0</Version>
     <RuntimeIdentifiers>osx-arm64;win-x64;linux-x64</RuntimeIdentifiers>
   </PropertyGroup>
   <ItemGroup>
@@ -13,4 +13,7 @@
     <None Include="../../LICENSE;../../NOTICE.md;../../licenses/*" Link="licenses/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
   <Import Project="../../native/unix-pty/UnixPty.targets" />
+  <ItemGroup>
+    <Content Include="../../scripts/python/aster_script.py;../../scripts/python/requirements.txt" Link="Scripting/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

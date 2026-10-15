@@ -32,17 +32,18 @@ public static class ScriptingSmoke
             Exception? failure = null; var checks = new List<string>(); Process? client = null;
             using var target = new DesktopScriptingTarget(store);
             await using var server = new ScriptingServer(target, state, 0);
-            var captured = false;
+            var captured = false; var renderScaling = window.RenderScaling;
             var capture = new DispatcherTimer(TimeSpan.FromMilliseconds(50), DispatcherPriority.Background, (_, _) =>
             {
                 if (captured || !window.GetVisualDescendants().OfType<TerminalPane>().Any(p => TerminalBufferExport.ToPlainText(p.Terminal.Engine.CreateSnapshot().Buffer).Contains("__PYTHON_API__live", StringComparison.Ordinal))) return;
-                Image(window, Path.Combine(report, "python-panes.png")); captured = true;
+                renderScaling = window.RenderScaling; Image(window, Path.Combine(report, "python-panes.png")); captured = true;
             });
             try
             {
                 await Until(() => window.ScriptingReady && window.ScriptingPanes.All(p => p.Terminal.IsRunning && TerminalBufferExport.ToPlainText(p.Terminal.Engine.CreateSnapshot().Buffer).Contains("API_READY>")));
                 await server.StartAsync();
                 var start = new ProcessStartInfo(python) { RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false, CreateNoWindow = true };
+                start.Environment["PYTHONUTF8"] = "1";
                 foreach (var arg in new[] { launcher, "--endpoint", ScriptingEndpoint.FilePath(state), script, Path.Combine(report, "python-client.json") }) start.ArgumentList.Add(arg);
                 client = Process.Start(start) ?? throw new IOException("Unable to start original Python client acceptance.");
                 var stdout = client.StandardOutput.ReadToEndAsync(); var stderr = client.StandardError.ReadToEndAsync();
@@ -67,7 +68,7 @@ public static class ScriptingSmoke
                 var panes = window.ScriptingPanes.ToArray(); window.Close();
                 try { await Until(() => panes.All(p => !p.Terminal.IsRunning) && !window.IsVisible); checks.Add("Normal native window close cleans up remaining PTY"); }
                 catch (Exception error) { failure ??= error; }
-                File.WriteAllText(Path.Combine(report, "scripting.json"), JsonSerializer.Serialize(new { passed = failure is null, timestamp = DateTimeOffset.UtcNow, os = System.Runtime.InteropServices.RuntimeInformation.OSDescription, renderScaling = window.RenderScaling, checks, error = failure?.ToString() }, new JsonSerializerOptions { WriteIndented = true }));
+                File.WriteAllText(Path.Combine(report, "scripting.json"), JsonSerializer.Serialize(new { passed = failure is null, timestamp = DateTimeOffset.UtcNow, os = System.Runtime.InteropServices.RuntimeInformation.OSDescription, renderScaling, checks, error = failure?.ToString() }, new JsonSerializerOptions { WriteIndented = true }));
                 if (Directory.Exists(state)) try { Directory.Delete(state, true); } catch (IOException) { }
                 desktop.Shutdown(failure is null ? 0 : 1);
             }

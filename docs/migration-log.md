@@ -467,3 +467,29 @@ inventory, Linux executable modes, notices, absence of user/test payload and
 installed/extracted Mac signatures pass; payload-v0.6.0.json records hashes.
 Official challenge announcement reread at this milestone; requirements unchanged.
 Entrant declarations and form submission remain separate and unperformed.
+
+## 2026-10-16 — original Python API core implementation
+
+Studied pinned proto/api.proto, iTermAPIHelper/iTermAPIServer and the original
+Python Connection/App/Window/Session/RPC implementation. Mature Google.Protobuf
+3.36.2, build-only Grpc.Tools 2.84.0 and ASP.NET Core 10.0.13 replace the macOS
+server without a handwritten WebSocket/protobuf codec. Copied only the attributed
+GPL schema, with a C# namespace option; source/license provenance and full notices
+are recorded. All three ASP.NET runtime nuspecs pin the same audited source SHA.
+
+An off-by-default loopback server authenticates private per-user cookies,
+validates Origin/Host/subprotocol, bounds frames/rate/peers/queues and holds an
+exclusive credential-directory lease. Existing UI methods perform actual tab,
+split and close actions. Live viewport text/styles use an engine-lock snapshot
+without changing user scroll. The Python launcher replaces only upstream transport
+and authentication, so it cannot discover/control a running native iTerm2 or
+request its AppleScript credentials. Other APIs return explicit errors.
+
+Local native original iterm2 2.30 / protobuf 7.36.2 / websockets 17.2 passed real
+session listing, subscriptions, tab/split, shell-local variable, wide/combining
+Unicode screen reads, updated layout and closing only owned sessions. Python
+3.14.7 on this Mac was used. Candidate report's scale was read after window close
+and incorrectly reset to 1; fixture now saves the scale at capture time. The first
+report is retained as local candidate evidence, not a Retina claim. Combined
+post-0.6.0 local full suite: 63 passed + 2 Windows-only skips / 65 total. Final
+three-platform native/package and installed Retina verification remain pending.

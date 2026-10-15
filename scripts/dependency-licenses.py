@@ -28,14 +28,14 @@ for lock in sorted(root.glob("**/packages.lock.json")):
                     "license": None if licence is None else licence.text,
                     "license_type": None if licence is None else licence.get("type"),
                     "source": None if repository is None else repository.get("url"),
-                    "runtime_dependency": runtime,
+                    "application_project_reference": runtime,
                 }
             else:
-                packages[key]["runtime_dependency"] |= runtime
-report = {"verified_date": "2026-10-14", "scope": "NuGet metadata only; native runtime and embedded font review still required", "packages": list(packages.values())}
+                packages[key]["application_project_reference"] |= runtime
+report = {"verified_date": "2026-10-16", "scope": "NuGet metadata only; application_project_reference includes build tools and is not proof of runtime payload inclusion. Native runtime/font payloads are audited separately.", "packages": list(packages.values())}
 destination = root / "docs/evidence/dependency-licenses.json"
 destination.write_text(json.dumps(report, indent=2) + "\n")
 print(f"Inventoried {len(packages)} package versions into {destination}")
 for package in packages.values():
-    if package["runtime_dependency"]:
+    if package["application_project_reference"]:
         print(f"{package['id']} {package['version']}: {package['license_type']} {package['license']}")

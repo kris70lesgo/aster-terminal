@@ -179,3 +179,27 @@ hide/show and cleanup. macOS Post Event access is preflighted; denied access is
 reported as a skipped physical-focus test, never an invented pass. A separate
 manual fixture can wait for a human physical chord without injecting one. Linux
 CI uses Xvfb/Openbox and xdotool; these are test tools, not bundled runtime assets.
+
+## Authenticated original Python wire core, 0.7.0 work
+
+The opt-in Kestrel HTTP/1 WebSocket listener binds explicit IPv4 loopback and
+requires the original local Origin/subprotocol plus a random 256-bit cookie.
+A private endpoint file is independent of exported settings and output. A held
+current-user file lease prevents competing servers replacing that credential.
+Google.Protobuf handles the pinned original schema; Grpc.Tools generates C# only
+during builds. ASP.NET Core 10.0.13 is included in self-contained payloads with
+full notices. No web UI or external service is introduced.
+
+Sessions owns transport/auth/framing/rate/queue limits and live-screen extraction.
+The App target serializes script requests onto existing UI layout/session methods;
+process and VT work stay in Sessions. Stable UI identities describe actual pane
+trees. Bounded coalesced notifications report layout/focus/session changes.
+Reading a live screen temporarily normalizes the engine buffer's viewport under
+its existing lock, restoring the user's scroll offset without scroll events.
+
+The bundled launcher uses the original Python client but replaces only connection
+and authentication. It never discovers another iTerm2 or invokes its AppleScript
+auth. Unsupported RPCs/ranges return explicit errors. Limits, supported operations,
+trusted-script authority and coordinate bounds are in scripting.md. Native
+acceptance invokes the original client against a uniquely owned endpoint/real
+shells, checks Unicode/variable/input/layout/close and cleans up credentials/PTYs.

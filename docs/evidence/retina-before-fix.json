@@ -1,0 +1,15 @@
+{
+  "passed": false,
+  "os": "macOS 26.7.2",
+  "architecture": "Arm64",
+  "timestamp": "2026-10-14T13:58:35.664492+00:00",
+  "startupToShellOutputMs": 639.5958,
+  "nativeResizeToGridMs": 26.8863,
+  "initialWorkingSetBytes": 228311040,
+  "measurementScope": "One native acceptance launch; startup includes sentinel command/polling. Resize includes dispatcher/polling. Not a cold-start or comparative benchmark.",
+  "checks": [
+    "Native window, PTY and routed text/Enter \u2192 real shell output",
+    "Native layout resized terminal grid"
+  ],
+  "error": "System.InvalidOperationException: Replay changed while the live shell produced output.\n   at Aster.App.Services.DesktopSmoke.Run(MainWindow window, IClassicDesktopStyleApplicationLifetime lifetime, String reportDirectory, SettingsStore store) in /Users/runner/work/aster-terminal/aster-terminal/src/App/Services/DesktopSmoke.cs:line 65"
+}

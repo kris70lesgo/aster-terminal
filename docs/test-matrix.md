@@ -1,4 +1,4 @@
-# Verification matrix — release 0.3.0, 2026-10-14
+# Verification matrix — release 0.3.0, 2026-10-15
 
 Local: Apple M5 arm64, macOS 26.7.2, SDK 10.0.402/runtime 10.0.13,
 Avalonia 12.1.4. Hosted native evidence is separate from this workstation.
@@ -17,7 +17,7 @@ Avalonia 12.1.4. Hosted native evidence is separate from this workstation.
 | Profile preferences save/cancel/validation; corrupt backup recovery | PASS | PASS | PASS |
 | OSC8 associations and unsafe URI blocking | PASS | PASS | PASS |
 | Final self-contained package native launch, routed input, resize, renders, cleanup | PASS local + hosted macOS 15 | PASS hosted Server 2025 | PASS Ubuntu 24.04 X11/Xvfb |
-| Physical native key input | 0.2.0 macOS per-pid events executed pwd | Not manually verified | Not manually verified |
+| Physical native key input | 0.3.0 per-pid Cmd+T, pwd, replay open verified | Not manually verified | Not manually verified |
 | IME/AltGr/native clipboard/mouse/DPI/multi-monitor/Wayland | Manual gaps | Manual gaps | Manual gaps |
 | Live SSH and htop | Not tested | Not tested | Not tested |
 | Bounded text screen replay / seek / live output / cleanup | PASS | PASS | PASS |
@@ -37,8 +37,8 @@ python3 scripts/package.py --rid osx-arm64 --smoke
 # Windows: python scripts/package.py --rid win-x64 --smoke
 ```
 
-Final release-code run [38572021565](https://github.com/kris70lesgo/aster-terminal/actions/runs/38572021565),
-build commit `66aac10d85d4e80845944bfccded96ac0385cd99`:
+Final release-code run [38693452893](https://github.com/kris70lesgo/aster-terminal/actions/runs/38693452893),
+build commit `e3a0a02d4c07bfc6e0c1429b4e2514b777f441e8`:
 macOS **34 passed / 2 Windows-only skips**, Linux **34 passed / 2 Windows-only skips**,
 Windows **29 passed / 7 Unix-only skips**, all **0 failures / 36 total**. Each
 final self-contained package passed native window, real shell, routed text/Enter,
@@ -56,12 +56,13 @@ Linux uses X11/Xvfb. Acceptance routes Avalonia input events; it does not
 substitute for physical keyboard/IME/mouse tests.
 
 Local final suite: **34 passed, 2 Windows-only skips, 0 failures, 36 total**.
-The final local GUI launch is unavailable while macOS reports zero active
-displays. Avalonia and an independent CoreVideo probe returned -6661 before
-window creation. No display/session setting was changed. Earlier minimal UI-only
-native captures passed locally; final replay/native support is established by
-the hosted Mac package run, not those earlier captures. The installed update
-must be reopened when a display is active.
+The final code passes local native acceptance on this Mac at 2× Retina scaling,
+including historical replay while shell output continues, viewer resizing,
+compact preferences, native menu configuration and cleanup. Physical per-pid
+Cmd+T creates exactly one tab, p/w/d/Return executes pwd, and the replay shortcut
+opens the viewer. Physical replay seek/close injection was inconclusive; native
+menu clicks, IME and multi-monitor coverage remain manual gaps. Local isolated
+captures and reports are in `evidence/v0.3.0-macos-retina`.
 
 Tests added for replay cover historical Unicode/colour/cursor/grid preservation,
 eviction, oversize rejection, timestamp regression including a one-frame buffer,
@@ -81,7 +82,8 @@ Windows 26 passed + 7 skips, all 0 failures / 33 total. Its evidence remains in
 0.3.0 evidence for current release claims. See [performance.md](performance.md)
 for workload and measurement limits.
 
-0.3.0 publication hold (2026-10-15): local 2× Retina acceptance exposed historical
-viewer reflow after the previously passing 1× hosted candidate. The corrected
-fixed-grid viewer passes local native acceptance; expanded three-OS CI and final
-replacement packages are pending. Earlier run/hash references are candidate evidence.
+The earlier 1× candidate passed hosted acceptance but failed local 2× replay.
+The fixed-grid viewer prevents layout reflow from mutating history. The failing
+report is retained as `evidence/retina-before-fix.json`; the earlier CI record is
+`evidence/ci-before-retina-v0.3.0.json`. Final three-OS reports supersede those
+candidate results. The PowerShell fixture waits for its actual prompt before input.

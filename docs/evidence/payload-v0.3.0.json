@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-10-14T13:53:15.025973+00:00",
-  "buildSource": "66aac10d85d4e80845944bfccded96ac0385cd99",
-  "ciRun": 38572021565,
+  "timestamp": "2026-10-15T06:44:51.932857+00:00",
+  "buildSource": "e3a0a02d4c07bfc6e0c1429b4e2514b777f441e8",
+  "ciRun": 38693452893,
   "payloads": {
     "osx-arm64": {
       "archive": "aster-terminal-0.3.0-osx-arm64.zip",
-      "sha256": "bccc877f8c343c5bf4502a515395dd6105b826cedd748c74645839f3477eafd7",
+      "sha256": "4ca13dea19e9467cc09a7ed876eedfb5975a8f1ccc61242c8694b1de32f297de",
       "requiredNoticesPresent": [
         "Avalonia-MIT.txt",
         "Cascadia-OFL.txt",
@@ -23,11 +23,11 @@
       "installedPath": "/Applications/Aster Terminal.app",
       "installedVersion": "0.3.0",
       "installedSignatureVerified": true,
-      "localGuiRelaunch": "Pending active display; earlier session left running"
+      "localGuiRelaunch": "PASS exact installed CI archive, macOS 26.7.2, 2x Retina; evidence/v0.3.0-macos-retina/native-smoke.json"
     },
     "win-x64": {
       "archive": "aster-terminal-0.3.0-win-x64.zip",
-      "sha256": "05e4d9aaa08deec98b06e815f90a444157517ef57c9de31814ae279055833b5d",
+      "sha256": "d51663cd32d20ddc10f2c7dc200726de940b653a6403a4b8bd570ef9fcf06304",
       "requiredNoticesPresent": [
         "Avalonia-MIT.txt",
         "Cascadia-OFL.txt",
@@ -45,7 +45,7 @@
     },
     "linux-x64": {
       "archive": "aster-terminal-0.3.0-linux-x64.tar.gz",
-      "sha256": "0ac4915242b9e603949f1aaf436618ed29145573a0fb62ab0c7f364159254e0a",
+      "sha256": "bd25cd10fd6e9131fd734e356f49262a74af1368833b80ceaec17603ebfc8060",
       "requiredNoticesPresent": [
         "Avalonia-MIT.txt",
         "Cascadia-OFL.txt",

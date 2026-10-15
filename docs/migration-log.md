@@ -195,3 +195,27 @@ only when creating the first exporter. Replacing the app menu on activation
 could discard Quit/Hide. Aster now reuses that menu and routes About/Settings
 through a weak active-window reference. Native smoke explicitly checks Quit
 remains after creating a tab. No window/session state is retained by menu closures.
+
+Final release-code run **38693452893**, source
+`e3a0a02d4c07bfc6e0c1429b4e2514b777f441e8`, passes on all three targets:
+macOS/Linux 34 passed + 2 Windows-only skips, Windows 29 passed + 7 Unix-only
+skips, all 36 total and zero failures. Each extracted self-contained package
+passes native shell/input/resize/replay/render/settings/session-cleanup checks.
+Versioned reports and images now contain this final run; the old 1× candidate
+CI record and local Retina failure are preserved separately.
+
+All final archives were downloaded, CRC/SHA-256 checked and audited for required
+GPL/runtime/dependency/font notices, absent user settings/history/test payload,
+and Linux executable modes. The exact final CI macOS archive was extracted
+with ditto, deep/strict signature verified, staged and installed with a backup.
+The installed bundle passes native acceptance on this workstation at **2× Retina**
+(startup sentinel 507.9 ms, resize 33.0 ms; single observations). Historical grid
+survives viewer resizing while the real shell continues. Final payload hashes
+and installation evidence are in `evidence/payload-v0.3.0.json`. The earlier
+zero-display obstacle is resolved. No personal shell captures are published.
+
+The 0.3.0 release assets are replaced with these final three-platform packages;
+source, notices, checksums and evidence accompany the release. The official
+challenge announcement was rechecked on 2026-10-15 without a rule change.
+Advanced parity and manual-input/platform gaps remain explicit; no contest
+form submission is asserted.

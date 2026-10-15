@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "os": "macOS 26.7.2",
+  "architecture": "Arm64",
+  "timestamp": "2026-10-15T06:45:34.043166+00:00",
+  "renderScaling": 2,
+  "startupToShellOutputMs": 507.8518,
+  "nativeResizeToGridMs": 32.9622,
+  "initialWorkingSetBytes": 222658560,
+  "measurementScope": "One native acceptance launch; startup includes sentinel command/polling. Resize includes dispatcher/polling. Not a cold-start or comparative benchmark.",
+  "checks": [
+    "Native window, PTY and routed text/Enter \u2192 real shell output",
+    "Native layout resized terminal grid",
+    "Native screen replay seeks historical text while the real shell continues; independent read-only renderer",
+    "Historical grid survives viewer resize without reflow",
+    "macOS native menu tree configured; in-window menu hidden",
+    "Dark and light native render snapshots",
+    "Native shortcuts create tabs, nested panes and search",
+    "Native preferences render",
+    "Window/session cleanup completed"
+  ],
+  "error": null
+}

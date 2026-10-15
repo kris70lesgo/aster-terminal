@@ -4,14 +4,19 @@
 
 `v0.3.0-osx-arm64`, `v0.3.0-win-x64` and `v0.3.0-linux-x64` contain native
 client renders, JSON reports, engine benchmarks and the 36-test TRX suite from
-final run 38572021565/build 66aac10d85d4e80845944bfccded96ac0385cd99. Captures
+final run 38693452893/build e3a0a02d4c07bfc6e0c1429b4e2514b777f441e8. Captures
 cover minimal single session, tabs/splits/find, dark/light themes, profile
 General/Text/Colours, application General, and historical text replay. Live
 shell output continues while replay seeks an independent historical screen.
 `ci-v0.3.0.json` records the passing jobs. macOS menu configuration is tested;
 these client captures exclude the system titlebar/menu bar and do not prove
-physical menu clicks. The local final GUI launch was blocked by zero active
-displays/CoreVideo -6661; final native Mac evidence comes from the hosted Mac.
+physical menu clicks. `v0.3.0-macos-retina` adds local native acceptance on
+macOS 26.7.2/M5 at 2× scaling, including a fixed historical grid during viewer
+resize. `retina-before-fix.json` and `ci-before-retina-v0.3.0.json` preserve the
+earlier failure and passing 1× candidate rather than hiding the regression.
+Physical macOS keys separately verified one-tab creation, pwd and replay opening;
+personal shell captures are excluded from public evidence. Physical replay seek
+injection was inconclusive and is not credited as a pass.
 
 ## Historical release 0.2.0 captures
 

@@ -1,0 +1,268 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="24e377c3-5be9-4198-aa63-44c73b72dda6" name="@Agastyas-MacBook-Pro 2026-10-15 12:05:49" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-15T12:05:49.8646710+05:30" queuing="2026-10-15T12:05:49.8646710+05:30" start="2026-10-15T12:05:48.9690540+05:30" finish="2026-10-15T12:05:52.2560310+05:30" />
+  <TestSettings name="default" id="1f502e37-9a02-41eb-8dae-2c6e8a735bf2">
+    <Deployment runDeploymentRoot="_Agastyas-MacBook-Pro_2026-10-15_12_05_49" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="9b0d95e6-83e8-46bf-802c-e9266d6c2bc5" testId="593b0913-c1dc-c01e-5297-2deb26ca8606" testName="Aster.Tests.EngineTests.AlternateScreenRestoresMainBufferAndPasteMode" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0022045" startTime="2026-10-15T12:05:49.8205280+05:30" endTime="2026-10-15T12:05:49.8227650+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9b0d95e6-83e8-46bf-802c-e9266d6c2bc5" />
+    <UnitTestResult executionId="c8b7b13b-9755-42a1-8244-ca0160af9ece" testId="df6e26ed-5e83-43bf-3f0a-eedea9391e84" testName="Aster.Tests.DesktopTests.NestedSplitZoomThemeTitlesAndLayoutReopenUseFreshProcesses" computerName="Agastyas-MacBook-Pro" duration="00:00:00.2056687" startTime="2026-10-15T12:05:52.0238740+05:30" endTime="2026-10-15T12:05:52.2295900+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c8b7b13b-9755-42a1-8244-ca0160af9ece" />
+    <UnitTestResult executionId="2f5610bc-10df-4642-9d08-0f7afa766bcd" testId="43b31181-4e8d-8946-c0af-13ed2a12045b" testName="Aster.Tests.PtyTests.OrdinaryTmuxAndLessReturnToInteractiveShell" computerName="Agastyas-MacBook-Pro" duration="00:00:00.2048297" startTime="2026-10-15T12:05:49.9559790+05:30" endTime="2026-10-15T12:05:50.1608650+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2f5610bc-10df-4642-9d08-0f7afa766bcd" />
+    <UnitTestResult executionId="6e5f665a-f7bd-46c9-9907-6c09e99afca2" testId="3c265e23-ccce-91ef-f888-5715ab8fa08c" testName="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;-1&quot;, expected: -1)" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0000041" startTime="2026-10-15T12:05:49.8297810+05:30" endTime="2026-10-15T12:05:49.8297900+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6e5f665a-f7bd-46c9-9907-6c09e99afca2" />
+    <UnitTestResult executionId="af477c10-7362-4daf-9c4d-e36438ff37ae" testId="c5190a7f-2f81-9bda-a407-e04b01f5a6bf" testName="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;123x&quot;, expected: null)" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0000520" startTime="2026-10-15T12:05:49.8293420+05:30" endTime="2026-10-15T12:05:49.8294060+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="af477c10-7362-4daf-9c4d-e36438ff37ae" />
+    <UnitTestResult executionId="79640a97-9b8f-4b9e-94cd-c2c35b38f715" testId="d033a5c9-c2c9-6333-237f-aacea55df8da" testName="Aster.Tests.DesktopTests.KeyboardToRealShellClipboardSearchResizeTabsSplitsAndShutdown" computerName="Agastyas-MacBook-Pro" duration="00:00:00.8130492" startTime="2026-10-15T12:05:49.8840090+05:30" endTime="2026-10-15T12:05:50.6971320+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="79640a97-9b8f-4b9e-94cd-c2c35b38f715" />
+    <UnitTestResult executionId="aae9f063-e197-4a00-86cc-c163733f5f7e" testId="ec34b252-c48e-f5ec-5123-a66ad6003ae3" testName="Aster.Tests.SettingsTests.DamagedSettingsRecoverBackupAndPreserveOriginal" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0031241" startTime="2026-10-15T12:05:49.8410890+05:30" endTime="2026-10-15T12:05:49.8442360+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aae9f063-e197-4a00-86cc-c163733f5f7e" />
+    <UnitTestResult executionId="4370bdc0-7216-4bdd-a522-ade16ad2f114" testId="1fa683b5-88d6-4ec6-547d-db4f1977c193" testName="Aster.Tests.EngineTests.ItermMetadataAndCommandMarksSurviveByteFragmentation" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0057558" startTime="2026-10-15T12:05:49.8228990+05:30" endTime="2026-10-15T12:05:49.8286800+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4370bdc0-7216-4bdd-a522-ade16ad2f114" />
+    <UnitTestResult executionId="e0526ac7-4b3b-4c80-bb10-36ed63050348" testId="50cea468-7601-b0c6-ca37-259bc45ce641" testName="Aster.Tests.PtyTests.CmdConPtyCommandResizeAndExit" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0010000" startTime="2026-10-15T12:05:50.1612060+05:30" endTime="2026-10-15T12:05:50.1615540+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e0526ac7-4b3b-4c80-bb10-36ed63050348">
+      <Output>
+        <ErrorInfo>
+          <Message>ConPTY acceptance requires Windows.</Message>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f21f4f22-e77c-4fd9-94de-2d40056bf564" testId="bb47176d-207d-8226-8e80-321f49150523" testName="Aster.Tests.ReplayTests.ReplayEvictsOldFramesRejectsOversizeAndClampsClockRegression" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0382426" startTime="2026-10-15T12:05:49.7829630+05:30" endTime="2026-10-15T12:05:49.8249100+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f21f4f22-e77c-4fd9-94de-2d40056bf564" />
+    <UnitTestResult executionId="ede9e53e-8d5e-4808-9cf1-16636130f680" testId="2ed28c67-f517-86ef-cfe9-f7e708dc4f15" testName="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;aid=42&quot;, expected: null)" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0000033" startTime="2026-10-15T12:05:49.8298330+05:30" endTime="2026-10-15T12:05:49.8298400+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ede9e53e-8d5e-4808-9cf1-16636130f680" />
+    <UnitTestResult executionId="359521c5-10bb-49c5-917a-affeaf3d328e" testId="7c15d5b1-12ca-b245-ebb8-fc66ed931d4d" testName="Aster.Tests.DesktopTests.PreferencesSaveValidationAndCancelAreTransactional" computerName="Agastyas-MacBook-Pro" duration="00:00:00.1075729" startTime="2026-10-15T12:05:51.9082600+05:30" endTime="2026-10-15T12:05:52.0159100+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="359521c5-10bb-49c5-917a-affeaf3d328e" />
+    <UnitTestResult executionId="14245186-9cde-4f4a-8d5a-3650cc94c731" testId="fa1aed2b-7d74-7322-faa2-bf0625c0c51e" testName="Aster.Tests.ReplayTests.FramesPreserveUnicodeColoursCursorAndOldState" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0051483" startTime="2026-10-15T12:05:49.8251810+05:30" endTime="2026-10-15T12:05:49.8303650+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="14245186-9cde-4f4a-8d5a-3650cc94c731" />
+    <UnitTestResult executionId="573bc475-f038-4fd8-861d-9dd6bed59710" testId="0a439eee-c999-349d-0826-019bd5c0d5ea" testName="Aster.Tests.EngineTests.SearchScrollbackAfterResize" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0019855" startTime="2026-10-15T12:05:49.8299960+05:30" endTime="2026-10-15T12:05:49.8319900+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="573bc475-f038-4fd8-861d-9dd6bed59710" />
+    <UnitTestResult executionId="11418aa1-f11c-4cdd-ab2f-87fe36e8341a" testId="3cc2c3f4-6be6-4bfd-bfe0-c54725002946" testName="Aster.Tests.PtyTests.CloseTerminatesShellAndBackgroundChild" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0543528" startTime="2026-10-15T12:05:50.5117990+05:30" endTime="2026-10-15T12:05:50.5662050+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="11418aa1-f11c-4cdd-ab2f-87fe36e8341a" />
+    <UnitTestResult executionId="bda27bf0-9dfd-4c68-876d-dc556eecd4d9" testId="a181d5cf-f751-6693-1d8b-64f9c546eb98" testName="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;0&quot;, expected: 0)" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0000031" startTime="2026-10-15T12:05:49.8298830+05:30" endTime="2026-10-15T12:05:49.8298890+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bda27bf0-9dfd-4c68-876d-dc556eecd4d9" />
+    <UnitTestResult executionId="f4f85c90-fdb3-44f8-97bd-433fd59f7588" testId="e43b8a23-84ee-7a72-9a48-e4cd527f3007" testName="Aster.Tests.EngineTests.UntrustedOscCannotWriteClipboardAndOversizeStringsRecover" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0118332" startTime="2026-10-15T12:05:49.8323720+05:30" endTime="2026-10-15T12:05:49.8442360+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f4f85c90-fdb3-44f8-97bd-433fd59f7588" />
+    <UnitTestResult executionId="648d6a39-7eb3-4328-85d4-af15a41a5d9f" testId="47b71b4f-0c89-b11e-4925-0f96cb190a23" testName="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;bad;aid=x;7;8&quot;, expected: 7)" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0000121" startTime="2026-10-15T12:05:49.8297150+05:30" endTime="2026-10-15T12:05:49.8297330+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="648d6a39-7eb3-4328-85d4-af15a41a5d9f" />
+    <UnitTestResult executionId="eac65da1-ef40-441f-bcf6-b5d654923575" testId="1e8a7327-daf0-3367-2387-a87dff7e9085" testName="Aster.Tests.SettingsTests.NullProfilesAndDeepLayoutsAreRejectedWithRecoverableErrors" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0453510" startTime="2026-10-15T12:05:49.7829540+05:30" endTime="2026-10-15T12:05:49.8318440+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eac65da1-ef40-441f-bcf6-b5d654923575" />
+    <UnitTestResult executionId="97f76de2-798c-4931-9124-8518263917a8" testId="da972512-c56f-3bf2-7447-4283a9f0ff36" testName="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;2147483648&quot;, expected: null)" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0000732" startTime="2026-10-15T12:05:49.8294690+05:30" endTime="2026-10-15T12:05:49.8295500+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="97f76de2-798c-4931-9124-8518263917a8" />
+    <UnitTestResult executionId="930c99c0-bacb-434a-8219-265fe4eda6cf" testId="ece31bda-a775-8d22-7592-d2cb94abacb0" testName="Aster.Tests.PtyTests.PowerShellConPtyExecutesUnicodeAndCleansUp" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0010000" startTime="2026-10-15T12:05:50.5767860+05:30" endTime="2026-10-15T12:05:50.5768000+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="930c99c0-bacb-434a-8219-265fe4eda6cf">
+      <Output>
+        <ErrorInfo>
+          <Message>ConPTY acceptance requires Windows.</Message>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2359715a-a90b-42f1-9d5e-0912c5767282" testId="065a0973-9ef4-dea0-7dff-fbd598e1f09d" testName="Aster.Tests.SettingsTests.InvalidSettingsNeverReplaceSavedConfiguration" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0007235" startTime="2026-10-15T12:05:49.8443830+05:30" endTime="2026-10-15T12:05:49.8451190+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2359715a-a90b-42f1-9d5e-0912c5767282" />
+    <UnitTestResult executionId="8237aed4-19da-4af2-88cc-d03048dcef78" testId="547ff35c-434c-6d2c-d1e2-7e1d41182bc7" testName="Aster.Tests.DesktopTests.ReplaySeekIsIndependentOfTheLiveShellAndDiscardsOnClose" computerName="Agastyas-MacBook-Pro" duration="00:00:01.2031450" startTime="2026-10-15T12:05:50.7008480+05:30" endTime="2026-10-15T12:05:51.9040620+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8237aed4-19da-4af2-88cc-d03048dcef78" />
+    <UnitTestResult executionId="75a1ea2a-51ff-49e8-9116-0191a37b4725" testId="f79fbaa1-03a5-a6c4-b5b1-ede6a5f6a3bb" testName="Aster.Tests.DesktopTests.HyperlinksRequireUserActionAndBlockUnsafeSchemes" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0037869" startTime="2026-10-15T12:05:52.0186360+05:30" endTime="2026-10-15T12:05:52.0224690+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="75a1ea2a-51ff-49e8-9116-0191a37b4725" />
+    <UnitTestResult executionId="ece20a32-d3a3-49e1-9837-e3ba97439858" testId="5129d2d5-7b6d-4d94-6621-89c97ef8521c" testName="Aster.Tests.PtyTests.UpstreamBashIntegrationTracksCommandStatusDirectoryAndMarks" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0982460" startTime="2026-10-15T12:05:50.5769450+05:30" endTime="2026-10-15T12:05:50.6752260+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ece20a32-d3a3-49e1-9837-e3ba97439858" />
+    <UnitTestResult executionId="5c769b6c-6449-49e7-b475-5736fa248262" testId="fdd6311a-4b6a-9b6c-66da-d940e4c564ee" testName="Aster.Tests.PtyTests.UpstreamZshIntegrationTracksCommandStatusDirectoryAndMarks" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0991533" startTime="2026-10-15T12:05:50.1616880+05:30" endTime="2026-10-15T12:05:50.2608760+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5c769b6c-6449-49e7-b475-5736fa248262" />
+    <UnitTestResult executionId="ae850f33-8603-4c3e-8674-ef472af88c9d" testId="c70f0789-9325-bbf1-49c5-8d4b26467d69" testName="Aster.Tests.SettingsTests.ProfileThemeEnvironmentAndLayoutRoundTrip" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0086917" startTime="2026-10-15T12:05:49.8319490+05:30" endTime="2026-10-15T12:05:49.8406650+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ae850f33-8603-4c3e-8674-ef472af88c9d" />
+    <UnitTestResult executionId="c2d4a0dc-be9a-4721-8c36-7c2dea7fe88b" testId="b3ef4ac5-5e29-9308-f133-5cd4c9769d78" testName="Aster.Tests.PtyTests.VimUsesAlternateBufferAndReturnsToShell" computerName="Agastyas-MacBook-Pro" duration="00:00:00.1676535" startTime="2026-10-15T12:05:49.7829550+05:30" endTime="2026-10-15T12:05:49.9546240+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c2d4a0dc-be9a-4721-8c36-7c2dea7fe88b" />
+    <UnitTestResult executionId="991d6eb9-7c3b-44e2-be85-1ec6e3521a46" testId="80838f1b-71b3-64c2-d501-910bd978783e" testName="Aster.Tests.PtyTests.InteractiveShellTtyUnicodeResizeInterruptAndExit" computerName="Agastyas-MacBook-Pro" duration="00:00:00.1604313" startTime="2026-10-15T12:05:50.3509320+05:30" endTime="2026-10-15T12:05:50.5113960+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="991d6eb9-7c3b-44e2-be85-1ec6e3521a46" />
+    <UnitTestResult executionId="d371a2da-45aa-43ea-9d50-cf16beb22a1f" testId="9d7111a0-84c9-e83a-c324-0c00343d850c" testName="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;aid=opaque;23;k=s&quot;, expected: 23)" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0000030" startTime="2026-10-15T12:05:49.8299290+05:30" endTime="2026-10-15T12:05:49.8299350+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d371a2da-45aa-43ea-9d50-cf16beb22a1f" />
+    <UnitTestResult executionId="60c0fd06-f310-4caf-b59a-b52e4100c83b" testId="f8b26fb9-c458-3287-f176-07477fa5c2f8" testName="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;A;9&quot;, expected: null)" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0000098" startTime="2026-10-15T12:05:49.8296160+05:30" endTime="2026-10-15T12:05:49.8296370+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="60c0fd06-f310-4caf-b59a-b52e4100c83b" />
+    <UnitTestResult executionId="0813de22-75e5-42d1-ad39-8782f724aab1" testId="3479938d-fc8d-14cd-f959-907dcac8d069" testName="Aster.Tests.EngineTests.CursorEraseTrueColorAndAttributes" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0001341" startTime="2026-10-15T12:05:49.8320930+05:30" endTime="2026-10-15T12:05:49.8322350+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0813de22-75e5-42d1-ad39-8782f724aab1" />
+    <UnitTestResult executionId="68c33df7-ed2e-4a4a-901f-ff1c5ec1b894" testId="b9347a19-21f6-bbf0-9517-b91462b38e29" testName="Aster.Tests.DesktopTests.ShortcutsRejectDuplicatesAndInvalidOverrides" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0010776" startTime="2026-10-15T12:05:51.9051740+05:30" endTime="2026-10-15T12:05:51.9062910+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="68c33df7-ed2e-4a4a-901f-ff1c5ec1b894" />
+    <UnitTestResult executionId="678594e7-5077-4d8f-9357-2c406976525b" testId="db673429-d7e9-b6c8-a93c-4a409f6eff7e" testName="Aster.Tests.PtyTests.IndependentSessionsAndCloseReapHelper" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0890967" startTime="2026-10-15T12:05:50.2614640+05:30" endTime="2026-10-15T12:05:50.3505920+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="678594e7-5077-4d8f-9357-2c406976525b" />
+    <UnitTestResult executionId="a9c5e609-0ae7-4d9d-8283-611e5d01ba5d" testId="5b962455-2201-7799-6450-ec8ba98e6d85" testName="Aster.Tests.EngineTests.HyperlinksAndApplicationInputModesSurviveAdapter" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0011451" startTime="2026-10-15T12:05:49.8446170+05:30" endTime="2026-10-15T12:05:49.8457850+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a9c5e609-0ae7-4d9d-8283-611e5d01ba5d" />
+    <UnitTestResult executionId="f3acd93c-666d-4ccd-91c8-c7c8488c16cb" testId="6182581f-2343-81c6-220c-bd24709ee6bf" testName="Aster.Tests.EngineTests.FragmentedUtf8CombiningAndWideGlyphs" computerName="Agastyas-MacBook-Pro" duration="00:00:00.0250534" startTime="2026-10-15T12:05:49.7829600+05:30" endTime="2026-10-15T12:05:49.8132310+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f3acd93c-666d-4ccd-91c8-c7c8488c16cb" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Aster.Tests.PtyTests.PowerShellConPtyExecutesUnicodeAndCleansUp" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="ece31bda-a775-8d22-7592-d2cb94abacb0">
+      <Execution id="930c99c0-bacb-434a-8219-265fe4eda6cf" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.PtyTests" name="PowerShellConPtyExecutesUnicodeAndCleansUp" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.UntrustedOscCannotWriteClipboardAndOversizeStringsRecover" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="e43b8a23-84ee-7a72-9a48-e4cd527f3007">
+      <Execution id="f4f85c90-fdb3-44f8-97bd-433fd59f7588" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="UntrustedOscCannotWriteClipboardAndOversizeStringsRecover" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;bad;aid=x;7;8&quot;, expected: 7)" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="47b71b4f-0c89-b11e-4925-0f96cb190a23">
+      <Execution id="648d6a39-7eb3-4328-85d4-af15a41a5d9f" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="ItermExitCodeMatchesPositionalAttributeScan" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.FragmentedUtf8CombiningAndWideGlyphs" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="6182581f-2343-81c6-220c-bd24709ee6bf">
+      <Execution id="f3acd93c-666d-4ccd-91c8-c7c8488c16cb" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="FragmentedUtf8CombiningAndWideGlyphs" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;aid=opaque;23;k=s&quot;, expected: 23)" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="9d7111a0-84c9-e83a-c324-0c00343d850c">
+      <Execution id="d371a2da-45aa-43ea-9d50-cf16beb22a1f" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="ItermExitCodeMatchesPositionalAttributeScan" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.PtyTests.InteractiveShellTtyUnicodeResizeInterruptAndExit" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="80838f1b-71b3-64c2-d501-910bd978783e">
+      <Execution id="991d6eb9-7c3b-44e2-be85-1ec6e3521a46" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.PtyTests" name="InteractiveShellTtyUnicodeResizeInterruptAndExit" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.SettingsTests.DamagedSettingsRecoverBackupAndPreserveOriginal" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="ec34b252-c48e-f5ec-5123-a66ad6003ae3">
+      <Execution id="aae9f063-e197-4a00-86cc-c163733f5f7e" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.SettingsTests" name="DamagedSettingsRecoverBackupAndPreserveOriginal" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.SettingsTests.NullProfilesAndDeepLayoutsAreRejectedWithRecoverableErrors" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="1e8a7327-daf0-3367-2387-a87dff7e9085">
+      <Execution id="eac65da1-ef40-441f-bcf6-b5d654923575" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.SettingsTests" name="NullProfilesAndDeepLayoutsAreRejectedWithRecoverableErrors" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.KeyboardToRealShellClipboardSearchResizeTabsSplitsAndShutdown" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="d033a5c9-c2c9-6333-237f-aacea55df8da">
+      <Execution id="79640a97-9b8f-4b9e-94cd-c2c35b38f715" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="KeyboardToRealShellClipboardSearchResizeTabsSplitsAndShutdown" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.SettingsTests.ProfileThemeEnvironmentAndLayoutRoundTrip" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="c70f0789-9325-bbf1-49c5-8d4b26467d69">
+      <Execution id="ae850f33-8603-4c3e-8674-ef472af88c9d" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.SettingsTests" name="ProfileThemeEnvironmentAndLayoutRoundTrip" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.NestedSplitZoomThemeTitlesAndLayoutReopenUseFreshProcesses" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="df6e26ed-5e83-43bf-3f0a-eedea9391e84">
+      <Execution id="c8b7b13b-9755-42a1-8244-ca0160af9ece" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="NestedSplitZoomThemeTitlesAndLayoutReopenUseFreshProcesses" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;2147483648&quot;, expected: null)" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="da972512-c56f-3bf2-7447-4283a9f0ff36">
+      <Execution id="97f76de2-798c-4931-9124-8518263917a8" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="ItermExitCodeMatchesPositionalAttributeScan" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.PtyTests.OrdinaryTmuxAndLessReturnToInteractiveShell" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="43b31181-4e8d-8946-c0af-13ed2a12045b">
+      <Execution id="2f5610bc-10df-4642-9d08-0f7afa766bcd" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.PtyTests" name="OrdinaryTmuxAndLessReturnToInteractiveShell" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.PtyTests.VimUsesAlternateBufferAndReturnsToShell" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="b3ef4ac5-5e29-9308-f133-5cd4c9769d78">
+      <Execution id="c2d4a0dc-be9a-4721-8c36-7c2dea7fe88b" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.PtyTests" name="VimUsesAlternateBufferAndReturnsToShell" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.ItermMetadataAndCommandMarksSurviveByteFragmentation" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="1fa683b5-88d6-4ec6-547d-db4f1977c193">
+      <Execution id="4370bdc0-7216-4bdd-a522-ade16ad2f114" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="ItermMetadataAndCommandMarksSurviveByteFragmentation" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.PtyTests.CloseTerminatesShellAndBackgroundChild" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="3cc2c3f4-6be6-4bfd-bfe0-c54725002946">
+      <Execution id="11418aa1-f11c-4cdd-ab2f-87fe36e8341a" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.PtyTests" name="CloseTerminatesShellAndBackgroundChild" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.CursorEraseTrueColorAndAttributes" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="3479938d-fc8d-14cd-f959-907dcac8d069">
+      <Execution id="0813de22-75e5-42d1-ad39-8782f724aab1" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="CursorEraseTrueColorAndAttributes" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.AlternateScreenRestoresMainBufferAndPasteMode" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="593b0913-c1dc-c01e-5297-2deb26ca8606">
+      <Execution id="9b0d95e6-83e8-46bf-802c-e9266d6c2bc5" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="AlternateScreenRestoresMainBufferAndPasteMode" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;123x&quot;, expected: null)" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="c5190a7f-2f81-9bda-a407-e04b01f5a6bf">
+      <Execution id="af477c10-7362-4daf-9c4d-e36438ff37ae" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="ItermExitCodeMatchesPositionalAttributeScan" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;0&quot;, expected: 0)" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="a181d5cf-f751-6693-1d8b-64f9c546eb98">
+      <Execution id="bda27bf0-9dfd-4c68-876d-dc556eecd4d9" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="ItermExitCodeMatchesPositionalAttributeScan" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.ReplayTests.FramesPreserveUnicodeColoursCursorAndOldState" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="fa1aed2b-7d74-7322-faa2-bf0625c0c51e">
+      <Execution id="14245186-9cde-4f4a-8d5a-3650cc94c731" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.ReplayTests" name="FramesPreserveUnicodeColoursCursorAndOldState" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.HyperlinksRequireUserActionAndBlockUnsafeSchemes" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="f79fbaa1-03a5-a6c4-b5b1-ede6a5f6a3bb">
+      <Execution id="75a1ea2a-51ff-49e8-9116-0191a37b4725" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="HyperlinksRequireUserActionAndBlockUnsafeSchemes" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;A;9&quot;, expected: null)" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="f8b26fb9-c458-3287-f176-07477fa5c2f8">
+      <Execution id="60c0fd06-f310-4caf-b59a-b52e4100c83b" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="ItermExitCodeMatchesPositionalAttributeScan" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.SearchScrollbackAfterResize" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="0a439eee-c999-349d-0826-019bd5c0d5ea">
+      <Execution id="573bc475-f038-4fd8-861d-9dd6bed59710" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="SearchScrollbackAfterResize" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.HyperlinksAndApplicationInputModesSurviveAdapter" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="5b962455-2201-7799-6450-ec8ba98e6d85">
+      <Execution id="a9c5e609-0ae7-4d9d-8283-611e5d01ba5d" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="HyperlinksAndApplicationInputModesSurviveAdapter" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.SettingsTests.InvalidSettingsNeverReplaceSavedConfiguration" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="065a0973-9ef4-dea0-7dff-fbd598e1f09d">
+      <Execution id="2359715a-a90b-42f1-9d5e-0912c5767282" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.SettingsTests" name="InvalidSettingsNeverReplaceSavedConfiguration" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.PtyTests.UpstreamZshIntegrationTracksCommandStatusDirectoryAndMarks" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="fdd6311a-4b6a-9b6c-66da-d940e4c564ee">
+      <Execution id="5c769b6c-6449-49e7-b475-5736fa248262" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.PtyTests" name="UpstreamZshIntegrationTracksCommandStatusDirectoryAndMarks" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;aid=42&quot;, expected: null)" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="2ed28c67-f517-86ef-cfe9-f7e708dc4f15">
+      <Execution id="ede9e53e-8d5e-4808-9cf1-16636130f680" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="ItermExitCodeMatchesPositionalAttributeScan" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.ReplaySeekIsIndependentOfTheLiveShellAndDiscardsOnClose" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="547ff35c-434c-6d2c-d1e2-7e1d41182bc7">
+      <Execution id="8237aed4-19da-4af2-88cc-d03048dcef78" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="ReplaySeekIsIndependentOfTheLiveShellAndDiscardsOnClose" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.PtyTests.UpstreamBashIntegrationTracksCommandStatusDirectoryAndMarks" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="5129d2d5-7b6d-4d94-6621-89c97ef8521c">
+      <Execution id="ece20a32-d3a3-49e1-9837-e3ba97439858" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.PtyTests" name="UpstreamBashIntegrationTracksCommandStatusDirectoryAndMarks" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;-1&quot;, expected: -1)" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="3c265e23-ccce-91ef-f888-5715ab8fa08c">
+      <Execution id="6e5f665a-f7bd-46c9-9907-6c09e99afca2" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="ItermExitCodeMatchesPositionalAttributeScan" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.PtyTests.CmdConPtyCommandResizeAndExit" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="50cea468-7601-b0c6-ca37-259bc45ce641">
+      <Execution id="e0526ac7-4b3b-4c80-bb10-36ed63050348" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.PtyTests" name="CmdConPtyCommandResizeAndExit" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.ShortcutsRejectDuplicatesAndInvalidOverrides" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="b9347a19-21f6-bbf0-9517-b91462b38e29">
+      <Execution id="68c33df7-ed2e-4a4a-901f-ff1c5ec1b894" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="ShortcutsRejectDuplicatesAndInvalidOverrides" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.ReplayTests.ReplayEvictsOldFramesRejectsOversizeAndClampsClockRegression" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="bb47176d-207d-8226-8e80-321f49150523">
+      <Execution id="f21f4f22-e77c-4fd9-94de-2d40056bf564" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.ReplayTests" name="ReplayEvictsOldFramesRejectsOversizeAndClampsClockRegression" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.PtyTests.IndependentSessionsAndCloseReapHelper" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="db673429-d7e9-b6c8-a93c-4a409f6eff7e">
+      <Execution id="678594e7-5077-4d8f-9357-2c406976525b" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.PtyTests" name="IndependentSessionsAndCloseReapHelper" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.PreferencesSaveValidationAndCancelAreTransactional" storage="/users/agastya/documents/chatgpt/alvonia real/tests/terminal.tests/bin/release/net10.0/terminal.tests.dll" id="7c15d5b1-12ca-b245-ebb8-fc66ed931d4d">
+      <Execution id="359521c5-10bb-49c5-917a-affeaf3d328e" />
+      <TestMethod codeBase="/Users/agastya/Documents/ChatGPT/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="PreferencesSaveValidationAndCancelAreTransactional" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="593b0913-c1dc-c01e-5297-2deb26ca8606" executionId="9b0d95e6-83e8-46bf-802c-e9266d6c2bc5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="df6e26ed-5e83-43bf-3f0a-eedea9391e84" executionId="c8b7b13b-9755-42a1-8244-ca0160af9ece" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="43b31181-4e8d-8946-c0af-13ed2a12045b" executionId="2f5610bc-10df-4642-9d08-0f7afa766bcd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3c265e23-ccce-91ef-f888-5715ab8fa08c" executionId="6e5f665a-f7bd-46c9-9907-6c09e99afca2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c5190a7f-2f81-9bda-a407-e04b01f5a6bf" executionId="af477c10-7362-4daf-9c4d-e36438ff37ae" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d033a5c9-c2c9-6333-237f-aacea55df8da" executionId="79640a97-9b8f-4b9e-94cd-c2c35b38f715" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ec34b252-c48e-f5ec-5123-a66ad6003ae3" executionId="aae9f063-e197-4a00-86cc-c163733f5f7e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1fa683b5-88d6-4ec6-547d-db4f1977c193" executionId="4370bdc0-7216-4bdd-a522-ade16ad2f114" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="50cea468-7601-b0c6-ca37-259bc45ce641" executionId="e0526ac7-4b3b-4c80-bb10-36ed63050348" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bb47176d-207d-8226-8e80-321f49150523" executionId="f21f4f22-e77c-4fd9-94de-2d40056bf564" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2ed28c67-f517-86ef-cfe9-f7e708dc4f15" executionId="ede9e53e-8d5e-4808-9cf1-16636130f680" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7c15d5b1-12ca-b245-ebb8-fc66ed931d4d" executionId="359521c5-10bb-49c5-917a-affeaf3d328e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fa1aed2b-7d74-7322-faa2-bf0625c0c51e" executionId="14245186-9cde-4f4a-8d5a-3650cc94c731" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0a439eee-c999-349d-0826-019bd5c0d5ea" executionId="573bc475-f038-4fd8-861d-9dd6bed59710" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3cc2c3f4-6be6-4bfd-bfe0-c54725002946" executionId="11418aa1-f11c-4cdd-ab2f-87fe36e8341a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a181d5cf-f751-6693-1d8b-64f9c546eb98" executionId="bda27bf0-9dfd-4c68-876d-dc556eecd4d9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e43b8a23-84ee-7a72-9a48-e4cd527f3007" executionId="f4f85c90-fdb3-44f8-97bd-433fd59f7588" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="47b71b4f-0c89-b11e-4925-0f96cb190a23" executionId="648d6a39-7eb3-4328-85d4-af15a41a5d9f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1e8a7327-daf0-3367-2387-a87dff7e9085" executionId="eac65da1-ef40-441f-bcf6-b5d654923575" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="da972512-c56f-3bf2-7447-4283a9f0ff36" executionId="97f76de2-798c-4931-9124-8518263917a8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ece31bda-a775-8d22-7592-d2cb94abacb0" executionId="930c99c0-bacb-434a-8219-265fe4eda6cf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="065a0973-9ef4-dea0-7dff-fbd598e1f09d" executionId="2359715a-a90b-42f1-9d5e-0912c5767282" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="547ff35c-434c-6d2c-d1e2-7e1d41182bc7" executionId="8237aed4-19da-4af2-88cc-d03048dcef78" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f79fbaa1-03a5-a6c4-b5b1-ede6a5f6a3bb" executionId="75a1ea2a-51ff-49e8-9116-0191a37b4725" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5129d2d5-7b6d-4d94-6621-89c97ef8521c" executionId="ece20a32-d3a3-49e1-9837-e3ba97439858" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fdd6311a-4b6a-9b6c-66da-d940e4c564ee" executionId="5c769b6c-6449-49e7-b475-5736fa248262" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c70f0789-9325-bbf1-49c5-8d4b26467d69" executionId="ae850f33-8603-4c3e-8674-ef472af88c9d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b3ef4ac5-5e29-9308-f133-5cd4c9769d78" executionId="c2d4a0dc-be9a-4721-8c36-7c2dea7fe88b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="80838f1b-71b3-64c2-d501-910bd978783e" executionId="991d6eb9-7c3b-44e2-be85-1ec6e3521a46" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9d7111a0-84c9-e83a-c324-0c00343d850c" executionId="d371a2da-45aa-43ea-9d50-cf16beb22a1f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f8b26fb9-c458-3287-f176-07477fa5c2f8" executionId="60c0fd06-f310-4caf-b59a-b52e4100c83b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3479938d-fc8d-14cd-f959-907dcac8d069" executionId="0813de22-75e5-42d1-ad39-8782f724aab1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b9347a19-21f6-bbf0-9517-b91462b38e29" executionId="68c33df7-ed2e-4a4a-901f-ff1c5ec1b894" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="db673429-d7e9-b6c8-a93c-4a409f6eff7e" executionId="678594e7-5077-4d8f-9357-2c406976525b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5b962455-2201-7799-6450-ec8ba98e6d85" executionId="a9c5e609-0ae7-4d9d-8283-611e5d01ba5d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6182581f-2343-81c6-220c-bd24709ee6bf" executionId="f3acd93c-666d-4ccd-91c8-c7c8488c16cb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="36" executed="34" passed="34" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.13)
+[xUnit.net 00:00:00.35]   Discovering: Terminal.Tests
+[xUnit.net 00:00:00.48]   Discovered:  Terminal.Tests
+[xUnit.net 00:00:00.59]   Starting:    Terminal.Tests
+[xUnit.net 00:00:01.00]       ConPTY acceptance requires Windows.
+[xUnit.net 00:00:01.41]       ConPTY acceptance requires Windows.
+Test 'Aster.Tests.PtyTests.CmdConPtyCommandResizeAndExit' was skipped in the test run.
+Test 'Aster.Tests.PtyTests.PowerShellConPtyExecutesUnicodeAndCleansUp' was skipped in the test run.
+[xUnit.net 00:00:03.07]   Finished:    Terminal.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="Agastyas-MacBook-Pro" outcome="Warning" timestamp="2026-10-15T12:05:50.1666080+05:30">
+        <Text>[xUnit.net 00:00:01.00]     Aster.Tests.PtyTests.CmdConPtyCommandResizeAndExit [SKIP]</Text>
+      </RunInfo>
+      <RunInfo computerName="Agastyas-MacBook-Pro" outcome="Warning" timestamp="2026-10-15T12:05:50.5774590+05:30">
+        <Text>[xUnit.net 00:00:01.41]     Aster.Tests.PtyTests.PowerShellConPtyExecutesUnicodeAndCleansUp [SKIP]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

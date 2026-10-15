@@ -1,6 +1,6 @@
 # Avalonia Port Challenge compliance
 
-Verified 2026-10-14 (Asia/Kolkata). Rechecked at release preparation. This is a completed project checklist with explicit remaining entrant/form items, not a claim of submission.
+Verified 2026-10-14; rechecked 2026-10-15 (Asia/Kolkata) for the final 0.3.0 milestone. This is a completed project checklist with explicit remaining entrant/form items, not a claim of submission.
 Authority for every contest rule below: [official announcement, published 2026-08-28](https://avaloniaui.net/blog/avalonia-port-challenge).
 
 | Rule / requirement | Verification date | Status | Repository evidence / remaining work |
@@ -25,8 +25,8 @@ Reverify at architectural eligibility changes, major milestones, release-artifac
 
 Ambiguities: form-specific declarations/terms are UNVERIFIED; no official guarantee of acceptance for a subset rewrite. Unused iTerm2 submodules are not imported or asserted fully audited; current reused components have their own source/notice audit. Public source is published. Entrant/team declaration and form submission remain separate from completing the app; recheck rules immediately before submission.
 
-0.3.0 milestone recheck: the official announcement remains unchanged. Public GPL
+2026-10-15 0.3.0 milestone recheck: the official announcement remains unchanged. Public GPL
 source and final self-contained package checks pass on all three OSes in run
-38572021565. Versioned evidence includes minimal UI, settings and text replay.
+38693452893. Versioned evidence includes minimal UI, settings and text replay.
 The update retains explicit advanced-parity/manual-test gaps. Entrant identity,
 form-only declarations and actual submission remain separate.

@@ -1,8 +1,8 @@
-# Measured performance — 2026-10-14
+# Measured performance — 2026-10-15
 
 ## Release 0.3.0
 
-Native final-package reports from run 38572021565, on each actual target OS.
+Native final-package reports from run 38693452893, on each actual target OS.
 Each startup/resize is a single acceptance observation including routed input
 and polling; engine measurements are warmed, exclude GUI/PTY and use the same
 120×35 / 10k-history workload. Hardware/runner load differs; results are not ranked.
@@ -10,9 +10,9 @@ and polling; engine measurements are warmed, exclude GUI/PTY and use the same
 | Host | Startup to shell | Grid resize | Initial working set | Engine output | Full history snapshot/search | Engine reflow |
 |---|---:|---:|---:|---:|---:|---:|
 
-| osx-arm64 | 1670.9 ms | 71.4 ms | 193.0 MiB | 4.28 MiB/s | 157.3 ms | 76.7 ms |
-| win-x64 | 1599.0 ms | 56.9 ms | 138.8 MiB | 3.20 MiB/s | 156.9 ms | 92.8 ms |
-| linux-x64 | 2567.6 ms | 80.2 ms | 207.9 MiB | 3.84 MiB/s | 144.7 ms | 72.4 ms |
+| osx-arm64 | 1517.0 ms | 100.0 ms | 191.6 MiB | 4.07 MiB/s | 152.2 ms | 66.2 ms |
+| win-x64 | 1594.3 ms | 56.7 ms | 138.9 MiB | 3.26 MiB/s | 149.9 ms | 82.8 ms |
+| linux-x64 | 2526.6 ms | 41.4 ms | 206.6 MiB | 3.91 MiB/s | 139.0 ms | 70.5 ms |
 
 Raw JSON and scoped environments are in `evidence/v0.3.0-{rid}`. Native acceptance
 includes replay operation, but this does not measure replay recorder CPU under

@@ -19,5 +19,5 @@ not been submitted; entrant identity and form-only declarations are unverified.
 Full iTerm2 parity remains Milestone B as specified by the original request.
 
 0.3.0 extends the completed subset with the minimal desktop/settings design and
-bounded text keyframe replay. Final native three-platform run 38572021565 passes.
+bounded text keyframe replay. Final native three-platform run 38693452893 passes.
 Full binary/image DVR compatibility remains a separate target.

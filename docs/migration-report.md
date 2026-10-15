@@ -17,7 +17,8 @@ remains Milestone B. The README contains the mandatory public write-up.
    font/colour updates and dark/light/system themes. Preferences are transactional;
    malformed settings recover with preserved originals. Native rendered snapshots
    cover initial shell, tabs, splits, search, compact settings and replay on
-   three OSes in 0.3.0. The interface removes permanent chrome and exports
+   three OSes in 0.3.0 (final run 38693452893). Local macOS acceptance also
+   passes at 2× Retina scaling after repairing historical viewer reflow. The interface removes permanent chrome and exports
    macOS commands to the system menu. Screen replay uses bounded portable
    keyframes and an independent renderer; the live shell keeps running.
 3. **Cross-platform implementation:** one Avalonia/C# host; ConPTY for Windows

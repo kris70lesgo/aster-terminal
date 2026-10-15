@@ -10,6 +10,9 @@ The bounded screen replay design studies DVR.m/DVRBuffer.m at that same
 commit (copyright George Nachman, GPLv2-or-later, elect GPLv3): capacity,
 oldest-frame eviction and rejection of frames over half the budget. The C#
 keyframe implementation is new and does not read iTerm2 binary DVR files.
+Output rule design studies Trigger.m, HighlightTrigger.m and MarkTrigger.m at
+the same pinned source. Its C# regex/highlight/bookmark implementation is new;
+no host command or clipboard trigger actions are enabled.
 Bundled bash/zsh integration comes from iTerm2-shell-integration commit
 bcd52317a70f1a489b86fcfd1ee97df155741092 under the same grant.
 Original headers and included bash-preexec MIT notice are retained.

@@ -2,6 +2,7 @@
 // commit 069b6e0dd8f3f0d82fc08ea5d294d28f7c5b986e.
 // Copyright George Nachman and contributors. GPL-3.0-or-later.
 using System.Text;
+using Aster.Sessions.Triggers;
 using Devolutions.Terminal.Core;
 
 namespace Aster.Sessions.Protocols;
@@ -14,6 +15,23 @@ public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
     private readonly VtParser _parser;
     private readonly object _gate = new();
     private long _revision;
+    private readonly OutputTriggerProcessor _triggers = new();
+    private int _triggerLinesThisFeed;
+    private bool _triggerActivity;
+    public event EventHandler? TriggersChanged;
+    public IReadOnlyList<OutputTriggerMatch> TriggerMatches { get { lock (_gate) return _triggers.Matches; } }
+    public string? TriggerWarning { get { lock (_gate) return _triggers.Warning; } }
+    public void ConfigureTriggers(IReadOnlyList<OutputTrigger> rules) { lock (_gate) _triggers.Configure(rules); }
+    public void ClearTriggerMatches() { lock (_gate) _triggers.Clear(); TriggersChanged?.Invoke(this, EventArgs.Empty); }
+    public bool NavigateToTrigger(OutputTriggerMatch match)
+    {
+        lock (_gate)
+        {
+            if (_inner.AlternateBufferActive || !_inner.Buffer.TryResolveImageAnchor(match.Anchor, out var row, out _)) return false;
+            _inner.SetScrollOffset(Math.Clamp(_inner.HistoryCount - row, 0, _inner.HistoryCount));
+            _revision++; return true;
+        }
+    }
     public long Revision => Interlocked.Read(ref _revision);
     public string? RemoteHost { get; private set; }
     public int? LastCommandExitCode { get; private set; }
@@ -31,14 +49,28 @@ public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
     {
         lock (_gate)
         {
+            var originalBuffer = _inner.Buffer;
+            TerminalImageAnchor? scrolledAnchor = null;
+            if (_inner.ScrollOffset > 0 && !data.IsEmpty)
+            {
+                var firstLine = _inner.CreateSnapshot().Buffer.Lines[0];
+                scrolledAnchor = new(firstLine.LogicalLineId, firstLine.LogicalOffset);
+            }
+            _triggerLinesThisFeed = 0; _triggerActivity = false; _triggers.BeginFeed();
             _parser.Process(data);
+            if (scrolledAnchor is { } anchor && ReferenceEquals(originalBuffer, _inner.Buffer))
+            {
+                _inner.SetScrollOffset(_inner.Buffer.TryResolveImageAnchor(anchor, out var row, out _)
+                    ? Math.Clamp(_inner.HistoryCount - row, 0, _inner.HistoryCount) : _inner.HistoryCount);
+            }
+            if (_triggerActivity) TriggersChanged?.Invoke(this, EventArgs.Empty);
             // Runs the engine's image pruning and synchronized-output invalidation policy.
             _inner.Feed(ReadOnlySpan<byte>.Empty);
             if (!data.IsEmpty) _revision++;
         }
     }
     public void Feed(string text) => Feed(Encoding.UTF8.GetBytes(text));
-    public void Reset() { lock (_gate) { _parser.Reset(); _inner.Reset(); RemoteHost = null; LastCommandExitCode = null; _revision++; } }
+    public void Reset() { lock (_gate) { _parser.Reset(); _inner.Reset(); _triggers.Clear(); _triggerLinesThisFeed = 0; RemoteHost = null; LastCommandExitCode = null; _revision++; } }
     public void Dispose() => _inner.Dispose();
 
     public void OscDispatch(int command, ReadOnlySpan<char> data)
@@ -78,7 +110,14 @@ public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
     }
 
     public void Print(Rune rune) => _dispatch.Print(rune);
-    public void ExecuteC0(byte control) => _dispatch.ExecuteC0(control);
+    public void ExecuteC0(byte control)
+    {
+        if (control is 0x0A or 0x0B or 0x0C && !_inner.AlternateBufferActive && _triggers.Enabled)
+        {
+            if (_triggerLinesThisFeed++ < 512) _triggerActivity |= _triggers.ProcessLine(_inner.Buffer);
+        }
+        _dispatch.ExecuteC0(control);
+    }
     public void EscDispatch(char final, byte intermediate) => _dispatch.EscDispatch(final, intermediate);
     public void EscDispatch(char final, ReadOnlySpan<byte> intermediates) => _dispatch.EscDispatch(final, intermediates);
     public void Vt52Dispatch(char final, byte row = 0, byte column = 0) => _dispatch.Vt52Dispatch(final, row, column);
@@ -112,7 +151,7 @@ public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
     public int CursorX => _inner.CursorX;
     public int CursorY => _inner.CursorY;
     public int HistoryCount => _inner.HistoryCount;
-    public int ScrollOffset => _inner.ScrollOffset;
+    public int ScrollOffset { get { lock (_gate) return _inner.ScrollOffset; } }
     public void Resize(int columns, int rows, double cellWidth = 1, double cellHeight = 1)
     {
         lock (_gate) { _inner.Resize(columns, rows, cellWidth, cellHeight); _revision++; }

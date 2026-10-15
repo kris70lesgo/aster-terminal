@@ -23,6 +23,7 @@ public sealed class App : Application
                 var store = new SettingsStore(Path.Combine(Path.GetTempPath(), "aster-native-" + Guid.NewGuid().ToString("N"), "settings.json"));
                 var profile = new TerminalProfile("Native acceptance", OperatingSystem.IsWindows() ? "cmd.exe /Q" : "export PS1='ASTER_READY> '; exec /bin/sh", Path.GetTempPath())
                 {
+                    Triggers = [new() { Name = "Build errors", Pattern = "^TRIGGERED_OUTPUT$", Action = "Highlight" }],
                     EnvironmentVariables = new() { ["PS1"] = "ASTER_READY> ", ["PROMPT"] = "ASTER_READY$G" }
                 };
                 store.Save(store.Settings with { Profiles = [profile], DefaultProfileId = profile.Id, RestoreLayout = false, ConfirmClose = false });

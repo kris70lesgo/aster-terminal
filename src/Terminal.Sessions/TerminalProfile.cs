@@ -13,6 +13,7 @@ public sealed record TerminalProfile(string Name, string Command, string Directo
     public string? Foreground { get; init; }
     public string? Background { get; init; }
     public bool ShellIntegration { get; init; }
+    public List<Aster.Sessions.Triggers.OutputTrigger> Triggers { get; init; } = [];
     public Dictionary<string, string> EnvironmentVariables { get; init; } = new();
     public static TerminalProfile Default()
     {

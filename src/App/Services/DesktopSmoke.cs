@@ -1,5 +1,8 @@
 using System.Diagnostics;
 using System.Text.Json;
+using System.Text;
+using SkiaSharp;
+using Aster.Sessions.Protocols;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -74,6 +77,31 @@ public static class DesktopSmoke
             replay.Close(); await replayDialog;
             checks.Add("Native screen replay seeks historical text while the real shell continues; independent read-only renderer");
             checks.Add("Historical grid survives viewer resize without reflow");
+            terminal.RaiseEvent(new TextInputEventArgs { RoutedEvent = InputElement.TextInputEvent, Text = OperatingSystem.IsWindows() ? "echo TRIGGERED_OUTPUT" : "printf '%s%s\\n' 'TRIGGERED_' 'OUTPUT'" });
+            Enter(terminal);
+            var triggerEngine = (ItermTerminalEngine)terminal.Engine;
+            await Until(() => triggerEngine.TriggerMatches.Count == 1);
+            if (triggerEngine.TriggerMatches[0].Name != "Build errors") throw new InvalidOperationException("Profile output rule did not fire.");
+            SaveImage(window, Path.Combine(reportDirectory, "triggers.png"));
+            checks.Add("Profile output rule matches real shell output and exposes per-pane history");
+            terminal.RaiseEvent(new TextInputEventArgs { RoutedEvent = InputElement.TextInputEvent, Text = GraphicsCommand() });
+            Enter(terminal);
+            await Until(() => terminal.Engine.CreateSnapshot().Images.Count == 3);
+            await Task.Delay(300);
+            var graphicsFile = Path.Combine(reportDirectory, "graphics.png");
+            SaveImage(window, graphicsFile);
+            using (var rendered = SKBitmap.Decode(graphicsFile))
+            {
+                var red = 0; var green = 0; var blue = 0;
+                foreach (var color in rendered.Pixels)
+                {
+                    if (color.Red > 200 && color.Green < 40 && color.Blue < 40) red++;
+                    if (color.Green > 200 && color.Red < 40 && color.Blue < 40) green++;
+                    if (color.Blue > 200 && color.Red < 40 && color.Green < 40) blue++;
+                }
+                if (red < 16 || green < 16 || blue < 16) throw new InvalidOperationException($"Native inline image pixels missing: red={red}, green={green}, blue={blue}.");
+            }
+            checks.Add("Real shell sixel / OSC1337 PNG / kitty RGBA render red / green / blue native pixels");
             if (OperatingSystem.IsMacOS())
             {
                 if (window.FindControl<Menu>("MainMenu")!.IsVisible || NativeMenu.GetMenu(window)?.Items.Count != 5) throw new InvalidOperationException("macOS native menu export configuration missing.");
@@ -108,6 +136,8 @@ public static class DesktopSmoke
             SaveImage(preferences, Path.Combine(reportDirectory, "preferences-text.png"));
             preferences.FindControl<TabControl>("ProfileTabs")!.SelectedIndex = 2; await Task.Delay(150);
             SaveImage(preferences, Path.Combine(reportDirectory, "preferences-colours.png"));
+            preferences.FindControl<TabControl>("ProfileTabs")!.SelectedIndex = 3; await Task.Delay(150);
+            SaveImage(preferences, Path.Combine(reportDirectory, "preferences-triggers.png"));
             preferences.FindControl<TabControl>("SettingsTabs")!.SelectedIndex = 0; await Task.Delay(150);
             SaveImage(preferences, Path.Combine(reportDirectory, "preferences-general.png"));
             preferences.Close();
@@ -136,6 +166,19 @@ public static class DesktopSmoke
             try { Directory.Delete(Path.GetDirectoryName(store.Path)!, true); } catch (IOException) { }
             lifetime.Shutdown(failure is null ? 0 : 1);
         }
+    }
+    private static string GraphicsCommand()
+    {
+        using var source = new SKBitmap(4, 4); source.Erase(SKColors.Lime);
+        using var png = source.Encode(SKEncodedImageFormat.Png, 100);
+        var blue = Enumerable.Repeat(new byte[] { 0, 0, 255, 255 }, 16).SelectMany(b => b).ToArray();
+        var stream = "\u001b[2J\u001b[HINLINE GRAPHICS: sixel / iTerm2 / kitty" +
+            "\u001b[3;3H\u001bPq#1;2;100;0;0#1!24~-!24~-!24~-!24~\u001b\\" +
+            $"\u001b[3;12H\u001b]1337;File=inline=1;width=24px;height=24px:{Convert.ToBase64String(png.ToArray())}\u0007" +
+            $"\u001b[3;22H\u001b_Ga=T,f=32,s=4,v=4,c=4,r=2,i=42,q=2,C=1;{Convert.ToBase64String(blue)}\u001b\\" +
+            "\u001b[7;1HGRAPHICS_COMPLETE\r\n";
+        if (OperatingSystem.IsWindows()) return "powershell.exe -NoProfile -NonInteractive -Command \"[Console]::Write([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('" + Convert.ToBase64String(Encoding.UTF8.GetBytes(stream)) + "')))\"";
+        return "printf '" + string.Concat(Encoding.UTF8.GetBytes(stream).Select(b => "\\" + Convert.ToString(b, 8).PadLeft(3, '0'))) + "'";
     }
     private static TerminalPane[] Panes(Window window) => window.GetVisualDescendants().OfType<TerminalPane>().ToArray();
     private static void Enter(InputElement target) => target.RaiseEvent(new KeyEventArgs { RoutedEvent = InputElement.KeyDownEvent, Key = Key.Enter, KeyModifiers = KeyModifiers.None });

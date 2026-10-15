@@ -66,6 +66,7 @@
                 <TextBlock Text="Leave colours empty to follow the application theme." TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}" />
               </StackPanel>
             </TabItem>
+            <TabItem Header="Triggers"><ContentControl x:Name="TriggerEditorHost" /></TabItem>
           </TabControl>
         </Grid>
       </TabItem>

@@ -106,6 +106,20 @@ public sealed class EngineTests
     }
 
     [Fact]
+    public void NewOutputKeepsScrolledContentUntilItIsEvicted()
+    {
+        using var engine = new ItermTerminalEngine(30, 3, 10);
+        for (var i = 0; i < 8; i++) engine.Feed($"line {i}\r\n");
+        engine.SetScrollOffset(4);
+        var view = TerminalBufferExport.ToPlainText(engine.CreateSnapshot().Buffer);
+        engine.Feed("line 8\r\nline 9\r\n");
+        Assert.Equal(view, TerminalBufferExport.ToPlainText(engine.CreateSnapshot().Buffer));
+        for (var i = 10; i < 30; i++) engine.Feed($"line {i}\r\n");
+        Assert.Equal(engine.HistoryCount, engine.ScrollOffset);
+        engine.Feed("\u001b[3J"); Assert.Equal(0, engine.ScrollOffset);
+    }
+
+    [Fact]
     public void UntrustedOscCannotWriteClipboardAndOversizeStringsRecover()
     {
         using var engine = new ItermTerminalEngine(30, 3);

@@ -13,6 +13,7 @@ public partial class PreferencesWindow : Window
     private int _selected = -1;
     private string _defaultId;
     private bool _loading;
+    private readonly TriggerEditor _triggerEditor = new();
     private static readonly string[] CursorShapes = ["filledBox", "bar", "underscore"];
     public AppSettings? Result { get; private set; }
 
@@ -24,6 +25,7 @@ public partial class PreferencesWindow : Window
         _profiles = store.Settings.Profiles.ToList();
         _defaultId = store.Settings.DefaultProfileId;
         InitializeComponent();
+        TriggerEditorHost.Content = _triggerEditor;
         ProfileList.SelectionChanged += ProfileSelected;
         AlwaysShowTabBarBox.IsChecked = store.Settings.AlwaysShowTabBar;
         ShowStatusBarBox.IsChecked = store.Settings.ShowStatusBar;
@@ -52,6 +54,7 @@ public partial class PreferencesWindow : Window
         if (index < 0 || index >= _profiles.Count) return;
         _selected = index;
         var p = _profiles[index];
+        _triggerEditor.SetRules(p.Triggers);
         ProfileName.Text = p.Name; ShellCommand.Text = p.Command; StartingDirectory.Text = p.Directory;
         FontFamilyBox.Text = p.FontFamily; FontSizeBox.Value = (decimal)p.FontSize; HistorySizeBox.Value = p.HistorySize;
         CursorBox.SelectedIndex = Array.IndexOf(CursorShapes, p.CursorShape); ForegroundBox.Text = p.Foreground; BackgroundBox.Text = p.Background;
@@ -70,7 +73,7 @@ public partial class PreferencesWindow : Window
             FontSize = (double)(FontSizeBox.Value ?? 12), HistorySize = (int)(HistorySizeBox.Value ?? 10000),
             CursorShape = CursorShapes[Math.Clamp(CursorBox.SelectedIndex, 0, CursorShapes.Length - 1)],
             Foreground = EmptyToNull(ForegroundBox.Text), Background = EmptyToNull(BackgroundBox.Text),
-            ShellIntegration = ShellIntegrationBox.IsChecked == true, EnvironmentVariables = environment,
+            ShellIntegration = ShellIntegrationBox.IsChecked == true, EnvironmentVariables = environment, Triggers = _triggerEditor.GetRules(),
         };
         if (DefaultProfileBox.IsChecked == true) _defaultId = current.Id;
     }

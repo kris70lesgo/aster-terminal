@@ -13,6 +13,7 @@ public sealed class TerminalPane : Border
 {
     private readonly TextBlock _status = new() { FontSize = 11, Margin = new Thickness(8, 4), Foreground = Brushes.LightGray, IsVisible = false, TextWrapping = TextWrapping.Wrap };
     private readonly DispatcherTimer _replayTimer;
+    private readonly Button _triggerHistory = new() { Content = "Triggered lines", IsVisible = false, FontSize = 11, MinHeight = 24, Padding = new Thickness(6, 2), HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right };
     private readonly ItermTerminalEngine _engine;
     private bool _active;
     private Task? _start;
@@ -30,16 +31,23 @@ public sealed class TerminalPane : Border
         SessionTitle = profile.Name;
         BorderThickness = new Thickness(0);
         _engine = new ItermTerminalEngine(historySize: profile.HistorySize);
+        _engine.ConfigureTriggers(profile.Triggers);
+        _engine.TriggersChanged += TriggersChanged;
         Terminal = new TermControl(_engine)
         {
             ConnectionFactory = _ => PlatformConnectionFactory.Create(),
             AccessibleName = $"{profile.Name} terminal",
             InteractionOptions = new() { CopyOnSelect = copyOnSelect }
         };
-        var layout = new Grid { RowDefinitions = new RowDefinitions("*,Auto") };
+        var layout = new Grid { RowDefinitions = new RowDefinitions("*,Auto,Auto") };
         layout.Children.Add(Terminal);
         Grid.SetRow(_status, 1);
         layout.Children.Add(_status);
+        Grid.SetRow(_triggerHistory, 2); layout.Children.Add(_triggerHistory);
+        _triggerHistory.Click += (_, _) =>
+        {
+            if (TopLevel.GetTopLevel(this) is Window owner) _ = new TriggerHistoryWindow(_engine, () => Terminal.Focus()).ShowDialog(owner);
+        };
         Child = layout;
         Terminal.GotFocus += (_, _) => Activated?.Invoke(this, EventArgs.Empty);
         Terminal.TitleChanged += (_, title) => { SessionTitle = string.Concat(title.Where(c => !char.IsControl(c))).Trim(); TitleChanged?.Invoke(this, SessionTitle); };
@@ -55,6 +63,13 @@ public sealed class TerminalPane : Border
         SetReplayEnabled(replayEnabled);
     }
     private bool _light;
+    private void TriggersChanged(object? sender, EventArgs args) => Dispatcher.UIThread.Post(() =>
+    {
+        if (_close is not null) return;
+        var count = _engine.TriggerMatches.Count;
+        _triggerHistory.Content = $"Triggered lines ({count})";
+        _triggerHistory.IsVisible = count > 0 || _engine.TriggerWarning is not null;
+    });
 
     public Task StartAsync() => _start ??= StartCoreAsync();
     private async Task StartCoreAsync()
@@ -100,6 +115,7 @@ public sealed class TerminalPane : Border
     public void ApplyAppearance(TerminalProfile profile, bool light, bool copyOnSelect)
     {
         Profile = profile; _light = light;
+        _engine.ConfigureTriggers(profile.Triggers);
         Terminal.InteractionOptions = Terminal.InteractionOptions with { CopyOnSelect = copyOnSelect };
         if (_close is null && Terminal.Profile is not null)
         {
@@ -115,6 +131,7 @@ public sealed class TerminalPane : Border
     {
         if (_start is not null) await _start;
         _replayTimer.Stop(); Replay.Clear();
+        _engine.TriggersChanged -= TriggersChanged; _engine.ClearTriggerMatches();
         // The dependency disposes its renderer after an off-thread connection await.
         // Detach and drain queued UI render work first, so a visible control cannot
         // enter Render during the renderer's disposal/flag update interval.

@@ -31,7 +31,7 @@ shutil.copy2(root / "NOTICE.md", payload / "NOTICE.md")
 shutil.copy2(root / "docs/licensing.md", payload / "LICENSING.md")
 shutil.copy2(root / "docs/dependency-source-map.md", payload / "DEPENDENCY-SOURCES.md")
 for unwanted in payload.glob("ShellIntegration/zsh/.zsh_history*"): unwanted.unlink()
-version = "0.3.0"
+version = "0.4.0"
 name = f"aster-terminal-{version}-{rid}"
 package_root = payload
 if rid.startswith("osx"):

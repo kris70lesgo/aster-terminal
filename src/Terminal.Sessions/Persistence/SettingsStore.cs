@@ -89,6 +89,8 @@ public sealed partial class SettingsStore
             if (string.IsNullOrWhiteSpace(profile.FontFamily) || !double.IsFinite(profile.FontSize) || profile.FontSize is < 6 or > 48) throw new ArgumentException("Font size must be 6–48.");
             if (profile.HistorySize is < 100 or > 100000) throw new ArgumentException("Scrollback must be 100–100,000 lines.");
             if (profile.CursorShape is not ("filledBox" or "bar" or "underscore")) throw new ArgumentException("Invalid cursor style.");
+            if (profile.Triggers is null || profile.Triggers.Count > 32 || profile.Triggers.Any(t => t is null)) throw new ArgumentException("Keep at most 32 output rules per profile.");
+            foreach (var trigger in profile.Triggers) trigger.Validate();
             foreach (var color in new[] { profile.Foreground, profile.Background })
                 if (color is not null && !HexColor().IsMatch(color)) throw new ArgumentException("Colours must use #RRGGBB.");
             if (profile.EnvironmentVariables is null || profile.EnvironmentVariables.Any(p => string.IsNullOrWhiteSpace(p.Key) || p.Key.Contains('=') || p.Key.Contains('\0') || p.Value is null || p.Value.Contains('\0')))

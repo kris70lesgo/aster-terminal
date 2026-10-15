@@ -54,3 +54,30 @@ this subset. Recording a scrolled view captures that view; no full scrollback
 history is stored in each frame. Fast intermediate output can occur between
 captures. The budget is an estimate of retained managed objects, not a claim that
 the process working set is capped at 16 MiB.
+
+## Output rules and graphics acceptance, 0.4.0
+
+Profiles hold up to 32 opt-in regex rules: highlight matched cells or bookmark
+completed lines. Rules use .NET NonBacktracking (no lookarounds/backreferences),
+10 ms regex timeouts and a 25 ms evaluation budget per Feed. A timeout pauses the
+rule; burst-budget exhaustion leaves a visible warning. At most the first 512
+line-feed candidates per Feed and 4096 UTF-16 units per logical line are evaluated;
+oversize/truncated lines are skipped. Alternate-screen output is excluded. No
+script, command, send-text, clipboard, network or OS notification action exists.
+
+The engine's existing lock covers capture/matching/colour application and stable
+logical anchors. Plain lines copy only their current row; the view-relative
+buffer API is briefly normalised under that lock, then restored without scroll
+events. Wrapped lines need a retained-history snapshot to map Unicode positions
+to cell ranges, so deep history has measurable allocation cost for these rules.
+Rules run before line feed scrolls or evicts their cells. UI receives only a
+coalesced change signal per Feed. Each pane keeps at most 200 line records,
+clears them on close/reset, and resolves anchors again for navigation; expired
+lines produce an explanation. This history is not a persistent logging service.
+
+Existing inline graphics are now accepted through Aster's adapter: fragmented
+sixel, OSC1337 PNG and direct-data kitty RGBA decode and render verified pixels.
+Native smoke writes all three through a real shell and asserts red/green/blue
+pixels in the native client render. Kitty file/shared-memory transfers remain
+rejected by the pinned engine. This does not establish every image variant,
+animation, graphics replay or upstream binary compatibility.

@@ -219,3 +219,29 @@ source, notices, checksums and evidence accompany the release. The official
 challenge announcement was rechecked on 2026-10-15 without a rule change.
 Advanced parity and manual-input/platform gaps remain explicit; no contest
 form submission is asserted.
+
+## 2026-10-15 — 0.4.0 output rules and verified inline graphics
+
+Continued beyond 0.3.0. Profile rules now highlight matches or bookmark completed
+logical lines with a 200-record per-pane history and anchor-based navigation.
+The settings editor validates and persists rules transactionally. Existing VT
+parsing strips control payloads from matching; rules cannot run host actions.
+Fragmented/wrapped Unicode, rewritten text, colour ranges, expired anchors,
+settings invalidity/cancellation and real-shell output have acceptance tests.
+A performance review replaced full-history capture for ordinary trigger lines
+with one-row capture under the existing engine gate. Wrapped rules still need
+retained-history mapping; matching work is budgeted and limitations are explicit.
+
+A new scrolled-output regression exposed the dependency resetting scroll offset
+on every full-screen scroll. Aster now anchors the viewed line across output;
+when it is evicted, the view remains at oldest retained history. Reset/history
+clear still returns to the live screen. Tests cover this independently of rules.
+
+Sixel, OSC1337 PNG and direct-data kitty RGBA now pass actual Skia pixel tests
+through the Aster adapter, including byte fragmentation and reset. Malformed
+payload/oversize dimensions and rejected kitty file transfer recover without
+images or host file actions. Native smoke additionally emits all three from a
+real shell and checks coloured pixels; native three-platform results pending.
+The official challenge announcement was rechecked at this milestone, unchanged.
+No dependencies were added. Full reconnect, native tmux -CC, Python API and
+system-wide hotkey parity remain unfinished.

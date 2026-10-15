@@ -44,24 +44,14 @@ public sealed class TmuxWindow : Window
         }
         Item("New window", async () => { await _controller.NewWindowAsync(); await RefreshAsync(); });
         Item("Split right", () => SplitAsync(false)); Item("Split below", () => SplitAsync(true));
-        Item("Close pane…", async () =>
-        {
-            if (_active is { } id && await DialogWindow.Confirm(this, "Close tmux pane", "End this pane's process in tmux?", "Close pane"))
-            { await _controller.KillPaneAsync(id); await RefreshAsync(); }
-        });
+        Item("Close pane", ClosePaneAsync);
         Item("Copy", async () => { if (_active is { } id && _panes.TryGetValue(id, out var pane)) await pane.Terminal.CopyAsync(); });
         Item("Paste", async () => { if (_active is { } id && _panes.TryGetValue(id, out var pane)) await pane.Terminal.PasteAsync(); });
-        Item("Find…", async () =>
-        {
-            if (_active is not { } id || !_panes.TryGetValue(id, out var pane)) return;
-            var text = await DialogWindow.Prompt(this, "Find in tmux pane", "");
-            if (string.IsNullOrEmpty(text)) return;
-            pane.Terminal.Find(text);
-        });
+        Item("Find…", FindAsync);
         Item("Detach", () => { Close(); return Task.CompletedTask; });
         var grid = new Grid { RowDefinitions = new RowDefinitions("Auto,*,Auto") };
         grid.Children.Add(menu); Grid.SetRow(_tabs, 1); grid.Children.Add(_tabs); Grid.SetRow(_message, 2); grid.Children.Add(_message); Content = grid;
-        if (OperatingSystem.IsMacOS()) { menu.IsVisible = false; NativeMenu.SetMenu(this, NativeMenuBridge.FromMenu(menu, new Dictionary<string, KeyGesture>())); }
+        if (OperatingSystem.IsMacOS()) { menu.IsVisible = false; NativeMenu.SetMenu(this, NativeMenuBridge.FromMenu(menu, _shortcuts)); }
         _refresh = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(75) };
         _refresh.Tick += (_, _) => { _refresh.Stop(); Observe(RefreshAsync()); };
         _resize = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(150) };
@@ -78,12 +68,25 @@ public sealed class TmuxWindow : Window
         Opened += (_, _) => Observe(StartAsync()); Closing += ClosingWindow;
         AddHandler(KeyDownEvent, Shortcut, RoutingStrategies.Tunnel);
     }
+    private async Task ClosePaneAsync()
+    {
+        if (_active is { } id && await DialogWindow.Confirm(this, "Close tmux pane", "End this pane's process in tmux?", "Close pane"))
+        { await _controller.KillPaneAsync(id); await RefreshAsync(); }
+    }
+    private async Task FindAsync()
+    {
+        if (_active is not { } id || !_panes.TryGetValue(id, out var pane)) return;
+        var text = await DialogWindow.Prompt(this, "Find in tmux pane", "");
+        if (string.IsNullOrEmpty(text)) { pane.Terminal.Search.Clear(); pane.Terminal.SetSearchHighlights([]); return; }
+        pane.Terminal.Find(text);
+    }
     private void Shortcut(object? sender, KeyEventArgs e)
     {
         var action = _shortcuts.FirstOrDefault(p => p.Value.Matches(e)).Key;
         Task? task = action switch
         {
-            "NewTab" => _controller.NewWindowAsync(),
+            "NewTab" or "NewWindow" => _controller.NewWindowAsync(),
+            "ClosePane" => ClosePaneAsync(), "Find" => FindAsync(),
             "SplitRight" => SplitAsync(false), "SplitBelow" => SplitAsync(true),
             "Copy" when _active is { } copy => _panes[copy].Terminal.CopyAsync(),
             "Paste" when _active is { } paste => _panes[paste].Terminal.PasteAsync(),

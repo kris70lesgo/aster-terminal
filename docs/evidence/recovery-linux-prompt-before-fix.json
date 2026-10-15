@@ -1,0 +1,8 @@
+{
+  "passed": false,
+  "timestamp": "2026-10-15T15:15:44.5069164+00:00",
+  "os": "Ubuntu 24.04.5 LTS",
+  "renderScaling": 1,
+  "checks": [],
+  "error": "System.TimeoutException: Native recovery acceptance timed out.\n   at Aster.App.Services.RecoverySmoke.Until(Func\u00601 condition) in /home/runner/work/aster-terminal/aster-terminal/src/App/Services/RecoverySmoke.cs:line 108\n   at Aster.App.Services.RecoverySmoke.Run(MainWindow window, IClassicDesktopStyleApplicationLifetime lifetime, String state, String report, Boolean resume) in /home/runner/work/aster-terminal/aster-terminal/src/App/Services/RecoverySmoke.cs:line 57"
+}

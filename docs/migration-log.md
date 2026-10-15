@@ -419,3 +419,11 @@ line-start position. That complete sentinel cannot come from the echoed input,
 which contains the unexpanded variable / printf placeholder. Session identity,
 retained variable, physical global focus and cleanup assertions remain intact.
 The failing JSON and actual native image are retained separately.
+
+Run 38758404103 passes all global-hotkey checks (including Linux), then Linux's
+subsequent crash/reopen fixture encounters the same queued-dash prompt prefix
+before its before-crash sentinel. The actual value is present; its strict
+line-start wait times out. Recovery fixture printf output now starts with an
+explicit newline, preserving its existing strict sentinel/PID assertions.
+The failed report remains in recovery-linux-prompt-before-fix.json. This change
+only delimits isolated fixture output; it does not change terminal behavior.

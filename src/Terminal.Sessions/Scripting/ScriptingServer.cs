@@ -173,7 +173,10 @@ public sealed class ScriptingServer : IAsyncDisposable
                     }
                     else
                     {
-                        try { response = await _target.HandleAsync(request, _stop.Token); }
+                        // A desktop action may need the UI dispatcher to resume.
+                        // Stopping the transport must not wait for that continuation
+                        // when the UI is already inside its Exit event.
+                        try { response = await _target.HandleAsync(request, _stop.Token).WaitAsync(_stop.Token); }
                         catch (OperationCanceledException) when (_stop.IsCancellationRequested) { return; }
                         catch (Exception) { response = new() { Error = "The request could not be completed." }; }
                     }

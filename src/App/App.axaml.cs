@@ -45,7 +45,7 @@ public sealed class App : Application
                 };
                 try { HotkeyWindowService.Shared.Configure(store); } catch (IOException error) { window.ReportApplicationError(error.Message); }
             }
-            desktop.Exit += (_, _) => { HotkeyWindowService.Shared.Dispose(); ScriptingService.Shared.StopAtExit(); };
+            desktop.Exit += (_, _) => { HotkeyWindowService.Shared.Dispose(); ScriptingService.Shared.StopAtExit(); Platform.MacExitWakeup.Start(); };
         }
         base.OnFrameworkInitializationCompleted();
     }

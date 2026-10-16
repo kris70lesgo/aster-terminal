@@ -29,11 +29,13 @@ public static class TmuxSmoke
         desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
         window.Opened += async (_, _) =>
         {
-            Exception? failure = null; var checks = new List<string>(); TmuxWindow? recovered = null; var scale = window.RenderScaling; string? expectedSize = null;
+            Exception? failure = null; var checks = new List<string>(); TmuxWindow? recovered = null; var scale = window.RenderScaling; string? expectedSize = null, initialKernelSize = null, kernelSize = null; double? kernelWaitMs = null;
             try
             {
                 await Until(() => window.IsReady && window.Panes.Count == 1);
-                var id = window.Panes.Keys.Single(); var first = window.Panes[id]; await Until(() => Text(first).Contains("ASTER_READY>"));
+                var id = window.Panes.Keys.Single();
+                var paneTty = (await Run("display-message", "-p", "-t", "%" + id, "#{pane_tty}")).Trim();
+                var first = window.Panes[id]; await Until(() => Text(first).Contains("ASTER_READY>"));
                 Command(first, "ASTER_NATIVE_TMUX=retained; printf '__TMUX_NATIVE__%s\\n' \"$ASTER_NATIVE_TMUX\"");
                 await Until(() => Text(first).Split('\n').Any(l => l.Trim() == "__TMUX_NATIVE__retained"));
                 await window.SplitAsync(false); await Until(() => window.Panes.Count == 2 && window.Panes.Values.All(p => p.Terminal.IsRunning));
@@ -43,6 +45,19 @@ public static class TmuxSmoke
                 await window.SplitAsync(true); await Until(() => window.Panes.Count == 3);
                 window.Width = 850; window.Height = 540; await Task.Delay(250); await window.SynchronizeSizeAsync(); await Task.Delay(100);
                 expectedSize = (await Run("display-message", "-p", "-t", "%" + id, "#{pane_height} #{pane_width}")).Trim();
+                // tmux can advertise the new layout before applying the PTY's
+                // TIOCSWINSZ. A one-shot stty sent in that interval prints the old
+                // size forever in history, even after the resize has completed.
+                // Require the actual kernel dimensions before testing shell IO.
+                var kernelWatch = Stopwatch.StartNew();
+                while (true)
+                {
+                    kernelSize = await KernelSize(paneTty); initialKernelSize ??= kernelSize;
+                    if (kernelSize == expectedSize) break;
+                    if (kernelWatch.Elapsed > TimeSpan.FromSeconds(10)) throw new TimeoutException($"tmux PTY stayed at {kernelSize}; layout requires {expectedSize}.");
+                    await Task.Delay(25);
+                }
+                kernelWaitMs = kernelWatch.Elapsed.TotalMilliseconds;
                 Command(first, "stty size"); await Until(() => Text(first).Split('\n').Any(l => l.Trim() == expectedSize));
                 await Task.Delay(150); Image(window, Path.Combine(report, "tmux-splits.png"));
                 checks.Add("Native Avalonia panes mirror actual tmux nested splits; independent routed input and Unicode output");
@@ -63,17 +78,29 @@ public static class TmuxSmoke
                 await Task.Delay(150); Image(recovered, Path.Combine(report, "tmux-reattach.png"));
                 checks.Add("Closing the native control window detaches; a new native window recovers the same live shell variable");
             }
-            catch (Exception error) { failure = error; if ((recovered ?? window).IsVisible) Image(recovered ?? window, Path.Combine(report, "failure.png")); }
+            catch (Exception error) { File.WriteAllText(Path.Combine(report, "failure-buffer.txt"), string.Join("\n--- pane ---\n", window.Panes.Values.Select(Text))); failure = error; if ((recovered ?? window).IsVisible) Image(recovered ?? window, Path.Combine(report, "failure.png")); }
             finally
             {
                 recovered?.Close(); window.Close();
                 try { await Run("kill-server"); } catch (IOException error) { failure ??= error; }
                 if (recovered is not null) await Until(() => !recovered.IsVisible); await Until(() => !window.IsVisible);
-                File.WriteAllText(Path.Combine(report, "tmux.json"), JsonSerializer.Serialize(new { passed = failure is null, timestamp = DateTimeOffset.UtcNow, os = System.Runtime.InteropServices.RuntimeInformation.OSDescription, renderScaling = scale, checks, expectedSize, error = failure?.ToString() }, new JsonSerializerOptions { WriteIndented = true }));
+                File.WriteAllText(Path.Combine(report, "tmux.json"), JsonSerializer.Serialize(new { passed = failure is null, processId = Environment.ProcessId, timestamp = DateTimeOffset.UtcNow, os = System.Runtime.InteropServices.RuntimeInformation.OSDescription, renderScaling = scale, checks, expectedSize, initialKernelSize, kernelSize, kernelWaitMs, error = failure?.ToString() }, new JsonSerializerOptions { WriteIndented = true }));
                 desktop.Shutdown(failure is null ? 0 : 1);
             }
         };
         return window;
+    }
+    private static async Task<string> KernelSize(string tty)
+    {
+        if (!tty.StartsWith("/dev/", StringComparison.Ordinal) || tty.Length > 256 || Path.GetFullPath(tty) != tty || tty.Any(char.IsControl))
+            throw new IOException("Invalid owned tmux PTY path.");
+        var start = new ProcessStartInfo("/bin/stty") { RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false, CreateNoWindow = true };
+        start.ArgumentList.Add(OperatingSystem.IsMacOS() ? "-f" : "-F"); start.ArgumentList.Add(tty); start.ArgumentList.Add("size");
+        using var process = Process.Start(start)!;
+        var output = process.StandardOutput.ReadToEndAsync(); var error = process.StandardError.ReadToEndAsync();
+        await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));
+        if (process.ExitCode != 0) throw new IOException("Owned PTY dimensions: " + await error);
+        return (await output).Trim();
     }
     private static async Task<string> RunTmux(string executable, string socket, string[] args)
     {

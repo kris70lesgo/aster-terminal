@@ -584,3 +584,34 @@ assembly are verified. No dependency was added; the MIT search mapping retains
 its attribution/grant. Official rules were rechecked at this milestone. Local
 6000-line search capture/matching costs and allocations are measured separately;
 no comparative performance or unconditional platform reliability claim is made.
+
+## 2026-10-16 — scripting exit investigation, 0.8.1 in verification
+
+Fresh 0.8.0 baseline/recovery passed. The ordered tmux check reproduced an old
+stty result (28x55) after layout metadata reported 22x42; later unchanged runs
+passed. The fixture now queries the owned PTY and waits for actual kernel size
+before sending the strict shell stty acceptance command, retaining both values.
+
+PID/phase logging reproduced the scripting stall after successful Python checks,
+server shutdown, window cleanup, Exit event and desktop.Shutdown return, with no
+return from the native main loop. A first periodic-event-only trial still failed
+one of three runs and was discarded. The replacement native AppKit bridge
+defers a graceful stop plus an application-defined event to a fresh main-queue
+turn; this is Aster GPL code using system APIs, not a framework fork. Six native
+scripting checks and a full ordered Retina batch pass with actual PID exits and
+main-loop markers. No forced exit or physical key injection is used. A debugger
+inspection of the failed process was not counted as a successful run.
+
+A separate deterministic regression held a desktop request incomplete during
+server stop. The old transport waited for that action; bounding the wait by the
+server token fixes it, releases the credential lease and allows a replacement
+listener while the original action is still held. The focused five transport
+tests pass. The 76-test suite passes locally (74 + 2 Windows-only skips). One
+earlier run paused a trigger on its documented regex wall-time budget during
+concurrent diagnostic/build load; the five trigger tests and complete quiet
+rerun passed without changing regex safety limits. That failed run is retained.
+
+Final source/package verification on three OSes is pending. The new installed
+Mac verifier rejects reused report folders and requires matching PID plus process
+exit and clean main-loop return, correcting the earlier helper's stale-report
+weakness. Raw failure/phase evidence is retained rather than overwritten.

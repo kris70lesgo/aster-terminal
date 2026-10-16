@@ -21,7 +21,12 @@ public static class ScriptingSmoke
     {
         string Option(string name) { var i = Array.IndexOf(args, name); return i >= 0 && i + 1 < args.Length ? Path.GetFullPath(args[i + 1]) : throw new ArgumentException(name + " is required."); }
         var report = Option("--scripting-report"); var python = Option("--scripting-python"); var launcher = Option("--scripting-launcher"); var script = Option("--scripting-script");
-        Directory.CreateDirectory(report); desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        if (Directory.Exists(report) && Directory.EnumerateFileSystemEntries(report).Any()) throw new IOException("Scripting acceptance requires a fresh report directory.");
+        Directory.CreateDirectory(report);
+        void Trace(string step) => File.AppendAllText(Path.Combine(report, "lifecycle.log"), $"{DateTimeOffset.UtcNow:O} pid={Environment.ProcessId} {step}\n");
+        Trace("configured");
+        desktop.Exit += (_, _) => Trace("desktop exit event");
+        desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
         var state = Path.Combine(Path.GetTempPath(), "aster-api-native-" + Guid.NewGuid().ToString("N"));
         var store = new SettingsStore(Path.Combine(state, "settings.json"));
         var profile = new TerminalProfile("Python acceptance", OperatingSystem.IsWindows() ? "cmd.exe /Q" : "export PS1='API_READY> '; exec /bin/sh", Path.GetTempPath()) { EnvironmentVariables = new() { ["PROMPT"] = "API_READY$G" } };
@@ -29,6 +34,8 @@ public static class ScriptingSmoke
         var window = new MainWindow(store) { ShowActivated = false };
         window.Opened += async (_, _) =>
         {
+            Trace("window opened");
+            Task<string>? stdout = null, stderr = null;
             Exception? failure = null; var checks = new List<string>(); Process? client = null;
             using var target = new DesktopScriptingTarget(store);
             await using var server = new ScriptingServer(target, state, 0);
@@ -41,13 +48,17 @@ public static class ScriptingSmoke
             try
             {
                 await Until(() => window.ScriptingReady && window.ScriptingPanes.All(p => p.Terminal.IsRunning && TerminalBufferExport.ToPlainText(p.Terminal.Engine.CreateSnapshot().Buffer).Contains("API_READY>")));
+                Trace("shell ready");
                 await server.StartAsync();
+                Trace("server started");
                 var start = new ProcessStartInfo(python) { RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false, CreateNoWindow = true };
                 start.Environment["PYTHONUTF8"] = "1";
                 foreach (var arg in new[] { launcher, "--endpoint", ScriptingEndpoint.FilePath(state), script, Path.Combine(report, "python-client.json") }) start.ArgumentList.Add(arg);
                 client = Process.Start(start) ?? throw new IOException("Unable to start original Python client acceptance.");
-                var stdout = client.StandardOutput.ReadToEndAsync(); var stderr = client.StandardError.ReadToEndAsync();
+                stdout = client.StandardOutput.ReadToEndAsync(); stderr = client.StandardError.ReadToEndAsync();
+                Trace($"client started pid={client.Id}");
                 await client.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(60));
+                Trace("client exited");
                 if (client.ExitCode != 0) throw new IOException("Python client failed: " + await stdout + await stderr);
                 using var result = JsonDocument.Parse(File.ReadAllText(Path.Combine(report, "python-client.json")));
                 if (!result.RootElement.GetProperty("passed").GetBoolean()) throw new IOException("Python client did not pass.");
@@ -56,6 +67,7 @@ public static class ScriptingSmoke
                 if (desktop.Windows.OfType<MainWindow>().Count(w => w.ScriptingReady) != 1 || window.ScriptingSnapshot().Tabs.Count != 1 || window.ScriptingPanes.Count() != 1) throw new IOException("Script-created panes were not cleaned up.");
                 checks.Add("Only the initial real shell remains after script closes its created tab and split");
                 await server.DisposeAsync();
+                Trace("server stopped");
                 if (File.Exists(ScriptingEndpoint.FilePath(state))) throw new IOException("API credentials remained after stop.");
                 checks.Add("API listener stops and removes private credentials");
             }
@@ -63,16 +75,27 @@ public static class ScriptingSmoke
             finally
             {
                 capture.Stop();
-                if (client is not null) { if (!client.HasExited) client.Kill(); await client.WaitForExitAsync(); client.Dispose(); }
+                if (client is not null)
+                {
+                    if (!client.HasExited) { Trace("client timeout cleanup"); client.Kill(); }
+                    await client.WaitForExitAsync();
+                    if (stdout is not null) File.WriteAllText(Path.Combine(report, "python-stdout.log"), await stdout);
+                    if (stderr is not null) File.WriteAllText(Path.Combine(report, "python-stderr.log"), await stderr);
+                    client.Dispose();
+                }
                 await server.DisposeAsync(); target.Dispose();
+                Trace("closing windows");
                 var windows = desktop.Windows.OfType<MainWindow>().ToArray();
                 var panes = windows.SelectMany(w => w.ScriptingPanes).ToArray();
                 foreach (var owned in windows) owned.Close();
                 try { await Until(() => panes.All(p => !p.Terminal.IsRunning) && windows.All(w => !w.IsVisible)); checks.Add("Normal native window close cleans up remaining PTY"); }
                 catch (Exception error) { failure ??= error; }
-                File.WriteAllText(Path.Combine(report, "scripting.json"), JsonSerializer.Serialize(new { passed = failure is null, timestamp = DateTimeOffset.UtcNow, os = System.Runtime.InteropServices.RuntimeInformation.OSDescription, renderScaling, checks, error = failure?.ToString() }, new JsonSerializerOptions { WriteIndented = true }));
+                File.WriteAllText(Path.Combine(report, "scripting.json"), JsonSerializer.Serialize(new { passed = failure is null, processId = Environment.ProcessId, timestamp = DateTimeOffset.UtcNow, os = System.Runtime.InteropServices.RuntimeInformation.OSDescription, renderScaling, checks, error = failure?.ToString() }, new JsonSerializerOptions { WriteIndented = true }));
+                Trace("result written");
                 if (Directory.Exists(state)) try { Directory.Delete(state, true); } catch (IOException) { }
+                Trace("requesting desktop shutdown");
                 desktop.Shutdown(failure is null ? 0 : 1);
+                Trace("desktop shutdown returned");
             }
         };
         return window;

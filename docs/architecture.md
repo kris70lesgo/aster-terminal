@@ -230,3 +230,27 @@ marks the count stale until refresh. Regex syntax is .NET, not complete ICU pari
 zero-length/partial-grapheme matches and truncated logical prefixes are excluded.
 Trailing default blank cells at hard EOL are omitted. tmux's existing literal Find
 prompt remains separate; filtering/smart-case remain later parity targets.
+
+## Graceful exit and scripting cancellation, 0.8.1
+
+Transport request waits are bounded by their peer/server cancellation token,
+independent of a desktop action's UI continuation. This prevents API shutdown
+from waiting for the dispatcher while an Exit event is stopping that dispatcher.
+Accepted actions retain their own cancellation checks and normal window/pane
+cleanup; stopping transport does not roll back an action already in progress.
+
+On macOS the Exit event arms a small AppKit bridge after hotkey/API cleanup.
+It schedules a fresh main-queue turn, reissues NSApplication.stop and posts an
+application-defined NSEvent to the same app. At most three 20 ms scheduled
+attempts are made; scheduling is subject to OS load. Program.Main disarms it
+when the native loop returns. This handles a reproduced case where Avalonia
+12.1.4 returned from desktop.Shutdown but remained in NSApplication.run. No
+process exit/kill, HID input, activation or other-app event is used. Cancelled
+quit does not reach the Exit event. The bridge is isolated from terminal/VT code,
+built with clang/AppKit on Mac only, and targets macOS 15.
+
+Fixture evidence records PID, Python phases/output, desktop Exit and native-loop
+return. The installed Mac verifier refuses reused report roots, requires the
+launched process to exit, and requires scripting's clean main-loop marker.
+Native tmux acceptance waits for the owned PTY's actual kernel geometry before
+sending its one-shot stty command; layout metadata alone is not that barrier.

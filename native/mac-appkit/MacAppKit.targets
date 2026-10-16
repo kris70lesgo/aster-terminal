@@ -1,0 +1,14 @@
+<Project>
+  <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+    <MacAppKitSource>$(MSBuildThisFileDirectory)aster-appkit.m</MacAppKitSource>
+    <MacAppKitOutput>$(MSBuildProjectDirectory)/obj/native-appkit/$(Configuration)/$(RuntimeIdentifier)/libaster-appkit.dylib</MacAppKitOutput>
+    <MacAppKitArch Condition="'$(RuntimeIdentifier)' == 'osx-arm64'">-arch arm64</MacAppKitArch>
+  </PropertyGroup>
+  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+    <Content Include="$(MacAppKitOutput)" Link="libaster-appkit.dylib" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+  <Target Name="BuildMacAppKit" BeforeTargets="PrepareForBuild;GetCopyToOutputDirectoryItems" Condition="$([MSBuild]::IsOSPlatform('OSX'))" Inputs="$(MacAppKitSource);$(MSBuildThisFileFullPath)" Outputs="$(MacAppKitOutput)">
+    <MakeDir Directories="$([System.IO.Path]::GetDirectoryName('$(MacAppKitOutput)'))" />
+    <Exec Command="clang -dynamiclib -fobjc-arc -O2 -mmacosx-version-min=15.0 $(MacAppKitArch) -framework AppKit -Wl,-install_name,@rpath/libaster-appkit.dylib &quot;$(MacAppKitSource)&quot; -o &quot;$(MacAppKitOutput)&quot;" />
+  </Target>
+</Project>

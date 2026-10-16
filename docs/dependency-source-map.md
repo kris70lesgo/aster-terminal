@@ -67,3 +67,11 @@ Unicode-word mapping from the same pinned MIT Devolutions `TextBufferSearch.cs`.
 Source/header attribution and the complete existing Devolutions/Microsoft MIT
 notice remain in every payload. Bounded regex, cancellation, logical-anchor
 navigation and native UI are Aster adaptations; no new package is introduced.
+
+## Native Mac exit bridge, release 0.8.1
+
+The Aster-authored GPL source and build target are in `native/mac-appkit`.
+AppKit/libdispatch/libobjc/libSystem are supplied by macOS, not bundled.
+The bridge reissues a graceful stop and posts only an application-local event
+after existing shutdown cleanup; it never emits HID input or forces process
+termination. No upstream native framework is forked.

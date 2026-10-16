@@ -11,6 +11,15 @@ internal static class Program
         Startup.Restart();
         if (args is ["--session-host", var descriptor]) return Aster.Sessions.Hosting.SessionHost.RunAsync(descriptor).GetAwaiter().GetResult();
         if (args is ["--benchmark", var report]) return Services.TerminalBenchmark.Run(report);
-        return AppBuilder.Configure<App>().UsePlatformDetect().LogToTrace().StartWithClassicDesktopLifetime(args);
+        int exitCode;
+        try { exitCode = AppBuilder.Configure<App>().UsePlatformDetect().LogToTrace().StartWithClassicDesktopLifetime(args); }
+        finally { Platform.MacExitWakeup.Stop(); }
+        if (args.Contains("--scripting-smoke"))
+        {
+            var index = Array.IndexOf(args, "--scripting-report");
+            if (index >= 0 && index + 1 < args.Length)
+                File.AppendAllText(Path.Combine(Path.GetFullPath(args[index + 1]), "lifecycle.log"), $"{DateTimeOffset.UtcNow:O} pid={Environment.ProcessId} main loop returned exitCode={exitCode}\n");
+        }
+        return exitCode;
     }
 }

@@ -10,10 +10,13 @@ public sealed class ScriptingServerTests
     private sealed class Target : IScriptingTarget
     {
         public int Calls;
+        public TaskCompletionSource Entered { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public TaskCompletionSource<API.ServerOriginatedMessage>? Pending;
         public event EventHandler<ScriptingNotification>? Changed;
         public Task<API.ServerOriginatedMessage> HandleAsync(API.ClientOriginatedMessage request, CancellationToken token)
         {
-            Interlocked.Increment(ref Calls);
+            Interlocked.Increment(ref Calls); Entered.TrySetResult();
+            if (Pending is { } pending) return pending.Task;
             return Task.FromResult(new API.ServerOriginatedMessage { ListSessionsResponse = new() });
         }
         public void Notify() => Changed?.Invoke(this, new(API.NotificationType.NotifyOnLayoutChange, new() { LayoutChangedNotification = new() { ListSessionsResponse = new() } }));
@@ -75,6 +78,32 @@ public sealed class ScriptingServerTests
         await Send(client, new() { Id = 125, NotificationRequest = new() { Subscribe = true, NotificationType = API.NotificationType.NotifyOnLayoutChange } });
         Assert.Equal(API.NotificationResponse.Types.Status.Ok, (await Read(client)).NotificationResponse.Status);
         fixture.Target.Notify(); response = await Read(client); Assert.False(response.HasId); Assert.NotNull(response.Notification.LayoutChangedNotification);
+    }
+    [Fact]
+    public async Task StoppingWithAnInFlightDesktopRequestDoesNotWaitForItsUiContinuation()
+    {
+        await using var fixture = new Fixture();
+        fixture.Target.Pending = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        await fixture.Start(); using var client = fixture.Client(); await fixture.Connect(client);
+        await Send(client, new() { Id = 1, ListSessionsRequest = new() });
+        await fixture.Target.Entered.Task.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
+        var stop = fixture.Server.DisposeAsync().AsTask();
+        try
+        {
+            // The UI may be in its Exit event and unable to resume an API action.
+            // Transport shutdown must not require that action's continuation.
+            Assert.Same(stop, await Task.WhenAny(stop, Task.Delay(TimeSpan.FromSeconds(2), TestContext.Current.CancellationToken)));
+            await stop;
+            Assert.False(File.Exists(ScriptingEndpoint.FilePath(fixture.Root)));
+            await using var replacement = new ScriptingServer(fixture.Target, fixture.Root, 0);
+            await replacement.StartAsync(TestContext.Current.CancellationToken);
+            Assert.NotEqual(fixture.Server.Endpoint!.Token, replacement.Endpoint!.Token);
+        }
+        finally
+        {
+            fixture.Target.Pending.TrySetResult(new() { ListSessionsResponse = new() });
+            client.Abort(); await stop.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
+        }
     }
     [Fact]
     public async Task OversizeAndMalformedBinaryFramesDisconnectBeforeReachingTheDesktop()

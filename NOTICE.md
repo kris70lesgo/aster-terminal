@@ -58,3 +58,7 @@ Devolutions TextBufferSearch.cs at fa23083f1bda1a60fe2b322c6cfab4a616af9edb.
 Copyright (c) Devolutions Inc.; portions Copyright (c) Microsoft Corporation.
 The full MIT grant is retained in licenses/Devolutions-MIT.txt. Aster's bounded
 regex, logical anchors, cancellation and native Find UI are GPL-3.0-or-later.
+
+Aster's native/mac-appkit shutdown bridge is new GPL-3.0-or-later source. It
+uses the system AppKit/dispatch APIs to wake the current app after graceful
+shutdown; Apple frameworks are supplied by macOS and are not redistributed.

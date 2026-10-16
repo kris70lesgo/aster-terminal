@@ -1,4 +1,4 @@
-# Migration report — competition release 0.8.1
+# Migration report — competition release 0.9.0
 
 Aster Terminal delivers the competition subset of an iTerm2 behavior migration:
 real local terminals, profiles, tabs, nested panes, search, themes, persisted
@@ -108,3 +108,15 @@ exits. Native tmux acceptance now waits for kernel PTY size before its strict
 shell check. The verifier refuses reused report roots. Old failures and the
 rejected approach remain in lifecycle-investigation-v0.8.1; final archive/native
 bridge/signature/notice provenance is in payload-v0.8.1.json.
+
+0.9.0 shares the existing bounded Find bar with explicit native tmux panes.
+Normal and tmux views now use the same regex/case/word/NFC Unicode/navigation
+workflow, while each pane owns its cancellation/results. Metadata refresh
+preserves the textbox’s focus and content-size changes resize tmux PTYs to fit
+the bar. Creating a tmux window selects its new tab. Two real-tmux desktop
+regressions and final Unix native acceptance pass in source 78376ee / run
+38906845116; all three platforms pass 78 tests including platform skips and
+native baseline/hotkey/recovery/original-Python checks. No dependency was added.
+Tmux Find searches retained output since attach, not the server’s complete
+pre-existing history. Local installed verification and its display limitations
+are recorded separately in test-matrix.md.

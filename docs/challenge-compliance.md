@@ -78,3 +78,11 @@ Final native run 38901660170 / source d23eba2 passes Windows, macOS and Linux.
 Package/notices/deployment-target and exact installed Retina checks are audited
 before publishing. Entrant identity/form declarations remain unverified and no
 submission is claimed.
+
+2026-10-16 0.9.0 milestone recheck: the unchanged official announcement was
+retrieved through curl after web-reader timeouts. Deadline and public GPL source,
+target builds, screenshots and README write-up requirements are unchanged;
+retrieval provenance is in evidence/rules-v0.9.0.json. Shared tmux Find adds no
+dependency or protocol action. New target-native acceptance and payload audit
+are pending at this checkpoint. Entrant identity/form declarations remain
+unverified and no submission was performed.

@@ -1,4 +1,41 @@
-# Verification matrix — release 0.8.1, 2026-10-16
+# Verification matrix — release 0.9.0, 2026-10-16
+
+Final source **78376eec31ba30d01e3c31c91fd0ac56fafab958**, run
+[38906845116](https://github.com/kris70lesgo/aster-terminal/actions/runs/38906845116):
+macOS/Linux **76 passed + 2 Windows-only skips**; Windows **67 passed + 11
+Unix-only skips**; **78 total, zero failures** on each target. All three final
+native packages pass baseline, global hotkey, crash/reopen and the original
+Python client, including clean native main-loop return. Unix also passes native
+tmux with the new Find UI. Versioned reports/TRX/images are in
+`evidence/v0.9.0-{rid}`; source provenance is in `ci-v0.9.0.json`.
+
+| New acceptance | Evidence |
+|---|---|
+| Regex/case/whole-word/NFC Unicode, counts, Enter/Shift+Enter, invalid/latest query, pane/tab isolation and 620-width fit using actual tmux shells | TmuxFindDesktopTests.cs; final Unix TRX |
+| Metadata refresh preserves Find textbox focus; created tmux window selects its new tab | Real-tmux desktop regression |
+| Pane removal and detach cancel pending Find; tmux server shells survive | Real-tmux desktop regression; final Unix native tmux.json |
+| Native bar options/navigation/errors/Unicode, compact screenshot, pane isolation, exact PTY grid fit while Find is open, detach/reattach retaining shell variable | tmux/tmux.json, tmux-find-compact.png and tmux-splits.png on final Mac/Linux packages |
+| Shared bar retains normal-window behavior on all three OSes | FindDesktopTests; final native-smoke.json / find-compact.png |
+
+The exact CI Mac archive is installed with a verified signature and matching
+managed/native bytes. Local GUI acceptance on macOS 26 is **not verified** for
+0.9.0: the owned baseline process exited before producing its report while
+CoreGraphics reported **zero active displays** and independent CoreVideo
+creation returned **-6661**. The failed verifier and display probe are preserved
+in `v0.9.0-macos-display-unavailable`; no local Retina, normal-window or graceful
+exit pass is claimed. The successful macOS 15 native CI is separate evidence.
+The earlier 0.8.1 installed Retina pass remains historical.
+
+Tmux Find searches output retained since attach (including the hydrated initial
+viewport), not the server's complete prior history. Local Windows tmux remains
+unsupported; its new desktop fixtures explicitly skip there. Smart case/filtering,
+automatic in-shell -CC/remote attach, physical local Mac hotkey, IME/AltGr/gestures,
+Wayland/multi-monitor and wider API/graphics/DVR coverage remain tracked gaps.
+`payload-v0.9.0.json` records archive, notice, signature and installed-byte checks.
+
+## Historical release 0.8.1
+
+### Verification matrix — release 0.8.1, 2026-10-16
 
 Final source **d23eba2abfad621a8f3874cca4a9d98893538f98**, run
 [38901660170](https://github.com/kris70lesgo/aster-terminal/actions/runs/38901660170):

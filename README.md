@@ -2,10 +2,10 @@
 
 A real C#/Avalonia terminal bringing a documented subset of **iTerm2** workflows
 to macOS, Windows and Linux. Independent project; no iTerm2 endorsement.
-GPL-3.0-or-later. **Version 0.8.1 is the competition release; full iTerm2 parity
+GPL-3.0-or-later. **Version 0.9.0 is the competition release; full iTerm2 parity
 is a separate milestone.**
 
-[Download v0.8.1](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.8.1)
+[Download v0.9.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.9.0)
 · [Runtime evidence](docs/test-matrix.md) · [Feature boundaries](docs/iterm2-feature-parity.md)
 
 Enable the optional summon window in Preferences → General with
@@ -32,9 +32,9 @@ folders; no SDK, account or subscription is required.
 
 | Download | Run | Platform scope |
 |---|---|---|
-| `aster-terminal-0.8.1-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26 |
-| `aster-terminal-0.8.1-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
-| `aster-terminal-0.8.1-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
+| `aster-terminal-0.9.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; final native CI checks on macOS 15; local display availability documented in runtime evidence |
+| `aster-terminal-0.9.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
+| `aster-terminal-0.9.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
 
 Extract the Mac ZIP with Finder/Archive Utility (or `ditto`) to preserve signing
 metadata. macOS is ad-hoc signed, without Developer ID notarization. For a downloaded copy,
@@ -109,6 +109,11 @@ windows/splits, closes panes, finds text and detaches; common tab/split/copy/pas
 find/close shortcuts work. Closing the control window detaches while tmux keeps
 the shells. This is explicit local `-C` control attach; automatic in-shell `-CC`,
 SSH/WSL attach and complete historical VT/graphics hydration remain unfinished.
+
+Normal and native tmux panes share the compact Find bar in 0.9.0. Tmux Find
+searches output retained in Aster since attach, including the initial viewport;
+it does not import the tmux server’s entire earlier history. Pane/tab changes
+rebind it, and detach cancels pending work while preserving server shells.
 
 Find offers regex, case and whole-word controls, result counts and wrapping
 Enter/Shift+Enter navigation. Escape closes the compact bar. Background searches
@@ -187,11 +192,12 @@ GitHub Actions and local terminal tools. [Performance evidence](docs/performance
 is measured on a defined workload and makes no superiority claim.
 
 ![Original iTerm2 3.6.6 startup reference](docs/evidence/iterm2-original.png)
-![Aster native dark theme with actual shell output](docs/evidence/v0.8.1-osx-arm64/dark.png)
-![Aster compact Unicode regex Find](docs/evidence/v0.8.1-osx-arm64/find-compact.png)
-![Aster native profile output rules](docs/evidence/v0.8.1-osx-arm64/preferences-triggers.png)
-![Aster shell-generated inline graphics](docs/evidence/v0.8.1-osx-arm64/graphics.png)
-![Aster native tmux control panes](docs/evidence/v0.8.1-osx-arm64/tmux/tmux-splits.png)
+![Aster native dark theme with actual shell output](docs/evidence/v0.9.0-osx-arm64/dark.png)
+![Aster compact Unicode regex Find](docs/evidence/v0.9.0-osx-arm64/find-compact.png)
+![Aster native profile output rules](docs/evidence/v0.9.0-osx-arm64/preferences-triggers.png)
+![Aster shell-generated inline graphics](docs/evidence/v0.9.0-osx-arm64/graphics.png)
+![Aster native tmux control panes](docs/evidence/v0.9.0-osx-arm64/tmux/tmux-splits.png)
+![Aster compact Find in native tmux](docs/evidence/v0.9.0-osx-arm64/tmux/tmux-find-compact.png)
 
 Original screenshot © George Nachman/contributors; installed iTerm2 3.6.6 is a
 different version and geometry from the source audit. Captures show actual

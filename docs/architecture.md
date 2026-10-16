@@ -264,5 +264,7 @@ Find remains independent of terminal selection/input and tmux continues to own
 its shells. Metadata refresh preserves Find textbox focus. Tab content bounds
 changes schedule native tmux resizing, including the space consumed by Find.
 New native tmux windows select their created tab. No VT/protocol/dependency or
-search-bound changes. Local headless real-tmux acceptance passes; target-native
-verification is required before runtime claims for the new UI.
+search-bound changes. Two headless real-tmux desktop facts and final native Unix package checks
+pass in source 78376ee / run 38906845116, including compact layout, Unicode,
+grid fit and detach. Windows retains the common bar in normal panes; local
+tmux itself remains unsupported there.

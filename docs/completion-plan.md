@@ -59,3 +59,10 @@ three-OS run and an exact installed Retina ordered batch (three scripting runs)
 pass with actual process and main-loop exits. A fresh-directory verifier and
 kernel-size barrier strengthen acceptance. Full iTerm2 parity and broader manual
 coverage remain separate; prior failure evidence is retained.
+
+0.9.0 closes the native tmux Find gap by sharing the compact bar and existing
+per-pane bounded controller with normal windows. Real-tmux desktop tests cover
+options/navigation, pane/tab isolation, focus, removal and cancellation. Final
+78-test/native three-OS run 38906845116 passes; Unix additionally verifies native
+tmux Find and exact grids with the bar open. Full upstream history hydration,
+smart case/filtering and automatic -CC/remote attach remain separate targets.

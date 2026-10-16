@@ -1,0 +1,21 @@
+  Determining projects to restore...
+  Restored /Users/agastya/.codex/worktrees/tmux-find/alvonia real/src/Terminal.Sessions/Terminal.Sessions.csproj (in 140 ms).
+  Restored /Users/agastya/.codex/worktrees/tmux-find/alvonia real/src/App/App.csproj (in 140 ms).
+  Restored /Users/agastya/.codex/worktrees/tmux-find/alvonia real/tests/Terminal.Tests/Terminal.Tests.csproj (in 140 ms).
+  Terminal.Sessions -> /Users/agastya/.codex/worktrees/tmux-find/alvonia real/src/Terminal.Sessions/bin/Release/net10.0/Terminal.Sessions.dll
+  App -> /Users/agastya/.codex/worktrees/tmux-find/alvonia real/src/App/bin/Release/net10.0/Aster.Terminal.dll
+  Terminal.Tests -> /Users/agastya/.codex/worktrees/tmux-find/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll
+Test run for /Users/agastya/.codex/worktrees/tmux-find/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:03.40]     Aster.Tests.DesktopTests.TmuxFindUsesRealOutputAndKeepsSearchIndependentAcrossPanesAndTabs [FAIL]
+  Failed Aster.Tests.DesktopTests.TmuxFindUsesRealOutputAndKeepsSearchIndependentAcrossPanesAndTabs [1 s]
+  Error Message:
+   Assert.NotNull() Failure: Value is null
+  Stack Trace:
+     at Aster.Tests.DesktopTests.TmuxFindUsesRealOutputAndKeepsSearchIndependentAcrossPanesAndTabs() in /Users/agastya/.codex/worktrees/tmux-find/alvonia real/tests/Terminal.Tests/TmuxFindDesktopTests.cs:line 29
+   at Aster.Tests.DesktopTests.TmuxFindUsesRealOutputAndKeepsSearchIndependentAcrossPanesAndTabs() in /Users/agastya/.codex/worktrees/tmux-find/alvonia real/tests/Terminal.Tests/TmuxFindDesktopTests.cs:line 68
+   at Aster.Tests.DesktopTests.TmuxFindUsesRealOutputAndKeepsSearchIndependentAcrossPanesAndTabs() in /Users/agastya/.codex/worktrees/tmux-find/alvonia real/tests/Terminal.Tests/TmuxFindDesktopTests.cs:line 68
+--- End of stack trace from previous location ---
+Results File: /Users/agastya/.codex/worktrees/tmux-find/alvonia real/artifacts/tests/tmux-find-before.trx
+
+Failed!  - Failed:     1, Passed:     0, Skipped:     0, Total:     1, Duration: 1 s - Terminal.Tests.dll (net10.0)

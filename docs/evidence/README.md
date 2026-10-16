@@ -1,6 +1,23 @@
 # Screenshot and runtime evidence
 
-## Current release 0.8.1
+## Current release 0.9.0
+
+`v0.9.0-{rid}` contains final 78-test/native package reports/images from source
+78376eec31ba30d01e3c31c91fd0ac56fafab958 / run 38906845116. Unix adds the
+shared native tmux Find bar, compact Unicode screenshot, exact grid fit and
+detach cancellation; prior normal-window/recovery/graphics/API checks pass on
+all three targets. `ci-v0.9.0.json` and `payload-v0.9.0.json` record provenance.
+
+The exact CI Mac archive was installed and its signature/bytes verified. The
+local native attempt failed before its report while CoreGraphics reported zero
+active displays and independent CoreVideo creation returned -6661; retained
+verification/probe are in `v0.9.0-macos-display-unavailable`. This is not a local
+GUI/Retina pass, and prior-version successes do not substitute for it. The new
+UI has final native macOS 15 CI evidence. `tmux-find-investigation-v0.9.0` retains
+the expected before-implementation regression; all commands/output belong to
+uniquely owned fixture servers. No normal user shell was captured.
+
+## Historical release 0.8.1
 
 `v0.8.1-{rid}` contains final 76-test/native package reports/images from source
 d23eba2abfad621a8f3874cca4a9d98893538f98 / run 38901660170. Native scripting

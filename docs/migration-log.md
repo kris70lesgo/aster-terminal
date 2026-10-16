@@ -658,3 +658,14 @@ Native tmux acceptance now exercises the same options/Unicode/navigation/errors,
 620-width screenshot, pane isolation, grid fit with the bar open and pending
 Find cancellation before detach. Target-OS CI and local installed acceptance
 remain pending at this source checkpoint.
+
+Final source 78376eec31ba30d01e3c31c91fd0ac56fafab958 / run 38906845116
+passes all three native targets. macOS/Linux: 76 + 2 Windows-only skips; Windows:
+67 + 11 Unix-only skips; 78 total and zero failures. Native Unix tmux reports
+verify new Find controls, Unicode, compact layout, exact grids and cancellation
+before detach; inspected Mac/Linux captures have usable controls/highlights.
+The exact CI Mac package is installed, but local acceptance exited before its
+report while a fresh CoreGraphics probe returned zero active displays and
+independent CoreVideo creation returned -6661. That failed run is retained and
+is not credited as local GUI/Retina/graceful-exit support. Target-native CI is
+separate passing evidence. Final payload/signature/notice audit precedes release.

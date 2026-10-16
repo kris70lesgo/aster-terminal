@@ -18,13 +18,19 @@ tmux with the new Find UI. Versioned reports/TRX/images are in
 | Shared bar retains normal-window behavior on all three OSes | FindDesktopTests; final native-smoke.json / find-compact.png |
 
 The exact CI Mac archive is installed with a verified signature and matching
-managed/native bytes. Local GUI acceptance on macOS 26 is **not verified** for
-0.9.0: the owned baseline process exited before producing its report while
-CoreGraphics reported **zero active displays** and independent CoreVideo
-creation returned **-6661**. The failed verifier and display probe are preserved
-in `v0.9.0-macos-display-unavailable`; no local Retina, normal-window or graceful
-exit pass is claimed. The successful macOS 15 native CI is separate evidence.
-The earlier 0.8.1 installed Retina pass remains historical.
+managed/native bytes. After the display was awakened, the complete ordered
+installed verification passed on **macOS 26.7.2 at 2× Retina**, with **three
+scripting repetitions**. All eight fixture processes exited; each scripting
+run records matching PID and a clean native main-loop return. Reports/captures
+and a successful CoreGraphics/CoreVideo probe are in `v0.9.0-macos-retina`.
+Inspected compact Find captures fit and highlight the real Unicode output. A
+subsequent normal installed-app launch creates an on-screen window; only window
+metadata is retained, without capturing or typing into a user shell.
+
+The earlier local baseline exited before its report while CoreGraphics returned
+zero active displays and CoreVideo returned -6661. That failed verifier/probe
+remain in `v0.9.0-macos-display-unavailable`; the later success does not erase
+that failure. Native macOS 15 CI and installed macOS 26 checks are separate.
 
 Tmux Find searches output retained since attach (including the hydrated initial
 viewport), not the server's complete prior history. Local Windows tmux remains

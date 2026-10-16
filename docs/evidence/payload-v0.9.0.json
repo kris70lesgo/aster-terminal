@@ -2,8 +2,8 @@
   "timestamp": "2026-10-16T13:26:39.825469+00:00",
   "buildSource": "78376eec31ba30d01e3c31c91fd0ac56fafab958",
   "ciRun": 38906845116,
-  "localGuiAcceptancePassed": false,
-  "localNativeExitScope": "No local graceful exit or Retina GUI pass claimed for 0.9.0; independent zero-active-display probe and failed verifier retained. Final native CI passed on each target OS.",
+  "localGuiAcceptancePassed": true,
+  "localNativeExitScope": "Full ordered exact-installed-archive verification after display wake: 8 matching fixture PIDs exited; three original Python runs recorded clean main-loop return. macOS 26.7.2, 2x Retina. Earlier zero-display failure remains preserved.",
   "payloads": {
     "osx-arm64": {
       "archive": "aster-terminal-0.9.0-osx-arm64.zip",
@@ -40,7 +40,7 @@
       "installedPath": "/Applications/Aster Terminal.app",
       "installedVersion": "0.9.0",
       "installedSignatureVerified": true,
-      "localGuiRelaunch": "NOT VERIFIED on macOS 26: exact installed archive fixture exited before its report while CoreGraphics reported zero active displays and independent CoreVideo creation returned -6661. Native macOS 15 CI passed."
+      "localGuiRelaunch": "PASS exact installed CI archive; macOS 26.7.2 / 2x Retina. Reports in evidence/v0.9.0-macos-retina; earlier zero-display failure retained."
     },
     "win-x64": {
       "archive": "aster-terminal-0.9.0-win-x64.zip",
@@ -100,5 +100,8 @@
       "apiCredentialAndLockAbsent": true,
       "executablePermissionsPresent": true
     }
-  }
+  },
+  "initialLocalGuiAcceptancePassed": false,
+  "initialLocalNativeExitScope": "No local graceful exit or Retina GUI pass claimed for 0.9.0; independent zero-active-display probe and failed verifier retained. Final native CI passed on each target OS.",
+  "localGuiVerificationTimestamp": "2026-10-16T14:11:35.787689+00:00"
 }

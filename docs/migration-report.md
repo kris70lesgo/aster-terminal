@@ -120,3 +120,9 @@ native baseline/hotkey/recovery/original-Python checks. No dependency was added.
 Tmux Find searches retained output since attach, not the server’s complete
 pre-existing history. Local installed verification and its display limitations
 are recorded separately in test-matrix.md.
+
+The installed 0.9.0 follow-up passes on macOS 26.7.2 at 2× Retina after display
+wake: eight fixture processes exit and three original Python runs record clean
+native-loop return. Fresh reports/captures are in v0.9.0-macos-retina. The earlier
+zero-display failure remains retained. No source or archive changed for this
+verification update.

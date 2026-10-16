@@ -32,7 +32,7 @@ folders; no SDK, account or subscription is required.
 
 | Download | Run | Platform scope |
 |---|---|---|
-| `aster-terminal-0.9.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; final native CI checks on macOS 15; local display availability documented in runtime evidence |
+| `aster-terminal-0.9.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26, including installed 2× Retina |
 | `aster-terminal-0.9.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
 | `aster-terminal-0.9.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
 

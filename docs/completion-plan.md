@@ -66,3 +66,8 @@ options/navigation, pane/tab isolation, focus, removal and cancellation. Final
 78-test/native three-OS run 38906845116 passes; Unix additionally verifies native
 tmux Find and exact grids with the bar open. Full upstream history hydration,
 smart case/filtering and automatic -CC/remote attach remain separate targets.
+
+The unchanged installed 0.9.0 Mac archive also passes the full ordered native
+batch at 2× Retina after display wake, including three scripting/native-loop
+exits, and a subsequent normal launch creates an on-screen window. The earlier
+zero-display failure remains separate evidence; no binary update was needed.

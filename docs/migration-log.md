@@ -676,3 +676,13 @@ font notices, no compiler/test/user-settings/API-credential payload, and Mac
 signatures/native system links/macOS 15 target. Installed managed/native bytes
 match the extracted Mac archive. The audit explicitly records the failed local
 GUI scope rather than promoting earlier-version Retina evidence.
+
+2026-10-16 installed 0.9.0 follow-up after the user awakened the display:
+CoreGraphics now reports one active display and CoreVideo creation succeeds.
+Unchanged exact installed CI bytes/signatures verified, then a fresh ordered
+baseline/recovery/tmux/hotkey/three-scripting batch passed at 2× Retina on
+macOS 26.7.2. All eight PIDs exited; each scripting journal records native-loop
+return with exit code 0. Inspected normal/tmux compact Find captures have usable
+controls and correct Unicode highlights. Evidence is in v0.9.0-macos-retina; the
+earlier failed zero-display attempt remains preserved separately. No code or
+release archive changed, and no local physical global chord pass is implied.

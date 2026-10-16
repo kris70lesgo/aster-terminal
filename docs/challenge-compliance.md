@@ -86,6 +86,7 @@ retrieval provenance is in evidence/rules-v0.9.0.json. Shared tmux Find adds no
 dependency or protocol action. Final native run 38906845116 passes all three targets (78 tests including
 platform skips, zero failures). Payload checksums, required notices, executable
 modes, Mac deployment target/system links/signatures and exact installed bytes
-are audited in evidence/payload-v0.9.0.json. The local installed GUI attempt is
-not credited as passing while the OS reports zero active displays. Entrant identity/form declarations remain
+are audited in evidence/payload-v0.9.0.json. The earlier zero-display failure remains retained. After display wake, the
+unchanged exact installed Mac archive passes the full 2× Retina batch with three
+scripting/native-loop exits in evidence/v0.9.0-macos-retina. Entrant identity/form declarations remain
 unverified and no submission was performed.

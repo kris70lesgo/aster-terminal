@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-10-16T14:13:14.783573+00:00",
+  "bundleId": "io.asterterminal.desktop",
+  "processId": 57525,
+  "runningAtLaunch": true,
+  "windowCount": 2,
+  "onScreenWindowCount": 1,
+  "scope": "Normal installed app launched through cua-driver without foreground activation; no user shell input or capture."
+}

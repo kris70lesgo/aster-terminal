@@ -78,6 +78,22 @@ public sealed class FindTests
         Assert.Throws<OperationCanceledException>(() => ScrollbackSearch.Find(snapshot, new("x"), canceled.Token));
     }
     [Fact]
+    public void NavigationCreditsOnlyItsOwnRevisionAndNeverHidesOutputArrivingAfterCapture()
+    {
+        using var engine = new ItermTerminalEngine(20, 4);
+        engine.Feed("target"); var result = Find(engine, "target"); var hit = Assert.Single(result.Hits);
+        Assert.True(engine.RevealFindHit(result, hit, result.Revision, out var observed));
+        Assert.Equal(engine.Revision, observed);
+        Assert.True(engine.RevealFindHit(result, hit, observed, out observed));
+        Assert.Equal(engine.Revision, observed); // Repeated cached navigation is still fresh.
+        engine.Feed("\r\nnew target");
+        Assert.True(engine.RevealFindHit(result, hit, observed, out var stale));
+        Assert.Equal(observed, stale); Assert.NotEqual(engine.Revision, stale);
+        Assert.Equal(2, Find(engine, "target").Hits.Count);
+        result = Find(engine, "missing"); engine.Feed("\r\nmissing");
+        Assert.Empty(result.Hits); Assert.NotEqual(result.Revision, engine.Revision);
+    }
+    [Fact]
     public void DenseMatchesAreCappedAndReportedWithoutFakingAnExactCount()
     {
         using var engine = new ItermTerminalEngine(100, 3, 1000);

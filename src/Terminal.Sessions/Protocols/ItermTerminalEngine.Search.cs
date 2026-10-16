@@ -37,11 +37,18 @@ public sealed partial class ItermTerminalEngine
         }
     }
     public bool RevealFindHit(FindResult result, FindHit hit)
+        => RevealFindHit(result, hit, result.Revision, out _);
+    // Only credit our own scroll revision when no output/resize occurred since capture.
+    public bool RevealFindHit(FindResult result, FindHit hit, long expectedRevision, out long observedRevision)
     {
         lock (_gate)
         {
+            observedRevision = expectedRevision;
             if (_searchDisposed || result.Epoch != SearchEpoch() || !_inner.Buffer.TryResolveImageAnchor(hit.Start, out var row, out _)) return false;
-            _inner.SetScrollOffset(Math.Clamp(_inner.HistoryCount - Math.Max(0, row - _inner.Rows / 2), 0, _inner.HistoryCount)); _revision++; return true;
+            var fresh = _revision == expectedRevision;
+            _inner.SetScrollOffset(Math.Clamp(_inner.HistoryCount - Math.Max(0, row - _inner.Rows / 2), 0, _inner.HistoryCount)); _revision++;
+            if (fresh) observedRevision = _revision;
+            return true;
         }
     }
     public IReadOnlyList<FindVisibleRange> ProjectFindHits(FindResult result, FindHit? current)

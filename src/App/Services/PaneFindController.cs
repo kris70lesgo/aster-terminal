@@ -49,6 +49,7 @@ public sealed class PaneFindController : IDisposable
             var result = same && _result is { } cached && _observedRevision == _engine.Revision ? cached :
                 await Task.Run(() => ScrollbackSearch.Find(_engine.CaptureFindSnapshot(request.Token), options, request.Token), request.Token);
             if (request.IsCancellationRequested || generation != _generation || !_active || _disposed) return;
+            var expectedRevision = ReferenceEquals(result, _result) ? _observedRevision : result.Revision;
             _result = result;
             if (result.Hits.Count == 0) CurrentIndex = -1;
             else if (!same || prior is null) CurrentIndex = previous && navigate ? result.Hits.Count - 1 : 0;
@@ -59,9 +60,10 @@ public sealed class PaneFindController : IDisposable
                 CurrentIndex = index < 0 ? Math.Clamp(priorIndex, 0, result.Hits.Count - 1) : navigate ?
                     (index + (previous ? -1 : 1) + result.Hits.Count) % result.Hits.Count : index;
             }
-            if (Current is { } hit && !_engine.RevealFindHit(result, hit))
+            _observedRevision = expectedRevision;
+            if (Current is { } hit && !_engine.RevealFindHit(result, hit, expectedRevision, out _observedRevision))
             { _result = null; CurrentIndex = -1; Status = "Output changed; search again."; }
-            _observedRevision = _engine.Revision; Busy = false;
+            Busy = false;
             Render(); UpdateStatus(); Changed?.Invoke(this, EventArgs.Empty);
         }
         catch (OperationCanceledException) when (request.IsCancellationRequested) { }

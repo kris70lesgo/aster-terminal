@@ -542,3 +542,10 @@ lines, not arbitrary hard-newline text; explicit dialect/selection/limit boundar
 are recorded in architecture.md. The compact toolbar retains literal-insensitive
 defaults. Eight focused tests pass locally, including actual PTY/UI flows. Native
 final-package acceptance and the complete cross-platform suite are pending.
+
+Release review found a revision race: a background result could credit output
+that arrived after its snapshot as already searched. Find now atomically credits
+only its own navigation revision; later output keeps the stale-count indicator
+and forces Enter to refresh. A deterministic regression checks both repeated
+cached navigation and output after capture, including a previously empty result.
+The first candidate run remains separate; final acceptance repeats the fix.

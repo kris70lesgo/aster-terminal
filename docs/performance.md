@@ -1,4 +1,28 @@
-# Measured performance — 2026-10-15
+# Measured performance — 2026-10-16
+
+## Background Find, local 0.8.0 observation
+
+Apple M5 arm64, macOS 26.7.2, .NET 10.0.13, Release build. Ten warmed
+iterations search 6,000 hard lines containing ASCII, CJK and decomposed Unicode
+in a 120×35 engine with 10,000 history lines. Every run returns 6,000 matches
+without a partial warning. Mean bounded capture / matching times:
+
+| Mode | Capture | Match | Allocated bytes per operation |
+|---|---:|---:|---:|
+| Literal `target` | 23.2 ms | 31.7 ms | 50.8 MiB |
+| Anchored Unicode regex | 29.8 ms | 21.6 ms | 50.1 MiB |
+
+This isolates capture/matching without a GUI, PTY, host process or debounce.
+Allocation is cumulative per-thread allocation, not retained memory or a process
+working set. Matcher work runs off the UI thread; bounded capture holds the
+engine gate, so snapshot allocation/lock time remains a measurable cost. These
+observations establish neither full-cap worst-case latency nor a platform ranking.
+The regex budget reports partial results for expensive patterns.
+
+Raw per-iteration values and exact source are `evidence/find-benchmark-local.json`
+and `evidence/find-benchmark-source.txt`. Reproduce in a Release net10.0 console
+project referencing `src/Terminal.Sessions/Terminal.Sessions.csproj`; use the
+source as Program.cs. No external benchmark package is required.
 
 ## Release 0.5.0
 

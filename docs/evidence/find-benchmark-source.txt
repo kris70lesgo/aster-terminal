@@ -1,0 +1,19 @@
+using System.Diagnostics;
+using System.Text.Json;
+using Aster.Sessions.Protocols;
+using Aster.Sessions.Search;
+using var engine = new ItermTerminalEngine(120, 35, 10000);
+engine.Feed(string.Concat(Enumerable.Range(0,6000).Select(i=>$"INFO {i:D4} target 東京e\u0301 ready\r\n")));
+var output = new List<object>();
+foreach (var option in new[]{new FindOptions("target"),new FindOptions(@"^INFO [0-9]{4} target 東京é ready$", Regex:true)}) {
+ ScrollbackSearch.Find(engine.CaptureFindSnapshot(),option);
+ var capture = new List<double>(); var match = new List<double>(); var allocated = new List<long>();
+ for(var i=0;i<10;i++) {
+  var bytes=GC.GetAllocatedBytesForCurrentThread(); var w=Stopwatch.StartNew();
+  var snapshot=engine.CaptureFindSnapshot();capture.Add(w.Elapsed.TotalMilliseconds);w.Restart();
+  var result=ScrollbackSearch.Find(snapshot,option);match.Add(w.Elapsed.TotalMilliseconds);allocated.Add(GC.GetAllocatedBytesForCurrentThread()-bytes);
+  if(result.Hits.Count!=6000 || result.Warning!=null || result.Error!=null) throw new Exception($"Unexpected result: {result.Hits.Count} {result.Warning} {result.Error}");
+ }
+ output.Add(new{option.Regex,iterations=10,captureMs=capture,matchingMs=match,allocatedBytes=allocated,matches=6000});
+}
+Console.WriteLine(JsonSerializer.Serialize(new{timestamp=DateTimeOffset.UtcNow,os=System.Runtime.InteropServices.RuntimeInformation.OSDescription,architecture=System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture.ToString(),runtime=Environment.Version.ToString(),workload="6000 hard lines / 120x35 / 10000 history; capture and matcher on current thread; no UI, PTY or process-host costs",results=output},new JsonSerializerOptions{WriteIndented=true}));

@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "scope": "First exact installed v0.8.0 native scripting process exit; API and PTY assertions passed, but own fixture stayed alive beyond 70-second deadline.",
+  "source": "4d4f5b3ed477335e7d90f80badb09f7ef5ea8102",
+  "ciRun": 38851975830,
+  "os": "macOS 26.7.2 / 2x Retina",
+  "observed": "Managed/native samples show idle Avalonia.Native RunLoop / NSApplication run after shell and API cleanup.",
+  "cause": "UNRESOLVED; not established as Find regression or host-key permissions.",
+  "subsequentUnchangedArchive": "Second full ordered batch also timed out on scripting process exit. Three fresh independent scripting runs against the same archive passed and exited cleanly. Composite independent verification scope is in v0.8.0-macos-retina/process-exit.json.",
+  "cleanup": "Only the owned isolated fixture PID was terminated after sampling. Normal user app processes preserved."
+}

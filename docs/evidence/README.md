@@ -1,6 +1,27 @@
 # Screenshot and runtime evidence
 
-## Current release 0.4.0
+## Current release 0.8.0
+
+`v0.8.0-{rid}` contains the final 75-test/native package evidence from source
+4d4f5b3ed477335e7d90f80badb09f7ef5ea8102 / run 38851975830. Native Find captures
+show real-shell Unicode regex matches and the compact bar at 620 width on every
+OS; terminal text comes from the actual shell. The existing replay, graphics,
+profiles, hotkey, recovery and original Python client checks pass. Unix also
+passes native tmux. `v0.8.0-macos-retina` repeats these checks on the exact installed
+CI Mac archive at 2×. Local hotkey registration/dispatch is not physical-key proof.
+`ci-v0.8.0.json` and `payload-v0.8.0.json` identify exact source/archive provenance.
+The first passing candidate is retained separately in ci-first-find-v0.8.0.json;
+final source fixes the stale-count race found during review. The first local scripting process-exit timeout is retained separately, with an
+idle native-loop stack; clean unchanged-archive rechecks do not erase that failure.
+The isolated local
+Find benchmark has separate raw measurements/source and excludes UI/PTY costs.
+
+0.6.0 and 0.7.0 evidence remains under their versioned directories, including
+global hotkey and original Python API acceptance respectively. Their test counts
+and payload provenance are retained in test-matrix.md; these historical results
+are not substituted for the current final-package run.
+
+## Historical release 0.4.0
 
 `v0.4.0-osx-arm64`, `v0.4.0-win-x64`, and `v0.4.0-linux-x64` contain final
 48-test TRX, native reports/renders and engine benchmarks from run 38700844528,

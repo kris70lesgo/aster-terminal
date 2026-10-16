@@ -1,0 +1,36 @@
+Thread (0xB7C1E):
+  [Native Frames]
+  Avalonia.Native!Avalonia.Native.Interop.Impl.__MicroComIAvnPlatformThreadingInterfaceProxy.RunLoop(class Avalonia.Native.Interop.IAvnLoopCancellation)
+  Avalonia.Native!Avalonia.Native.DispatcherImpl.RunLoop(value class System.Threading.CancellationToken)
+  Avalonia.Base!Avalonia.Threading.DispatcherFrame.Run(class Avalonia.Threading.IControlledDispatcherImpl)
+  Avalonia.Base!Avalonia.Threading.Dispatcher.PushFrame(class Avalonia.Threading.DispatcherFrame)
+  Avalonia.Base!Avalonia.Threading.Dispatcher.MainLoop(value class System.Threading.CancellationToken)
+  Avalonia.Controls!Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(class System.String[])
+  Avalonia.Controls!Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(class System.String[])
+  Avalonia.Controls!Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(class Avalonia.AppBuilder,class System.String[],class System.Action`1<class Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime>)
+  Aster.Terminal!Aster.App.Program.Main(class System.String[])
+
+Thread (0xB7C32):
+  [Native Frames]
+  System.Private.CoreLib!System.Threading.WaitHandle.WaitOne()
+  Avalonia.Base!Avalonia.Rendering.ThreadProxyRenderTimer.RenderTimerThreadFunc()
+  System.Private.CoreLib!System.Threading.Thread.StartCallback()
+
+Thread (0xB7C39):
+  [Native Frames]
+  System.Private.CoreLib!System.Threading.WaitHandle.WaitOneNoCheck(int32,bool,class System.Object,value class WaitHandleWaitSourceMap)
+  System.Private.CoreLib!System.Threading.PortableThreadPool+GateThread.GateThreadStart()
+  System.Private.CoreLib!System.Threading.Thread.StartCallback()
+
+Thread (0xB7C3B):
+  [Native Frames]
+  System.Private.CoreLib!System.Threading.WaitHandle.WaitOneNoCheck(int32,bool,class System.Object,value class WaitHandleWaitSourceMap)
+  System.Private.CoreLib!System.Threading.TimerQueue.TimerThread()
+  System.Private.CoreLib!System.Threading.Thread.StartCallback()
+
+Thread (0xB7C45):
+  [Native Frames]
+  ?!?
+  System.Net.Sockets!System.Net.Sockets.SocketAsyncEngine.EventLoop()
+  System.Private.CoreLib!System.Threading.Thread.StartCallback()
+

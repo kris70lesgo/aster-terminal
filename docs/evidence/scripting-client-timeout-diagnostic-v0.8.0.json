@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "timestamp": "2026-10-16T04:54:58.191877+00:00",
+  "os": "macOS 26.7.2",
+  "renderScaling": 2,
+  "checks": [
+    "Normal native window close cleans up remaining PTY"
+  ],
+  "error": "System.TimeoutException: The operation has timed out.\n   at Aster.App.Services.ScriptingSmoke.<>c__DisplayClass0_0.<<Configure>b__2>d.MoveNext() in /Users/agastya/Documents/ChatGPT/alvonia real/src/App/Services/ScriptingSmoke.cs:line 55",
+  "scope": "Diagnostic local build of 4d4f5b3 with fixture logging only; not the published archive. Retained failure, not final runtime success."
+}

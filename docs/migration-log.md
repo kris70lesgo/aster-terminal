@@ -549,3 +549,38 @@ only its own navigation revision; later output keeps the stale-count indicator
 and forces Enter to refresh. A deterministic regression checks both repeated
 cached navigation and output after capture, including a previously empty result.
 The first candidate run remains separate; final acceptance repeats the fix.
+
+## 2026-10-16 — Find release verification and remaining local failures
+
+Final source 4d4f5b3ed477335e7d90f80badb09f7ef5ea8102 / run 38851975830
+passes all three native targets. macOS/Linux: 73 passed + 2 Windows-only skips;
+Windows: 66 passed + 9 Unix-only skips; 75 total, zero failures. Final packages
+pass real-shell Find options/Unicode/navigation/errors/compact layout plus prior
+replay/rules/graphics/profiles/hotkey/recovery/Python checks; Unix adds tmux.
+Native Find captures were visually inspected on all three OSes and at local 2×.
+
+Exact installed CI Mac baseline/recovery/tmux/hotkey checks exited cleanly.
+Two ordered local batches completed scripting API/PTY assertions but left the
+process idle in the native Avalonia/NSApplication loop past 70 seconds. Three
+fresh standalone scripting checks against the unchanged archive passed and
+exited. This is composite independent local evidence, not a clean ordered batch;
+process IDs/scope are retained in v0.8.0-macos-retina/process-exit.json. Only the
+owned stuck fixture processes were terminated after sampling; normal user apps
+were preserved. Cause remains unresolved and no shutdown fix is claimed.
+
+Temporary diagnostic-only builds added fixture lifecycle logging. One original
+client timed out before completing its script and then exited normally; another
+native tmux check timed out waiting for the expected stty dimensions. Their
+failure reports are retained, separately labelled as diagnostic builds. Logging
+was reverted and the exact passing CI archive was reinstalled before final audit.
+An external verification-helper trial reused an existing report directory and
+could read a prior result before the new process finished; those reused trials
+are excluded. The three credited original-archive scripting repeats each used a
+fresh directory. Future verification must reject existing report directories.
+
+Final archive SHA-256/CRC/tar inventory, notices and absent private/test/compiler
+payloads are audited. Mac extracted/installed signatures and byte-identical main
+assembly are verified. No dependency was added; the MIT search mapping retains
+its attribution/grant. Official rules were rechecked at this milestone. Local
+6000-line search capture/matching costs and allocations are measured separately;
+no comparative performance or unconditional platform reliability claim is made.

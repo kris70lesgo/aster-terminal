@@ -1,4 +1,49 @@
-# Verification matrix — release 0.7.0, 2026-10-16
+# Verification matrix — release 0.8.0, 2026-10-16
+
+Final source **4d4f5b3ed477335e7d90f80badb09f7ef5ea8102**, run
+[38851975830](https://github.com/kris70lesgo/aster-terminal/actions/runs/38851975830):
+macOS/Linux **73 passed + 2 Windows-only skips**; Windows **66 passed + 9
+Unix-only skips**; **75 total, zero failures** on each target. All three native
+self-contained packages pass baseline, global hotkey, abrupt UI crash/reopen
+and original Python client acceptance; Unix additionally passes native tmux.
+Reports/images/TRX are in `evidence/v0.8.0-{rid}`. The exact installed CI Mac
+archive passes independent checks at **2× Retina** in `v0.8.0-macos-retina`;
+the local ordered-batch exit failure is qualified below.
+`ci-v0.8.0.json` and `payload-v0.8.0.json` record source and archive provenance.
+
+| New acceptance | Evidence |
+|---|---|
+| Soft wraps, NFC/combining/CJK/emoji cell mapping, regex/case/word/lookbehind, hard-line boundaries and zero-length handling | FindTests |
+| Bounded capture preserves scroll; truncated prefixes, hit/query/time caps, malformed patterns/Unicode and cancellation | FindTests |
+| Reflow/eviction/reset/buffer anchors; output after snapshot cannot be credited as searched by navigation | FindTests, including deterministic revision-race regression |
+| Real shell output, bar shortcuts/navigation/options/errors, latest query, pane isolation and close cancellation | FindDesktopTests |
+| Real shell regex/case/word/Unicode navigation and malformed-pattern feedback; compact 620-width native layout | native-smoke.json, search.png and find-compact.png on all three OSes and installed 2× Mac |
+| Exact archives/checksums, signatures, executable modes, full notices and no user/test/compiler/credential payload | payload-v0.8.0.json |
+
+Nine new focused tests extend the prior 66-test suite. Find uses bounded .NET
+logical-line regex and leaves terminal selection independent; smart case,
+filtering and the new controls in the explicit tmux window remain pending.
+Details are in find.md. A separate local capture/matcher observation, including
+allocation costs, is in performance.md. The earlier candidate passed CI but
+review found a stale-revision race; final source includes the repair and regression.
+No full upstream parity or physical local macOS hotkey pass is implied.
+
+The first installed scripting attempt passed API/PTY checks but its process
+remained alive beyond 70 seconds, idle in Avalonia's native macOS event loop.
+Three fresh unchanged-archive scripting repeats exited cleanly. Two ordered
+batches hit the exit timeout, so local evidence is a composite of independent
+passing checks, not a clean complete-batch pass. `process-exit.json` identifies
+the exact exited fixture processes. The initial failure and stack are
+preserved in `scripting-exit-timeout-v0.8.0.json` / `.stack.txt`. Its cause remains
+unresolved; no shutdown fix or unconditional local exit reliability is claimed.
+Diagnostic-only builds also exposed one Python client timeout and one tmux
+resize timeout; their retained failure reports are labelled separately and are
+not counted as passing final-archive evidence.
+
+
+## Historical release 0.7.0
+
+### Verification matrix — release 0.7.0, 2026-10-16
 
 Final source **ef6d64269f4825ae1b9947b8269f052bb1cb114c**, run
 [38792785139](https://github.com/kris70lesgo/aster-terminal/actions/runs/38792785139):

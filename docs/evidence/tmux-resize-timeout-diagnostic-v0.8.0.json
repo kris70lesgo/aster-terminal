@@ -1,0 +1,10 @@
+{
+  "passed": false,
+  "timestamp": "2026-10-16T04:52:19.686685+00:00",
+  "os": "macOS 26.7.2",
+  "renderScaling": 2,
+  "checks": [],
+  "expectedSize": "22 42",
+  "error": "System.TimeoutException: Native tmux acceptance timed out.\n   at Aster.App.Services.TmuxSmoke.Until(Func`1 condition) in /Users/agastya/Documents/ChatGPT/alvonia real/src/App/Services/TmuxSmoke.cs:line 93\n   at Aster.App.Services.TmuxSmoke.<>c__DisplayClass0_0.<<Configure>b__1>d.MoveNext() in /Users/agastya/Documents/ChatGPT/alvonia real/src/App/Services/TmuxSmoke.cs:line 46",
+  "scope": "Diagnostic local build of 4d4f5b3 with fixture logging only; not the published archive. Retained failure, not final runtime success."
+}

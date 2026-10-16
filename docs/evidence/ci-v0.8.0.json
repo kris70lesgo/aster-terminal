@@ -1,0 +1,11 @@
+{
+  "run": 38851975830,
+  "url": "https://github.com/kris70lesgo/aster-terminal/actions/runs/38851975830",
+  "buildSource": "4d4f5b3ed477335e7d90f80badb09f7ef5ea8102",
+  "conclusion": "success",
+  "nativePackages": [
+    "osx-arm64",
+    "win-x64",
+    "linux-x64"
+  ]
+}

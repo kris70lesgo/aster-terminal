@@ -2,10 +2,10 @@
 
 A real C#/Avalonia terminal bringing a documented subset of **iTerm2** workflows
 to macOS, Windows and Linux. Independent project; no iTerm2 endorsement.
-GPL-3.0-or-later. **Version 0.7.0 is the competition release; full iTerm2 parity
+GPL-3.0-or-later. **Version 0.8.0 is the competition release; full iTerm2 parity
 is a separate milestone.**
 
-[Download v0.7.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.7.0)
+[Download v0.8.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.8.0)
 · [Runtime evidence](docs/test-matrix.md) · [Feature boundaries](docs/iterm2-feature-parity.md)
 
 Enable the optional summon window in Preferences → General with
@@ -20,6 +20,9 @@ real window/tab/pane creation, command input, Unicode screen reads, layout/focus
 notifications and session close. Enable it in Preferences → General, then use the
 bundled `Scripting/aster_script.py` launcher. It is disabled by default and grants
 trusted scripts terminal control. See [setup and supported APIs](docs/scripting.md).
+A local macOS 26 test sometimes left the scripting fixture alive after its
+windows and shells closed; the unresolved exit issue and passing independent
+rechecks are recorded in the [runtime evidence](docs/test-matrix.md).
 
 ## Install
 
@@ -28,9 +31,9 @@ folders; no SDK, account or subscription is required.
 
 | Download | Run | Platform scope |
 |---|---|---|
-| `aster-terminal-0.7.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26 |
-| `aster-terminal-0.7.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
-| `aster-terminal-0.7.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
+| `aster-terminal-0.8.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26 |
+| `aster-terminal-0.8.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
+| `aster-terminal-0.8.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
 
 Extract the Mac ZIP with Finder/Archive Utility (or `ditto`) to preserve signing
 metadata. macOS is ad-hoc signed, without Developer ID notarization. For a downloaded copy,
@@ -106,7 +109,13 @@ find/close shortcuts work. Closing the control window detaches while tmux keeps
 the shells. This is explicit local `-C` control attach; automatic in-shell `-CC`,
 SSH/WSL attach and complete historical VT/graphics hydration remain unfinished.
 
-Find uses Enter/Shift+Enter and Escape. Enable command marks in a bash or zsh
+Find offers regex, case and whole-word controls, result counts and wrapping
+Enter/Shift+Enter navigation. Escape closes the compact bar. Background searches
+use logical Unicode anchors across soft wraps; Enter refreshes changed output.
+Invalid patterns and bounded partial results are explicit. See [Find](docs/find.md)
+for limits; the tmux control window retains its literal prompt.
+
+Enable command marks in a bash or zsh
 profile to load the bundled original shell integration; user startup files are
 preserved and never edited. OSC title/cwd/host/status metadata is display-only.
 VT clipboard writes and notifications are disabled. Multiline paste prompts
@@ -165,10 +174,11 @@ GitHub Actions and local terminal tools. [Performance evidence](docs/performance
 is measured on a defined workload and makes no superiority claim.
 
 ![Original iTerm2 3.6.6 startup reference](docs/evidence/iterm2-original.png)
-![Aster native dark theme with actual shell output](docs/evidence/v0.7.0-osx-arm64/dark.png)
-![Aster native profile output rules](docs/evidence/v0.7.0-osx-arm64/preferences-triggers.png)
-![Aster shell-generated inline graphics](docs/evidence/v0.7.0-osx-arm64/graphics.png)
-![Aster native tmux control panes](docs/evidence/v0.7.0-osx-arm64/tmux/tmux-splits.png)
+![Aster native dark theme with actual shell output](docs/evidence/v0.8.0-osx-arm64/dark.png)
+![Aster compact Unicode regex Find](docs/evidence/v0.8.0-osx-arm64/find-compact.png)
+![Aster native profile output rules](docs/evidence/v0.8.0-osx-arm64/preferences-triggers.png)
+![Aster shell-generated inline graphics](docs/evidence/v0.8.0-osx-arm64/graphics.png)
+![Aster native tmux control panes](docs/evidence/v0.8.0-osx-arm64/tmux/tmux-splits.png)
 
 Original screenshot © George Nachman/contributors; installed iTerm2 3.6.6 is a
 different version and geometry from the source audit. Captures show actual

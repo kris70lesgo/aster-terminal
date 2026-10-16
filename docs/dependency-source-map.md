@@ -59,3 +59,11 @@ The upstream API schema is pinned/copyright-attributed in source and NOTICE.
 Python client tests use the original PyPI iterm2 2.30 in a separate process, with protobuf 7.36.2 / websockets 17.2 pinned in scripts/python/requirements.txt; the
 client is not incorporated into the application runtime. The launcher adapts
 transport/auth only so it never asks a separate running iTerm2 for credentials.
+
+## Search adaptation, release 0.8.0
+
+`src/Terminal.Sessions/Search/ScrollbackSearch.cs` adapts the NFC/grapheme and
+Unicode-word mapping from the same pinned MIT Devolutions `TextBufferSearch.cs`.
+Source/header attribution and the complete existing Devolutions/Microsoft MIT
+notice remain in every payload. Bounded regex, cancellation, logical-anchor
+navigation and native UI are Aster adaptations; no new package is introduced.

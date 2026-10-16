@@ -1,0 +1,14 @@
+{
+  "allFixtureProcessesExited": true,
+  "pids": [
+    93786,
+    93976,
+    93989,
+    94001,
+    94027,
+    95113
+  ],
+  "scope": "Composite independent checks from the same exact CI archive. Five baseline/recovery/tmux/hotkey fixtures exited cleanly, and separate scripting repeat 2 exited cleanly. The full ordered batch did not pass: scripting exit timed out on two attempts, preserved separately.",
+  "archiveSource": "4d4f5b3ed477335e7d90f80badb09f7ef5ea8102",
+  "ciRun": 38851975830
+}

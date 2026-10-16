@@ -204,7 +204,7 @@ trusted-script authority and coordinate bounds are in scripting.md. Native
 acceptance invokes the original client against a uniquely owned endpoint/real
 shells, checks Unicode/variable/input/layout/close and cleans up credentials/PTYs.
 
-## Bounded scrollback Find, 0.8.0 work
+## Bounded scrollback Find, 0.8.0
 
 Find captures at most one million cells / 20,000 newest physical rows under the
 existing engine gate. Snapshot capture temporarily offsets the buffer without

@@ -1,4 +1,4 @@
-# Migration report — competition release 0.7.0
+# Migration report — competition release 0.8.0
 
 Aster Terminal delivers the competition subset of an iTerm2 behavior migration:
 real local terminals, profiles, tabs, nested panes, search, themes, persisted
@@ -71,3 +71,21 @@ run 38792785139, payload/license audit and exact installed 2× Retina evidence a
 recorded in test-matrix.md. The local test helper's virtualenv-path failure is
 preserved separately. Unsupported APIs and historical coordinate limits remain
 explicit in scripting.md; this is not a full AppleScript/iTerm2 API port.
+
+0.8.0 adds bounded background Find. It adapts the pinned MIT Devolutions
+NFC/grapheme/Unicode-word mapping, with original notices, and adds .NET regex,
+logical anchors, cancellation and a compact native bar. Full-history UI matching
+was replaced by bounded snapshot/matcher work off the dispatcher. Review found
+and fixed a stale-revision race during incoming output; the regression and final
+75-test/native three-OS run 38851975830 pass. Installed exact CI Mac archives pass
+at 2× Retina. Resource/dialect/selection limits remain explicit in find.md, and
+local measured allocation/snapshot costs are reported without a performance
+parity claim. No new dependency was introduced.
+
+One exact installed Mac scripting attempt completed API/PTY assertions but
+remained in Avalonia's native event loop past the process-exit deadline. Three
+fresh unchanged-archive scripting repeats exited cleanly. Two ordered local
+batches timed out on scripting exit; independent passing checks are combined
+with explicit process IDs/provenance, not represented as one passing batch. Cause is unresolved, with the failed exit and managed
+stack retained. Hosted package exits passed on all three OSes; this does not
+establish unconditional local macOS shutdown reliability.

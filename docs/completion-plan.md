@@ -43,3 +43,12 @@ viewport reads, notifications and close, plus private authentication and explici
 unsupported APIs. Final 66-test/native three-platform and installed Retina checks
 pass. This is a usable competition release satisfying the documented definition
 of done; full upstream parity remains the separately tracked long-term milestone.
+
+0.8.0 completes bounded background Find with regex/case/Unicode whole-word
+options, logical-cell navigation through wraps/reflow, counts, malformed-pattern
+feedback and honest partial-result warnings. Closing/switching cancels work.
+The final 75-test/native three-OS run passes. Exact installed Retina independent
+checks pass; two local ordered-batch scripting exit timeouts remain unresolved
+and are preserved in the test matrix.
+The compact toolbar fits at 620 width. Full upstream search dialect/filtering
+and the tmux window's newer Find controls remain later parity targets.

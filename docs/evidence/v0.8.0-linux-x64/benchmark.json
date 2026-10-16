@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-10-16T04:43:49.5140908+00:00",
+  "os": "Ubuntu 24.04.5 LTS",
+  "architecture": "X64",
+  "runtime": ".NET 10.0.13",
+  "scope": "Single warmed engine; 120x35, 10000-line bounded history. No PTY/GPU/desktop; not a comparative benchmark.",
+  "outputBytes": 3145728,
+  "outputMs": 846.6982,
+  "outputCpuMs": 960.114,
+  "outputMiBPerSecond": 3.5431751242650567,
+  "historyLines": 9995,
+  "meanFullHistorySnapshotAndSearchMs": 134.028045,
+  "meanAlternatingResizeMs": 70.275312,
+  "workingSetBytes": 305430528,
+  "peakWorkingSetBytes": 329302016
+}

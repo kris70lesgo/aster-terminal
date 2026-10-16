@@ -1,0 +1,16 @@
+{
+  "verifiedAt": "2026-10-16T04:44:06.831648+00:00",
+  "url": "https://avaloniaui.net/blog/avalonia-port-challenge",
+  "retrieval": "curl succeeded after web-reader timeout",
+  "rawPageSha256": "cba282b92562c03e7079e918c6a6d6777c168a7169a829352898f8fa99177351",
+  "requirementsUnchanged": true,
+  "deadlineUtc": "2026-10-23T23:59:00Z",
+  "openSourceRequirements": [
+    "Public GitHub repository under OSI-approved licence",
+    "Runnable downloads for targeted platforms",
+    "Before and after screenshots",
+    "Migration write-up in README including actual costs"
+  ],
+  "entrantIdentityAndFormDeclarations": "UNVERIFIED",
+  "submitted": false
+}

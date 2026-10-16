@@ -1,0 +1,15 @@
+Test run for /Users/agastya/.codex/worktrees/scripting-lifecycle/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+  Failed Aster.Tests.TriggerTests.FragmentedWrappedUnicodeMatchesActualCellsAndNavigatesAfterResize [918 ms]
+  Error Message:
+   Rule 'Unicode' was paused after its matching time limit.
+  Stack Trace:
+     at Aster.Tests.TriggerTests.FragmentedWrappedUnicodeMatchesActualCellsAndNavigatesAfterResize() in /Users/agastya/.codex/worktrees/scripting-lifecycle/alvonia real/tests/Terminal.Tests/TriggerTests.cs:line 20
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.86]     Aster.Tests.PtyTests.PowerShellConPtyExecutesUnicodeAndCleansUp [SKIP]
+[xUnit.net 00:00:03.86]     Aster.Tests.PtyTests.CmdConPtyCommandResizeAndExit [SKIP]
+  Skipped Aster.Tests.PtyTests.PowerShellConPtyExecutesUnicodeAndCleansUp [1 ms]
+  Skipped Aster.Tests.PtyTests.CmdConPtyCommandResizeAndExit [1 ms]
+
+Failed!  - Failed:     1, Passed:    73, Skipped:     2, Total:    76, Duration: 9 s - Terminal.Tests.dll (net10.0)

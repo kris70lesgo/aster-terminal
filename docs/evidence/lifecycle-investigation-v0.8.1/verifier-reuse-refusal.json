@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "expectedNonzeroExit": 1,
+  "existingVerificationUnchanged": true,
+  "scope": "Existing report root rejected before any launch call; stale reports cannot satisfy a new run."
+}

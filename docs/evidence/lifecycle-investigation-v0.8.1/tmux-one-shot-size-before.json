@@ -1,0 +1,9 @@
+{
+  "passed": false,
+  "timestamp": "2026-10-16T12:12:15.385143+00:00",
+  "os": "macOS 26.7.2",
+  "renderScaling": 2,
+  "checks": [],
+  "expectedSize": "22 42",
+  "error": "System.TimeoutException: Native tmux acceptance timed out.\n   at Aster.App.Services.TmuxSmoke.Until(Func\u00601 condition) in /Users/runner/work/aster-terminal/aster-terminal/src/App/Services/TmuxSmoke.cs:line 93\n   at Aster.App.Services.TmuxSmoke.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CConfigure\u003Eb__1\u003Ed.MoveNext() in /Users/runner/work/aster-terminal/aster-terminal/src/App/Services/TmuxSmoke.cs:line 46"
+}

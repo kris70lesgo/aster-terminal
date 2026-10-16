@@ -2,10 +2,10 @@
 
 A real C#/Avalonia terminal bringing a documented subset of **iTerm2** workflows
 to macOS, Windows and Linux. Independent project; no iTerm2 endorsement.
-GPL-3.0-or-later. **Version 0.8.0 is the competition release; full iTerm2 parity
+GPL-3.0-or-later. **Version 0.8.1 is the competition release; full iTerm2 parity
 is a separate milestone.**
 
-[Download v0.8.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.8.0)
+[Download v0.8.1](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.8.1)
 · [Runtime evidence](docs/test-matrix.md) · [Feature boundaries](docs/iterm2-feature-parity.md)
 
 Enable the optional summon window in Preferences → General with
@@ -20,9 +20,10 @@ real window/tab/pane creation, command input, Unicode screen reads, layout/focus
 notifications and session close. Enable it in Preferences → General, then use the
 bundled `Scripting/aster_script.py` launcher. It is disabled by default and grants
 trusted scripts terminal control. See [setup and supported APIs](docs/scripting.md).
-A local macOS 26 test sometimes left the scripting fixture alive after its
-windows and shells closed; the unresolved exit issue and passing independent
-rechecks are recorded in the [runtime evidence](docs/test-matrix.md).
+Version 0.8.1 fixes the reproduced Mac exit stall and stops scripting transport
+without waiting for an unfinished UI action. Fresh installed-package checks now
+require PID exit and a clean native main-loop return; earlier failures remain in
+the [runtime evidence](docs/test-matrix.md).
 
 ## Install
 
@@ -31,9 +32,9 @@ folders; no SDK, account or subscription is required.
 
 | Download | Run | Platform scope |
 |---|---|---|
-| `aster-terminal-0.8.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26 |
-| `aster-terminal-0.8.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
-| `aster-terminal-0.8.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
+| `aster-terminal-0.8.1-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26 |
+| `aster-terminal-0.8.1-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
+| `aster-terminal-0.8.1-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
 
 Extract the Mac ZIP with Finder/Archive Utility (or `ditto`) to preserve signing
 metadata. macOS is ad-hoc signed, without Developer ID notarization. For a downloaded copy,
@@ -124,7 +125,8 @@ before sending text to the shell. No telemetry, cloud sync or AI services are ad
 ## Build and verify
 
 Install SDK **10.0.402**; macOS requires Command Line Tools/cc and Linux requires
-cc/libutil development headers. Unix compatibility tests also require vim, less,
+cc/libutil development headers. Mac builds also compile the small AppKit exit
+bridge with clang against system frameworks. Unix compatibility tests also require vim, less,
 tmux and zsh. Dependencies and upstream sources are pinned.
 
 ```sh
@@ -142,6 +144,17 @@ renders. Linux CI runs this under Xvfb. The engine benchmark is reproducible wit
 `Aster.Terminal --benchmark benchmark.json`; native startup/memory/grid resize
 measurements are in the smoke report. On this workstation the SDK is in
 `.research/dotnet`; set `DOTNET_ROOT` to that directory for framework-dependent runs.
+
+For an installed Mac archive, native checks can also run through the background
+`cua-driver` launcher (test tool required), with an existing Python environment
+containing `scripts/python/requirements.txt`:
+
+```sh
+python3 scripts/verify_installed_macos.py --report artifacts/mac-check --python .research/api-python/bin/python --repeat-scripting 3
+```
+
+The report folder must be fresh. This verifies actual process exits and native
+main-loop return; it does not inject physical keys or establish IME coverage.
 
 ## Migration write-up
 
@@ -174,11 +187,11 @@ GitHub Actions and local terminal tools. [Performance evidence](docs/performance
 is measured on a defined workload and makes no superiority claim.
 
 ![Original iTerm2 3.6.6 startup reference](docs/evidence/iterm2-original.png)
-![Aster native dark theme with actual shell output](docs/evidence/v0.8.0-osx-arm64/dark.png)
-![Aster compact Unicode regex Find](docs/evidence/v0.8.0-osx-arm64/find-compact.png)
-![Aster native profile output rules](docs/evidence/v0.8.0-osx-arm64/preferences-triggers.png)
-![Aster shell-generated inline graphics](docs/evidence/v0.8.0-osx-arm64/graphics.png)
-![Aster native tmux control panes](docs/evidence/v0.8.0-osx-arm64/tmux/tmux-splits.png)
+![Aster native dark theme with actual shell output](docs/evidence/v0.8.1-osx-arm64/dark.png)
+![Aster compact Unicode regex Find](docs/evidence/v0.8.1-osx-arm64/find-compact.png)
+![Aster native profile output rules](docs/evidence/v0.8.1-osx-arm64/preferences-triggers.png)
+![Aster shell-generated inline graphics](docs/evidence/v0.8.1-osx-arm64/graphics.png)
+![Aster native tmux control panes](docs/evidence/v0.8.1-osx-arm64/tmux/tmux-splits.png)
 
 Original screenshot © George Nachman/contributors; installed iTerm2 3.6.6 is a
 different version and geometry from the source audit. Captures show actual

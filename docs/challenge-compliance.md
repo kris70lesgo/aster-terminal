@@ -69,3 +69,12 @@ acceptance. Search adaptation preserves the pinned MIT attribution and full
 existing notices; no new dependency. Checksums, signatures and payload inventory
 are audited before publication. Entrant identity/form declarations remain
 unverified and no form submission is claimed.
+
+2026-10-16 0.8.1 milestone recheck: the official announcement was retrieved
+through the web reader. Deadline and public source/build/screenshot/write-up
+requirements remain unchanged. The small new Mac shutdown bridge is Aster GPL
+source using system AppKit/dispatch APIs; source and build target are public.
+Final native run 38901660170 / source d23eba2 passes Windows, macOS and Linux.
+Package/notices/deployment-target and exact installed Retina checks are audited
+before publishing. Entrant identity/form declarations remain unverified and no
+submission is claimed.

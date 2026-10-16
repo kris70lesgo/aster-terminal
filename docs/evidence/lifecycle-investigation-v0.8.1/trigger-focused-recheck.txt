@@ -1,0 +1,4 @@
+Test run for /Users/agastya/.codex/worktrees/scripting-lifecycle/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5, Duration: 82 ms - Terminal.Tests.dll (net10.0)

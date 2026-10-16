@@ -52,3 +52,10 @@ checks pass; two local ordered-batch scripting exit timeouts remain unresolved
 and are preserved in the test matrix.
 The compact toolbar fits at 620 width. Full upstream search dialect/filtering
 and the tmux window's newer Find controls remain later parity targets.
+
+0.8.1 resolves the reproduced native Mac exit path and bounds scripting transport
+shutdown independently of pending UI continuations. The full 76-test/native
+three-OS run and an exact installed Retina ordered batch (three scripting runs)
+pass with actual process and main-loop exits. A fresh-directory verifier and
+kernel-size barrier strengthen acceptance. Full iTerm2 parity and broader manual
+coverage remain separate; prior failure evidence is retained.

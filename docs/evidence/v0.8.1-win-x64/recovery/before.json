@@ -1,0 +1,12 @@
+{
+  "SessionId": "57263e32-8ba0-4f96-8464-aa31b4300c12",
+  "Process": {
+    "SessionId": "0faba83f-00d2-4cf3-9d57-ebc101bf491b",
+    "ProcessId": 10044,
+    "CommandLine": "cmd.exe /Q",
+    "WorkingDirectory": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\",
+    "StartedAt": "2026-10-16T12:38:48.1159054+00:00"
+  },
+  "StateDirectory": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\aster-native-recovery-41dee6e103cc4fbe9c397be0ebb05521",
+  "ShellPid": "10044"
+}

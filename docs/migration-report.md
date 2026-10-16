@@ -1,4 +1,4 @@
-# Migration report — competition release 0.8.0
+# Migration report — competition release 0.8.1
 
 Aster Terminal delivers the competition subset of an iTerm2 behavior migration:
 real local terminals, profiles, tabs, nested panes, search, themes, persisted
@@ -82,10 +82,29 @@ at 2× Retina. Resource/dialect/selection limits remain explicit in find.md, and
 local measured allocation/snapshot costs are reported without a performance
 parity claim. No new dependency was introduced.
 
-One exact installed Mac scripting attempt completed API/PTY assertions but
+In 0.8.0, one exact installed Mac scripting attempt completed API/PTY assertions but
 remained in Avalonia's native event loop past the process-exit deadline. Three
 fresh unchanged-archive scripting repeats exited cleanly. Two ordered local
 batches timed out on scripting exit; independent passing checks are combined
 with explicit process IDs/provenance, not represented as one passing batch. Cause is unresolved, with the failed exit and managed
 stack retained. Hosted package exits passed on all three OSes; this does not
 establish unconditional local macOS shutdown reliability.
+
+0.8.1 reproduces and addresses the exit stall with a deferred process-local
+AppKit stop/event bridge. Phase logs showed API/PTY cleanup and desktop.Shutdown
+returning before the native loop stalled. A periodic-only approach failed and
+was discarded. The final bridge leaves normal window/session cleanup intact;
+it uses no forced exit or HID input. This follows AppKit's documented stop/event
+contract and the wakeup pattern studied in pinned Avalonia's platformthreading.mm.
+No framework fork or new NuGet dependency was introduced; existing MIT framework
+notices and the new GPL source/build target accompany the app.
+
+A separate transport regression held a desktop action incomplete while the
+server stopped; cancellation now releases the listener and credential lease
+without waiting for the UI continuation. Final 76-test/native three-OS run
+38901660170 passes. Exact installed 2× Retina checks pass as one full ordered
+batch, with three original-client repetitions and verified process/main-loop
+exits. Native tmux acceptance now waits for kernel PTY size before its strict
+shell check. The verifier refuses reused report roots. Old failures and the
+rejected approach remain in lifecycle-investigation-v0.8.1; final archive/native
+bridge/signature/notice provenance is in payload-v0.8.1.json.

@@ -1,4 +1,45 @@
-# Verification matrix — release 0.8.0, 2026-10-16
+# Verification matrix — release 0.8.1, 2026-10-16
+
+Final source **d23eba2abfad621a8f3874cca4a9d98893538f98**, run
+[38901660170](https://github.com/kris70lesgo/aster-terminal/actions/runs/38901660170):
+macOS/Linux **74 passed + 2 Windows-only skips**; Windows **67 passed + 9
+Unix-only skips**; **76 total, zero failures** on each target. All three final
+native packages pass baseline, global hotkey, crash/reopen and the original
+Python client. Unix also passes native tmux. All scripting reports include a
+clean main-loop-return marker. Versioned reports/TRX/images are in
+`evidence/v0.8.1-{rid}`; `ci-v0.8.1.json` records source provenance.
+
+The exact extracted/installed CI Mac archive passes the full ordered native
+batch at **2× Retina** on macOS 26.7.2, with **three scripting repetitions**.
+`v0.8.1-macos-retina/verification.json` records matching PIDs and actual process
+exits for every phase, including native-loop return for each scripting run.
+This replaces the composite-only local scope of 0.8.0. Six earlier candidate
+scripting runs also returned cleanly; they remain separate investigation evidence.
+
+| New acceptance | Evidence |
+|---|---|
+| Stop listener/private credential lease while a desktop request remains unfinished; replacement can start without waiting for that UI continuation | ScriptingServerTests.StoppingWithAnInFlightDesktopRequestDoesNotWaitForItsUiContinuation; before-fix failure retained |
+| Reproduced shutdown-return/native-loop stall; rejected periodic-only trial; deferred AppKit stop/event returns cleanly | lifecycle-investigation-v0.8.1; final scripting/lifecycle.log on native macOS and installed Retina Mac |
+| Fresh report directory, matching process ID, actual process exit and clean native-loop return required | scripts/verify_installed_macos.py; installed verification.json |
+| tmux metadata, actual owned-PTY kernel geometry and shell stty result agree after resize | tmux/tmux.json on final Unix packages and installed Mac; kernel sizes/wait recorded |
+| New Mac bridge linked only to system libraries, deployment target 15.0, GPL corresponding source/notices, exact installed native/managed bytes and signatures | payload-v0.8.1.json |
+
+Prior shell/VT/Find/replay/graphics/rules/profiles/recovery/API checks remain
+covered. One earlier local test run paused a trigger on its bounded regex
+wall-time policy during diagnostic/build activity. The unchanged focused trigger
+suite and complete rerun pass; that failure is retained in investigation evidence,
+without increasing safety budgets. No universal timing/reliability claim is made.
+
+The native Mac fix handles the reproduced exit path; it is not full upstream
+API or AppKit lifecycle parity. Local human physical hotkey input remains
+unverified despite three-OS CI global-key passes. Wayland, IME/AltGr/native
+gestures, broader graphics/DVR/API compatibility and other feature gaps remain
+in the parity inventory. Payload checksums and notice inventory are in
+`payload-v0.8.1.json`.
+
+## Historical release 0.8.0
+
+### Verification matrix — release 0.8.0, 2026-10-16
 
 Final source **4d4f5b3ed477335e7d90f80badb09f7ef5ea8102**, run
 [38851975830](https://github.com/kris70lesgo/aster-terminal/actions/runs/38851975830):

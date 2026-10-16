@@ -1,0 +1,7 @@
+{
+  "timestamp": "2026-10-16T12:36:42.341630+00:00",
+  "scope": "Investigation candidates based on 0.8.0; not final published 0.8.1 archives. Six scripting checks passed with clean native main-loop return after deferred-wakeup change, including the complete ordered local batch. Before and periodic-only failures remain failures.",
+  "beforeFailure": "API/PTY cleanup and desktop shutdown returned, native main loop did not return before external deadline. The later debugger inspection is excluded from success evidence.",
+  "triggerBudget": "A prior full run paused one bounded trigger while diagnostic/build work was also active. Focused and complete reruns passed without changing safety limits.",
+  "finalArchiveEvidence": "Recorded separately under versioned final-package directories."
+}

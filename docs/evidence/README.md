@@ -1,6 +1,25 @@
 # Screenshot and runtime evidence
 
-## Current release 0.8.0
+## Current release 0.8.1
+
+`v0.8.1-{rid}` contains final 76-test/native package reports/images from source
+d23eba2abfad621a8f3874cca4a9d98893538f98 / run 38901660170. Native scripting
+now records matching PID, Python progress, desktop Exit and main-loop return.
+The exact installed CI Mac archive passes a full ordered 2× Retina batch and
+three scripting repetitions in `v0.8.1-macos-retina`; verification.json records
+actual exited PIDs. Kernel-size observations accompany Unix tmux acceptance.
+`ci-v0.8.1.json` / `payload-v0.8.1.json` record provenance and the native bridge
+system-library/deployment/signature/notice audit.
+
+`lifecycle-investigation-v0.8.1` preserves the before-fix native-loop stall,
+rejected periodic-only attempt, held-request regression, tmux one-shot-size
+failure and trigger-budget pause. Candidate successes are explicitly separated
+from final archives. A debugger inspection is not counted as a successful exit.
+Physical local Mac keys, IME/gestures and multi-monitor behavior remain separate
+coverage gaps. These client renders and routed native actions are not claims of
+all physical interactions or full iTerm2 parity.
+
+## Historical release 0.8.0
 
 `v0.8.0-{rid}` contains the final 75-test/native package evidence from source
 4d4f5b3ed477335e7d90f80badb09f7ef5ea8102 / run 38851975830. Native Find captures

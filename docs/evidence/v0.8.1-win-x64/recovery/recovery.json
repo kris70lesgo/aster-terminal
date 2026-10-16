@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "timestamp": "2026-10-16T12:38:50.8301659+00:00",
+  "os": "Microsoft Windows 10.0.26100",
+  "renderScaling": 1,
+  "checks": [
+    "Abrupt native UI process exit and reopen recover the same host session/process metadata",
+    "Shell-local variable and actual Unix shell PID survive UI termination; fresh shells cannot satisfy this",
+    "Recovered shell accepts routed input and native resize",
+    "Normal window close terminates the recovered host/PTY and removes its descriptor"
+  ],
+  "error": null
+}

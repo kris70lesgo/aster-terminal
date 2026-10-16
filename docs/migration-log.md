@@ -615,3 +615,20 @@ Final source/package verification on three OSes is pending. The new installed
 Mac verifier rejects reused report folders and requires matching PID plus process
 exit and clean main-loop return, correcting the earlier helper's stale-report
 weakness. Raw failure/phase evidence is retained rather than overwritten.
+
+Final 0.8.1 source **d23eba2abfad621a8f3874cca4a9d98893538f98**, native
+run **38901660170**, passes all three platforms: macOS/Linux 74 passed + 2
+Windows-only skips; Windows 67 passed + 9 Unix-only skips; 76 total, zero
+failures. All final native packages pass baseline, recovery, global hotkey and
+original Python checks; Unix also passes tmux. Clean native-loop return markers
+are present. The exact installed Mac CI archive passes one complete ordered
+Retina batch and three scripting runs, with matching PIDs and actual exits.
+Together with six candidate successes, this addresses the reproduced local
+shutdown path without claiming universal lifecycle or full upstream parity.
+
+Payload audit passes SHA-256/CRC/tar inventory, Linux executable permissions,
+all notices and absence of user/test/compiler/credential payloads. Extracted and
+installed Mac native/managed bytes match; deep/strict signatures pass. The new
+ARM64 bridge targets macOS 15.0 and links only system libraries. Final hashes
+and verification scope are in payload-v0.8.1.json. Rule requirements remain
+unchanged at the release milestone. No entrant/form submission is claimed.

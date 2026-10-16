@@ -1,0 +1,72 @@
+{
+  "passed": true,
+  "timestamp": "2026-10-16T12:41:34.782671+00:00",
+  "scope": "Fresh installed-app fixtures; preserved foreground; actual process exits required",
+  "results": [
+    {
+      "mode": "--smoke-test",
+      "processId": 30117,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 8.682664500003739,
+      "report": "baseline/native-smoke.json"
+    },
+    {
+      "mode": "--recovery-start",
+      "processId": 30149,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 0.9920018330012681,
+      "report": "recovery/before.json"
+    },
+    {
+      "mode": "--recovery-resume",
+      "processId": 30157,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 1.1960235000005923,
+      "report": "recovery/recovery.json"
+    },
+    {
+      "mode": "--tmux-smoke",
+      "processId": 30161,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 1.814906500003417,
+      "report": "tmux/tmux.json"
+    },
+    {
+      "mode": "--hotkey-smoke",
+      "processId": 30183,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 1.209862042000168,
+      "report": "hotkey/hotkey.json"
+    },
+    {
+      "mode": "--scripting-smoke",
+      "processId": 30185,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 4.848793999997724,
+      "report": "scripting/scripting.json"
+    },
+    {
+      "mode": "--scripting-smoke",
+      "processId": 30216,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 2.5440434589982033,
+      "report": "scripting-2/scripting.json"
+    },
+    {
+      "mode": "--scripting-smoke",
+      "processId": 30241,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 2.579323874997499,
+      "report": "scripting-3/scripting.json"
+    }
+  ],
+  "error": null
+}

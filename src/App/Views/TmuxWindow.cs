@@ -18,6 +18,7 @@ public sealed class TmuxWindow : Window
     private readonly TmuxController _controller;
     private readonly TerminalProfile _profile;
     private readonly TabControl _tabs = new();
+    private readonly FindBar _findBar = new() { Name = "SearchBar" };
     private readonly TextBlock _message = new() { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(8, 4), IsVisible = false };
     private readonly Dictionary<int, TerminalPane> _panes = [];
     private readonly Dictionary<int, TabItem> _windows = [];
@@ -42,21 +43,23 @@ public sealed class TmuxWindow : Window
         {
             var item = new MenuItem { Header = label }; item.Click += (_, _) => Observe(action()); session.Items.Add(item);
         }
-        Item("New window", async () => { await _controller.NewWindowAsync(); await RefreshAsync(); });
+        Item("New window", NewWindowAsync);
         Item("Split right", () => SplitAsync(false)); Item("Split below", () => SplitAsync(true));
         Item("Close pane", ClosePaneAsync);
         Item("Copy", async () => { if (_active is { } id && _panes.TryGetValue(id, out var pane)) await pane.Terminal.CopyAsync(); });
         Item("Paste", async () => { if (_active is { } id && _panes.TryGetValue(id, out var pane)) await pane.Terminal.PasteAsync(); });
         Item("Find…", FindAsync);
         Item("Detach", () => { Close(); return Task.CompletedTask; });
-        var grid = new Grid { RowDefinitions = new RowDefinitions("Auto,*,Auto") };
-        grid.Children.Add(menu); Grid.SetRow(_tabs, 1); grid.Children.Add(_tabs); Grid.SetRow(_message, 2); grid.Children.Add(_message); Content = grid;
+        var grid = new Grid { RowDefinitions = new RowDefinitions("Auto,Auto,*,Auto") };
+        grid.Children.Add(menu); Grid.SetRow(_findBar, 1); grid.Children.Add(_findBar);
+        Grid.SetRow(_tabs, 2); grid.Children.Add(_tabs); Grid.SetRow(_message, 3); grid.Children.Add(_message); Content = grid;
         if (OperatingSystem.IsMacOS()) { menu.IsVisible = false; NativeMenu.SetMenu(this, NativeMenuBridge.FromMenu(menu, _shortcuts)); }
         _refresh = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(75) };
         _refresh.Tick += (_, _) => { _refresh.Stop(); Observe(RefreshAsync()); };
         _resize = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(150) };
         _resize.Tick += (_, _) => { _resize.Stop(); Observe(ResizeClientAsync()); };
-        SizeChanged += (_, _) => { if (IsReady && !_closing) { _resize.Stop(); _resize.Start(); } };
+        SizeChanged += (_, _) => ScheduleResize();
+        _tabs.SizeChanged += (_, _) => ScheduleResize();
         _controller.LayoutChanged += LayoutChanged;
         _controller.Faulted += Failed;
         _tabs.SelectionChanged += (_, e) =>
@@ -73,19 +76,25 @@ public sealed class TmuxWindow : Window
         if (_active is { } id && await DialogWindow.Confirm(this, "Close tmux pane", "End this pane's process in tmux?", "Close pane"))
         { await _controller.KillPaneAsync(id); await RefreshAsync(); }
     }
-    private async Task FindAsync()
+    private Task FindAsync()
     {
-        if (_active is not { } id || !_panes.TryGetValue(id, out var pane)) return;
-        var text = await DialogWindow.Prompt(this, "Find in tmux pane", "");
-        if (string.IsNullOrEmpty(text)) { pane.Terminal.Search.Clear(); pane.Terminal.SetSearchHighlights([]); return; }
-        pane.Terminal.Find(text);
+        if (_active is { } id && _panes.TryGetValue(id, out var pane)) _findBar.Open(pane);
+        return Task.CompletedTask;
+    }
+    private async Task NewWindowAsync()
+    {
+        var existing = _windows.Keys.ToHashSet();
+        await _controller.NewWindowAsync(); await RefreshAsync();
+        var created = _windows.FirstOrDefault(pair => !existing.Contains(pair.Key)).Value;
+        if (created is not null) _tabs.SelectedItem = created;
     }
     private void Shortcut(object? sender, KeyEventArgs e)
     {
+        if (e.Key == Key.Escape && _findBar.IsVisible) { _findBar.Close(); e.Handled = true; return; }
         var action = _shortcuts.FirstOrDefault(p => p.Value.Matches(e)).Key;
         Task? task = action switch
         {
-            "NewTab" or "NewWindow" => _controller.NewWindowAsync(),
+            "NewTab" or "NewWindow" => NewWindowAsync(),
             "ClosePane" => ClosePaneAsync(), "Find" => FindAsync(),
             "SplitRight" => SplitAsync(false), "SplitBelow" => SplitAsync(true),
             "Copy" when _active is { } copy => _panes[copy].Terminal.CopyAsync(),
@@ -117,7 +126,12 @@ public sealed class TmuxWindow : Window
         var changed = _active != id; _active = id;
         foreach (var pair in _panes) pair.Value.SetActive(pair.Key == id);
         if (select && changed && _controller.IsRunning) Observe(_controller.SelectPaneAsync(id));
-        if (_panes.TryGetValue(id, out var pane)) pane.Terminal.Focus();
+        if (_panes.TryGetValue(id, out var pane))
+        {
+            if (_findBar.IsVisible) _findBar.SetPane(pane);
+            // A metadata/layout refresh must not interrupt typing in Find.
+            if (select || !_findBar.IsVisible) pane.Terminal.Focus();
+        }
     }
     public async Task SplitAsync(bool below)
     {
@@ -134,6 +148,7 @@ public sealed class TmuxWindow : Window
             var shape = string.Join("|", windows.Select(w => w.Id + ":" + Shape(w.Layout)));
             var structureChanged = shape != _layoutShape; _layoutShape = shape;
             var wanted = windows.SelectMany(w => w.Layout.Panes).Select(p => p.PaneId!.Value).ToHashSet();
+            if (_active is { } activeId && !wanted.Contains(activeId)) _findBar.SetPane(null);
             _updating = true;
             // Detach visual parents without destroying engines/connections when
             // tmux rearranges existing panes.
@@ -186,6 +201,7 @@ public sealed class TmuxWindow : Window
         return node.Vertical ? (children.Max(c => c.Width), children.Sum(c => c.Height) + children.Length - 1)
             : (children.Sum(c => c.Width) + children.Length - 1, children.Max(c => c.Height));
     }
+    private void ScheduleResize() { if (IsReady && !_closing) { _resize.Stop(); _resize.Start(); } }
     public async Task SynchronizeSizeAsync() { _resize.Stop(); await ResizeClientAsync(); await RefreshAsync(); }
     private async Task ResizeClientAsync()
     {
@@ -202,6 +218,7 @@ public sealed class TmuxWindow : Window
     private async void ClosingWindow(object? sender, WindowClosingEventArgs e)
     {
         if (_closed) return; e.Cancel = true; if (_closing) return; _closing = true;
+        _findBar.Close(restoreFocus: false);
         _refresh.Stop(); _resize.Stop(); _controller.LayoutChanged -= LayoutChanged; _controller.Faulted -= Failed;
         await _mutation.WaitAsync();
         try

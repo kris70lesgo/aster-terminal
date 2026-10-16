@@ -133,10 +133,10 @@ public static class DesktopSmoke
             Enter(findPane.Terminal);
             await Until(() => TerminalBufferExport.ToPlainText(findPane.Terminal.Engine.CreateSnapshot().Buffer).Contains("FIND_東京é"));
             Shortcut(window, "Find");
-            var findBox = window.FindControl<TextBox>("SearchBox")!;
-            var regexBox = window.FindControl<ToggleButton>("RegexBox")!;
-            var caseBox = window.FindControl<ToggleButton>("MatchCaseBox")!;
-            var wordBox = window.FindControl<ToggleButton>("WholeWordBox")!;
+            var findBox = window.FindControl<FindBar>("SearchBar")!.FindControl<TextBox>("SearchBox")!;
+            var regexBox = window.FindControl<FindBar>("SearchBar")!.FindControl<ToggleButton>("RegexBox")!;
+            var caseBox = window.FindControl<FindBar>("SearchBar")!.FindControl<ToggleButton>("MatchCaseBox")!;
+            var wordBox = window.FindControl<FindBar>("SearchBar")!.FindControl<ToggleButton>("WholeWordBox")!;
             regexBox.IsChecked = true; findBox.Text = "^FIND_alpha[0-9]+$";
             await Until(() => !findPane.Find.Busy && findPane.Find.Matches.Count == 2);
             findBox.RaiseEvent(new KeyEventArgs { RoutedEvent = InputElement.KeyDownEvent, Key = Key.Enter });

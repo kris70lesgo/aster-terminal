@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:views="using:Aster.App.Views"
         x:Class="Aster.App.Views.MainWindow" Title="Aster Terminal"
         Width="1080" Height="680" MinWidth="620" MinHeight="320" Background="{DynamicResource WindowBackground}">
   <Window.Styles>
@@ -43,18 +43,7 @@
       </MenuItem>
       <MenuItem Header="_Help"><MenuItem Header="About Aster Terminal" Click="AboutClicked" /></MenuItem>
     </Menu>
-    <Border x:Name="SearchBar" Grid.Row="1" IsVisible="False" Background="{DynamicResource ChromeBackground}" Padding="8,6">
-      <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
-        <TextBox x:Name="SearchBox" AutomationProperties.Name="Find terminal output" MinWidth="100" PlaceholderText="Find" KeyDown="SearchKeyDown" TextChanged="SearchTextChanged" />
-        <ToggleButton x:Name="MatchCaseBox" Grid.Column="1" Content="Aa" AutomationProperties.Name="Match case" ToolTip.Tip="Match case" IsCheckedChanged="SearchOptionChanged" Margin="6,0,0,0" MinWidth="30" Padding="6,3" />
-        <ToggleButton x:Name="RegexBox" Grid.Column="2" Content=".*" AutomationProperties.Name="Regular expression" ToolTip.Tip="Regular expression" IsCheckedChanged="SearchOptionChanged" Margin="4,0,0,0" MinWidth="30" Padding="6,3" />
-        <ToggleButton x:Name="WholeWordBox" Grid.Column="3" Padding="6,3" Content="Word" AutomationProperties.Name="Whole word" ToolTip.Tip="Whole word" IsCheckedChanged="SearchOptionChanged" Margin="4,0,0,0" />
-        <Button Grid.Column="4" Content="↑" AutomationProperties.Name="Previous match" ToolTip.Tip="Previous match (Shift+Enter)" Click="PreviousClicked" Margin="6,0,0,0" />
-        <Button Grid.Column="5" Content="↓" AutomationProperties.Name="Next match" ToolTip.Tip="Next match (Enter)" Click="NextClicked" Margin="4,0,0,0" />
-        <TextBlock x:Name="SearchStatus" Grid.Column="6" MaxWidth="180" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="8,0" />
-        <Button Grid.Column="7" Content="×" AutomationProperties.Name="Close find" ToolTip.Tip="Close find (Escape)" Click="DoneClicked" />
-      </Grid>
-    </Border>
+    <views:FindBar x:Name="SearchBar" Grid.Row="1" />
     <Border ZIndex="10" x:Name="AlertBar" IsVisible="False" Grid.Row="2" VerticalAlignment="Bottom" Margin="12" Padding="10,6" CornerRadius="3" Background="{DynamicResource ChromeBackground}">
       <DockPanel><Button DockPanel.Dock="Right" Content="×" Click="DismissAlertClicked" /><TextBlock x:Name="AlertText" TextWrapping="Wrap" VerticalAlignment="Center" /></DockPanel>
     </Border>

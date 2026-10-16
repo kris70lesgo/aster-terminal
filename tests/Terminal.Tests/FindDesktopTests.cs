@@ -28,8 +28,8 @@ public sealed partial class DesktopTests
             FindCommand(pane, OperatingSystem.IsWindows() ? "echo FIND_Alpha42&echo FIND_alpha7&echo FIND_alphabet9&echo FIND_alpha&echo FIND_東京é" : "printf '\\nFIND_%s\\n' 'Alpha42' 'alpha7' 'alphabet9' 'alpha' '東京é'");
             await Until(() => Text(pane).Contains("FIND_東京é"));
             SendKey(window, Key.F, OperatingSystem.IsMacOS() ? RawInputModifiers.Meta : RawInputModifiers.Control | RawInputModifiers.Shift);
-            var box = window.FindControl<TextBox>("SearchBox")!; var regex = window.FindControl<ToggleButton>("RegexBox")!;
-            var matchCase = window.FindControl<ToggleButton>("MatchCaseBox")!; var word = window.FindControl<ToggleButton>("WholeWordBox")!;
+            var box = window.FindControl<FindBar>("SearchBar")!.FindControl<TextBox>("SearchBox")!; var regex = window.FindControl<FindBar>("SearchBar")!.FindControl<ToggleButton>("RegexBox")!;
+            var matchCase = window.FindControl<FindBar>("SearchBar")!.FindControl<ToggleButton>("MatchCaseBox")!; var word = window.FindControl<FindBar>("SearchBar")!.FindControl<ToggleButton>("WholeWordBox")!;
             regex.IsChecked = true; box.Text = "^FIND_alpha[0-9]+$";
             await Until(() => !pane.Find.Busy && pane.Find.Matches.Count == 2);
             Assert.Equal(0, pane.Find.CurrentIndex); Assert.Equal("1 / 2", pane.Find.Status);

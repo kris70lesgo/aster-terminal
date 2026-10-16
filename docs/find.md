@@ -27,7 +27,11 @@ allows composed/decomposed queries to find the same displayed grapheme. A match
 cannot split a combining, wide or emoji cell. Regex zero-length matches are not
 selected. Trailing default blank cells at a hard line end are omitted. ICU-only
 syntax, cross-hard-line regex, smart case and output filtering are outside this
-subset. The explicit tmux window currently retains its older literal Find prompt.
+subset. The 0.9.0 work applies this same bar to explicit native tmux windows;
+it searches output retained since attach. Existing tmux server history outside
+the hydrated viewport is not imported or searched. Switching tmux panes/tabs
+rebinds Find; detaching cancels it while leaving server shells alive. Native
+acceptance for this new UI is tracked in the verification matrix.
 
 Searches cap at the newest one million cells / 20,000 physical rows, 4 MiB of
 normalized text, 65,536 UTF-16 units per logical line, 1,024 query units and 10,000

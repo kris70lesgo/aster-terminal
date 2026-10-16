@@ -640,3 +640,21 @@ the earlier passing installed native sequence while the display was active;
 the later launch is recorded separately and is not a normal-window pass.
 Temporary diagnostic instrumentation was removed; no display/session settings
 were changed. Evidence: `evidence/lifecycle-investigation-v0.8.1/final-display-unavailable`.
+
+## 0.9.0 work — shared Find in native tmux panes
+
+Studied the pinned iTermFindDriver query/mode/view separation and reused Aster's
+bounded matcher instead of implementing a second search path. Extracted the
+existing compact controls into FindBar; both normal and tmux windows use it.
+Pane/tab changes, pane removal, Escape and detach cancel/unsubscribe old work.
+Tmux metadata refresh no longer steals Find focus, and content-size changes
+resize tmux grids when the bar appears/disappears. Creating a tmux window now
+selects its new tab. No new package or terminal protocol behavior.
+
+The first regression failed because the tmux window had no compact Find bar.
+After implementation, four focused desktop tests pass and the full local
+Release suite passes 76 + 2 Windows-only skips (78 total, zero failures).
+Native tmux acceptance now exercises the same options/Unicode/navigation/errors,
+620-width screenshot, pane isolation, grid fit with the bar open and pending
+Find cancellation before detach. Target-OS CI and local installed acceptance
+remain pending at this source checkpoint.

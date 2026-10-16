@@ -352,6 +352,7 @@ public partial class MainWindow : Window
         if (_hotkeyWindow && !IsVisible && _settings.ConfirmClose && !_detachOnClose && _workspaces.SelectMany(w => w.Panes).Any(p => p.Terminal.IsRunning))
         { ShowActivated = false; Show(); }
         if (!await ConfirmCloseAsync(_workspaces.SelectMany(w => w.Panes))) { _closing = false; return; }
+        SearchBar.Close(restoreFocus: false);
         await _layoutMutation.WaitAsync();
         try
         {

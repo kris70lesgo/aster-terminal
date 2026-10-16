@@ -254,3 +254,15 @@ return. The installed Mac verifier refuses reused report roots, requires the
 launched process to exit, and requires scripting's clean main-loop marker.
 Native tmux acceptance waits for the owned PTY's actual kernel geometry before
 sending its one-shot stty command; layout metadata alone is not that barrier.
+
+## Shared tmux Find, 0.9.0 work
+
+Normal and explicit tmux windows use the same compact FindBar and existing
+per-pane PaneFindController. The bar binds only the selected pane; pane/tab
+changes deactivate old results, while hide/removal/close cancel pending work.
+Find remains independent of terminal selection/input and tmux continues to own
+its shells. Metadata refresh preserves Find textbox focus. Tab content bounds
+changes schedule native tmux resizing, including the space consumed by Find.
+New native tmux windows select their created tab. No VT/protocol/dependency or
+search-bound changes. Local headless real-tmux acceptance passes; target-native
+verification is required before runtime claims for the new UI.

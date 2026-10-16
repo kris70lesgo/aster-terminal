@@ -28,6 +28,7 @@ public sealed class TerminalPane : Border
     private bool _active;
     private Task? _start;
     private Task? _close;
+    public Aster.App.Services.PaneFindController Find { get; }
     public TermControl Terminal { get; }
     public Aster.Sessions.Replay.ScreenReplayBuffer Replay { get; } = new();
     public TerminalProfile Profile { get; private set; }
@@ -65,6 +66,7 @@ public sealed class TerminalPane : Border
             AccessibleName = $"{profile.Name} terminal",
             InteractionOptions = new() { CopyOnSelect = copyOnSelect }
         };
+        Find = new(_engine, Terminal);
         var layout = new Grid { RowDefinitions = new RowDefinitions("*,Auto,Auto") };
         layout.Children.Add(Terminal);
         Grid.SetRow(_status, 1);
@@ -160,6 +162,7 @@ public sealed class TerminalPane : Border
     public Task CloseAsync() => _close ??= CloseCoreAsync();
     private async Task CloseCoreAsync()
     {
+        Find.Dispose();
         if (_start is not null) await _start;
         _replayTimer.Stop(); Replay.Clear();
         _engine.TriggersChanged -= TriggersChanged; _engine.ClearTriggerMatches();

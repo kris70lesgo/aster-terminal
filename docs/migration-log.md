@@ -523,3 +523,22 @@ compiler/test/user settings/API credential payloads pass. Payload hashes are in
 payload-v0.7.0.json. New runtime/build licences and source metadata are retained.
 Official rules rechecked via curl after a web-reader timeout; unchanged requirements.
 Entrant declarations/form submission remain separate and unperformed.
+
+## 2026-10-16 — bounded native Find implementation
+
+Studied pinned iTermFindDriver.m modes and the pinned MIT Devolutions
+TextBufferSearch/TerminalSearchSession. The embeddable control provides literal
+case/word search, with full-history snapshots; it has no regex option. Adapted
+its NFC/grapheme/Unicode-word mapping with original copyright/MIT notices.
+Alternatives were a control fork or another regex engine; using a bounded
+Sessions search and System.Text.RegularExpressions avoids either dependency.
+
+Background search now returns logical anchors with case/word/regex options,
+partial-result warnings and query/cell/text/time/match bounds. UI only handles
+cancellation, navigation and visible overlays. Captures preserve scroll; anchors
+survive reflow, expire with eviction and reject reset/buffer changes. Closing or
+switching a pane cancels work and removes highlights. Regex operates on logical
+lines, not arbitrary hard-newline text; explicit dialect/selection/limit boundaries
+are recorded in architecture.md. The compact toolbar retains literal-insensitive
+defaults. Eight focused tests pass locally, including actual PTY/UI flows. Native
+final-package acceptance and the complete cross-platform suite are pending.

@@ -21,6 +21,7 @@ Aster-authored and iTerm2-adapted code is GPL-3.0-or-later. Preserve original at
 | iTerm2 task/server design study | `iTermMonoServerJobManager.m`, `iTermMultiServerJobManager.m`, `iTermOrphanServerAdopter.m`, pinned same GPL source | New C# current-user pipe host; no upstream server code copied; design attribution in NOTICE |
 | iTerm2 output rule design | `Trigger.m`, `HighlightTrigger.m`, `MarkTrigger.m`, same pinned GPLv2-or-later source | New C# completed-line regex/highlight/bookmark implementation; preserve attribution in source/NOTICE; no native trigger classes copied |
 | Devolutions.Terminal.Control 2026.3.4 + bundled Core/Render/Connection/Settings | MIT, nuspec/source at `fa23083f1bda1a60fe2b322c6cfab4a616af9edb` | Retain MIT notice; only terminal APIs used, no cloud/ISE features |
+| Search NFC/grapheme/Unicode-word mapping from Devolutions TextBufferSearch.cs | Same pinned MIT source, Devolutions/Microsoft copyright | Adapted bounded background Find; source attribution and existing full MIT notice retained; no new dependency |
 | `dt-pty-host.c` from same pinned source | Project MIT; Unix forkpty helper | Vendor source and MIT licence, retain notices, record local changes |
 | Avalonia 12.1.4 | MIT | Preserve framework notices with distribution |
 | SkiaSharp/HarfBuzzSharp transitives | Package/native dependency licence trees | Exact wrapper/native notices retained; source and enabled native targets audited in dependency-source-map.md |

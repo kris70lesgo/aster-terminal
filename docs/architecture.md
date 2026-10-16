@@ -203,3 +203,30 @@ auth. Unsupported RPCs/ranges return explicit errors. Limits, supported operatio
 trusted-script authority and coordinate bounds are in scripting.md. Native
 acceptance invokes the original client against a uniquely owned endpoint/real
 shells, checks Unicode/variable/input/layout/close and cleans up credentials/PTYs.
+
+## Bounded scrollback Find, 0.8.0 work
+
+Find captures at most one million cells / 20,000 newest physical rows under the
+existing engine gate. Snapshot capture temporarily offsets the buffer without
+scroll events and restores the user's view. Matching runs on a background task,
+with query debounce/cancellation/generation checks so old completions cannot
+replace newer queries or closed/pane-switched state. No process/VT work moves to
+window logic; selection and clipboard stay independent of Find highlights.
+
+The pinned MIT search mapping is adapted for NFC whole-grapheme boundaries and
+wide-cell positions. Literal or .NET regex matches join soft wraps, stop at hard
+lines and use logical-line cell anchors. Reflow/eviction/navigation resolves those
+anchors; reset/alternate-buffer generations reject stale results. Visible overlays
+use logical offsets and binary search within each matched logical line.
+
+Literal case-insensitive remains default. Explicit Regex, Match case and Whole
+word controls, arrows, Enter/Shift+Enter, Escape and counts fit a compact bar.
+Invalid patterns stay visible. Queries cap at 1,024 UTF-16 units; logical lines at
+65,536, total normalized text at 4 MiB and matches at 10,000. Regex uses a 25 ms
+match timeout and the matcher checks a 300 ms overall budget. Partial output is
+reported. These are bounded-work policies, not hard real-time latency guarantees.
+Search is snapshot-based: typing/options or navigation refresh it; incoming output
+marks the count stale until refresh. Regex syntax is .NET, not complete ICU parity;
+zero-length/partial-grapheme matches and truncated logical prefixes are excluded.
+Trailing default blank cells at hard EOL are omitted. tmux's existing literal Find
+prompt remains separate; filtering/smart-case remain later parity targets.

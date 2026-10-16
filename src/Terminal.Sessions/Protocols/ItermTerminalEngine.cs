@@ -8,7 +8,7 @@ using Devolutions.Terminal.Core;
 namespace Aster.Sessions.Protocols;
 
 /// <summary>Uses the established VT parser and engine, adapting only iTerm2 OSC behavior.</summary>
-public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
+public sealed partial class ItermTerminalEngine : ITerminalEngine, IVtDispatch
 {
     private readonly TerminalEngine _inner;
     private readonly IVtDispatch _dispatch;
@@ -76,8 +76,8 @@ public sealed class ItermTerminalEngine : ITerminalEngine, IVtDispatch
         }
     }
     public void Feed(string text) => Feed(Encoding.UTF8.GetBytes(text));
-    public void Reset() { lock (_gate) { _parser.Reset(); _inner.Reset(); _triggers.Clear(); _triggerLinesThisFeed = 0; RemoteHost = null; LastCommandExitCode = null; _revision++; } }
-    public void Dispose() => _inner.Dispose();
+    public void Reset() { lock (_gate) { _searchEpoch++; _parser.Reset(); _inner.Reset(); _triggers.Clear(); _triggerLinesThisFeed = 0; RemoteHost = null; LastCommandExitCode = null; _revision++; } }
+    public void Dispose() { lock (_gate) { _searchDisposed = true; _searchEpoch++; _inner.Dispose(); } }
 
     public void OscDispatch(int command, ReadOnlySpan<char> data)
     {

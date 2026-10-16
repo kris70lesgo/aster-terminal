@@ -176,7 +176,7 @@ public partial class MainWindow : Window
         foreach (var candidate in workspace.Panes) candidate.SetActive(candidate == pane);
         UpdateTitle(workspace);
         WindowStatus.Text = $"{pane.Profile.Name} · {workspace.Panes.Count} pane(s) · {pane.Terminal.Engine.Columns} × {pane.Terminal.Engine.Rows}";
-        if (SearchBar.IsVisible) { pane.Terminal.Search.Clear(); pane.Terminal.SetSearchHighlights([]); SearchStatus.Text = "Press Enter to search this pane"; }
+        if (SearchBar.IsVisible) SetFindPane(pane);
     }
     private void UpdateTitle(Workspace workspace)
     {
@@ -456,21 +456,11 @@ public partial class MainWindow : Window
     }
     private async void Observe(Task task) { try { await task; } catch (Exception error) { ShowError(error.Message); } }
     internal void ReportApplicationError(string text) => ShowError(text);
-    private void ShowSearch() { SearchBar.IsVisible = true; SearchBox.Focus(); }
-    private void HideSearch() { SearchBar.IsVisible = false; Active?.Terminal.Search.Clear(); Active?.Terminal.SetSearchHighlights([]); Active?.Terminal.Focus(); }
-    private void Search(bool previous)
-    {
-        if (Active is not { } pane) return;
-        if (string.IsNullOrWhiteSpace(SearchBox.Text)) { pane.Terminal.Search.Clear(); pane.Terminal.SetSearchHighlights([]); SearchStatus.Text = ""; return; }
-        var found = pane.Terminal.Find(SearchBox.Text, previous);
-        SearchStatus.Text = found ? $"{pane.Terminal.Search.CurrentIndex + 1} / {pane.Terminal.Search.Matches.Count}" : "No matches";
-    }
     private void TabChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (Current is { Active: { } pane } workspace)
             Dispatcher.UIThread.Post(() => { if (Current != workspace || _closing) return; Activate(workspace, pane); pane.Terminal.Focus(); });
     }
-    private void SearchKeyDown(object? sender, KeyEventArgs e) { if (e.Key == Key.Enter) { Search(e.KeyModifiers.HasFlag(KeyModifiers.Shift)); e.Handled = true; } }
     private void NewTabClicked(object? sender, RoutedEventArgs e) => Observe(NewTabAsync());
     private void NewWindowClicked(object? sender, RoutedEventArgs e) => NewWindow();
     private void SplitRightClicked(object? sender, RoutedEventArgs e) => Observe(SplitAsync(false));
@@ -483,9 +473,6 @@ public partial class MainWindow : Window
     private void SelectAllClicked(object? sender, RoutedEventArgs e) => Active?.Terminal.SelectAll();
     private void ClearBufferClicked(object? sender, RoutedEventArgs e) => Active?.Terminal.ClearBuffer();
     private void PreferencesClicked(object? sender, RoutedEventArgs e) => Observe(PreferencesAsync());
-    private void PreviousClicked(object? sender, RoutedEventArgs e) => Search(true);
-    private void NextClicked(object? sender, RoutedEventArgs e) => Search(false);
-    private void DoneClicked(object? sender, RoutedEventArgs e) => HideSearch();
     private void ZoomPaneClicked(object? sender, RoutedEventArgs e) => ZoomPane();
     private void NextPaneClicked(object? sender, RoutedEventArgs e) => CyclePane(1);
     private void NextTabClicked(object? sender, RoutedEventArgs e) => CycleTab(1);
@@ -508,7 +495,7 @@ public partial class MainWindow : Window
         else Close();
     }
     private void AboutClicked(object? sender, RoutedEventArgs e) =>
-        Observe(DialogWindow.Confirm(this, "About Aster Terminal", "Aster Terminal 0.7.0\nIndependent iTerm2 migration to Avalonia.\nGPL-3.0-or-later. No warranty.\nTerminal component: Devolutions (MIT).\nSee LICENSE and bundled notices.", "Done"));
+        Observe(DialogWindow.Confirm(this, "About Aster Terminal", "Aster Terminal 0.8.0\nIndependent iTerm2 migration to Avalonia.\nGPL-3.0-or-later. No warranty.\nTerminal component: Devolutions (MIT).\nSee LICENSE and bundled notices.", "Done"));
 
     private void ShowError(string message) { AlertText.Text = message; AlertBar.IsVisible = true; }
     private void DismissAlertClicked(object? sender, RoutedEventArgs e) => AlertBar.IsVisible = false;

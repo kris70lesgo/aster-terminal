@@ -669,3 +669,10 @@ report while a fresh CoreGraphics probe returned zero active displays and
 independent CoreVideo creation returned -6661. That failed run is retained and
 is not credited as local GUI/Retina/graceful-exit support. Target-native CI is
 separate passing evidence. Final payload/signature/notice audit precedes release.
+
+The final 0.9.0 payload audit passed for all three exact CI archives: checksums,
+ZIP CRC/tar inventory, Unix executable modes, required GPL/runtime/dependency/
+font notices, no compiler/test/user-settings/API-credential payload, and Mac
+signatures/native system links/macOS 15 target. Installed managed/native bytes
+match the extracted Mac archive. The audit explicitly records the failed local
+GUI scope rather than promoting earlier-version Retina evidence.

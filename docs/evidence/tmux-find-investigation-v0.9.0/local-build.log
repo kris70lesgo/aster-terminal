@@ -1,0 +1,13 @@
+  Determining projects to restore...
+  Restored /Users/agastya/.codex/worktrees/tmux-find/alvonia real/src/App/App.csproj (in 117 ms).
+  Restored /Users/agastya/.codex/worktrees/tmux-find/alvonia real/tests/Terminal.Tests/Terminal.Tests.csproj (in 116 ms).
+  1 of 3 projects are up-to-date for restore.
+  Terminal.Sessions -> /Users/agastya/.codex/worktrees/tmux-find/alvonia real/src/Terminal.Sessions/bin/Release/net10.0/Terminal.Sessions.dll
+  App -> /Users/agastya/.codex/worktrees/tmux-find/alvonia real/src/App/bin/Release/net10.0/Aster.Terminal.dll
+  Terminal.Tests -> /Users/agastya/.codex/worktrees/tmux-find/alvonia real/tests/Terminal.Tests/bin/Release/net10.0/Terminal.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.64

@@ -1,0 +1,13 @@
+{
+  "passed": false,
+  "timestamp": "2026-10-16T13:25:07.552759+00:00",
+  "scope": "Fresh installed-app fixtures; preserved foreground; actual process exits required",
+  "results": [
+    {
+      "mode": "--smoke-test",
+      "processId": 52180,
+      "passed": false
+    }
+  ],
+  "error": "Owned fixture PID 52180 exited without its report"
+}

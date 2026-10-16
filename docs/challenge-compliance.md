@@ -83,6 +83,9 @@ submission is claimed.
 retrieved through curl after web-reader timeouts. Deadline and public GPL source,
 target builds, screenshots and README write-up requirements are unchanged;
 retrieval provenance is in evidence/rules-v0.9.0.json. Shared tmux Find adds no
-dependency or protocol action. New target-native acceptance and payload audit
-are pending at this checkpoint. Entrant identity/form declarations remain
+dependency or protocol action. Final native run 38906845116 passes all three targets (78 tests including
+platform skips, zero failures). Payload checksums, required notices, executable
+modes, Mac deployment target/system links/signatures and exact installed bytes
+are audited in evidence/payload-v0.9.0.json. The local installed GUI attempt is
+not credited as passing while the OS reports zero active displays. Entrant identity/form declarations remain
 unverified and no submission was performed.

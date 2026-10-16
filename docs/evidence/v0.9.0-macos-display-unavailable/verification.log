@@ -1,0 +1,9 @@
+Checking --smoke-test PID 52180
+Traceback (most recent call last):
+  File "/Users/agastya/Documents/ChatGPT/alvonia real/scripts/verify_installed_macos.py", line 111, in <module>
+    main()
+  File "/Users/agastya/Documents/ChatGPT/alvonia real/scripts/verify_installed_macos.py", line 84, in main
+    run(["--smoke-test", "--smoke-report", str(base / "baseline")], base / "baseline/native-smoke.json")
+  File "/Users/agastya/Documents/ChatGPT/alvonia real/scripts/verify_installed_macos.py", line 65, in run
+    raise RuntimeError(f"Owned fixture PID {pid} exited without its report")
+RuntimeError: Owned fixture PID 52180 exited without its report

@@ -1,0 +1,6 @@
+{
+  "scope": "Final normal launch attempted after passing installed acceptance. CoreGraphics reported zero active displays and independent CoreVideo creation reproduced the same -6661 error before Aster UI setup. Not counted as a normal-window launch pass. No display/session settings were changed. Diagnostic instrumentation was temporary and source was restored.",
+  "installedAppVersion": "0.8.1",
+  "ownedNormalLaunchProcessId": 32476,
+  "temporaryDiagnosticBundleId": "io.asterterminal.diagnostic"
+}

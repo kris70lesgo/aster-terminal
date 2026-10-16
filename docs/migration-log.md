@@ -632,3 +632,11 @@ installed Mac native/managed bytes match; deep/strict signatures pass. The new
 ARM64 bridge targets macOS 15.0 and links only system libraries. Final hashes
 and verification scope are in payload-v0.8.1.json. Rule requirements remain
 unchanged at the release milestone. No entrant/form submission is claimed.
+
+Final release-time normal launch was blocked before application initialization:
+CoreGraphics reported zero active displays and an independent CoreVideo probe
+returned -6661, matching Avalonia's RenderTimer failure. This does not supersede
+the earlier passing installed native sequence while the display was active;
+the later launch is recorded separately and is not a normal-window pass.
+Temporary diagnostic instrumentation was removed; no display/session settings
+were changed. Evidence: `evidence/lifecycle-investigation-v0.8.1/final-display-unavailable`.

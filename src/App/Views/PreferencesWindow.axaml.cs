@@ -25,6 +25,7 @@ public partial class PreferencesWindow : Window
         _profiles = store.Settings.Profiles.ToList();
         _defaultId = store.Settings.DefaultProfileId;
         InitializeComponent();
+        WindowButtons.EnableCaptionDrag(SettingsCaption);
         TriggerEditorHost.Content = _triggerEditor;
         ProfileList.SelectionChanged += ProfileSelected;
         AlwaysShowTabBarBox.IsChecked = store.Settings.AlwaysShowTabBar;

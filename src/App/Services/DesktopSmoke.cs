@@ -44,6 +44,9 @@ public static class DesktopSmoke
             startupMs = Program.Startup.Elapsed.TotalMilliseconds;
             using (var process = Process.GetCurrentProcess()) workingSetBytes = process.WorkingSet64;
             checks.Add("Native window, PTY and routed text/Enter → real shell output");
+            if (window.WindowDecorations != WindowDecorations.BorderOnly || window.GetVisualDescendants().OfType<WindowButtons>().Count() != 1)
+                throw new InvalidOperationException("Shared compact caption/window controls missing.");
+            checks.Add("Shared compact iTerm-style caption and functional window controls configured");
             var columns = terminal.Engine.Columns;
             var resizeWatch = Stopwatch.StartNew();
             window.Width = 850; window.Height = 570;
@@ -183,14 +186,19 @@ public static class DesktopSmoke
             var dialog = preferences.ShowDialog(window);
             await Task.Delay(300);
             SaveImage(preferences, Path.Combine(reportDirectory, "preferences.png"));
-            preferences.FindControl<TabControl>("ProfileTabs")!.SelectedIndex = 1; await Task.Delay(150);
+            preferences.FindControl<TabControl>("ProfileTabs")!.SelectedItem = preferences.FindControl<TabItem>("ProfileTextTab"); await Task.Delay(150);
             SaveImage(preferences, Path.Combine(reportDirectory, "preferences-text.png"));
-            preferences.FindControl<TabControl>("ProfileTabs")!.SelectedIndex = 2; await Task.Delay(150);
+            preferences.FindControl<TabControl>("ProfileTabs")!.SelectedItem = preferences.FindControl<TabItem>("ProfileColorsTab"); await Task.Delay(150);
             SaveImage(preferences, Path.Combine(reportDirectory, "preferences-colours.png"));
-            preferences.FindControl<TabControl>("ProfileTabs")!.SelectedIndex = 3; await Task.Delay(150);
+            preferences.FindControl<TabControl>("ProfileTabs")!.SelectedItem = preferences.FindControl<TabItem>("ProfileTriggersTab"); await Task.Delay(150);
             SaveImage(preferences, Path.Combine(reportDirectory, "preferences-triggers.png"));
             preferences.FindControl<TabControl>("SettingsTabs")!.SelectedIndex = 0; await Task.Delay(150);
             SaveImage(preferences, Path.Combine(reportDirectory, "preferences-general.png"));
+            preferences.FindControl<TabControl>("SettingsTabs")!.SelectedItem = preferences.FindControl<TabItem>("AppearanceCategory"); await Task.Delay(150);
+            SaveImage(preferences, Path.Combine(reportDirectory, "preferences-appearance.png"));
+            preferences.FindControl<TabControl>("SettingsTabs")!.SelectedItem = preferences.FindControl<TabItem>("ProfilesCategory");
+            preferences.Width = 760; preferences.Height = 540; await Task.Delay(150);
+            SaveImage(preferences, Path.Combine(reportDirectory, "preferences-compact.png"));
             preferences.Close();
             await dialog;
             checks.Add("Native preferences render");

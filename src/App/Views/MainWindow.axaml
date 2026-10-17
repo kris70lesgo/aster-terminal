@@ -1,15 +1,9 @@
 <Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:views="using:Aster.App.Views"
         x:Class="Aster.App.Views.MainWindow" Title="Aster Terminal"
-        Width="1080" Height="680" MinWidth="620" MinHeight="320" Background="{DynamicResource WindowBackground}">
-  <Window.Styles>
-    <Style Selector="TabControl.terminal-tabs.single /template/ ItemsPresenter#PART_ItemsPresenter">
-      <Setter Property="IsVisible" Value="False" />
-    </Style>
-    <Style Selector="TabControl.terminal-tabs TabItem">
-      <Setter Property="Theme" Value="{StaticResource TerminalTabTheme}" /><Setter Property="FontSize" Value="12" />
-    </Style>
-  </Window.Styles>
-  <Grid RowDefinitions="Auto,Auto,*,Auto">
+        Width="1080" Height="680" MinWidth="620" MinHeight="320" Background="{DynamicResource WindowBackground}" WindowDecorations="BorderOnly" ExtendClientAreaToDecorationsHint="True">
+  <Grid>
+    <views:TerminalTabs x:Name="Tabs" Classes="terminal-tabs" SelectionChanged="TabChanged">
+    <views:TerminalTabs.MenuBar>
     <Menu x:Name="MainMenu" Background="{DynamicResource ChromeBackground}">
       <MenuItem Header="_Shell">
         <MenuItem Header="New tab" Click="NewTabClicked" /><MenuItem Header="New window" Click="NewWindowClicked" />
@@ -44,13 +38,16 @@
       </MenuItem>
       <MenuItem Header="_Help"><MenuItem Header="About Aster Terminal" Click="AboutClicked" /></MenuItem>
     </Menu>
-    <views:FindBar x:Name="SearchBar" Grid.Row="1" />
-    <Border ZIndex="10" x:Name="AlertBar" IsVisible="False" Grid.Row="2" VerticalAlignment="Bottom" Margin="12" Padding="10,6" CornerRadius="3" Background="{DynamicResource ChromeBackground}">
-      <DockPanel><Button DockPanel.Dock="Right" Content="×" Click="DismissAlertClicked" /><TextBlock x:Name="AlertText" TextWrapping="Wrap" VerticalAlignment="Center" /></DockPanel>
-    </Border>
-    <TabControl x:Name="Tabs" Grid.Row="2" Classes="terminal-tabs" Padding="0" SelectionChanged="TabChanged" />
-    <Border x:Name="StatusBar" IsVisible="False" Grid.Row="3" Background="{DynamicResource ChromeBackground}" Padding="10,5">
+    </views:TerminalTabs.MenuBar>
+    <views:TerminalTabs.FindContent><views:FindBar x:Name="SearchBar" /></views:TerminalTabs.FindContent>
+    <views:TerminalTabs.StatusContent>
+    <Border x:Name="StatusBar" IsVisible="False" Background="{DynamicResource ChromeBackground}" Padding="10,5">
       <TextBlock x:Name="WindowStatus" FontSize="12" Foreground="{DynamicResource MutedForeground}" Text="Starting local shell…" />
+    </Border>
+    </views:TerminalTabs.StatusContent>
+    </views:TerminalTabs>
+    <Border ZIndex="10" x:Name="AlertBar" IsVisible="False" VerticalAlignment="Bottom" Margin="12" Padding="10,6" CornerRadius="3" Background="{DynamicResource ChromeBackground}">
+      <DockPanel><Button DockPanel.Dock="Right" Content="×" Click="DismissAlertClicked" /><TextBlock x:Name="AlertText" TextWrapping="Wrap" VerticalAlignment="Center" /></DockPanel>
     </Border>
   </Grid>
 </Window>

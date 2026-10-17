@@ -17,7 +17,7 @@ public sealed class TmuxWindow : Window
 {
     private readonly TmuxController _controller;
     private readonly TerminalProfile _profile;
-    private readonly TabControl _tabs = new();
+    private readonly TerminalTabs _tabs = new();
     private readonly FindBar _findBar = new() { Name = "SearchBar" };
     private readonly TextBlock _message = new() { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(8, 4), IsVisible = false };
     private readonly Dictionary<int, TerminalPane> _panes = [];
@@ -37,7 +37,8 @@ public sealed class TmuxWindow : Window
     {
         _controller = controller; _profile = profile;
         Title = "tmux — Aster Terminal"; Width = 1080; Height = 680; MinWidth = 620; MinHeight = 320;
-        Background = Brush.Parse("#14161E");
+        this.Bind(BackgroundProperty, this.GetResourceObservable("WindowBackground"));
+        WindowDecorations = WindowDecorations.BorderOnly; ExtendClientAreaToDecorationsHint = true;
         var menu = new Menu(); var session = new MenuItem { Header = "_tmux" }; menu.Items.Add(session);
         void Item(string label, Func<Task> action)
         {
@@ -50,9 +51,8 @@ public sealed class TmuxWindow : Window
         Item("Paste", async () => { if (_active is { } id && _panes.TryGetValue(id, out var pane)) await pane.Terminal.PasteAsync(); });
         Item("Find…", FindAsync);
         Item("Detach", () => { Close(); return Task.CompletedTask; });
-        var grid = new Grid { RowDefinitions = new RowDefinitions("Auto,Auto,*,Auto") };
-        grid.Children.Add(menu); Grid.SetRow(_findBar, 1); grid.Children.Add(_findBar);
-        Grid.SetRow(_tabs, 2); grid.Children.Add(_tabs); Grid.SetRow(_message, 3); grid.Children.Add(_message); Content = grid;
+        _tabs.MenuBar = menu; _tabs.FindContent = _findBar; _tabs.StatusContent = _message; Content = _tabs;
+        _tabs.NewTabRequested += (_, _) => Observe(NewWindowAsync());
         if (OperatingSystem.IsMacOS()) { menu.IsVisible = false; NativeMenu.SetMenu(this, NativeMenuBridge.FromMenu(menu, _shortcuts)); }
         _refresh = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(75) };
         _refresh.Tick += (_, _) => { _refresh.Stop(); Observe(RefreshAsync()); };
@@ -168,7 +168,9 @@ public sealed class TmuxWindow : Window
             {
                 if (!_windows.TryGetValue(window.Id, out var tab)) { tab = new TabItem { Tag = window.Id }; _windows.Add(window.Id, tab); _tabs.Items.Add(tab); }
                 tab.Header = window.Name; var root = new Grid { Tag = window.ActivePane }; root.Children.Add(Layout(window.Layout)); tab.Content = root;
+                root.SizeChanged += (_, _) => ScheduleResize();
             }
+            _tabs.Classes.Set("single", windows.Count <= 1);
             if (selected is int old && _windows.TryGetValue(old, out var selectedTab)) _tabs.SelectedItem = selectedTab;
             else if (_tabs.Items.Count > 0) _tabs.SelectedIndex = 0;
             await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Loaded);

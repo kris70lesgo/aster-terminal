@@ -30,7 +30,7 @@ public sealed class ReplayWindow : Window
     {
         _frames = buffer.Snapshot(); _profile = profile;
         Title = "Instant Replay"; Width = 920; Height = 620; MinWidth = 500; MinHeight = 320;
-        Background = Brush.Parse("#14161E");
+        this.Bind(BackgroundProperty, this.GetResourceObservable("WindowBackground"));
         _screen = new TermControl(_engine) { Focusable = false, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
         _screen.ApplyAppearance(profile.ToControlProfile()); _screen.ResetFontSize();
         _screen.IsHitTestVisible = false;
@@ -42,7 +42,7 @@ public sealed class ReplayWindow : Window
         Grid.SetColumn(_timeline, 2); toolbar.Children.Add(_timeline); Grid.SetColumn(_timestamp, 3); toolbar.Children.Add(_timestamp);
         Grid.SetColumn(done, 4); toolbar.Children.Add(done);
         var scroll = new ScrollViewer { Content = _screen, HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto, VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto };
-        var root = new Grid { RowDefinitions = new RowDefinitions("*,Auto") }; root.Children.Add(scroll); Grid.SetRow(toolbar, 1); root.Children.Add(toolbar); Content = root;
+        var root = new Grid { RowDefinitions = new RowDefinitions("*,Auto") }; root.Children.Add(scroll); Grid.SetRow(toolbar, 1); root.Children.Add(toolbar); Content = WindowCaption.Wrap(this, root);
         _timeline.Maximum = Math.Max(0, _frames.Count - 1); _timeline.IsEnabled = previous.IsEnabled = next.IsEnabled = _frames.Count > 1;
         _timeline.ValueChanged += (_, _) => SelectFrame((int)Math.Round(_timeline.Value));
         AddHandler(KeyDownEvent, (_, e) =>

@@ -17,7 +17,7 @@ public sealed class TriggerHistoryWindow : Window
         var message = new TextBlock { Text = engine.TriggerWarning ?? "Last 200 matching lines in this pane. Choose a line to return to its scrollback.", TextWrapping = Avalonia.Media.TextWrapping.Wrap };
         var go = new Button { Content = "Go to line", IsDefault = true }; var clear = new Button { Content = "Clear history" }; var done = new Button { Content = "Done", IsCancel = true };
         var buttons = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Spacing = 8 }; buttons.Children.Add(clear); buttons.Children.Add(done); buttons.Children.Add(go);
-        var grid = new Grid { Margin = new Thickness(16), RowDefinitions = new RowDefinitions("Auto,*,Auto"), RowSpacing = 12 }; grid.Children.Add(message); Grid.SetRow(list, 1); grid.Children.Add(list); Grid.SetRow(buttons, 2); grid.Children.Add(buttons); Content = grid;
+        var grid = new Grid { Margin = new Thickness(16), RowDefinitions = new RowDefinitions("Auto,*,Auto"), RowSpacing = 12 }; grid.Children.Add(message); Grid.SetRow(list, 1); grid.Children.Add(list); Grid.SetRow(buttons, 2); grid.Children.Add(buttons); Content = WindowCaption.Wrap(this, grid);
         void Navigate()
         {
             if (list.SelectedIndex < 0) return;

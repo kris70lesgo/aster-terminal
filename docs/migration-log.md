@@ -736,3 +736,22 @@ batch at 2× Retina on macOS 26.7.2, with three clean scripting main-loop exits;
 a normal installed launch has an on-screen window. Evidence: ci-v0.10.0.json,
 payload-v0.10.0.json and v0.10.0-{rid}/v0.10.0-macos-retina. Full upstream parity
 and wider physical-input/desktop coverage remain explicitly tracked.
+
+## 2026-10-17 — iTerm2 visual alignment, 0.11.0 candidate
+
+The user prioritised UI correspondence. Reviewed the existing attributed 3.6.6
+capture and pinned 069b6e0 minimal/Tahoe tab styles and PreferencePanel.xib, plus
+current official appearance documentation. Main differences were the extra
+caption/tab layers, non-stretched headers, close-button placement and Fluent
+settings underlines. New TerminalTabs/WindowButtons/WindowCaption keep native
+Avalonia controls and existing pane/session ownership while sharing a compact
+caption, real window actions and tab insertion button. Settings gets functional
+icon categories and profile segments. Dark token samples match the saved
+reference. No upstream asset or new dependency was introduced.
+
+The source capture/version limits, remaining UI gaps and verification scopes
+are explicit in visual-parity.md. New desktop tests use owned real shells and
+verify caption actions, compact/overflow tabs, minimum Settings navigation and
+cleanup; existing tab/Find/tmux/persistence tests are retained. Native acceptance
+now captures Appearance and compact Settings. Exact Windows/Linux/macOS and
+installed Retina verification remain pending at this source checkpoint.

@@ -291,3 +291,19 @@ Final source 87184b0 / run 39001628564 passes 80 tests (including platform skips
 and native package acceptance on all three targets. The exact installed Mac
 archive also passes the complete ordered 2× Retina batch with three scripting
 repetitions and actual process/native-loop exits.
+
+## Shared compact desktop chrome, 0.11.0 candidate
+
+TerminalTabs is a TabControl with slots for the existing menu, Find and status
+controls. Its template combines a 32-point caption/tab strip and selected
+content; existing TabItems retain their panes/identities. Header sizing fills
+available width with a 100-point minimum, then scrolls; selected tabs reveal
+without moving keyboard focus. WindowButtons uses actual window close/state
+APIs, and empty caption drags call BeginMoveDrag. BorderOnly decorations retain
+native frame resizing. WindowCaption applies the same treatment to auxiliary
+windows. No native input hook, forced process exit or terminal simulation.
+
+Settings retains its transaction and named fields while changing category and
+profile navigation visuals. Tmux listens to selected content size changes so
+Find/layout changes still resize its PTYs. UI reference and platform limitations
+are documented in visual-parity.md; exact native acceptance is required.

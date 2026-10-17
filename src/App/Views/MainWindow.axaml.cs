@@ -24,7 +24,7 @@ public partial class MainWindow : Window
         public int ScriptingId { get; } = Interlocked.Increment(ref _nextScriptingId);
         public TabItem Tab { get; } = new();
         public Grid Root { get; } = new();
-        public TextBlock Label { get; } = new() { MaxWidth = 170, TextTrimming = Avalonia.Media.TextTrimming.CharacterEllipsis };
+        public TextBlock Label { get; } = new() { TextAlignment = Avalonia.Media.TextAlignment.Center, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center, TextTrimming = Avalonia.Media.TextTrimming.CharacterEllipsis };
         public List<TerminalPane> Panes { get; } = [];
         public TerminalPane? Active { get; set; }
         public string? CustomTitle { get; set; }
@@ -60,6 +60,7 @@ public partial class MainWindow : Window
         _sessions = store is null ? null : new SessionCatalog(Path.Combine(Path.GetDirectoryName(store.Path)!, "sessions"));
         InitializeComponent();
         InitializeTabReordering();
+        Tabs.NewTabRequested += (_, _) => Observe(NewTabAsync());
         MainMenu.IsVisible = !OperatingSystem.IsMacOS();
         Width = Math.Clamp(settings.WindowWidth, 620, 2400); Height = Math.Clamp(settings.WindowHeight, 320, 1800);
         ApplySettings(settings);
@@ -144,11 +145,11 @@ public partial class MainWindow : Window
     {
         var workspace = new Workspace { CustomTitle = title };
         var header = new DockPanel { LastChildFill = true };
-        var close = new Button { Content = "×", MinHeight = 18, MinWidth = 18, Padding = new Thickness(2, 0), Background = Avalonia.Media.Brushes.Transparent };
+        var close = new Button { Content = "×", MinHeight = 0, MinWidth = 0, Width = 18, Height = 20, Padding = default, Background = Avalonia.Media.Brushes.Transparent, BorderThickness = default, FontSize = 15 };
         ToolTip.SetTip(close, "Close tab");
         Avalonia.Automation.AutomationProperties.SetName(close, "Close tab");
         close.Click += (_, e) => { e.Handled = true; Observe(ChangeLayoutAsync(() => CloseTabCoreAsync(workspace))); };
-        DockPanel.SetDock(close, Dock.Right); header.Children.Add(close); header.Children.Add(workspace.Label);
+        DockPanel.SetDock(close, Dock.Left); header.Children.Add(close); header.Children.Add(workspace.Label);
         workspace.Tab.Header = header;
         workspace.Tab.Content = workspace.Root;
         ToolTip.SetTip(header, "Drag to reorder tabs");
@@ -591,6 +592,6 @@ public partial class MainWindow : Window
     }
     private void ReplayClicked(object? sender, RoutedEventArgs e)
     {
-        if (Active is { } pane) { pane.CaptureReplay(); Observe(new ReplayWindow(pane.Replay, pane.Profile).ShowDialog(this)); }
+        if (Active is { } pane) { pane.CaptureReplay(); Observe(new ReplayWindow(pane.Replay, pane.Profile) { RequestedThemeVariant = ActualThemeVariant }.ShowDialog(this)); }
     }
 }

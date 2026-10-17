@@ -74,7 +74,7 @@ public sealed class TerminalPane : Border
         Grid.SetRow(_triggerHistory, 2); layout.Children.Add(_triggerHistory);
         _triggerHistory.Click += (_, _) =>
         {
-            if (TopLevel.GetTopLevel(this) is Window owner) _ = new TriggerHistoryWindow(_engine, () => Terminal.Focus()).ShowDialog(owner);
+            if (TopLevel.GetTopLevel(this) is Window owner) _ = new TriggerHistoryWindow(_engine, () => Terminal.Focus()) { RequestedThemeVariant = owner.ActualThemeVariant }.ShowDialog(owner);
         };
         Child = layout;
         Terminal.GotFocus += (_, _) => Activated?.Invoke(this, EventArgs.Empty);

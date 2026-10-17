@@ -1,0 +1,14 @@
+{
+  "url": "https://avaloniaui.net/blog/avalonia-port-challenge",
+  "verifiedDate": "2026-10-17",
+  "retrieval": "Official page read successfully with web reader; separate raw HTTPS fetch returned HTTP 403, so no new raw-page hash is claimed",
+  "deadline": "2026-10-23T23:59:00Z",
+  "requirementsUnchanged": [
+    "Public source under OSI-approved licence",
+    "Downloadable target-platform builds",
+    "Before-and-after screenshots",
+    "README migration write-up"
+  ],
+  "submissionPerformed": false,
+  "entrantDeclarations": "unverified"
+}

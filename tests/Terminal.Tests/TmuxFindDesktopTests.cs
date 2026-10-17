@@ -60,7 +60,9 @@ public sealed partial class DesktopTests
             SendKey(window, Key.T, OperatingSystem.IsMacOS() ? RawInputModifiers.Meta : RawInputModifiers.Control | RawInputModifiers.Shift);
             await Until(() => window.Panes.Count == 3);
             var third = window.Panes.Values.Single(p => p != first && p != second);
-            await Until(() => !third.Find.Busy && third.Find.Matches.Count == 0);
+            // Pane discovery precedes async startup/tab selection. Wait for an
+            // actual query on the new controller, not its initial empty state.
+            await Until(() => !third.Find.Busy && third.Find.Status == "No matches");
             Assert.Empty(second.Find.Matches);
             SendKey(window, Key.Escape); Assert.False(bar.IsVisible); Assert.True(third.Terminal.IsFocused);
             Assert.Empty(third.Find.Matches);

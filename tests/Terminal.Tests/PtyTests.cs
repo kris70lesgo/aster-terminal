@@ -169,7 +169,7 @@ public sealed class PtyTests
     public async Task OrdinaryTmuxAndLessReturnToInteractiveShell()
     {
         await using var shell = new Shell(); await shell.Start();
-        var socket = "aster-acceptance-" + Guid.NewGuid().ToString("N");
+        await using var server = new TmuxTests.Server(); var socket = server.Socket;
         // A unique server avoids touching the user's existing tmux sessions.
         shell.Connection.Write($"tmux -L {socket} -f /dev/null new-session -s acceptance \"env PS1='__TMUX_READY__ ' /bin/sh\"\n");
         await shell.Until(() => shell.Engine.AlternateBufferActive && shell.Snapshot().Contains("__TMUX_READY__"));
@@ -178,6 +178,15 @@ public sealed class PtyTests
         // Match the control's grid/PTY resize and wait for a real command in the
         // resized tmux pane before exiting, so capability replies are consumed.
         shell.Engine.Resize(105, 35); shell.Connection.Resize(105, 35);
+        // The outer PTY resize is asynchronous; tmux must then resize its own
+        // pane PTY. Query that owned device before sending a one-shot command.
+        var tty = (await server.Run("display-message", "-p", "-t", "acceptance:0.0", "#{pane_tty}")).Trim();
+        var timer = Stopwatch.StartNew(); string size;
+        while ((size = await OwnedPtySize(tty)) != "34 105")
+        {
+            if (timer.Elapsed > TimeSpan.FromSeconds(10)) throw new TimeoutException($"Owned tmux PTY remained {size}; expected 34 105.");
+            await Task.Delay(20);
+        }
         shell.Connection.Write("stty size; printf '%s%s\\n' '__TMUX_RESIZED_' 'READY__'\n");
         await shell.Until(() => shell.Snapshot().Contains("34 105") && shell.Snapshot().Contains("__TMUX_RESIZED_READY__"));
         shell.Connection.Write("exit\n");
@@ -188,6 +197,19 @@ public sealed class PtyTests
         shell.Connection.Write("q"); await shell.Until(() => !shell.Engine.AlternateBufferActive);
         shell.Connection.Write("printf '%s%s\\n' '__AFTER_' 'COMPAT__'\n");
         await shell.Until(() => shell.Output.Contains("__AFTER_COMPAT__"));
+    }
+
+    private static async Task<string> OwnedPtySize(string tty)
+    {
+        if (!tty.StartsWith("/dev/", StringComparison.Ordinal) || tty.Length > 256 || Path.GetFullPath(tty) != tty || tty.Any(char.IsControl))
+            throw new IOException("Invalid owned tmux PTY path.");
+        var start = new ProcessStartInfo("/bin/stty") { RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false };
+        start.ArgumentList.Add(OperatingSystem.IsMacOS() ? "-f" : "-F"); start.ArgumentList.Add(tty); start.ArgumentList.Add("size");
+        using var process = Process.Start(start)!;
+        var output = process.StandardOutput.ReadToEndAsync(); var error = process.StandardError.ReadToEndAsync();
+        await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));
+        if (process.ExitCode != 0) throw new IOException("Owned PTY dimensions: " + await error);
+        return (await output).Trim();
     }
 
     [UnixFact]

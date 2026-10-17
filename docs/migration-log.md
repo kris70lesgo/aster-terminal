@@ -710,3 +710,13 @@ reads the assembly version. Packaging reads App.csproj's version rather than a
 second literal. Version 0.10.0 introduces no dependency or protocol change.
 Full upstream parity, grouped/pinned/cross-window tabs, pane dragging and tmux
 server ordering remain separate targets. No native runtime claim at this checkpoint.
+
+First native CI candidate a226a15 / run 39001432021 exposed two Linux test
+synchronization races; failed TRX retained in tab-reorder-investigation-v0.10.0.
+Ordinary tmux read its previous kernel PTY size because the nested resize had
+not completed. It now polls only the owned pane device before the unchanged
+exact stty assertion and always disposes its unique server. The Find test
+observed a newly discovered pane's initial empty state before async selection
+and query binding; it now waits for that pane's actual completed query. No
+production tmux/search behavior was changed. Scripted indexed tab insertion
+also gets an explicit original-wire order/selection regression check.

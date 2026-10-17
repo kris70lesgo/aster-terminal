@@ -71,8 +71,11 @@ public sealed partial class DesktopTests
             var firstSession = first.Tabs.Single().ActiveSessionId;
             Assert.Equal(Panes(window)[0].ScriptingId, firstSession);
             await Rpc(new() { NotificationRequest = new() { Subscribe = true, NotificationType = API.NotificationType.NotifyOnLayoutChange } });
-            var created = (await Rpc(new() { CreateTabRequest = new() { WindowId = first.WindowId, ProfileName = profile.Name, SelectTab = false } })).CreateTabResponse;
+            var created = (await Rpc(new() { CreateTabRequest = new() { WindowId = first.WindowId, ProfileName = profile.Name, SelectTab = false, TabIndex = 0 } })).CreateTabResponse;
             Assert.Equal(API.CreateTabResponse.Types.Status.Ok, created.Status); Assert.NotEqual(firstSession, created.SessionId);
+            var reordered = (await Rpc(new() { ListSessionsRequest = new() })).ListSessionsResponse.Windows.Single();
+            Assert.Equal(new[] { created.TabId.ToString(), first.Tabs.Single().TabId }, reordered.Tabs.Select(t => t.TabId));
+            Assert.Equal(first.Tabs.Single().TabId, reordered.SelectedTabId);
             var split = (await Rpc(new() { SplitPaneRequest = new() { Session = created.SessionId, SplitDirection = API.SplitPaneRequest.Types.SplitDirection.Horizontal, Before = true } })).SplitPaneResponse;
             Assert.Equal(API.SplitPaneResponse.Types.Status.Ok, split.Status); var session = split.SessionId.Single();
             var panes = Panes(window); var splitPane = panes.Single(p => p.ScriptingId == session);

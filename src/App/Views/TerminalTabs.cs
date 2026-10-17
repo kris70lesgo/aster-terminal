@@ -19,6 +19,7 @@ public sealed class TerminalTabs : TabControl
     public Control? StatusContent { get => GetValue(StatusContentProperty); set => SetValue(StatusContentProperty, value); }
     public event EventHandler? NewTabRequested;
     private ScrollViewer? _viewport;
+    private Window? _owner;
     public TerminalTabs()
     {
         this.Bind(ThemeProperty, this.GetResourceObservable("TerminalTabsTheme"));
@@ -44,4 +45,16 @@ public sealed class TerminalTabs : TabControl
         var width = Math.Max(100, _viewport.Bounds.Width / ItemCount);
         foreach (var tab in Items.OfType<TabItem>()) tab.Width = width;
     }
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e); _owner = TopLevel.GetTopLevel(this) as Window;
+        if (_owner is not null) { _owner.PropertyChanged += OwnerChanged; Classes.Set("inactive", !_owner.IsActive); }
+    }
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        if (_owner is not null) _owner.PropertyChanged -= OwnerChanged;
+        _owner = null; base.OnDetachedFromVisualTree(e);
+    }
+    private void OwnerChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    { if (e.Property == Window.IsActiveProperty) Classes.Set("inactive", _owner?.IsActive != true); }
 }

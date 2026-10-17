@@ -49,6 +49,8 @@
         </ControlTemplate></Setter>
         <Style Selector="^.single /template/ ScrollViewer#HeaderViewport"><Setter Property="IsVisible" Value="False" /></Style>
         <Style Selector="^.single /template/ TextBlock#WindowCaption"><Setter Property="IsVisible" Value="True" /></Style>
+        <Style Selector="^.inactive /template/ TextBlock#WindowCaption"><Setter Property="Opacity" Value="0.6" /></Style>
+        <Style Selector="^.inactive TabItem"><Setter Property="Opacity" Value="0.65" /></Style>
       </ControlTheme>
       <ControlTheme x:Key="SettingsCategoryTheme" TargetType="TabItem">
         <Setter Property="FontSize" Value="11" /><Setter Property="Padding" Value="14,5" /><Setter Property="MinWidth" Value="76" />

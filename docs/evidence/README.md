@@ -147,3 +147,10 @@ scoped. The standalone `v0.5.0-tmux-local` is an earlier passing local candidate
 not the final package provenance.
 
 Public TRX files normalize Windows CRLF line endings; test values are unchanged.
+
+Version 0.10.0: ci-v0.10.0.json pins corrected source 87184b0 / run 39001628564.
+v0.10.0-{rid} contains passing 80-test/native evidence, including tab movement
+and retained shell state. v0.10.0-macos-retina contains the exact installed
+eight-process/three-scripting batch and normal-launch metadata. The first Linux
+candidate failures remain in tab-reorder-investigation-v0.10.0. Full inventory,
+version, notice, signature and installed-byte checks are in payload-v0.10.0.json.

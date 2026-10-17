@@ -71,3 +71,12 @@ The unchanged installed 0.9.0 Mac archive also passes the full ordered native
 batch at 2× Retina after display wake, including three scripting/native-loop
 exits, and a subsequent normal launch creates an on-screen window. The earlier
 zero-display failure remains separate evidence; no binary update was needed.
+
+0.10.0 adds normal-window tab drag ordering and editable keyboard/menu moves,
+preserving the same live panes, Find focus, zoom and saved/scripting order.
+Final 80-test/native three-OS run 39001628564 passes, as does the exact installed
+Mac archive's eight-process Retina batch with three clean scripting exits.
+Release version labels now share the project version. First candidate Linux
+test races and their corrected synchronization are retained as evidence.
+Full iTerm2 parity, pane dragging, grouped/pinned/cross-window tabs and tmux
+server ordering remain separate targets.

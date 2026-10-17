@@ -30,11 +30,12 @@ Audited 2026-10-14 at [iTerm2 `069b6e0dd8f3f0d82fc08ea5d294d28f7c5b986e`](https:
 
 Fish suggestions, completion, shell history and prompt styling are shell-owned. No credit is taken for reproducing them.
 
-0.10.0 candidate: normal-window tab drag ordering, left/right keyboard/menu
-movement with ungrouped wraparound, persistent/scripting order and retained
-live pane identities are **Implemented and locally verified** by two new
-real-shell desktop facts (80-test local suite). Native Windows/Linux/macOS
-package verification is pending. Pane drag, grouped/pinned/cross-window tabs
-and tmux server window ordering remain unstarted; this does not close those gaps.
+0.10.0: normal-window tab drag ordering, left/right keyboard/menu movement
+with ungrouped wraparound, persistent/scripting order and retained live pane
+identities are **Implemented and verified** by two real-shell desktop facts,
+final 80-test/native three-OS run 39001628564 (source 87184b0), and the exact
+installed 2× Retina eight-process batch. Drag input is routed headless; native
+packages check keyboard movement and retained shell state. Pane drag,
+grouped/pinned/cross-window tabs and tmux server window ordering remain unstarted.
 
 Inspection findings: parser has a byte stream and saved partial-parse state; VT100Terminal executes tokens into VT100Screen. PTYTask delegates process/server lifecycle to job managers and reads in bounded batches with documented backpressure. PTYSession joins task, screen and views. The Metal driver has separate background/text/cursor/image renderers. Profiles use NSUserDefaults; DVR encodes screen states, not just raw output. Aster rewrites these boundaries, adapts the identified OSC algorithms and bundles original bash/zsh integration with a marked terminal-name adaptation.

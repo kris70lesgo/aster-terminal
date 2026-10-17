@@ -1,0 +1,16 @@
+Checking --smoke-test PID 2847
+Passed --smoke-test
+Checking --recovery-start PID 2889
+Passed --recovery-start
+Checking --recovery-resume PID 2897
+Passed --recovery-resume
+Checking --tmux-smoke PID 2905
+Passed --tmux-smoke
+Checking --hotkey-smoke PID 2929
+Passed --hotkey-smoke
+Checking --scripting-smoke PID 2932
+Passed --scripting-smoke
+Checking --scripting-smoke PID 3045
+Passed --scripting-smoke
+Checking --scripting-smoke PID 3078
+Passed --scripting-smoke

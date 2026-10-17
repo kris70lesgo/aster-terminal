@@ -1,0 +1,8 @@
+{
+  "processId": 3503,
+  "running": true,
+  "installedVersion": "0.10.0",
+  "windowCount": 2,
+  "onScreenWindowCount": 1,
+  "scope": "Normal installed launch via foreground-preserving cua-driver. Only window metadata; no user shell input or screenshot."
+}

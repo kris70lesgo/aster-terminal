@@ -1,4 +1,38 @@
-# Verification matrix — release 0.9.0, 2026-10-16
+# Verification matrix — release 0.10.0, 2026-10-17
+
+Final source **87184b04c8c69a10ebc5a94647293b3fe3501732**, run
+[39001628564](https://github.com/kris70lesgo/aster-terminal/actions/runs/39001628564):
+macOS/Linux **78 passed + 2 Windows-only skips**; Windows **69 passed + 11
+Unix-only skips**; **80 total, zero failures** on each target. All three final
+native packages pass baseline, global hotkey, crash/reopen and original Python
+acceptance, with clean scripting main-loop return. Unix also passes native tmux.
+Reports/TRX/images are in `evidence/v0.10.0-{rid}`; source provenance is in
+`ci-v0.10.0.json`, archive/notice/signature audit in `payload-v0.10.0.json`.
+
+| New acceptance | Evidence |
+|---|---|
+| Pointer drags in both directions, click threshold, insertion markers, Escape/outside cancellation and close-button exclusion | TabReorderDesktopTests; all three target TRX files |
+| Keyboard left/right wrapping preserves process/session IDs, shell variable, active split, zoom, Find focus/results, scripting and saved layout order | Real-shell desktop regression; native-smoke.json and tabs-reordered.png on each target |
+| Original-wire indexed tab insertion retains requested order and previous selection | ScriptingDesktopTests |
+| Ordinary tmux reaches exact inner PTY kernel size before shell stty; new-pane Find query finishes before isolation assertion | Corrected Linux/Unix tests; first candidate failure retained in tab-reorder-investigation-v0.10.0 |
+
+The exact installed Mac archive passes the full ordered native verifier at
+**2× Retina on macOS 26.7.2**, including three original Python repetitions.
+All eight fixture processes exited, and each scripting journal contains its
+matching PID and clean native-loop return. A normal installed launch also
+creates an on-screen window. Only window metadata is retained for that normal
+launch; no user-shell input or screenshot. Evidence: `v0.10.0-macos-retina`.
+
+Native captures were inspected on all three targets. Pointer acceptance uses
+routed headless input; native package acceptance routes keyboard commands.
+Physical drag/IME/AltGr/gestures, broader desktops/Wayland/multi-monitor,
+the local human Mac global chord and full upstream parity remain separate gaps.
+Pane dragging, grouped/pinned/cross-window tabs and tmux server ordering are not
+claimed. The About dialog and package names now derive the project version.
+
+## Historical release 0.9.0
+
+### Verification matrix — release 0.9.0, 2026-10-16
 
 Final source **78376eec31ba30d01e3c31c91fd0ac56fafab958**, run
 [38906845116](https://github.com/kris70lesgo/aster-terminal/actions/runs/38906845116):

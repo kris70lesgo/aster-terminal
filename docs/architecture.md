@@ -286,3 +286,8 @@ drag/drop payload or shell input is involved. Keyboard/menu movement wraps at
 the ends, matching pinned iTerm2's ungrouped moveCurrentTabByOffset behavior.
 Groups, pinned tabs, transfer between windows, pane dragging and tmux server
 window ordering are separate gaps. No new dependency or terminal change.
+
+Final source 87184b0 / run 39001628564 passes 80 tests (including platform skips)
+and native package acceptance on all three targets. The exact installed Mac
+archive also passes the complete ordered 2× Retina batch with three scripting
+repetitions and actual process/native-loop exits.

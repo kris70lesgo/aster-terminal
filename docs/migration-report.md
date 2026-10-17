@@ -126,3 +126,19 @@ wake: eight fixture processes exit and three original Python runs record clean
 native-loop return. Fresh reports/captures are in v0.9.0-macos-retina. The earlier
 zero-display failure remains retained. No source or archive changed for this
 verification update.
+
+Final 0.10.0 source 87184b04c8c69a10ebc5a94647293b3fe3501732 / run
+39001628564 passes native acceptance on all three targets: macOS/Linux
+78 passed + 2 skips; Windows 69 passed + 11 skips; 80 total, zero failures.
+Tab drag/move preserves live shells, splits/zoom, Find focus and saved/scripting
+order; indexed API insertion is covered. Native captures were inspected on
+Windows/Linux/macOS. The failed first Linux candidate is retained.
+
+All three exact archive checksums, inventories, application version, required
+notices, runtime/dependency payload and private/compiler/test exclusions pass.
+Mac signatures, system-only bridge links/minimum target and installed/native
+byte identity pass. The exact installed archive also passes an ordered eight-PID
+batch at 2× Retina on macOS 26.7.2, with three clean scripting main-loop exits;
+a normal installed launch has an on-screen window. Evidence: ci-v0.10.0.json,
+payload-v0.10.0.json and v0.10.0-{rid}/v0.10.0-macos-retina. Full upstream parity
+and wider physical-input/desktop coverage remain explicitly tracked.

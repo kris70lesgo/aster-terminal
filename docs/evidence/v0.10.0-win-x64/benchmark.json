@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-10-17T04:14:01.3398724+00:00",
+  "os": "Microsoft Windows 10.0.26100",
+  "architecture": "X64",
+  "runtime": ".NET 10.0.13",
+  "scope": "Single warmed engine; 120x35, 10000-line bounded history. No PTY/GPU/desktop; not a comparative benchmark.",
+  "outputBytes": 3145728,
+  "outputMs": 990.3941,
+  "outputCpuMs": 1078.125,
+  "outputMiBPerSecond": 3.0290972048399722,
+  "historyLines": 9995,
+  "meanFullHistorySnapshotAndSearchMs": 157.08157,
+  "meanAlternatingResizeMs": 92.53867399999999,
+  "workingSetBytes": 249180160,
+  "peakWorkingSetBytes": 315555840
+}

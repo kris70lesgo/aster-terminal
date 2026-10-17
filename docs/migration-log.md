@@ -833,3 +833,14 @@ including tmux's exact kernel grids and original Python clean exit. A final
 inside its 12-point gutter; corrected local source again passes 83 + 2 skips.
 Final native CI must use the new source; earlier candidate evidence is labelled
 separately in installed-reference-v0.12.0/first-installed-verification.json.
+
+First CI source f833e68 / run 39009533442: Linux passes, while Mac/Windows
+headless regressions find caption number 2 where a fresh application expects 1.
+The process-wide weak list could retain another application lifetime's visible
+windows and re-add a window on repeated Show. The registry is now scoped with a
+ConditionalWeakTable per Application, filters hidden windows and deduplicates
+Show registration. A regression additionally hides/shows twice and checks the
+live numbering and navigation. Failed target TRX/logs are retained in
+installed-reference-v0.12.0. The superseded margin-only run 39009681029 was
+cancelled; no release was published from either. Corrected source again passes
+the full local 85-case suite (83 pass + 2 skips); final three-OS CI is pending.

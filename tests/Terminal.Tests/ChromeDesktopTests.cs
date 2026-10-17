@@ -204,6 +204,10 @@ public sealed partial class DesktopTests
             panes.AddRange(Panes(first)); panes.AddRange(Panes(second));
             Assert.EndsWith("1", first.FindControl<TerminalTabs>("Tabs")!.WindowShortcut);
             Assert.EndsWith("2", second.FindControl<TerminalTabs>("Tabs")!.WindowShortcut);
+            second.Hide();
+            Assert.EndsWith("1", first.FindControl<TerminalTabs>("Tabs")!.WindowShortcut);
+            second.Show(); second.Hide(); second.Show();
+            Assert.EndsWith("2", second.FindControl<TerminalTabs>("Tabs")!.WindowShortcut);
             var modifiers = OperatingSystem.IsMacOS() ? RawInputModifiers.Meta | RawInputModifiers.Alt : RawInputModifiers.Alt;
             SendKey(second, Key.D1, modifiers);
             Assert.True(first.IsActive);

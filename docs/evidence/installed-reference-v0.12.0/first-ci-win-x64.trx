@@ -1,0 +1,703 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="610be955-73c5-4107-a6e3-1eac71065908" name="runneradmin@runnervm0xl3a 2026-10-17 06:22:09" runUser="runnervm0xl3a\runneradmin" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-17T06:22:09.3203406+00:00" queuing="2026-10-17T06:22:09.3203407+00:00" start="2026-10-17T06:22:07.7440900+00:00" finish="2026-10-17T06:22:25.0620020+00:00" />
+  <TestSettings name="default" id="16f84a23-0b57-47ad-a308-5efd09e03166">
+    <Deployment runDeploymentRoot="runneradmin_runnervm0xl3a_2026-10-17_06_22_09" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="9475713d-712e-4f3e-bcb4-c8e4cc3d5e24" testId="74f6ad90-ba26-f924-c690-5f3c62987faf" testName="Aster.Tests.DesktopTests.TmuxPaneRemovalAndDetachCancelPendingFindWithoutEndingServerShells" computerName="runnervm0xl3a" duration="00:00:00.0010000" startTime="2026-10-17T06:22:21.6116440+00:00" endTime="2026-10-17T06:22:21.6132348+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9475713d-712e-4f3e-bcb4-c8e4cc3d5e24">
+      <Output>
+        <ErrorInfo>
+          <Message>Local tmux control mode requires Unix.</Message>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="78cb8d43-2678-4281-89b6-d2d4e2df701a" testId="eaf37f92-7277-a630-1e67-b4f5a0541f72" testName="Aster.Tests.DesktopTests.SettingsToolbarCategoriesAndProfileSegmentsKeepFieldsAccessibleAtMinimumSize" computerName="runnervm0xl3a" duration="00:00:00.3578257" startTime="2026-10-17T06:22:16.0414819+00:00" endTime="2026-10-17T06:22:16.3994112+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="78cb8d43-2678-4281-89b6-d2d4e2df701a" />
+    <UnitTestResult executionId="367a8396-289d-4c0d-a1ef-f346cc014c48" testId="ff4e08b2-05fd-fc30-2cfb-a1d5eebc7573" testName="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;2147483648&quot;, expected: null)" computerName="runnervm0xl3a" duration="00:00:00.0000208" startTime="2026-10-17T06:22:09.2492639+00:00" endTime="2026-10-17T06:22:09.2493371+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="367a8396-289d-4c0d-a1ef-f346cc014c48" />
+    <UnitTestResult executionId="9329ad97-c0d7-46b8-b93b-cf154fc8e787" testId="60bb2109-4ffd-dee5-7f4d-8984e35998bd" testName="Aster.Tests.DesktopTests.CompactCaptionTabActionsAndMinimumWidthKeepRealSessionsAlive" computerName="runnervm0xl3a" duration="00:00:00.0698443" startTime="2026-10-17T06:22:19.0170564+00:00" endTime="2026-10-17T06:22:19.1000140+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9329ad97-c0d7-46b8-b93b-cf154fc8e787">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.EndsWith() Failure: String end does not match&#xD;
+String:       "Alt+2"&#xD;
+Expected end: "1"</Message>
+          <StackTrace>   at Aster.Tests.DesktopTests.CompactCaptionTabActionsAndMinimumWidthKeepRealSessionsAlive() in D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\ChromeDesktopTests.cs:line 44&#xD;
+   at Aster.Tests.DesktopTests.CompactCaptionTabActionsAndMinimumWidthKeepRealSessionsAlive() in D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\ChromeDesktopTests.cs:line 84&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ce1460c1-05dc-490f-b632-e86e89ebf8ef" testId="2e524a13-9ef6-cf2c-b493-bc4a143a80c6" testName="Aster.Tests.TriggerTests.MatchingUsesRewrittenScreenTextAndIgnoresEscapePayloadsAndAlternateScreen" computerName="runnervm0xl3a" duration="00:00:00.0031018" startTime="2026-10-17T06:22:10.2733620+00:00" endTime="2026-10-17T06:22:10.2765106+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ce1460c1-05dc-490f-b632-e86e89ebf8ef" />
+    <UnitTestResult executionId="9025b8b8-ecc0-4614-aa9d-98ba6262ccd2" testId="fb73b0bf-59e9-90cf-51dd-2a5a5b05a23c" testName="Aster.Tests.SettingsTests.DamagedSettingsRecoverBackupAndPreserveOriginal" computerName="runnervm0xl3a" duration="00:00:00.0369108" startTime="2026-10-17T06:22:09.9075330+00:00" endTime="2026-10-17T06:22:09.9444987+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9025b8b8-ecc0-4614-aa9d-98ba6262ccd2" />
+    <UnitTestResult executionId="76652381-4794-4c70-941f-c47a6b866cd7" testId="d40d2fa5-2db5-42a9-f87a-ff516ac650be" testName="Aster.Tests.DesktopTests.RealShellTriggersHighlightHistoryAndLiveProfileChanges" computerName="runnervm0xl3a" duration="00:00:00.1922939" startTime="2026-10-17T06:22:24.7822299+00:00" endTime="2026-10-17T06:22:24.9746071+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="76652381-4794-4c70-941f-c47a6b866cd7" />
+    <UnitTestResult executionId="eb899988-fefd-4081-a33e-fef27d90591c" testId="f0788377-2f55-9cbe-5475-676782a31e9d" testName="Aster.Tests.DesktopTests.ScriptingPreferencesServiceStartsOnlyWhenEnabledAndReleasesCredentialsOnDisableAndExit" computerName="runnervm0xl3a" duration="00:00:00.0383078" startTime="2026-10-17T06:22:16.4206438+00:00" endTime="2026-10-17T06:22:16.4590487+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eb899988-fefd-4081-a33e-fef27d90591c" />
+    <UnitTestResult executionId="70bc30d5-4ae3-489a-afe1-6ee1be5aa234" testId="e567d5fb-b0c6-d66e-35c0-ce4ca1933da3" testName="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;0&quot;, expected: 0)" computerName="runnervm0xl3a" duration="00:00:00.0000498" startTime="2026-10-17T06:22:09.2495797+00:00" endTime="2026-10-17T06:22:09.2496557+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="70bc30d5-4ae3-489a-afe1-6ee1be5aa234" />
+    <UnitTestResult executionId="e3081030-b1ff-4836-afaf-8a205937d111" testId="fd562a2a-0cb2-8fb7-7ce0-e64cc3deee43" testName="Aster.Tests.HostedSessionTests.AttachedSessionsAreExclusiveAndInvalidCapabilitiesCannotControlThem" computerName="runnervm0xl3a" duration="00:00:00.8516910" startTime="2026-10-17T06:22:09.0761384+00:00" endTime="2026-10-17T06:22:09.9381132+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e3081030-b1ff-4836-afaf-8a205937d111" />
+    <UnitTestResult executionId="a49d1638-bad3-459f-93d8-3906fd5eb90b" testId="cc14ec22-f608-fd97-f3a9-f57fd43d76a6" testName="Aster.Tests.DesktopTests.ReferenceAppearancePresetIsTransactionalAndFontPointsMatchLogicalCellMetrics" computerName="runnervm0xl3a" duration="00:00:00.1022028" startTime="2026-10-17T06:22:21.4998564+00:00" endTime="2026-10-17T06:22:21.6021567+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a49d1638-bad3-459f-93d8-3906fd5eb90b" />
+    <UnitTestResult executionId="8c19d5ec-8b26-413f-8fbb-2cccdaec476c" testId="9797708e-fb63-773b-48bd-a7f1e60b92f8" testName="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;-1&quot;, expected: -1)" computerName="runnervm0xl3a" duration="00:00:00.0000370" startTime="2026-10-17T06:22:09.2489252+00:00" endTime="2026-10-17T06:22:09.2490074+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8c19d5ec-8b26-413f-8fbb-2cccdaec476c" />
+    <UnitTestResult executionId="58387ed8-6c9e-4427-80df-17906ec93523" testId="680827e7-74fb-c51e-e1d7-931cb375f641" testName="Aster.Tests.TriggerTests.FragmentedWrappedUnicodeMatchesActualCellsAndNavigatesAfterResize" computerName="runnervm0xl3a" duration="00:00:00.0905191" startTime="2026-10-17T06:22:10.1143853+00:00" endTime="2026-10-17T06:22:10.2049803+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="58387ed8-6c9e-4427-80df-17906ec93523" />
+    <UnitTestResult executionId="47de4524-fff1-4aa4-9692-475229b2753b" testId="5dd7f39c-d922-4f22-57cd-01971485cae0" testName="Aster.Tests.SettingsTests.NullProfilesAndDeepLayoutsAreRejectedWithRecoverableErrors" computerName="runnervm0xl3a" duration="00:00:00.0022934" startTime="2026-10-17T06:22:09.9531094+00:00" endTime="2026-10-17T06:22:09.9554553+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="47de4524-fff1-4aa4-9692-475229b2753b" />
+    <UnitTestResult executionId="800566d4-193a-4214-bd83-d7fadded3124" testId="f838c08c-51b6-405c-338c-88ccdd47b363" testName="Aster.Tests.PtyTests.UpstreamBashIntegrationTracksCommandStatusDirectoryAndMarks" computerName="runnervm0xl3a" duration="00:00:00.0010000" startTime="2026-10-17T06:22:09.4447679+00:00" endTime="2026-10-17T06:22:09.4458083+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="800566d4-193a-4214-bd83-d7fadded3124">
+      <Output>
+        <ErrorInfo>
+          <Message>Unix PTY acceptance requires Unix.</Message>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="97db0338-03fc-4c86-a8de-c3f8794181bc" testId="6be0fa20-14d3-c97c-c700-f302670accb8" testName="Aster.Tests.ReplayTests.FramesPreserveUnicodeColoursCursorAndOldState" computerName="runnervm0xl3a" duration="00:00:00.0117681" startTime="2026-10-17T06:22:09.4225539+00:00" endTime="2026-10-17T06:22:09.4343865+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="97db0338-03fc-4c86-a8de-c3f8794181bc" />
+    <UnitTestResult executionId="4f31c1e9-ffe8-49ad-b68a-4d473787cf30" testId="b5d65379-ec1b-436f-288c-be0d37fe70f8" testName="Aster.Tests.SettingsTests.InvalidSettingsNeverReplaceSavedConfiguration" computerName="runnervm0xl3a" duration="00:00:00.0066228" startTime="2026-10-17T06:22:09.9004366+00:00" endTime="2026-10-17T06:22:09.9071301+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4f31c1e9-ffe8-49ad-b68a-4d473787cf30" />
+    <UnitTestResult executionId="3a8ce2c7-8e0e-4102-961b-013bb2cec9d0" testId="a70efb38-dd08-6836-d1c4-6258e9652c24" testName="Aster.Tests.TriggerTests.ProfileRulesAreBoundedValidatedAndPersistedWithoutChangingOriginalOnFailure" computerName="runnervm0xl3a" duration="00:00:00.0204173" startTime="2026-10-17T06:22:10.2428537+00:00" endTime="2026-10-17T06:22:10.2633571+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3a8ce2c7-8e0e-4102-961b-013bb2cec9d0" />
+    <UnitTestResult executionId="50925a62-2643-440e-a9bb-8208b7702fe0" testId="6c283407-5a2d-acbf-1a9e-41a951a8fef8" testName="Aster.Tests.DesktopTests.AuthenticatedScriptingControlsRealTabsPanesAndReadsUnicodeWithoutMovingScrollback" computerName="runnervm0xl3a" duration="00:00:01.6077284" startTime="2026-10-17T06:22:19.1037317+00:00" endTime="2026-10-17T06:22:20.7115181+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="50925a62-2643-440e-a9bb-8208b7702fe0" />
+    <UnitTestResult executionId="1856714a-3f7a-4ec5-83bc-8bd4f18d5087" testId="440e886f-73cf-76bb-7ef2-d3ae8a4164df" testName="Aster.Tests.DesktopTests.NativeScrollbarFollowsRealHistoryThumbDragAndAlternateScreenWithoutChangingShell" computerName="runnervm0xl3a" duration="00:00:00.2736736" startTime="2026-10-17T06:22:20.7155455+00:00" endTime="2026-10-17T06:22:20.9892969+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1856714a-3f7a-4ec5-83bc-8bd4f18d5087" />
+    <UnitTestResult executionId="f3472cf8-9d07-429a-bb34-86dbeb2ed9f0" testId="36e70c5b-b977-db22-aea3-cc5943924baf" testName="Aster.Tests.PtyTests.CloseTerminatesShellAndBackgroundChild" computerName="runnervm0xl3a" duration="00:00:00.0010000" startTime="2026-10-17T06:22:14.1158388+00:00" endTime="2026-10-17T06:22:14.1158711+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f3472cf8-9d07-429a-bb34-86dbeb2ed9f0">
+      <Output>
+        <ErrorInfo>
+          <Message>Unix PTY acceptance requires Unix.</Message>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="189d05c9-7cf6-4add-97f1-04a8b55a5314" testId="e1b518db-a5fd-f6eb-6447-b426ba7905f3" testName="Aster.Tests.EngineTests.CursorEraseTrueColorAndAttributes" computerName="runnervm0xl3a" duration="00:00:00.0852849" startTime="2026-10-17T06:22:09.0761270+00:00" endTime="2026-10-17T06:22:09.1778306+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="189d05c9-7cf6-4add-97f1-04a8b55a5314" />
+    <UnitTestResult executionId="594219c1-0ba5-4907-86f0-b4a24b620c65" testId="a2b0d3d2-7894-162b-2721-e39e8a8d864a" testName="Aster.Tests.GraphicsTests.ImagePayloadsCannotReadHostFilesAndMalformedSequencesRecover" computerName="runnervm0xl3a" duration="00:00:00.0008829" startTime="2026-10-17T06:22:09.3121877+00:00" endTime="2026-10-17T06:22:09.3130978+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="594219c1-0ba5-4907-86f0-b4a24b620c65" />
+    <UnitTestResult executionId="3b081add-2fee-4244-8042-0f3251899847" testId="046e3559-5111-569b-829e-577157e41138" testName="Aster.Tests.FindTests.RegexCaseWordsHardLinesAndInvalidPatternsHaveExplicitBehavior" computerName="runnervm0xl3a" duration="00:00:00.0026937" startTime="2026-10-17T06:22:09.9698202+00:00" endTime="2026-10-17T06:22:09.9725535+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3b081add-2fee-4244-8042-0f3251899847" />
+    <UnitTestResult executionId="1af7d373-d6a7-4fbb-ad15-2577423ee7be" testId="dc38b7af-f353-ce35-1577-0306b09e984a" testName="Aster.Tests.DesktopTests.CaptionWindowNumbersNavigateAndRenumberRemainingLiveWindows" computerName="runnervm0xl3a" duration="00:00:00.1215796" startTime="2026-10-17T06:22:20.9934174+00:00" endTime="2026-10-17T06:22:21.1155354+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1af7d373-d6a7-4fbb-ad15-2577423ee7be">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.EndsWith() Failure: String end does not match&#xD;
+String:       "Alt+2"&#xD;
+Expected end: "1"</Message>
+          <StackTrace>   at Aster.Tests.DesktopTests.CaptionWindowNumbersNavigateAndRenumberRemainingLiveWindows() in D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\ChromeDesktopTests.cs:line 205&#xD;
+   at Aster.Tests.DesktopTests.CaptionWindowNumbersNavigateAndRenumberRemainingLiveWindows() in D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\ChromeDesktopTests.cs:line 214&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3fb887c3-eee9-4c6b-a622-f6ee57bec594" testId="05b07b09-7045-6f6d-d2dc-ebc90d658be6" testName="Aster.Tests.EngineTests.HyperlinksAndApplicationInputModesSurviveAdapter" computerName="runnervm0xl3a" duration="00:00:00.0046872" startTime="2026-10-17T06:22:09.2507053+00:00" endTime="2026-10-17T06:22:09.2554791+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3fb887c3-eee9-4c6b-a622-f6ee57bec594" />
+    <UnitTestResult executionId="1f6afee8-3ae1-46fe-8e81-7e4832c8fc68" testId="88a5e35e-ca35-4509-6590-2c9c68494bcc" testName="Aster.Tests.SettingsTests.ProfileThemeEnvironmentAndLayoutRoundTrip" computerName="runnervm0xl3a" duration="00:00:00.0079637" startTime="2026-10-17T06:22:09.9448546+00:00" endTime="2026-10-17T06:22:09.9528590+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1f6afee8-3ae1-46fe-8e81-7e4832c8fc68" />
+    <UnitTestResult executionId="30fb0fdb-1a38-48e8-9c64-8b4ac49afe71" testId="11e02bbb-6dcb-c331-6eab-6e7500abd04b" testName="Aster.Tests.HostProtocolTests.FramingRejectsOversizeLengthsAndInvalidDimensions" computerName="runnervm0xl3a" duration="00:00:00.0051647" startTime="2026-10-17T06:22:09.4163609+00:00" endTime="2026-10-17T06:22:09.4216077+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="30fb0fdb-1a38-48e8-9c64-8b4ac49afe71" />
+    <UnitTestResult executionId="169d3a86-ca90-4de7-8f33-444b68580fe0" testId="992804ea-e1bb-03e6-9738-2a76d4ef9c70" testName="Aster.Tests.DesktopTests.TabPointerReorderHandlesBothDirectionsCancellationAndCloseWithoutRestartingShells" computerName="runnervm0xl3a" duration="00:00:00.3705851" startTime="2026-10-17T06:22:21.1198672+00:00" endTime="2026-10-17T06:22:21.4905343+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="169d3a86-ca90-4de7-8f33-444b68580fe0" />
+    <UnitTestResult executionId="e208c872-ba27-4cf1-9469-ac4a8b7a0279" testId="c03afe19-8e7d-1117-4d4d-66658d3eefda" testName="Aster.Tests.ScriptingServerTests.LoopbackCookieOriginAndSubprotocolAreRequiredAndCredentialsArePrivate" computerName="runnervm0xl3a" duration="00:00:00.0164141" startTime="2026-10-17T06:22:09.8241660+00:00" endTime="2026-10-17T06:22:09.8406278+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e208c872-ba27-4cf1-9469-ac4a8b7a0279" />
+    <UnitTestResult executionId="4f14d342-be3c-4f3d-b326-3dc56e244409" testId="ad24228f-70ab-0150-fc80-22ffdf00703f" testName="Aster.Tests.DesktopTests.PreferencesSaveValidationAndCancelAreTransactional" computerName="runnervm0xl3a" duration="00:00:00.0460024" startTime="2026-10-17T06:22:21.6163978+00:00" endTime="2026-10-17T06:22:21.6624825+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4f14d342-be3c-4f3d-b326-3dc56e244409" />
+    <UnitTestResult executionId="6378d70d-089d-4356-8947-071313f5babc" testId="d38a603d-ba32-64f4-5b3f-1c22f7ef625d" testName="Aster.Tests.PtyTests.UpstreamZshIntegrationTracksCommandStatusDirectoryAndMarks" computerName="runnervm0xl3a" duration="00:00:00.0010000" startTime="2026-10-17T06:22:14.1956627+00:00" endTime="2026-10-17T06:22:14.1957473+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6378d70d-089d-4356-8947-071313f5babc">
+      <Output>
+        <ErrorInfo>
+          <Message>Unix PTY acceptance requires Unix.</Message>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="852fb4e2-4ba8-4839-ae16-af94a7f69cfe" testId="ae9bad4a-b810-4d9e-797b-e7c7a4e2841e" testName="Aster.Tests.GraphicsTests.FragmentedImageProtocolsSurviveAdapterAndRenderActualPixels(protocol: &quot;iterm&quot;, expected: Iterm2Inline)" computerName="runnervm0xl3a" duration="00:00:00.0073191" startTime="2026-10-17T06:22:09.2874906+00:00" endTime="2026-10-17T06:22:09.2948590+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="852fb4e2-4ba8-4839-ae16-af94a7f69cfe" />
+    <UnitTestResult executionId="58b1f064-9e47-45d2-a31d-00db5ca82a76" testId="a6ac24ad-a29e-85fd-7541-0a323cd1d3e4" testName="Aster.Tests.FindTests.InvalidUnicodeOversizeQueriesCancellationAndPathologicalRegexAreBounded" computerName="runnervm0xl3a" duration="00:00:00.0916214" startTime="2026-10-17T06:22:10.0102623+00:00" endTime="2026-10-17T06:22:10.1019423+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="58b1f064-9e47-45d2-a31d-00db5ca82a76" />
+    <UnitTestResult executionId="98a05448-18de-4633-b838-1e95f63e2d11" testId="725b06cb-b514-cb93-8485-b966598954a3" testName="Aster.Tests.DesktopTests.FindBarSearchesRealOutputWithOptionsNavigationErrorsAndPaneIsolation" computerName="runnervm0xl3a" duration="00:00:01.5525613" startTime="2026-10-17T06:22:23.2163124+00:00" endTime="2026-10-17T06:22:24.7689341+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="98a05448-18de-4633-b838-1e95f63e2d11" />
+    <UnitTestResult executionId="f5cb55f5-0742-4c8d-8d57-1f6a9c5277e7" testId="aa4652cd-2c03-5479-9b97-14e62fc513c0" testName="Aster.Tests.EngineTests.AlternateScreenRestoresMainBufferAndPasteMode" computerName="runnervm0xl3a" duration="00:00:00.0065998" startTime="2026-10-17T06:22:09.2558414+00:00" endTime="2026-10-17T06:22:09.2624878+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f5cb55f5-0742-4c8d-8d57-1f6a9c5277e7" />
+    <UnitTestResult executionId="8b26bb75-084e-4a71-9316-a6bd691f5e30" testId="70f3f9ea-fff3-888f-d65e-26b2da556c4b" testName="Aster.Tests.DesktopTests.GlobalHotkeyRegistrationFailureIsVisibleAndDoesNotPretendToBeEnabled" computerName="runnervm0xl3a" duration="00:00:00.0030125" startTime="2026-10-17T06:22:21.6060642+00:00" endTime="2026-10-17T06:22:21.6091535+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8b26bb75-084e-4a71-9316-a6bd691f5e30" />
+    <UnitTestResult executionId="0ffcab47-0f95-4493-b604-70480591cdba" testId="4f778117-c8d9-26de-da62-5e7b2abf4a72" testName="Aster.Tests.DesktopTests.NestedSplitZoomThemeTitlesAndLayoutReopenUseFreshProcesses" computerName="runnervm0xl3a" duration="00:00:04.6907911" startTime="2026-10-17T06:22:09.4376474+00:00" endTime="2026-10-17T06:22:14.1285674+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0ffcab47-0f95-4493-b604-70480591cdba" />
+    <UnitTestResult executionId="88abb34b-bf08-4da3-9318-96787148d359" testId="aa2a7849-3332-38fe-dd54-122fe9c16341" testName="Aster.Tests.DesktopTests.ReplaySeekIsIndependentOfTheLiveShellAndDiscardsOnClose" computerName="runnervm0xl3a" duration="00:00:02.3470304" startTime="2026-10-17T06:22:16.4646337+00:00" endTime="2026-10-17T06:22:18.8117642+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="88abb34b-bf08-4da3-9318-96787148d359" />
+    <UnitTestResult executionId="db4befb1-4355-4c1e-ac2c-3ea56b0b8749" testId="64715e8f-96b6-1486-8c82-b4e87e04e39a" testName="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;A;9&quot;, expected: null)" computerName="runnervm0xl3a" duration="00:00:00.0002396" startTime="2026-10-17T06:22:09.2480553+00:00" endTime="2026-10-17T06:22:09.2483428+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="db4befb1-4355-4c1e-ac2c-3ea56b0b8749" />
+    <UnitTestResult executionId="e11d0b18-7bdf-46f7-8209-4085222a2469" testId="95960776-c84e-26a7-62b9-eb4ed762f7ff" testName="Aster.Tests.ScriptingServerTests.OriginalProtobufEnvelopesAndBoundedSubscriptionsRouteWithoutChangingRequestIds" computerName="runnervm0xl3a" duration="00:00:00.0239529" startTime="2026-10-17T06:22:09.8714316+00:00" endTime="2026-10-17T06:22:09.8954508+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e11d0b18-7bdf-46f7-8209-4085222a2469" />
+    <UnitTestResult executionId="3b043adf-0d79-4309-971e-693480e075c5" testId="77a36f29-a343-de4c-1fb6-16f1bef1fdd3" testName="Aster.Tests.HostedSessionTests.RealShellSurvivesDetachedClientAndRetainsVariablesIdentityOutputAndResize" computerName="runnervm0xl3a" duration="00:00:00.7631114" startTime="2026-10-17T06:22:09.9386471+00:00" endTime="2026-10-17T06:22:10.7018102+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3b043adf-0d79-4309-971e-693480e075c5" />
+    <UnitTestResult executionId="675b6dee-d973-413f-8f34-f8df7675189b" testId="01bc4b46-8368-46ed-e142-c2b7d0dfa581" testName="Aster.Tests.TriggerTests.MatchHistoryIsBoundedEvictedAnchorsFailAndDisabledRulesDoNotFire" computerName="runnervm0xl3a" duration="00:00:00.0359467" startTime="2026-10-17T06:22:10.2054171+00:00" endTime="2026-10-17T06:22:10.2414647+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="675b6dee-d973-413f-8f34-f8df7675189b" />
+    <UnitTestResult executionId="86d34e7c-63b4-4864-ace2-560b43720be8" testId="d4ffb14b-eb23-0995-0988-cc49da44ff33" testName="Aster.Tests.DesktopTests.HyperlinksRequireUserActionAndBlockUnsafeSchemes" computerName="runnervm0xl3a" duration="00:00:00.0060022" startTime="2026-10-17T06:22:24.7729296+00:00" endTime="2026-10-17T06:22:24.7789824+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="86d34e7c-63b4-4864-ace2-560b43720be8" />
+    <UnitTestResult executionId="e97f2b65-b201-4cb7-adcd-e64535b4e8d0" testId="05f9ddd9-890e-354b-279b-d955b3889f0b" testName="Aster.Tests.GraphicsTests.FragmentedImageProtocolsSurviveAdapterAndRenderActualPixels(protocol: &quot;sixel&quot;, expected: Sixel)" computerName="runnervm0xl3a" duration="00:00:00.1997092" startTime="2026-10-17T06:22:09.0761512+00:00" endTime="2026-10-17T06:22:09.2861451+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e97f2b65-b201-4cb7-adcd-e64535b4e8d0" />
+    <UnitTestResult executionId="2d8e4b38-b848-433d-9ed7-11ba64a71f02" testId="14c3dd99-3444-5c78-554e-63f7aa63a6c3" testName="Aster.Tests.PtyTests.PowerShellConPtyExecutesUnicodeAndCleansUp" computerName="runnervm0xl3a" duration="00:00:04.6657501" startTime="2026-10-17T06:22:09.4466535+00:00" endTime="2026-10-17T06:22:14.1124023+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2d8e4b38-b848-433d-9ed7-11ba64a71f02" />
+    <UnitTestResult executionId="3e4ba3cd-445b-4cb0-b197-1a3ac894c17c" testId="a5e93787-75e5-2a14-1190-c6c44a7a9dda" testName="Aster.Tests.ScriptingServerTests.StoppingWithAnInFlightDesktopRequestDoesNotWaitForItsUiContinuation" computerName="runnervm0xl3a" duration="00:00:00.4447870" startTime="2026-10-17T06:22:09.3412606+00:00" endTime="2026-10-17T06:22:09.7883639+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3e4ba3cd-445b-4cb0-b197-1a3ac894c17c" />
+    <UnitTestResult executionId="4a99e086-8fd5-465e-8594-002a973042b3" testId="afede510-2237-d2df-422f-42ec5a4f7b60" testName="Aster.Tests.FindTests.DenseMatchesAreCappedAndReportedWithoutFakingAnExactCount" computerName="runnervm0xl3a" duration="00:00:00.0369397" startTime="2026-10-17T06:22:09.9728075+00:00" endTime="2026-10-17T06:22:10.0098073+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4a99e086-8fd5-465e-8594-002a973042b3" />
+    <UnitTestResult executionId="daef7504-ab95-4d95-bcda-5c3d2ad37000" testId="60413fec-6822-44ab-9317-4604cbd77094" testName="Aster.Tests.EngineTests.ItermMetadataAndCommandMarksSurviveByteFragmentation" computerName="runnervm0xl3a" duration="00:00:00.0131611" startTime="2026-10-17T06:22:09.3124859+00:00" endTime="2026-10-17T06:22:09.3257514+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="daef7504-ab95-4d95-bcda-5c3d2ad37000" />
+    <UnitTestResult executionId="247f744c-6af6-4fa7-917f-9b58151ec781" testId="7b7df767-a83e-4930-555c-1b75c404b521" testName="Aster.Tests.DesktopTests.ProfileTriggerEditorSaveCancelAndInvalidPatternsAreTransactional" computerName="runnervm0xl3a" duration="00:00:00.0573802" startTime="2026-10-17T06:22:23.1551454+00:00" endTime="2026-10-17T06:22:23.2126100+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="247f744c-6af6-4fa7-917f-9b58151ec781" />
+    <UnitTestResult executionId="4f02fc4a-3da1-421e-abaa-046a72515807" testId="b01c24d5-b66b-e743-ad2b-731bae345b7b" testName="Aster.Tests.HostProtocolTests.GridFramesRetainPixelGeometryForImagesAndWindowQueries" computerName="runnervm0xl3a" duration="00:00:00.0109692" startTime="2026-10-17T06:22:09.3404986+00:00" endTime="2026-10-17T06:22:09.3515291+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4f02fc4a-3da1-421e-abaa-046a72515807" />
+    <UnitTestResult executionId="758dba6f-6cdc-4a3b-a8e4-88cdfda82ceb" testId="d7ee1720-87e1-752f-01f2-c1f9205ed64d" testName="Aster.Tests.ReplayTests.ReplayEvictsOldFramesRejectsOversizeAndClampsClockRegression" computerName="runnervm0xl3a" duration="00:00:00.0091448" startTime="2026-10-17T06:22:09.4347629+00:00" endTime="2026-10-17T06:22:09.4439762+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="758dba6f-6cdc-4a3b-a8e4-88cdfda82ceb" />
+    <UnitTestResult executionId="210f6972-76c6-4b67-bf48-7d40b1ad1f4a" testId="6f19b0c2-6d8f-2423-4e55-28897dddea13" testName="Aster.Tests.DesktopTests.TabKeyboardReorderPreservesShellsSplitZoomFindAndSavedOrder" computerName="runnervm0xl3a" duration="00:00:01.0689221" startTime="2026-10-17T06:22:14.9603530+00:00" endTime="2026-10-17T06:22:16.0293434+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="210f6972-76c6-4b67-bf48-7d40b1ad1f4a" />
+    <UnitTestResult executionId="4b71e867-3748-4669-83c8-92c94a169c53" testId="a2e64bb7-517b-0fa2-0537-6aae0a6d4756" testName="Aster.Tests.EngineTests.NewOutputKeepsScrolledContentUntilItIsEvicted" computerName="runnervm0xl3a" duration="00:00:00.0015981" startTime="2026-10-17T06:22:09.3274372+00:00" endTime="2026-10-17T06:22:09.3290863+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4b71e867-3748-4669-83c8-92c94a169c53" />
+    <UnitTestResult executionId="8cffada1-cc55-4c47-b29c-32553367765c" testId="71a496b6-6e68-ea28-9379-acf97b87f2d3" testName="Aster.Tests.PtyTests.VimUsesAlternateBufferAndReturnsToShell" computerName="runnervm0xl3a" duration="00:00:00.0010000" startTime="2026-10-17T06:22:09.4462453+00:00" endTime="2026-10-17T06:22:09.4462569+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8cffada1-cc55-4c47-b29c-32553367765c">
+      <Output>
+        <ErrorInfo>
+          <Message>Unix PTY acceptance requires Unix.</Message>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="935a334b-f614-4f34-8572-274771a10285" testId="5c505dab-7ed3-fbed-b360-276b8b63aece" testName="Aster.Tests.EngineTests.FragmentedUtf8CombiningAndWideGlyphs" computerName="runnervm0xl3a" duration="00:00:00.0007263" startTime="2026-10-17T06:22:09.3294068+00:00" endTime="2026-10-17T06:22:09.3301741+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="935a334b-f614-4f34-8572-274771a10285" />
+    <UnitTestResult executionId="d8dc7b9e-30ef-4105-97cd-ff68e5d0353a" testId="d2f91512-1179-df2a-b3a0-9347ef5c6f29" testName="Aster.Tests.EngineTests.UntrustedOscCannotWriteClipboardAndOversizeStringsRecover" computerName="runnervm0xl3a" duration="00:00:00.0560636" startTime="2026-10-17T06:22:09.1870503+00:00" endTime="2026-10-17T06:22:09.2432296+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d8dc7b9e-30ef-4105-97cd-ff68e5d0353a" />
+    <UnitTestResult executionId="01612339-8e76-444f-9f90-de36572c1722" testId="547e1393-034c-40d9-4fe7-5e5dc535a137" testName="Aster.Tests.TmuxTests.ControlModeRoutesIndependentPanesResizesAndPreservesLiveShellAcrossDetach" computerName="runnervm0xl3a" duration="00:00:00.0010000" startTime="2026-10-17T06:22:10.2920572+00:00" endTime="2026-10-17T06:22:10.2920885+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="01612339-8e76-444f-9f90-de36572c1722">
+      <Output>
+        <ErrorInfo>
+          <Message>Unix PTY acceptance requires Unix.</Message>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="cc498f11-ed1e-4b5a-b617-06f3cf230286" testId="8d1c9014-29f8-6000-4e12-29fad4a976c8" testName="Aster.Tests.EngineTests.SearchScrollbackAfterResize" computerName="runnervm0xl3a" duration="00:00:00.0487797" startTime="2026-10-17T06:22:09.2628398+00:00" endTime="2026-10-17T06:22:09.3116669+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cc498f11-ed1e-4b5a-b617-06f3cf230286" />
+    <UnitTestResult executionId="09e9af35-c08b-4eaa-b651-162667cfe829" testId="ab0d428f-433e-a7b3-4c8e-41befab3a561" testName="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;bad;aid=x;7;8&quot;, expected: 7)" computerName="runnervm0xl3a" duration="00:00:00.0000230" startTime="2026-10-17T06:22:09.2502383+00:00" endTime="2026-10-17T06:22:09.2502887+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="09e9af35-c08b-4eaa-b651-162667cfe829" />
+    <UnitTestResult executionId="21cf2035-55d2-4c57-bb8d-d8d34164c252" testId="e6238b06-fac7-b831-9255-d0e1a8434ec8" testName="Aster.Tests.DesktopTests.TmuxFindUsesRealOutputAndKeepsSearchIndependentAcrossPanesAndTabs" computerName="runnervm0xl3a" duration="00:00:00.0010000" startTime="2026-10-17T06:22:21.4945817+00:00" endTime="2026-10-17T06:22:21.4966960+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="21cf2035-55d2-4c57-bb8d-d8d34164c252">
+      <Output>
+        <ErrorInfo>
+          <Message>Local tmux control mode requires Unix.</Message>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c6a6c30c-ca81-4c8c-a46b-7add15b999be" testId="e0ac7866-f85c-af06-2f8a-560b8b7838f3" testName="Aster.Tests.FindTests.BoundedCapturePreservesScrollAndRejectsTruncatedLogicalPrefixes" computerName="runnervm0xl3a" duration="00:00:00.0130440" startTime="2026-10-17T06:22:09.9560253+00:00" endTime="2026-10-17T06:22:09.9691252+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c6a6c30c-ca81-4c8c-a46b-7add15b999be" />
+    <UnitTestResult executionId="4d273472-599e-4aa1-8e57-548b7433c92f" testId="47964454-08e7-08b5-a736-ecc43fc22842" testName="Aster.Tests.DesktopTests.ShortcutsRejectDuplicatesAndInvalidOverrides" computerName="runnervm0xl3a" duration="00:00:00.0022452" startTime="2026-10-17T06:22:14.9538297+00:00" endTime="2026-10-17T06:22:14.9561474+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4d273472-599e-4aa1-8e57-548b7433c92f" />
+    <UnitTestResult executionId="1bb6cac8-26d0-443e-829d-b8be0fd0a2aa" testId="c9370a9a-c215-b785-3da2-7385c51f8345" testName="Aster.Tests.PtyTests.IndependentSessionsAndCloseReapHelper" computerName="runnervm0xl3a" duration="00:00:00.0010000" startTime="2026-10-17T06:22:14.1149924+00:00" endTime="2026-10-17T06:22:14.1150218+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1bb6cac8-26d0-443e-829d-b8be0fd0a2aa">
+      <Output>
+        <ErrorInfo>
+          <Message>Unix PTY acceptance requires Unix.</Message>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f6e8f3ec-2244-474d-9135-24db118cc490" testId="8573de2e-898d-98cf-71db-9fc75e2936e4" testName="Aster.Tests.FindTests.LogicalAnchorsSurviveReflowAndEvictionButNeverResetOrAnotherBuffer" computerName="runnervm0xl3a" duration="00:00:00.0009821" startTime="2026-10-17T06:22:10.1109041+00:00" endTime="2026-10-17T06:22:10.1119142+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f6e8f3ec-2244-474d-9135-24db118cc490" />
+    <UnitTestResult executionId="cd065b55-5c90-4d92-9491-5c74b947deed" testId="aea85731-43d2-07d7-a8ea-86b7fa842ecb" testName="Aster.Tests.PtyTests.OrdinaryTmuxAndLessReturnToInteractiveShell" computerName="runnervm0xl3a" duration="00:00:00.0010000" startTime="2026-10-17T06:22:14.1145512+00:00" endTime="2026-10-17T06:22:14.1145927+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cd065b55-5c90-4d92-9491-5c74b947deed">
+      <Output>
+        <ErrorInfo>
+          <Message>Unix PTY acceptance requires Unix.</Message>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="78c2456d-ae9d-4aac-854f-9dbe3a0eb60e" testId="0bd87a8c-3eb3-4e17-c2e5-f2e210d30c18" testName="Aster.Tests.FindTests.NavigationCreditsOnlyItsOwnRevisionAndNeverHidesOutputArrivingAfterCapture" computerName="runnervm0xl3a" duration="00:00:00.0014396" startTime="2026-10-17T06:22:10.1122647+00:00" endTime="2026-10-17T06:22:10.1137447+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="78c2456d-ae9d-4aac-854f-9dbe3a0eb60e" />
+    <UnitTestResult executionId="a93645bf-12c5-4f81-990b-a59efb8e8f05" testId="f6cf8fa1-2f6a-fc77-b6fa-50b23dbae2a2" testName="Aster.Tests.ScriptingServerTests.OversizeAndMalformedBinaryFramesDisconnectBeforeReachingTheDesktop" computerName="runnervm0xl3a" duration="00:00:00.0289660" startTime="2026-10-17T06:22:09.7944858+00:00" endTime="2026-10-17T06:22:09.8235398+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a93645bf-12c5-4f81-990b-a59efb8e8f05" />
+    <UnitTestResult executionId="43090784-a811-477d-839d-4f23877fe822" testId="67277509-038e-51c8-dd58-6bc343680fee" testName="Aster.Tests.DesktopTests.DetachedWindowReopensTheSameLivePaneAndNormalCloseTerminatesIt" computerName="runnervm0xl3a" duration="00:00:00.8096082" startTime="2026-10-17T06:22:14.1417127+00:00" endTime="2026-10-17T06:22:14.9514157+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="43090784-a811-477d-839d-4f23877fe822" />
+    <UnitTestResult executionId="02950259-fa74-4165-b51c-6b47534fecb6" testId="9261152e-6214-5d59-e713-edd1c20c5881" testName="Aster.Tests.DesktopTests.GlobalHotkeyWindowIsLazyRetainsRealShellAcrossHideAndPreservesNormalLayout" computerName="runnervm0xl3a" duration="00:00:01.0722380" startTime="2026-10-17T06:22:22.0785543+00:00" endTime="2026-10-17T06:22:23.1508546+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="02950259-fa74-4165-b51c-6b47534fecb6" />
+    <UnitTestResult executionId="b899af7c-57d7-4fa1-acd0-b4835c741dfa" testId="7fbb51f3-a4e9-3eb8-4532-db592747e489" testName="Aster.Tests.PtyTests.InteractiveShellTtyUnicodeResizeInterruptAndExit" computerName="runnervm0xl3a" duration="00:00:00.0010000" startTime="2026-10-17T06:22:14.1153971+00:00" endTime="2026-10-17T06:22:14.1154308+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b899af7c-57d7-4fa1-acd0-b4835c741dfa">
+      <Output>
+        <ErrorInfo>
+          <Message>Unix PTY acceptance requires Unix.</Message>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="139e53d5-1787-44d6-b6d7-1aa2efc798a0" testId="ac4b0fa2-ae72-0ecd-fc94-b73342223066" testName="Aster.Tests.PtyTests.CmdConPtyCommandResizeAndExit" computerName="runnervm0xl3a" duration="00:00:00.0781389" startTime="2026-10-17T06:22:14.1161961+00:00" endTime="2026-10-17T06:22:14.1944389+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="139e53d5-1787-44d6-b6d7-1aa2efc798a0" />
+    <UnitTestResult executionId="3f84c8f6-450a-4649-ac78-75830055d120" testId="552a4ffa-e030-7dd8-9a37-8cd1a4a47019" testName="Aster.Tests.DesktopTests.KeyboardToRealShellClipboardSearchResizeTabsSplitsAndShutdown" computerName="runnervm0xl3a" duration="00:00:00.4077592" startTime="2026-10-17T06:22:21.6666666+00:00" endTime="2026-10-17T06:22:22.0745056+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3f84c8f6-450a-4649-ac78-75830055d120" />
+    <UnitTestResult executionId="2ef5d812-ae1d-469f-a8c2-9680a4adbbe1" testId="310ae352-8c97-6a03-402b-5f076279a4cf" testName="Aster.Tests.DesktopTests.NativeTmuxControlsFollowRealSplitsRouteInputAndDetachWithoutKillingShells" computerName="runnervm0xl3a" duration="00:00:00.0010000" startTime="2026-10-17T06:22:16.0348078+00:00" endTime="2026-10-17T06:22:16.0377000+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2ef5d812-ae1d-469f-a8c2-9680a4adbbe1">
+      <Output>
+        <ErrorInfo>
+          <Message>Local tmux control mode requires Unix.</Message>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4a72178f-3146-4cda-88de-83aa46941dea" testId="89ce6af8-30fa-e8f5-5739-6ab414ccd6bb" testName="Aster.Tests.FindTests.UnicodeCanonicalGraphemesWideCellsAndSoftWrapsMapToWholeDisplayCells" computerName="runnervm0xl3a" duration="00:00:00.0072030" startTime="2026-10-17T06:22:10.1032476+00:00" endTime="2026-10-17T06:22:10.1105603+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4a72178f-3146-4cda-88de-83aa46941dea" />
+    <UnitTestResult executionId="2ad54e5c-1d6e-4ce8-8260-f6417e756b8b" testId="1d5cd09d-9d12-efbf-b943-dbf77b987a3c" testName="Aster.Tests.TmuxTests.EscapedByteOutputAndNestedLayoutAreStrictAndBounded" computerName="runnervm0xl3a" duration="00:00:00.0142422" startTime="2026-10-17T06:22:10.2772907+00:00" endTime="2026-10-17T06:22:10.2915947+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2ad54e5c-1d6e-4ce8-8260-f6417e756b8b" />
+    <UnitTestResult executionId="521a8fef-8d7f-4006-afda-3c8952d85a98" testId="e1e628a4-177d-e53b-f27f-e409cffe9c31" testName="Aster.Tests.ScriptingServerTests.OnlyOneApiOwnsCredentialDirectoryAndStoppingReleasesItsLease" computerName="runnervm0xl3a" duration="00:00:00.0293978" startTime="2026-10-17T06:22:09.8412215+00:00" endTime="2026-10-17T06:22:09.8707092+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="521a8fef-8d7f-4006-afda-3c8952d85a98" />
+    <UnitTestResult executionId="0e49de82-a6ec-40a4-9535-b2f750a1be00" testId="1f7bebe1-b52e-7ffd-ee45-1a7cc4c05a4a" testName="Aster.Tests.HostProtocolTests.TranscriptCompactionRetainsRealTextAndBoundsTinyFrames" computerName="runnervm0xl3a" duration="00:00:00.0637347" startTime="2026-10-17T06:22:09.3518048+00:00" endTime="2026-10-17T06:22:09.4156278+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0e49de82-a6ec-40a4-9535-b2f750a1be00" />
+    <UnitTestResult executionId="3bb7c6d0-4c73-4106-9c26-9bf836116fe9" testId="25248502-e63d-02c9-f600-d405fee6e8ce" testName="Aster.Tests.TriggerTests.MatchingWhileScrolledPreservesTheViewAndSkipsOversizeLines" computerName="runnervm0xl3a" duration="00:00:00.0090928" startTime="2026-10-17T06:22:10.2638125+00:00" endTime="2026-10-17T06:22:10.2729666+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3bb7c6d0-4c73-4106-9c26-9bf836116fe9" />
+    <UnitTestResult executionId="6f4086d6-9b48-417e-be44-3f583d3541ef" testId="8eb98ecf-c033-da6e-b4d5-72244c4632aa" testName="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;aid=42&quot;, expected: null)" computerName="runnervm0xl3a" duration="00:00:00.0000435" startTime="2026-10-17T06:22:09.2485805+00:00" endTime="2026-10-17T06:22:09.2486753+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6f4086d6-9b48-417e-be44-3f583d3541ef" />
+    <UnitTestResult executionId="03ae29cb-4c8f-4af7-a2c6-623ce0a70f5c" testId="19574732-768f-3f63-64de-fe5f8b16b103" testName="Aster.Tests.GraphicsTests.FragmentedImageProtocolsSurviveAdapterAndRenderActualPixels(protocol: &quot;kitty&quot;, expected: KittyGraphics)" computerName="runnervm0xl3a" duration="00:00:00.0164588" startTime="2026-10-17T06:22:09.2952684+00:00" endTime="2026-10-17T06:22:09.3118346+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="03ae29cb-4c8f-4af7-a2c6-623ce0a70f5c" />
+    <UnitTestResult executionId="8de13ef9-8097-4237-ace1-2dacfbf99d5c" testId="3a1e8557-8e65-8274-aab8-e05961396ed8" testName="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;123x&quot;, expected: null)" computerName="runnervm0xl3a" duration="00:00:00.0001059" startTime="2026-10-17T06:22:09.2498679+00:00" endTime="2026-10-17T06:22:09.2499959+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8de13ef9-8097-4237-ace1-2dacfbf99d5c" />
+    <UnitTestResult executionId="068cb069-a169-41e2-a696-1052897caa59" testId="953955dc-b23e-12af-9972-c4875b51a9ce" testName="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;aid=opaque;23;k=s&quot;, expected: 23)" computerName="runnervm0xl3a" duration="00:00:00.0034112" startTime="2026-10-17T06:22:09.2443435+00:00" endTime="2026-10-17T06:22:09.2478058+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="068cb069-a169-41e2-a696-1052897caa59" />
+    <UnitTestResult executionId="882a47e1-c912-46e9-b88c-04112cc63566" testId="87dc0b19-a8f4-c9a8-c6a8-a565193da1d8" testName="Aster.Tests.HostedSessionTests.ExplicitDetachAcknowledgesLastQueuedInputBeforeReattachment" computerName="runnervm0xl3a" duration="00:00:00.7735614" startTime="2026-10-17T06:22:10.7023424+00:00" endTime="2026-10-17T06:22:11.4759780+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="882a47e1-c912-46e9-b88c-04112cc63566" />
+    <UnitTestResult executionId="91dad2d7-6030-4f43-933c-e7d3a8ba559a" testId="bdc1740e-f57f-601e-65b6-d3d7d1f0fa5c" testName="Aster.Tests.DesktopTests.FindCancellationAndClosingCannotPublishStaleResultsOrWriteToTheShell" computerName="runnervm0xl3a" duration="00:00:00.1962173" startTime="2026-10-17T06:22:18.8162870+00:00" endTime="2026-10-17T06:22:19.0126039+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="91dad2d7-6030-4f43-933c-e7d3a8ba559a" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Aster.Tests.SettingsTests.NullProfilesAndDeepLayoutsAreRejectedWithRecoverableErrors" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="5dd7f39c-d922-4f22-57cd-01971485cae0">
+      <Execution id="47de4524-fff1-4aa4-9692-475229b2753b" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.SettingsTests" name="NullProfilesAndDeepLayoutsAreRejectedWithRecoverableErrors" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.PtyTests.OrdinaryTmuxAndLessReturnToInteractiveShell" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="aea85731-43d2-07d7-a8ea-86b7fa842ecb">
+      <Execution id="cd065b55-5c90-4d92-9491-5c74b947deed" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.PtyTests" name="OrdinaryTmuxAndLessReturnToInteractiveShell" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.TriggerTests.MatchHistoryIsBoundedEvictedAnchorsFailAndDisabledRulesDoNotFire" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="01bc4b46-8368-46ed-e142-c2b7d0dfa581">
+      <Execution id="675b6dee-d973-413f-8f34-f8df7675189b" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.TriggerTests" name="MatchHistoryIsBoundedEvictedAnchorsFailAndDisabledRulesDoNotFire" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.CursorEraseTrueColorAndAttributes" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="e1b518db-a5fd-f6eb-6447-b426ba7905f3">
+      <Execution id="189d05c9-7cf6-4add-97f1-04a8b55a5314" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="CursorEraseTrueColorAndAttributes" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.NativeScrollbarFollowsRealHistoryThumbDragAndAlternateScreenWithoutChangingShell" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="440e886f-73cf-76bb-7ef2-d3ae8a4164df">
+      <Execution id="1856714a-3f7a-4ec5-83bc-8bd4f18d5087" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="NativeScrollbarFollowsRealHistoryThumbDragAndAlternateScreenWithoutChangingShell" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.FindBarSearchesRealOutputWithOptionsNavigationErrorsAndPaneIsolation" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="725b06cb-b514-cb93-8485-b966598954a3">
+      <Execution id="98a05448-18de-4633-b838-1e95f63e2d11" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="FindBarSearchesRealOutputWithOptionsNavigationErrorsAndPaneIsolation" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.SettingsTests.ProfileThemeEnvironmentAndLayoutRoundTrip" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="88a5e35e-ca35-4509-6590-2c9c68494bcc">
+      <Execution id="1f6afee8-3ae1-46fe-8e81-7e4832c8fc68" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.SettingsTests" name="ProfileThemeEnvironmentAndLayoutRoundTrip" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.TriggerTests.MatchingUsesRewrittenScreenTextAndIgnoresEscapePayloadsAndAlternateScreen" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="2e524a13-9ef6-cf2c-b493-bc4a143a80c6">
+      <Execution id="ce1460c1-05dc-490f-b632-e86e89ebf8ef" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.TriggerTests" name="MatchingUsesRewrittenScreenTextAndIgnoresEscapePayloadsAndAlternateScreen" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.FindTests.RegexCaseWordsHardLinesAndInvalidPatternsHaveExplicitBehavior" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="046e3559-5111-569b-829e-577157e41138">
+      <Execution id="3b081add-2fee-4244-8042-0f3251899847" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.FindTests" name="RegexCaseWordsHardLinesAndInvalidPatternsHaveExplicitBehavior" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.ScriptingServerTests.StoppingWithAnInFlightDesktopRequestDoesNotWaitForItsUiContinuation" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="a5e93787-75e5-2a14-1190-c6c44a7a9dda">
+      <Execution id="3e4ba3cd-445b-4cb0-b197-1a3ac894c17c" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.ScriptingServerTests" name="StoppingWithAnInFlightDesktopRequestDoesNotWaitForItsUiContinuation" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.PtyTests.VimUsesAlternateBufferAndReturnsToShell" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="71a496b6-6e68-ea28-9379-acf97b87f2d3">
+      <Execution id="8cffada1-cc55-4c47-b29c-32553367765c" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.PtyTests" name="VimUsesAlternateBufferAndReturnsToShell" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.PtyTests.CloseTerminatesShellAndBackgroundChild" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="36e70c5b-b977-db22-aea3-cc5943924baf">
+      <Execution id="f3472cf8-9d07-429a-bb34-86dbeb2ed9f0" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.PtyTests" name="CloseTerminatesShellAndBackgroundChild" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.HostedSessionTests.AttachedSessionsAreExclusiveAndInvalidCapabilitiesCannotControlThem" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="fd562a2a-0cb2-8fb7-7ce0-e64cc3deee43">
+      <Execution id="e3081030-b1ff-4836-afaf-8a205937d111" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.HostedSessionTests" name="AttachedSessionsAreExclusiveAndInvalidCapabilitiesCannotControlThem" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.PtyTests.IndependentSessionsAndCloseReapHelper" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="c9370a9a-c215-b785-3da2-7385c51f8345">
+      <Execution id="1bb6cac8-26d0-443e-829d-b8be0fd0a2aa" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.PtyTests" name="IndependentSessionsAndCloseReapHelper" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.FindTests.DenseMatchesAreCappedAndReportedWithoutFakingAnExactCount" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="afede510-2237-d2df-422f-42ec5a4f7b60">
+      <Execution id="4a99e086-8fd5-465e-8594-002a973042b3" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.FindTests" name="DenseMatchesAreCappedAndReportedWithoutFakingAnExactCount" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.ReplayTests.ReplayEvictsOldFramesRejectsOversizeAndClampsClockRegression" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="d7ee1720-87e1-752f-01f2-c1f9205ed64d">
+      <Execution id="758dba6f-6cdc-4a3b-a8e4-88cdfda82ceb" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.ReplayTests" name="ReplayEvictsOldFramesRejectsOversizeAndClampsClockRegression" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.ShortcutsRejectDuplicatesAndInvalidOverrides" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="47964454-08e7-08b5-a736-ecc43fc22842">
+      <Execution id="4d273472-599e-4aa1-8e57-548b7433c92f" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="ShortcutsRejectDuplicatesAndInvalidOverrides" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.HostProtocolTests.GridFramesRetainPixelGeometryForImagesAndWindowQueries" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="b01c24d5-b66b-e743-ad2b-731bae345b7b">
+      <Execution id="4f02fc4a-3da1-421e-abaa-046a72515807" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.HostProtocolTests" name="GridFramesRetainPixelGeometryForImagesAndWindowQueries" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.FindTests.LogicalAnchorsSurviveReflowAndEvictionButNeverResetOrAnotherBuffer" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="8573de2e-898d-98cf-71db-9fc75e2936e4">
+      <Execution id="f6e8f3ec-2244-474d-9135-24db118cc490" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.FindTests" name="LogicalAnchorsSurviveReflowAndEvictionButNeverResetOrAnotherBuffer" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.ReferenceAppearancePresetIsTransactionalAndFontPointsMatchLogicalCellMetrics" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="cc14ec22-f608-fd97-f3a9-f57fd43d76a6">
+      <Execution id="a49d1638-bad3-459f-93d8-3906fd5eb90b" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="ReferenceAppearancePresetIsTransactionalAndFontPointsMatchLogicalCellMetrics" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.ScriptingServerTests.LoopbackCookieOriginAndSubprotocolAreRequiredAndCredentialsArePrivate" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="c03afe19-8e7d-1117-4d4d-66658d3eefda">
+      <Execution id="e208c872-ba27-4cf1-9469-ac4a8b7a0279" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.ScriptingServerTests" name="LoopbackCookieOriginAndSubprotocolAreRequiredAndCredentialsArePrivate" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.HostProtocolTests.TranscriptCompactionRetainsRealTextAndBoundsTinyFrames" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="1f7bebe1-b52e-7ffd-ee45-1a7cc4c05a4a">
+      <Execution id="0e49de82-a6ec-40a4-9535-b2f750a1be00" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.HostProtocolTests" name="TranscriptCompactionRetainsRealTextAndBoundsTinyFrames" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.FindCancellationAndClosingCannotPublishStaleResultsOrWriteToTheShell" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="bdc1740e-f57f-601e-65b6-d3d7d1f0fa5c">
+      <Execution id="91dad2d7-6030-4f43-933c-e7d3a8ba559a" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="FindCancellationAndClosingCannotPublishStaleResultsOrWriteToTheShell" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.HostProtocolTests.FramingRejectsOversizeLengthsAndInvalidDimensions" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="11e02bbb-6dcb-c331-6eab-6e7500abd04b">
+      <Execution id="30fb0fdb-1a38-48e8-9c64-8b4ac49afe71" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.HostProtocolTests" name="FramingRejectsOversizeLengthsAndInvalidDimensions" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;-1&quot;, expected: -1)" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="9797708e-fb63-773b-48bd-a7f1e60b92f8">
+      <Execution id="8c19d5ec-8b26-413f-8fbb-2cccdaec476c" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="ItermExitCodeMatchesPositionalAttributeScan" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.ItermMetadataAndCommandMarksSurviveByteFragmentation" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="60413fec-6822-44ab-9317-4604cbd77094">
+      <Execution id="daef7504-ab95-4d95-bcda-5c3d2ad37000" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="ItermMetadataAndCommandMarksSurviveByteFragmentation" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.TmuxFindUsesRealOutputAndKeepsSearchIndependentAcrossPanesAndTabs" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="e6238b06-fac7-b831-9255-d0e1a8434ec8">
+      <Execution id="21cf2035-55d2-4c57-bb8d-d8d34164c252" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="TmuxFindUsesRealOutputAndKeepsSearchIndependentAcrossPanesAndTabs" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.SettingsTests.InvalidSettingsNeverReplaceSavedConfiguration" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="b5d65379-ec1b-436f-288c-be0d37fe70f8">
+      <Execution id="4f31c1e9-ffe8-49ad-b68a-4d473787cf30" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.SettingsTests" name="InvalidSettingsNeverReplaceSavedConfiguration" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.PtyTests.PowerShellConPtyExecutesUnicodeAndCleansUp" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="14c3dd99-3444-5c78-554e-63f7aa63a6c3">
+      <Execution id="2d8e4b38-b848-433d-9ed7-11ba64a71f02" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.PtyTests" name="PowerShellConPtyExecutesUnicodeAndCleansUp" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.PtyTests.UpstreamZshIntegrationTracksCommandStatusDirectoryAndMarks" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="d38a603d-ba32-64f4-5b3f-1c22f7ef625d">
+      <Execution id="6378d70d-089d-4356-8947-071313f5babc" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.PtyTests" name="UpstreamZshIntegrationTracksCommandStatusDirectoryAndMarks" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.RealShellTriggersHighlightHistoryAndLiveProfileChanges" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="d40d2fa5-2db5-42a9-f87a-ff516ac650be">
+      <Execution id="76652381-4794-4c70-941f-c47a6b866cd7" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="RealShellTriggersHighlightHistoryAndLiveProfileChanges" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.HostedSessionTests.RealShellSurvivesDetachedClientAndRetainsVariablesIdentityOutputAndResize" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="77a36f29-a343-de4c-1fb6-16f1bef1fdd3">
+      <Execution id="3b043adf-0d79-4309-971e-693480e075c5" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.HostedSessionTests" name="RealShellSurvivesDetachedClientAndRetainsVariablesIdentityOutputAndResize" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.GraphicsTests.FragmentedImageProtocolsSurviveAdapterAndRenderActualPixels(protocol: &quot;kitty&quot;, expected: KittyGraphics)" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="19574732-768f-3f63-64de-fe5f8b16b103">
+      <Execution id="03ae29cb-4c8f-4af7-a2c6-623ce0a70f5c" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.GraphicsTests" name="FragmentedImageProtocolsSurviveAdapterAndRenderActualPixels" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.PtyTests.InteractiveShellTtyUnicodeResizeInterruptAndExit" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="7fbb51f3-a4e9-3eb8-4532-db592747e489">
+      <Execution id="b899af7c-57d7-4fa1-acd0-b4835c741dfa" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.PtyTests" name="InteractiveShellTtyUnicodeResizeInterruptAndExit" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.NestedSplitZoomThemeTitlesAndLayoutReopenUseFreshProcesses" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="4f778117-c8d9-26de-da62-5e7b2abf4a72">
+      <Execution id="0ffcab47-0f95-4493-b604-70480591cdba" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="NestedSplitZoomThemeTitlesAndLayoutReopenUseFreshProcesses" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.AlternateScreenRestoresMainBufferAndPasteMode" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="aa4652cd-2c03-5479-9b97-14e62fc513c0">
+      <Execution id="f5cb55f5-0742-4c8d-8d57-1f6a9c5277e7" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="AlternateScreenRestoresMainBufferAndPasteMode" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.HyperlinksAndApplicationInputModesSurviveAdapter" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="05b07b09-7045-6f6d-d2dc-ebc90d658be6">
+      <Execution id="3fb887c3-eee9-4c6b-a622-f6ee57bec594" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="HyperlinksAndApplicationInputModesSurviveAdapter" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.HyperlinksRequireUserActionAndBlockUnsafeSchemes" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="d4ffb14b-eb23-0995-0988-cc49da44ff33">
+      <Execution id="86d34e7c-63b4-4864-ace2-560b43720be8" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="HyperlinksRequireUserActionAndBlockUnsafeSchemes" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.TmuxPaneRemovalAndDetachCancelPendingFindWithoutEndingServerShells" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="74f6ad90-ba26-f924-c690-5f3c62987faf">
+      <Execution id="9475713d-712e-4f3e-bcb4-c8e4cc3d5e24" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="TmuxPaneRemovalAndDetachCancelPendingFindWithoutEndingServerShells" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.GlobalHotkeyWindowIsLazyRetainsRealShellAcrossHideAndPreservesNormalLayout" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="9261152e-6214-5d59-e713-edd1c20c5881">
+      <Execution id="02950259-fa74-4165-b51c-6b47534fecb6" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="GlobalHotkeyWindowIsLazyRetainsRealShellAcrossHideAndPreservesNormalLayout" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.TriggerTests.FragmentedWrappedUnicodeMatchesActualCellsAndNavigatesAfterResize" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="680827e7-74fb-c51e-e1d7-931cb375f641">
+      <Execution id="58387ed8-6c9e-4427-80df-17906ec93523" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.TriggerTests" name="FragmentedWrappedUnicodeMatchesActualCellsAndNavigatesAfterResize" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.ProfileTriggerEditorSaveCancelAndInvalidPatternsAreTransactional" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="7b7df767-a83e-4930-555c-1b75c404b521">
+      <Execution id="247f744c-6af6-4fa7-917f-9b58151ec781" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="ProfileTriggerEditorSaveCancelAndInvalidPatternsAreTransactional" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;aid=42&quot;, expected: null)" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="8eb98ecf-c033-da6e-b4d5-72244c4632aa">
+      <Execution id="6f4086d6-9b48-417e-be44-3f583d3541ef" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="ItermExitCodeMatchesPositionalAttributeScan" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.ScriptingServerTests.OnlyOneApiOwnsCredentialDirectoryAndStoppingReleasesItsLease" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="e1e628a4-177d-e53b-f27f-e409cffe9c31">
+      <Execution id="521a8fef-8d7f-4006-afda-3c8952d85a98" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.ScriptingServerTests" name="OnlyOneApiOwnsCredentialDirectoryAndStoppingReleasesItsLease" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.TabPointerReorderHandlesBothDirectionsCancellationAndCloseWithoutRestartingShells" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="992804ea-e1bb-03e6-9738-2a76d4ef9c70">
+      <Execution id="169d3a86-ca90-4de7-8f33-444b68580fe0" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="TabPointerReorderHandlesBothDirectionsCancellationAndCloseWithoutRestartingShells" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.DetachedWindowReopensTheSameLivePaneAndNormalCloseTerminatesIt" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="67277509-038e-51c8-dd58-6bc343680fee">
+      <Execution id="43090784-a811-477d-839d-4f23877fe822" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="DetachedWindowReopensTheSameLivePaneAndNormalCloseTerminatesIt" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.GraphicsTests.ImagePayloadsCannotReadHostFilesAndMalformedSequencesRecover" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="a2b0d3d2-7894-162b-2721-e39e8a8d864a">
+      <Execution id="594219c1-0ba5-4907-86f0-b4a24b620c65" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.GraphicsTests" name="ImagePayloadsCannotReadHostFilesAndMalformedSequencesRecover" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.TmuxTests.ControlModeRoutesIndependentPanesResizesAndPreservesLiveShellAcrossDetach" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="547e1393-034c-40d9-4fe7-5e5dc535a137">
+      <Execution id="01612339-8e76-444f-9f90-de36572c1722" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.TmuxTests" name="ControlModeRoutesIndependentPanesResizesAndPreservesLiveShellAcrossDetach" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.TabKeyboardReorderPreservesShellsSplitZoomFindAndSavedOrder" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="6f19b0c2-6d8f-2423-4e55-28897dddea13">
+      <Execution id="210f6972-76c6-4b67-bf48-7d40b1ad1f4a" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="TabKeyboardReorderPreservesShellsSplitZoomFindAndSavedOrder" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;A;9&quot;, expected: null)" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="64715e8f-96b6-1486-8c82-b4e87e04e39a">
+      <Execution id="db4befb1-4355-4c1e-ac2c-3ea56b0b8749" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="ItermExitCodeMatchesPositionalAttributeScan" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.ScriptingPreferencesServiceStartsOnlyWhenEnabledAndReleasesCredentialsOnDisableAndExit" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="f0788377-2f55-9cbe-5475-676782a31e9d">
+      <Execution id="eb899988-fefd-4081-a33e-fef27d90591c" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="ScriptingPreferencesServiceStartsOnlyWhenEnabledAndReleasesCredentialsOnDisableAndExit" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.GlobalHotkeyRegistrationFailureIsVisibleAndDoesNotPretendToBeEnabled" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="70f3f9ea-fff3-888f-d65e-26b2da556c4b">
+      <Execution id="8b26bb75-084e-4a71-9316-a6bd691f5e30" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="GlobalHotkeyRegistrationFailureIsVisibleAndDoesNotPretendToBeEnabled" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.ReplayTests.FramesPreserveUnicodeColoursCursorAndOldState" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="6be0fa20-14d3-c97c-c700-f302670accb8">
+      <Execution id="97db0338-03fc-4c86-a8de-c3f8794181bc" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.ReplayTests" name="FramesPreserveUnicodeColoursCursorAndOldState" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.GraphicsTests.FragmentedImageProtocolsSurviveAdapterAndRenderActualPixels(protocol: &quot;sixel&quot;, expected: Sixel)" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="05f9ddd9-890e-354b-279b-d955b3889f0b">
+      <Execution id="e97f2b65-b201-4cb7-adcd-e64535b4e8d0" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.GraphicsTests" name="FragmentedImageProtocolsSurviveAdapterAndRenderActualPixels" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;2147483648&quot;, expected: null)" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="ff4e08b2-05fd-fc30-2cfb-a1d5eebc7573">
+      <Execution id="367a8396-289d-4c0d-a1ef-f346cc014c48" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="ItermExitCodeMatchesPositionalAttributeScan" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;123x&quot;, expected: null)" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="3a1e8557-8e65-8274-aab8-e05961396ed8">
+      <Execution id="8de13ef9-8097-4237-ace1-2dacfbf99d5c" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="ItermExitCodeMatchesPositionalAttributeScan" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.ReplaySeekIsIndependentOfTheLiveShellAndDiscardsOnClose" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="aa2a7849-3332-38fe-dd54-122fe9c16341">
+      <Execution id="88abb34b-bf08-4da3-9318-96787148d359" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="ReplaySeekIsIndependentOfTheLiveShellAndDiscardsOnClose" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.PtyTests.CmdConPtyCommandResizeAndExit" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="ac4b0fa2-ae72-0ecd-fc94-b73342223066">
+      <Execution id="139e53d5-1787-44d6-b6d7-1aa2efc798a0" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.PtyTests" name="CmdConPtyCommandResizeAndExit" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;bad;aid=x;7;8&quot;, expected: 7)" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="ab0d428f-433e-a7b3-4c8e-41befab3a561">
+      <Execution id="09e9af35-c08b-4eaa-b651-162667cfe829" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="ItermExitCodeMatchesPositionalAttributeScan" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;0&quot;, expected: 0)" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="e567d5fb-b0c6-d66e-35c0-ce4ca1933da3">
+      <Execution id="70bc30d5-4ae3-489a-afe1-6ee1be5aa234" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="ItermExitCodeMatchesPositionalAttributeScan" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.FindTests.BoundedCapturePreservesScrollAndRejectsTruncatedLogicalPrefixes" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="e0ac7866-f85c-af06-2f8a-560b8b7838f3">
+      <Execution id="c6a6c30c-ca81-4c8c-a46b-7add15b999be" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.FindTests" name="BoundedCapturePreservesScrollAndRejectsTruncatedLogicalPrefixes" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.UntrustedOscCannotWriteClipboardAndOversizeStringsRecover" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="d2f91512-1179-df2a-b3a0-9347ef5c6f29">
+      <Execution id="d8dc7b9e-30ef-4105-97cd-ff68e5d0353a" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="UntrustedOscCannotWriteClipboardAndOversizeStringsRecover" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.NewOutputKeepsScrolledContentUntilItIsEvicted" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="a2e64bb7-517b-0fa2-0537-6aae0a6d4756">
+      <Execution id="4b71e867-3748-4669-83c8-92c94a169c53" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="NewOutputKeepsScrolledContentUntilItIsEvicted" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.FragmentedUtf8CombiningAndWideGlyphs" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="5c505dab-7ed3-fbed-b360-276b8b63aece">
+      <Execution id="935a334b-f614-4f34-8572-274771a10285" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="FragmentedUtf8CombiningAndWideGlyphs" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.FindTests.UnicodeCanonicalGraphemesWideCellsAndSoftWrapsMapToWholeDisplayCells" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="89ce6af8-30fa-e8f5-5739-6ab414ccd6bb">
+      <Execution id="4a72178f-3146-4cda-88de-83aa46941dea" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.FindTests" name="UnicodeCanonicalGraphemesWideCellsAndSoftWrapsMapToWholeDisplayCells" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.ItermExitCodeMatchesPositionalAttributeScan(payload: &quot;D;aid=opaque;23;k=s&quot;, expected: 23)" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="953955dc-b23e-12af-9972-c4875b51a9ce">
+      <Execution id="068cb069-a169-41e2-a696-1052897caa59" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="ItermExitCodeMatchesPositionalAttributeScan" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.CaptionWindowNumbersNavigateAndRenumberRemainingLiveWindows" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="dc38b7af-f353-ce35-1577-0306b09e984a">
+      <Execution id="1af7d373-d6a7-4fbb-ad15-2577423ee7be" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="CaptionWindowNumbersNavigateAndRenumberRemainingLiveWindows" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.GraphicsTests.FragmentedImageProtocolsSurviveAdapterAndRenderActualPixels(protocol: &quot;iterm&quot;, expected: Iterm2Inline)" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="ae9bad4a-b810-4d9e-797b-e7c7a4e2841e">
+      <Execution id="852fb4e2-4ba8-4839-ae16-af94a7f69cfe" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.GraphicsTests" name="FragmentedImageProtocolsSurviveAdapterAndRenderActualPixels" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.SettingsToolbarCategoriesAndProfileSegmentsKeepFieldsAccessibleAtMinimumSize" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="eaf37f92-7277-a630-1e67-b4f5a0541f72">
+      <Execution id="78cb8d43-2678-4281-89b6-d2d4e2df701a" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="SettingsToolbarCategoriesAndProfileSegmentsKeepFieldsAccessibleAtMinimumSize" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.SettingsTests.DamagedSettingsRecoverBackupAndPreserveOriginal" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="fb73b0bf-59e9-90cf-51dd-2a5a5b05a23c">
+      <Execution id="9025b8b8-ecc0-4614-aa9d-98ba6262ccd2" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.SettingsTests" name="DamagedSettingsRecoverBackupAndPreserveOriginal" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.TmuxTests.EscapedByteOutputAndNestedLayoutAreStrictAndBounded" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="1d5cd09d-9d12-efbf-b943-dbf77b987a3c">
+      <Execution id="2ad54e5c-1d6e-4ce8-8260-f6417e756b8b" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.TmuxTests" name="EscapedByteOutputAndNestedLayoutAreStrictAndBounded" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.FindTests.InvalidUnicodeOversizeQueriesCancellationAndPathologicalRegexAreBounded" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="a6ac24ad-a29e-85fd-7541-0a323cd1d3e4">
+      <Execution id="58b1f064-9e47-45d2-a31d-00db5ca82a76" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.FindTests" name="InvalidUnicodeOversizeQueriesCancellationAndPathologicalRegexAreBounded" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.ScriptingServerTests.OriginalProtobufEnvelopesAndBoundedSubscriptionsRouteWithoutChangingRequestIds" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="95960776-c84e-26a7-62b9-eb4ed762f7ff">
+      <Execution id="e11d0b18-7bdf-46f7-8209-4085222a2469" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.ScriptingServerTests" name="OriginalProtobufEnvelopesAndBoundedSubscriptionsRouteWithoutChangingRequestIds" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.AuthenticatedScriptingControlsRealTabsPanesAndReadsUnicodeWithoutMovingScrollback" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="6c283407-5a2d-acbf-1a9e-41a951a8fef8">
+      <Execution id="50925a62-2643-440e-a9bb-8208b7702fe0" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="AuthenticatedScriptingControlsRealTabsPanesAndReadsUnicodeWithoutMovingScrollback" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.TriggerTests.MatchingWhileScrolledPreservesTheViewAndSkipsOversizeLines" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="25248502-e63d-02c9-f600-d405fee6e8ce">
+      <Execution id="3bb7c6d0-4c73-4106-9c26-9bf836116fe9" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.TriggerTests" name="MatchingWhileScrolledPreservesTheViewAndSkipsOversizeLines" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.NativeTmuxControlsFollowRealSplitsRouteInputAndDetachWithoutKillingShells" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="310ae352-8c97-6a03-402b-5f076279a4cf">
+      <Execution id="2ef5d812-ae1d-469f-a8c2-9680a4adbbe1" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="NativeTmuxControlsFollowRealSplitsRouteInputAndDetachWithoutKillingShells" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.TriggerTests.ProfileRulesAreBoundedValidatedAndPersistedWithoutChangingOriginalOnFailure" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="a70efb38-dd08-6836-d1c4-6258e9652c24">
+      <Execution id="3a8ce2c7-8e0e-4102-961b-013bb2cec9d0" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.TriggerTests" name="ProfileRulesAreBoundedValidatedAndPersistedWithoutChangingOriginalOnFailure" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.PtyTests.UpstreamBashIntegrationTracksCommandStatusDirectoryAndMarks" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="f838c08c-51b6-405c-338c-88ccdd47b363">
+      <Execution id="800566d4-193a-4214-bd83-d7fadded3124" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.PtyTests" name="UpstreamBashIntegrationTracksCommandStatusDirectoryAndMarks" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.EngineTests.SearchScrollbackAfterResize" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="8d1c9014-29f8-6000-4e12-29fad4a976c8">
+      <Execution id="cc498f11-ed1e-4b5a-b617-06f3cf230286" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.EngineTests" name="SearchScrollbackAfterResize" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.PreferencesSaveValidationAndCancelAreTransactional" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="ad24228f-70ab-0150-fc80-22ffdf00703f">
+      <Execution id="4f14d342-be3c-4f3d-b326-3dc56e244409" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="PreferencesSaveValidationAndCancelAreTransactional" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.CompactCaptionTabActionsAndMinimumWidthKeepRealSessionsAlive" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="60bb2109-4ffd-dee5-7f4d-8984e35998bd">
+      <Execution id="9329ad97-c0d7-46b8-b93b-cf154fc8e787" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="CompactCaptionTabActionsAndMinimumWidthKeepRealSessionsAlive" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.ScriptingServerTests.OversizeAndMalformedBinaryFramesDisconnectBeforeReachingTheDesktop" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="f6cf8fa1-2f6a-fc77-b6fa-50b23dbae2a2">
+      <Execution id="a93645bf-12c5-4f81-990b-a59efb8e8f05" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.ScriptingServerTests" name="OversizeAndMalformedBinaryFramesDisconnectBeforeReachingTheDesktop" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.DesktopTests.KeyboardToRealShellClipboardSearchResizeTabsSplitsAndShutdown" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="552a4ffa-e030-7dd8-9a37-8cd1a4a47019">
+      <Execution id="3f84c8f6-450a-4649-ac78-75830055d120" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.DesktopTests" name="KeyboardToRealShellClipboardSearchResizeTabsSplitsAndShutdown" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.FindTests.NavigationCreditsOnlyItsOwnRevisionAndNeverHidesOutputArrivingAfterCapture" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="0bd87a8c-3eb3-4e17-c2e5-f2e210d30c18">
+      <Execution id="78c2456d-ae9d-4aac-854f-9dbe3a0eb60e" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.FindTests" name="NavigationCreditsOnlyItsOwnRevisionAndNeverHidesOutputArrivingAfterCapture" />
+    </UnitTest>
+    <UnitTest name="Aster.Tests.HostedSessionTests.ExplicitDetachAcknowledgesLastQueuedInputBeforeReattachment" storage="d:\a\aster-terminal\aster-terminal\tests\terminal.tests\bin\release\net10.0\terminal.tests.dll" id="87dc0b19-a8f4-c9a8-c6a8-a565193da1d8">
+      <Execution id="882a47e1-c912-46e9-b88c-04112cc63566" />
+      <TestMethod codeBase="D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\bin\Release\net10.0\Terminal.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aster.Tests.HostedSessionTests" name="ExplicitDetachAcknowledgesLastQueuedInputBeforeReattachment" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="74f6ad90-ba26-f924-c690-5f3c62987faf" executionId="9475713d-712e-4f3e-bcb4-c8e4cc3d5e24" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="eaf37f92-7277-a630-1e67-b4f5a0541f72" executionId="78cb8d43-2678-4281-89b6-d2d4e2df701a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ff4e08b2-05fd-fc30-2cfb-a1d5eebc7573" executionId="367a8396-289d-4c0d-a1ef-f346cc014c48" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="60bb2109-4ffd-dee5-7f4d-8984e35998bd" executionId="9329ad97-c0d7-46b8-b93b-cf154fc8e787" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2e524a13-9ef6-cf2c-b493-bc4a143a80c6" executionId="ce1460c1-05dc-490f-b632-e86e89ebf8ef" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fb73b0bf-59e9-90cf-51dd-2a5a5b05a23c" executionId="9025b8b8-ecc0-4614-aa9d-98ba6262ccd2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d40d2fa5-2db5-42a9-f87a-ff516ac650be" executionId="76652381-4794-4c70-941f-c47a6b866cd7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f0788377-2f55-9cbe-5475-676782a31e9d" executionId="eb899988-fefd-4081-a33e-fef27d90591c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e567d5fb-b0c6-d66e-35c0-ce4ca1933da3" executionId="70bc30d5-4ae3-489a-afe1-6ee1be5aa234" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fd562a2a-0cb2-8fb7-7ce0-e64cc3deee43" executionId="e3081030-b1ff-4836-afaf-8a205937d111" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cc14ec22-f608-fd97-f3a9-f57fd43d76a6" executionId="a49d1638-bad3-459f-93d8-3906fd5eb90b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9797708e-fb63-773b-48bd-a7f1e60b92f8" executionId="8c19d5ec-8b26-413f-8fbb-2cccdaec476c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="680827e7-74fb-c51e-e1d7-931cb375f641" executionId="58387ed8-6c9e-4427-80df-17906ec93523" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5dd7f39c-d922-4f22-57cd-01971485cae0" executionId="47de4524-fff1-4aa4-9692-475229b2753b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f838c08c-51b6-405c-338c-88ccdd47b363" executionId="800566d4-193a-4214-bd83-d7fadded3124" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6be0fa20-14d3-c97c-c700-f302670accb8" executionId="97db0338-03fc-4c86-a8de-c3f8794181bc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b5d65379-ec1b-436f-288c-be0d37fe70f8" executionId="4f31c1e9-ffe8-49ad-b68a-4d473787cf30" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a70efb38-dd08-6836-d1c4-6258e9652c24" executionId="3a8ce2c7-8e0e-4102-961b-013bb2cec9d0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6c283407-5a2d-acbf-1a9e-41a951a8fef8" executionId="50925a62-2643-440e-a9bb-8208b7702fe0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="440e886f-73cf-76bb-7ef2-d3ae8a4164df" executionId="1856714a-3f7a-4ec5-83bc-8bd4f18d5087" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="36e70c5b-b977-db22-aea3-cc5943924baf" executionId="f3472cf8-9d07-429a-bb34-86dbeb2ed9f0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e1b518db-a5fd-f6eb-6447-b426ba7905f3" executionId="189d05c9-7cf6-4add-97f1-04a8b55a5314" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a2b0d3d2-7894-162b-2721-e39e8a8d864a" executionId="594219c1-0ba5-4907-86f0-b4a24b620c65" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="046e3559-5111-569b-829e-577157e41138" executionId="3b081add-2fee-4244-8042-0f3251899847" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dc38b7af-f353-ce35-1577-0306b09e984a" executionId="1af7d373-d6a7-4fbb-ad15-2577423ee7be" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="05b07b09-7045-6f6d-d2dc-ebc90d658be6" executionId="3fb887c3-eee9-4c6b-a622-f6ee57bec594" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="88a5e35e-ca35-4509-6590-2c9c68494bcc" executionId="1f6afee8-3ae1-46fe-8e81-7e4832c8fc68" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="11e02bbb-6dcb-c331-6eab-6e7500abd04b" executionId="30fb0fdb-1a38-48e8-9c64-8b4ac49afe71" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="992804ea-e1bb-03e6-9738-2a76d4ef9c70" executionId="169d3a86-ca90-4de7-8f33-444b68580fe0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c03afe19-8e7d-1117-4d4d-66658d3eefda" executionId="e208c872-ba27-4cf1-9469-ac4a8b7a0279" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ad24228f-70ab-0150-fc80-22ffdf00703f" executionId="4f14d342-be3c-4f3d-b326-3dc56e244409" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d38a603d-ba32-64f4-5b3f-1c22f7ef625d" executionId="6378d70d-089d-4356-8947-071313f5babc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ae9bad4a-b810-4d9e-797b-e7c7a4e2841e" executionId="852fb4e2-4ba8-4839-ae16-af94a7f69cfe" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a6ac24ad-a29e-85fd-7541-0a323cd1d3e4" executionId="58b1f064-9e47-45d2-a31d-00db5ca82a76" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="725b06cb-b514-cb93-8485-b966598954a3" executionId="98a05448-18de-4633-b838-1e95f63e2d11" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="aa4652cd-2c03-5479-9b97-14e62fc513c0" executionId="f5cb55f5-0742-4c8d-8d57-1f6a9c5277e7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="70f3f9ea-fff3-888f-d65e-26b2da556c4b" executionId="8b26bb75-084e-4a71-9316-a6bd691f5e30" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4f778117-c8d9-26de-da62-5e7b2abf4a72" executionId="0ffcab47-0f95-4493-b604-70480591cdba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="aa2a7849-3332-38fe-dd54-122fe9c16341" executionId="88abb34b-bf08-4da3-9318-96787148d359" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="64715e8f-96b6-1486-8c82-b4e87e04e39a" executionId="db4befb1-4355-4c1e-ac2c-3ea56b0b8749" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="95960776-c84e-26a7-62b9-eb4ed762f7ff" executionId="e11d0b18-7bdf-46f7-8209-4085222a2469" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="77a36f29-a343-de4c-1fb6-16f1bef1fdd3" executionId="3b043adf-0d79-4309-971e-693480e075c5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="01bc4b46-8368-46ed-e142-c2b7d0dfa581" executionId="675b6dee-d973-413f-8f34-f8df7675189b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d4ffb14b-eb23-0995-0988-cc49da44ff33" executionId="86d34e7c-63b4-4864-ace2-560b43720be8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="05f9ddd9-890e-354b-279b-d955b3889f0b" executionId="e97f2b65-b201-4cb7-adcd-e64535b4e8d0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="14c3dd99-3444-5c78-554e-63f7aa63a6c3" executionId="2d8e4b38-b848-433d-9ed7-11ba64a71f02" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a5e93787-75e5-2a14-1190-c6c44a7a9dda" executionId="3e4ba3cd-445b-4cb0-b197-1a3ac894c17c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="afede510-2237-d2df-422f-42ec5a4f7b60" executionId="4a99e086-8fd5-465e-8594-002a973042b3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="60413fec-6822-44ab-9317-4604cbd77094" executionId="daef7504-ab95-4d95-bcda-5c3d2ad37000" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7b7df767-a83e-4930-555c-1b75c404b521" executionId="247f744c-6af6-4fa7-917f-9b58151ec781" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b01c24d5-b66b-e743-ad2b-731bae345b7b" executionId="4f02fc4a-3da1-421e-abaa-046a72515807" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d7ee1720-87e1-752f-01f2-c1f9205ed64d" executionId="758dba6f-6cdc-4a3b-a8e4-88cdfda82ceb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6f19b0c2-6d8f-2423-4e55-28897dddea13" executionId="210f6972-76c6-4b67-bf48-7d40b1ad1f4a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a2e64bb7-517b-0fa2-0537-6aae0a6d4756" executionId="4b71e867-3748-4669-83c8-92c94a169c53" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="71a496b6-6e68-ea28-9379-acf97b87f2d3" executionId="8cffada1-cc55-4c47-b29c-32553367765c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5c505dab-7ed3-fbed-b360-276b8b63aece" executionId="935a334b-f614-4f34-8572-274771a10285" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d2f91512-1179-df2a-b3a0-9347ef5c6f29" executionId="d8dc7b9e-30ef-4105-97cd-ff68e5d0353a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="547e1393-034c-40d9-4fe7-5e5dc535a137" executionId="01612339-8e76-444f-9f90-de36572c1722" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8d1c9014-29f8-6000-4e12-29fad4a976c8" executionId="cc498f11-ed1e-4b5a-b617-06f3cf230286" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ab0d428f-433e-a7b3-4c8e-41befab3a561" executionId="09e9af35-c08b-4eaa-b651-162667cfe829" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e6238b06-fac7-b831-9255-d0e1a8434ec8" executionId="21cf2035-55d2-4c57-bb8d-d8d34164c252" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e0ac7866-f85c-af06-2f8a-560b8b7838f3" executionId="c6a6c30c-ca81-4c8c-a46b-7add15b999be" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="47964454-08e7-08b5-a736-ecc43fc22842" executionId="4d273472-599e-4aa1-8e57-548b7433c92f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c9370a9a-c215-b785-3da2-7385c51f8345" executionId="1bb6cac8-26d0-443e-829d-b8be0fd0a2aa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8573de2e-898d-98cf-71db-9fc75e2936e4" executionId="f6e8f3ec-2244-474d-9135-24db118cc490" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="aea85731-43d2-07d7-a8ea-86b7fa842ecb" executionId="cd065b55-5c90-4d92-9491-5c74b947deed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0bd87a8c-3eb3-4e17-c2e5-f2e210d30c18" executionId="78c2456d-ae9d-4aac-854f-9dbe3a0eb60e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f6cf8fa1-2f6a-fc77-b6fa-50b23dbae2a2" executionId="a93645bf-12c5-4f81-990b-a59efb8e8f05" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="67277509-038e-51c8-dd58-6bc343680fee" executionId="43090784-a811-477d-839d-4f23877fe822" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9261152e-6214-5d59-e713-edd1c20c5881" executionId="02950259-fa74-4165-b51c-6b47534fecb6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7fbb51f3-a4e9-3eb8-4532-db592747e489" executionId="b899af7c-57d7-4fa1-acd0-b4835c741dfa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ac4b0fa2-ae72-0ecd-fc94-b73342223066" executionId="139e53d5-1787-44d6-b6d7-1aa2efc798a0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="552a4ffa-e030-7dd8-9a37-8cd1a4a47019" executionId="3f84c8f6-450a-4649-ac78-75830055d120" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="310ae352-8c97-6a03-402b-5f076279a4cf" executionId="2ef5d812-ae1d-469f-a8c2-9680a4adbbe1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="89ce6af8-30fa-e8f5-5739-6ab414ccd6bb" executionId="4a72178f-3146-4cda-88de-83aa46941dea" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1d5cd09d-9d12-efbf-b943-dbf77b987a3c" executionId="2ad54e5c-1d6e-4ce8-8260-f6417e756b8b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e1e628a4-177d-e53b-f27f-e409cffe9c31" executionId="521a8fef-8d7f-4006-afda-3c8952d85a98" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1f7bebe1-b52e-7ffd-ee45-1a7cc4c05a4a" executionId="0e49de82-a6ec-40a4-9535-b2f750a1be00" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="25248502-e63d-02c9-f600-d405fee6e8ce" executionId="3bb7c6d0-4c73-4106-9c26-9bf836116fe9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8eb98ecf-c033-da6e-b4d5-72244c4632aa" executionId="6f4086d6-9b48-417e-be44-3f583d3541ef" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="19574732-768f-3f63-64de-fe5f8b16b103" executionId="03ae29cb-4c8f-4af7-a2c6-623ce0a70f5c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3a1e8557-8e65-8274-aab8-e05961396ed8" executionId="8de13ef9-8097-4237-ace1-2dacfbf99d5c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="953955dc-b23e-12af-9972-c4875b51a9ce" executionId="068cb069-a169-41e2-a696-1052897caa59" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="87dc0b19-a8f4-c9a8-c6a8-a565193da1d8" executionId="882a47e1-c912-46e9-b88c-04112cc63566" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bdc1740e-f57f-601e-65b6-d3d7d1f0fa5c" executionId="91dad2d7-6030-4f43-933c-e7d3a8ba559a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="85" executed="74" passed="72" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.13)&#xD;
+[xUnit.net 00:00:00.29]   Discovering: Terminal.Tests&#xD;
+[xUnit.net 00:00:00.58]   Discovered:  Terminal.Tests&#xD;
+[xUnit.net 00:00:00.81]   Starting:    Terminal.Tests&#xD;
+[xUnit.net 00:00:01.27]       Unix PTY acceptance requires Unix.&#xD;
+[xUnit.net 00:00:01.27]       Unix PTY acceptance requires Unix.&#xD;
+Test 'Aster.Tests.PtyTests.UpstreamBashIntegrationTracksCommandStatusDirectoryAndMarks' was skipped in the test run.&#xD;
+Test 'Aster.Tests.PtyTests.VimUsesAlternateBufferAndReturnsToShell' was skipped in the test run.&#xD;
+[xUnit.net 00:00:02.12]       Unix PTY acceptance requires Unix.&#xD;
+Test 'Aster.Tests.TmuxTests.ControlModeRoutesIndependentPanesResizesAndPreservesLiveShellAcrossDetach' was skipped in the test run.&#xD;
+[xUnit.net 00:00:05.94]       Unix PTY acceptance requires Unix.&#xD;
+[xUnit.net 00:00:05.94]       Unix PTY acceptance requires Unix.&#xD;
+[xUnit.net 00:00:05.94]       Unix PTY acceptance requires Unix.&#xD;
+[xUnit.net 00:00:05.94]       Unix PTY acceptance requires Unix.&#xD;
+[xUnit.net 00:00:06.02]       Unix PTY acceptance requires Unix.&#xD;
+Test 'Aster.Tests.PtyTests.OrdinaryTmuxAndLessReturnToInteractiveShell' was skipped in the test run.&#xD;
+Test 'Aster.Tests.PtyTests.IndependentSessionsAndCloseReapHelper' was skipped in the test run.&#xD;
+Test 'Aster.Tests.PtyTests.InteractiveShellTtyUnicodeResizeInterruptAndExit' was skipped in the test run.&#xD;
+Test 'Aster.Tests.PtyTests.CloseTerminatesShellAndBackgroundChild' was skipped in the test run.&#xD;
+Test 'Aster.Tests.PtyTests.UpstreamZshIntegrationTracksCommandStatusDirectoryAndMarks' was skipped in the test run.&#xD;
+[xUnit.net 00:00:07.86]       Local tmux control mode requires Unix.&#xD;
+Test 'Aster.Tests.DesktopTests.NativeTmuxControlsFollowRealSplitsRouteInputAndDetachWithoutKillingShells' was skipped in the test run.&#xD;
+[xUnit.net 00:00:10.93]       Assert.EndsWith() Failure: String end does not match&#xD;
+[xUnit.net 00:00:10.93]       String:       "Alt+2"&#xD;
+[xUnit.net 00:00:10.93]       Expected end: "1"&#xD;
+[xUnit.net 00:00:10.93]       Stack Trace:&#xD;
+[xUnit.net 00:00:10.93]         D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\ChromeDesktopTests.cs(44,0): at Aster.Tests.DesktopTests.CompactCaptionTabActionsAndMinimumWidthKeepRealSessionsAlive()&#xD;
+[xUnit.net 00:00:10.93]         D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\ChromeDesktopTests.cs(84,0): at Aster.Tests.DesktopTests.CompactCaptionTabActionsAndMinimumWidthKeepRealSessionsAlive()&#xD;
+[xUnit.net 00:00:10.93]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:12.94]       Assert.EndsWith() Failure: String end does not match&#xD;
+[xUnit.net 00:00:12.94]       String:       "Alt+2"&#xD;
+[xUnit.net 00:00:12.94]       Expected end: "1"&#xD;
+[xUnit.net 00:00:12.94]       Stack Trace:&#xD;
+[xUnit.net 00:00:12.94]         D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\ChromeDesktopTests.cs(205,0): at Aster.Tests.DesktopTests.CaptionWindowNumbersNavigateAndRenumberRemainingLiveWindows()&#xD;
+[xUnit.net 00:00:12.94]         D:\a\aster-terminal\aster-terminal\tests\Terminal.Tests\ChromeDesktopTests.cs(214,0): at Aster.Tests.DesktopTests.CaptionWindowNumbersNavigateAndRenumberRemainingLiveWindows()&#xD;
+[xUnit.net 00:00:12.94]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:13.32]       Local tmux control mode requires Unix.&#xD;
+[xUnit.net 00:00:13.44]       Local tmux control mode requires Unix.&#xD;
+Test 'Aster.Tests.DesktopTests.TmuxFindUsesRealOutputAndKeepsSearchIndependentAcrossPanesAndTabs' was skipped in the test run.&#xD;
+Test 'Aster.Tests.DesktopTests.TmuxPaneRemovalAndDetachCancelPendingFindWithoutEndingServerShells' was skipped in the test run.&#xD;
+[xUnit.net 00:00:16.81]   Finished:    Terminal.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="runnervm0xl3a" outcome="Warning" timestamp="2026-10-17T06:22:09.4480780+00:00">
+        <Text>[xUnit.net 00:00:01.27]     Aster.Tests.PtyTests.UpstreamBashIntegrationTracksCommandStatusDirectoryAndMarks [SKIP]</Text>
+      </RunInfo>
+      <RunInfo computerName="runnervm0xl3a" outcome="Warning" timestamp="2026-10-17T06:22:09.4495398+00:00">
+        <Text>[xUnit.net 00:00:01.27]     Aster.Tests.PtyTests.VimUsesAlternateBufferAndReturnsToShell [SKIP]</Text>
+      </RunInfo>
+      <RunInfo computerName="runnervm0xl3a" outcome="Warning" timestamp="2026-10-17T06:22:10.2926582+00:00">
+        <Text>[xUnit.net 00:00:02.12]     Aster.Tests.TmuxTests.ControlModeRoutesIndependentPanesResizesAndPreservesLiveShellAcrossDetach [SKIP]</Text>
+      </RunInfo>
+      <RunInfo computerName="runnervm0xl3a" outcome="Warning" timestamp="2026-10-17T06:22:14.1157331+00:00">
+        <Text>[xUnit.net 00:00:05.94]     Aster.Tests.PtyTests.OrdinaryTmuxAndLessReturnToInteractiveShell [SKIP]</Text>
+      </RunInfo>
+      <RunInfo computerName="runnervm0xl3a" outcome="Warning" timestamp="2026-10-17T06:22:14.1158015+00:00">
+        <Text>[xUnit.net 00:00:05.94]     Aster.Tests.PtyTests.IndependentSessionsAndCloseReapHelper [SKIP]</Text>
+      </RunInfo>
+      <RunInfo computerName="runnervm0xl3a" outcome="Warning" timestamp="2026-10-17T06:22:14.1158232+00:00">
+        <Text>[xUnit.net 00:00:05.94]     Aster.Tests.PtyTests.InteractiveShellTtyUnicodeResizeInterruptAndExit [SKIP]</Text>
+      </RunInfo>
+      <RunInfo computerName="runnervm0xl3a" outcome="Warning" timestamp="2026-10-17T06:22:14.1161782+00:00">
+        <Text>[xUnit.net 00:00:05.94]     Aster.Tests.PtyTests.CloseTerminatesShellAndBackgroundChild [SKIP]</Text>
+      </RunInfo>
+      <RunInfo computerName="runnervm0xl3a" outcome="Warning" timestamp="2026-10-17T06:22:14.1962620+00:00">
+        <Text>[xUnit.net 00:00:06.02]     Aster.Tests.PtyTests.UpstreamZshIntegrationTracksCommandStatusDirectoryAndMarks [SKIP]</Text>
+      </RunInfo>
+      <RunInfo computerName="runnervm0xl3a" outcome="Warning" timestamp="2026-10-17T06:22:16.0382610+00:00">
+        <Text>[xUnit.net 00:00:07.86]     Aster.Tests.DesktopTests.NativeTmuxControlsFollowRealSplitsRouteInputAndDetachWithoutKillingShells [SKIP]</Text>
+      </RunInfo>
+      <RunInfo computerName="runnervm0xl3a" outcome="Error" timestamp="2026-10-17T06:22:19.1053668+00:00">
+        <Text>[xUnit.net 00:00:10.93]     Aster.Tests.DesktopTests.CompactCaptionTabActionsAndMinimumWidthKeepRealSessionsAlive [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="runnervm0xl3a" outcome="Error" timestamp="2026-10-17T06:22:21.1166185+00:00">
+        <Text>[xUnit.net 00:00:12.94]     Aster.Tests.DesktopTests.CaptionWindowNumbersNavigateAndRenumberRemainingLiveWindows [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="runnervm0xl3a" outcome="Warning" timestamp="2026-10-17T06:22:21.4971959+00:00">
+        <Text>[xUnit.net 00:00:13.32]     Aster.Tests.DesktopTests.TmuxFindUsesRealOutputAndKeepsSearchIndependentAcrossPanesAndTabs [SKIP]</Text>
+      </RunInfo>
+      <RunInfo computerName="runnervm0xl3a" outcome="Warning" timestamp="2026-10-17T06:22:21.6136232+00:00">
+        <Text>[xUnit.net 00:00:13.44]     Aster.Tests.DesktopTests.TmuxPaneRemovalAndDetachCancelPendingFindWithoutEndingServerShells [SKIP]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

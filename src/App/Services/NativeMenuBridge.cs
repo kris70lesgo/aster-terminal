@@ -13,6 +13,7 @@ public static class NativeMenuBridge
         ["Split right"] = "SplitRight", ["Split below"] = "SplitBelow", ["Find…"] = "Find",
         ["Copy"] = "Copy", ["Paste"] = "Paste", ["Preferences…"] = "Preferences",
         ["Next tab"] = "NextTab", ["Next pane"] = "NextPane", ["Zoom active pane"] = "ZoomPane",
+        ["Move tab left"] = "MoveTabLeft", ["Move tab right"] = "MoveTabRight",
         ["Open quickly…"] = "OpenQuickly", ["Larger font"] = "LargerFont", ["Smaller font"] = "SmallerFont",
         ["Reset font size"] = "ResetFont", ["Previous mark"] = "PreviousMark", ["Next mark"] = "NextMark",
         ["Instant replay…"] = "Replay"

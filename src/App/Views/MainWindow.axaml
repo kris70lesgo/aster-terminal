@@ -30,6 +30,7 @@
         <MenuItem Header="Split right" Click="SplitRightClicked" /><MenuItem Header="Split below" Click="SplitBelowClicked" />
         <MenuItem Header="Zoom active pane" Click="ZoomPaneClicked" /><MenuItem Header="Next pane" Click="NextPaneClicked" />
         <MenuItem Header="Next tab" Click="NextTabClicked" /><MenuItem Header="Rename tab…" Click="RenameClicked" />
+        <MenuItem Header="Move tab left" Click="MoveTabLeftClicked" /><MenuItem Header="Move tab right" Click="MoveTabRightClicked" />
         <MenuItem Header="Open quickly…" Click="OpenQuicklyClicked" /><Separator />
         <MenuItem Header="Instant replay…" Click="ReplayClicked" /><Separator />
         <MenuItem Header="Add command mark" Click="AddMarkClicked" /><MenuItem Header="Previous mark" Click="PreviousMarkClicked" />

@@ -66,8 +66,7 @@ public partial class MainWindow
             var created = Current!;
             if (request.HasTabIndex && request.TabIndex < _workspaces.Count)
             {
-                _workspaces.Remove(created); _workspaces.Insert((int)request.TabIndex, created);
-                Tabs.Items.Remove(created.Tab); Tabs.Items.Insert((int)request.TabIndex, created.Tab);
+                MoveTabCore(created, (int)request.TabIndex);
             }
             else if (request.HasTabIndex) response.Status = API.CreateTabResponse.Types.Status.InvalidTabIndex;
             response.WindowId = ScriptingWindowId; response.TabId = created.ScriptingId; response.SessionId = created.Active!.ScriptingId;

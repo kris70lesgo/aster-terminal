@@ -686,3 +686,27 @@ return with exit code 0. Inspected normal/tmux compact Find captures have usable
 controls and correct Unicode highlights. Evidence is in v0.9.0-macos-retina; the
 earlier failed zero-display attempt remains preserved separately. No code or
 release archive changed, and no local physical global chord pass is implied.
+
+## 2026-10-17 — Live tab ordering and release version consistency
+
+Studied pinned iTerm2 069b6e0, PseudoTerminal.m moveTabLeft/moveTabRight and
+moveCurrentTabByOffset. Ungrouped keyboard movement wraps while keeping the
+selected session. Cocoa/tab-group machinery is not portable; Aster uses an
+ObservableCollection move of existing TabItems and synchronizes the workspace
+list under the existing layout mutation gate. Pointer gestures stay in a
+separate window partial, with threshold, insertion marker and cancellation.
+This preserves real connections, split/zoom, Find focus and scripting IDs.
+Scripted insertion uses the same operation; persistence captures visible order.
+
+Two new real-shell desktop facts pass: both drag directions, ordinary clicks,
+Escape/outside cancellation and close-button exclusion; keyboard left/right
+wrap, Find focus/results, zoom/split, shell-local variable and process identity,
+scripting/saved order and complete cleanup. Full local Release suite: 78 passed,
+2 Windows-only skips, 80 total, zero failures. Native smoke now checks keyboard
+movement, identities and the shell variable; target-OS CI remains pending.
+
+The About dialog was still hardcoded to 0.8.1 in the released 0.9.0 app. It now
+reads the assembly version. Packaging reads App.csproj's version rather than a
+second literal. Version 0.10.0 introduces no dependency or protocol change.
+Full upstream parity, grouped/pinned/cross-window tabs, pane dragging and tmux
+server ordering remain separate targets. No native runtime claim at this checkpoint.

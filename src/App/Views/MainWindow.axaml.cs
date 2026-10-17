@@ -59,6 +59,7 @@ public partial class MainWindow : Window
         _settings = settings; _store = store; _hotkeyWindow = hotkeyWindow;
         _sessions = store is null ? null : new SessionCatalog(Path.Combine(Path.GetDirectoryName(store.Path)!, "sessions"));
         InitializeComponent();
+        InitializeTabReordering();
         MainMenu.IsVisible = !OperatingSystem.IsMacOS();
         Width = Math.Clamp(settings.WindowWidth, 620, 2400); Height = Math.Clamp(settings.WindowHeight, 320, 1800);
         ApplySettings(settings);
@@ -150,7 +151,8 @@ public partial class MainWindow : Window
         DockPanel.SetDock(close, Dock.Right); header.Children.Add(close); header.Children.Add(workspace.Label);
         workspace.Tab.Header = header;
         workspace.Tab.Content = workspace.Root;
-        _workspaces.Add(workspace); Tabs.Items.Add(workspace.Tab);
+        ToolTip.SetTip(header, "Drag to reorder tabs");
+        _workspaces.Add(workspace); _tabItems.Add(workspace.Tab);
         RefreshChrome();
         return workspace;
     }
@@ -286,7 +288,8 @@ public partial class MainWindow : Window
     }
     private void RemoveWorkspace(Workspace workspace)
     {
-        _workspaces.Remove(workspace); Tabs.Items.Remove(workspace.Tab);
+        CancelTabDrag();
+        _workspaces.Remove(workspace); _tabItems.Remove(workspace.Tab);
         RefreshChrome();
         if (_workspaces.Count == 0) { Close(); return; }
         Tabs.SelectedItem = _workspaces[^1].Tab; Current?.Active?.Terminal.Focus();
@@ -349,6 +352,7 @@ public partial class MainWindow : Window
         if (_closed) return;
         e.Cancel = true; if (_closing) return;
         _closing = true;
+        CancelTabDrag();
         if (_hotkeyWindow && !IsVisible && _settings.ConfirmClose && !_detachOnClose && _workspaces.SelectMany(w => w.Panes).Any(p => p.Terminal.IsRunning))
         { ShowActivated = false; Show(); }
         if (!await ConfirmCloseAsync(_workspaces.SelectMany(w => w.Panes))) { _closing = false; return; }
@@ -368,6 +372,7 @@ public partial class MainWindow : Window
 
     private void OnShortcut(object? sender, KeyEventArgs e)
     {
+        if (e.Key == Key.Escape && CancelTabDrag()) { e.Handled = true; return; }
         if (e.Key == Key.Escape && SearchBar.IsVisible) { HideSearch(); e.Handled = true; return; }
         var action = _shortcuts.FirstOrDefault(pair => pair.Value.Matches(e)).Key;
         if (action is null) return;
@@ -385,6 +390,8 @@ public partial class MainWindow : Window
             case "Preferences": Observe(PreferencesAsync()); break;
             case "NextTab": CycleTab(1); break;
             case "PreviousTab": CycleTab(-1); break;
+            case "MoveTabLeft": Observe(MoveCurrentTabAsync(-1)); break;
+            case "MoveTabRight": Observe(MoveCurrentTabAsync(1)); break;
             case "NextPane": CyclePane(1); break;
             case "PreviousPane": CyclePane(-1); break;
             case "ZoomPane": ZoomPane(); break;
@@ -459,6 +466,7 @@ public partial class MainWindow : Window
     internal void ReportApplicationError(string text) => ShowError(text);
     private void TabChanged(object? sender, SelectionChangedEventArgs e)
     {
+        if (_reorderingTabs) return;
         if (Current is { Active: { } pane } workspace)
             Dispatcher.UIThread.Post(() => { if (Current != workspace || _closing) return; Activate(workspace, pane); pane.Terminal.Focus(); });
     }
@@ -496,7 +504,7 @@ public partial class MainWindow : Window
         else Close();
     }
     private void AboutClicked(object? sender, RoutedEventArgs e) =>
-        Observe(DialogWindow.Confirm(this, "About Aster Terminal", "Aster Terminal 0.8.1\nIndependent iTerm2 migration to Avalonia.\nGPL-3.0-or-later. No warranty.\nTerminal component: Devolutions (MIT).\nSee LICENSE and bundled notices.", "Done"));
+        Observe(DialogWindow.Confirm(this, "About Aster Terminal", $"Aster Terminal {typeof(MainWindow).Assembly.GetName().Version?.ToString(3)}\nIndependent iTerm2 migration to Avalonia.\nGPL-3.0-or-later. No warranty.\nTerminal component: Devolutions (MIT).\nSee LICENSE and bundled notices.", "Done"));
 
     private void ShowError(string message) { AlertText.Text = message; AlertBar.IsVisible = true; }
     private void DismissAlertClicked(object? sender, RoutedEventArgs e) => AlertBar.IsVisible = false;

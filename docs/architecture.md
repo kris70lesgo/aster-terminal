@@ -268,3 +268,21 @@ search-bound changes. Two headless real-tmux desktop facts and final native Unix
 pass in source 78376ee / run 38906845116, including compact layout, Unicode,
 grid fit and detach. Windows retains the common bar in normal panes; local
 tmux itself remains unsupported there.
+
+## Live tab ordering, 0.10.0 work
+
+Normal-window tabs use an observable collection of existing TabItems. Reorder
+moves that item and its workspace under the existing layout-mutation gate;
+it never replaces panes or connections. The selected tab, focused Find editor,
+active split and zoom remain attached to the same identities. Saved layouts
+and scripting snapshots enumerate the reordered workspace list. Scripted tab
+insertion shares the same move operation.
+
+Mouse drags begin only on a tab header, excluding its close button, after a
+six-pixel threshold. Capture belongs to the tab strip. An insertion marker
+identifies the target edge; release outside a header, Escape, capture loss,
+window deactivation, tab removal and close cancel the gesture. No external
+drag/drop payload or shell input is involved. Keyboard/menu movement wraps at
+the ends, matching pinned iTerm2's ungrouped moveCurrentTabByOffset behavior.
+Groups, pinned tabs, transfer between windows, pane dragging and tmux server
+window ordering are separate gaps. No new dependency or terminal change.

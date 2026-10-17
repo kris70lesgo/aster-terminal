@@ -11,6 +11,7 @@ import shutil
 import subprocess
 import tarfile
 import zipfile
+import xml.etree.ElementTree as ET
 
 root = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
@@ -32,7 +33,8 @@ shutil.copy2(root / "NOTICE.md", payload / "NOTICE.md")
 shutil.copy2(root / "docs/licensing.md", payload / "LICENSING.md")
 shutil.copy2(root / "docs/dependency-source-map.md", payload / "DEPENDENCY-SOURCES.md")
 for unwanted in payload.glob("ShellIntegration/zsh/.zsh_history*"): unwanted.unlink()
-version = "0.9.0"
+version = ET.parse(root / "src/App/App.csproj").findtext(".//Version")
+if not version: raise SystemExit("App.csproj must declare the release version.")
 name = f"aster-terminal-{version}-{rid}"
 package_root = payload
 if rid.startswith("osx"):

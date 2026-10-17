@@ -118,6 +118,31 @@ public static class DesktopSmoke
             if (OperatingSystem.IsMacOS() && NativeMenu.GetMenu(Application.Current!)?.Items.OfType<NativeMenuItem>().Any(item => item.Header == "Quit") != true) throw new InvalidOperationException("Standard macOS application commands were removed.");
             await Task.Delay(300);
             SaveImage(window, Path.Combine(reportDirectory, "tabs.png"));
+            var tabs = window.FindControl<TabControl>("Tabs")!;
+            var tabOrder = tabs.Items.Cast<TabItem>().ToArray();
+            var movedPane = Panes(window).Single();
+            var movedSession = movedPane.Terminal.ProcessMetadata!.SessionId;
+            var movedScriptTab = window.ScriptingTabId;
+            await Until(() => TerminalBufferExport.ToPlainText(movedPane.Terminal.Engine.CreateSnapshot().Buffer).Contains("ASTER_READY>"));
+            movedPane.Terminal.RaiseEvent(new TextInputEventArgs { RoutedEvent = InputElement.TextInputEvent, Text = OperatingSystem.IsWindows() ?
+                "set ASTER_TAB_STATE=retained" : "ASTER_TAB_STATE=retained" });
+            Enter(movedPane.Terminal);
+            Shortcut(window, "MoveTabLeft");
+            await Until(() => tabs.SelectedIndex == 0 && ReferenceEquals(tabs.Items[0], tabOrder[1]));
+            Shortcut(window, "MoveTabLeft"); // Wrap back to the end.
+            await Until(() => tabs.SelectedIndex == 1 && ReferenceEquals(tabs.Items[1], tabOrder[1]));
+            Shortcut(window, "MoveTabRight"); // Wrap to the beginning.
+            await Until(() => tabs.SelectedIndex == 0 && ReferenceEquals(tabs.Items[0], tabOrder[1]));
+            if (!ReferenceEquals(Panes(window).Single(), movedPane) || window.ScriptingTabId != movedScriptTab ||
+                movedPane.Terminal.ProcessMetadata!.SessionId != movedSession || !terminal.IsRunning)
+                throw new InvalidOperationException("Reordering replaced a live tab or its scripting identity.");
+            movedPane.Terminal.RaiseEvent(new TextInputEventArgs { RoutedEvent = InputElement.TextInputEvent, Text = OperatingSystem.IsWindows() ?
+                "echo __TAB_%ASTER_TAB_STATE%__" : "printf '\\n__TAB_%s__\\n' \"$ASTER_TAB_STATE\"" });
+            Enter(movedPane.Terminal);
+            await Until(() => TerminalBufferExport.ToPlainText(movedPane.Terminal.Engine.CreateSnapshot().Buffer).Contains("__TAB_retained__"));
+            await Task.Delay(150);
+            SaveImage(window, Path.Combine(reportDirectory, "tabs-reordered.png"));
+            checks.Add("Native tab move-left/right and wrap preserve the selected pane, scripting identity, independent processes and shell-local variable");
             Shortcut(window, "SplitRight");
             await Until(() => Panes(window).Length == 2 && Panes(window).All(p => p.Terminal.IsRunning));
             Shortcut(window, "SplitBelow");

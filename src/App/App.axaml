@@ -18,6 +18,8 @@
         </Setter>
         <Style Selector="^:selected /template/ Border#TabBorder"><Setter Property="Background" Value="{DynamicResource SelectedTabBackground}" /></Style>
         <Style Selector="^:pointerover /template/ Border#TabBorder"><Setter Property="Background" Value="{DynamicResource SelectedTabBackground}" /></Style>
+        <Style Selector="^.drop-before /template/ Border#TabBorder"><Setter Property="BorderThickness" Value="3,0,0,0" /><Setter Property="BorderBrush" Value="#6A9FE8" /></Style>
+        <Style Selector="^.drop-after /template/ Border#TabBorder"><Setter Property="BorderThickness" Value="0,0,3,0" /><Setter Property="BorderBrush" Value="#6A9FE8" /></Style>
       </ControlTheme>
       <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Dark">

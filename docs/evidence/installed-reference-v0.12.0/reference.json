@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-10-17T06:20:03.349807+00:00",
+  "applicationPath": "/Applications/iTerm.app",
+  "bundleName": "iTerm2",
+  "bundleId": "com.googlecode.iterm2",
+  "version": "3.7.4",
+  "captureScope": "Read-only per-window cua-driver capture, user explicitly authorised inspecting iTerm. Private shell captures retained only in ignored artifacts, not published.",
+  "logicalWindow": {
+    "width": 587,
+    "height": 462
+  },
+  "renderScale": 2,
+  "font": {
+    "family": "Monaco",
+    "nominalSize": 12
+  },
+  "samples": {
+    "caption": "#21212F",
+    "terminal": "#15191E",
+    "scrollTrack": "#22262B",
+    "scrollThumb": "#919395"
+  },
+  "referenceCaptureSha256": "dc34d921ca8df216c51bf007cb451068397479a76067a365bde40395c4dcc227",
+  "limits": "Colours/geometry are sampled measurements, not whole-window similarity or complete UI parity. Shell startup content is not copied or simulated; font fallback differs across operating systems."
+}

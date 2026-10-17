@@ -1,5 +1,9 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Headless;
+using Avalonia.Input;
+using Avalonia.Input.Raw;
 using Avalonia.Headless.XUnit;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
@@ -36,14 +40,18 @@ public sealed partial class DesktopTests
             var tabs = window.FindControl<TerminalTabs>("Tabs")!;
             Assert.Contains("single", tabs.Classes);
             Assert.Equal(32, tabs.GetVisualDescendants().OfType<Border>().Single(b => b.Name == "WindowHeader").Bounds.Height);
+            Assert.False(VisualButton(window, "NewTabButton").IsEffectivelyVisible);
+            Assert.EndsWith("1", tabs.WindowShortcut);
             CaptureChrome(window, "single-dark");
             for (var i = 2; i <= 3; i++)
             {
-                Click(VisualButton(window, "NewTabButton"));
+                if (i == 2) SendKey(window, Key.T, OperatingSystem.IsMacOS() ? RawInputModifiers.Meta : RawInputModifiers.Control | RawInputModifiers.Shift);
+                else Click(VisualButton(window, "NewTabButton"));
                 await Until(() => tabs.ItemCount == i && Panes(window).Single().Terminal.IsRunning);
                 all.Add(Panes(window).Single());
             }
             Assert.DoesNotContain("single", tabs.Classes);
+            Assert.True(VisualButton(window, "NewTabButton").IsEffectivelyVisible);
             var ids = all.Select(p => p.Terminal.ProcessMetadata!.SessionId).ToArray();
             Assert.Equal(3, ids.Distinct().Count());
             window.Width = 620; window.Height = 400;
@@ -111,4 +119,99 @@ public sealed partial class DesktopTests
         }
         finally { window?.Close(); if (Directory.Exists(directory)) Directory.Delete(directory, true); }
     }
+    [AvaloniaFact]
+    public async Task NativeScrollbarFollowsRealHistoryThumbDragAndAlternateScreenWithoutChangingShell()
+    {
+        var window = new MainWindow(new TerminalProfile("Scrollback", OperatingSystem.IsWindows() ? "cmd.exe /Q" : "exec /bin/sh", Path.GetTempPath()));
+        TerminalPane? pane = null; window.Show();
+        try
+        {
+            await Until(() => Panes(window).Length == 1 && Panes(window)[0].Terminal.IsRunning);
+            pane = Panes(window).Single(); pane.Terminal.Focus();
+            var id = pane.Terminal.ProcessMetadata!.SessionId;
+            window.KeyTextInput(OperatingSystem.IsWindows() ? "for /L %i in (1,1,160) do @echo HISTORY_%i" : "i=1; while [ $i -le 160 ]; do printf 'HISTORY_%s\\n' \"$i\"; i=$((i+1)); done");
+            SendKey(window, Key.Enter);
+            var bar = pane.GetVisualDescendants().OfType<TerminalScrollBar>().Single();
+            await Until(() => Text(pane).Contains("HISTORY_160") && bar.Maximum > 50);
+            Assert.Equal(12, bar.Bounds.Width);
+            Assert.Equal(pane.Terminal.Engine.HistoryCount, bar.Maximum);
+            Assert.Equal(pane.Terminal.Engine.Rows, bar.ViewportSize);
+            var thumb = bar.GetVisualDescendants().OfType<Thumb>().Single();
+            var point = thumb.TranslatePoint(new Point(thumb.Bounds.Width / 2, thumb.Bounds.Height / 2), window)!.Value;
+            window.MouseDown(point, MouseButton.Left); window.MouseMove(point - new Vector(0, 90)); window.MouseUp(point - new Vector(0, 90), MouseButton.Left);
+            await Until(() => pane.Terminal.Engine.ScrollOffset > 0);
+            Assert.Equal((int)Math.Round(bar.Maximum - bar.Value), pane.Terminal.Engine.ScrollOffset);
+            bar.Value = 0;
+            Assert.Equal(pane.Terminal.Engine.HistoryCount, pane.Terminal.Engine.ScrollOffset);
+            pane.Terminal.ScrollToBottom();
+            Assert.Equal(bar.Maximum, bar.Value);
+            Assert.Equal(id, pane.Terminal.ProcessMetadata.SessionId);
+            Assert.True(pane.Terminal.IsRunning);
+            CaptureChrome(window, "scrollback-bottom");
+            // Alternate screen is a renderer/engine regression; shell identity stays live.
+            pane.Terminal.Engine.Feed("\u001b[?1049h");
+            await Until(() => !bar.IsEnabled && bar.Maximum == 0);
+            pane.Terminal.Engine.Feed("\u001b[?1049l");
+            await Until(() => bar.IsEnabled && bar.Maximum > 50);
+            Assert.Equal(id, pane.Terminal.ProcessMetadata.SessionId);
+        }
+        finally { window.Close(); await Until(() => !window.IsVisible && (pane is null || !pane.Terminal.IsRunning)); }
+    }
+
+    [AvaloniaFact]
+    public void ReferenceAppearancePresetIsTransactionalAndFontPointsMatchLogicalCellMetrics()
+    {
+        var directory = Path.Combine(Path.GetTempPath(), "aster-reference-preset-" + Guid.NewGuid().ToString("N"));
+        PreferencesWindow? dialog = null;
+        try
+        {
+            var store = new SettingsStore(Path.Combine(directory, "settings.json"));
+            var profile = store.Settings.Profiles[0] with { FontSize = 20, FontFamily = "monospace", Foreground = "#EEEEEE", EnvironmentVariables = new() { ["KEEP_ME"] = "preserved" } };
+            store.Save(store.Settings with { Profiles = [profile], DefaultProfileId = profile.Id });
+            void Preset()
+            {
+                dialog = new PreferencesWindow(store); dialog.Show();
+                dialog.FindControl<TabControl>("ProfileTabs")!.SelectedItem = dialog.FindControl<TabItem>("ProfileTextTab");
+                dialog.UpdateLayout(); Click(VisualButton(dialog, "ReferenceAppearanceButton"));
+                Assert.Equal(12, dialog.FindControl<NumericUpDown>("FontSizeBox")!.Value);
+                Assert.Equal(20, store.Settings.Profiles[0].FontSize);
+            }
+            Preset(); dialog!.Close();
+            Assert.Equal(20, new SettingsStore(store.Path).Settings.Profiles[0].FontSize);
+            Preset(); Click(dialog!.GetVisualDescendants().OfType<Button>().Single(b => Equals(b.Content, "Save preferences")));
+            var saved = new SettingsStore(store.Path).Settings.Profiles.Single();
+            Assert.Equal(12, saved.FontSize); Assert.Null(saved.Foreground); Assert.Null(saved.Background);
+            Assert.Equal(profile.Command, saved.Command); Assert.Equal("preserved", saved.EnvironmentVariables["KEEP_ME"]);
+            Assert.Equal(OperatingSystem.IsMacOS() ? "Monaco" : "Cascadia Mono", saved.FontFamily);
+            Assert.Equal(9, saved.ToControlProfile().FontSize);
+            var small = Devolutions.Terminal.TermControl.MeasureCell(saved.ToControlProfile());
+            var large = Devolutions.Terminal.TermControl.MeasureCell((saved with { FontSize = 24 }).ToControlProfile());
+            Assert.InRange(large.Width / small.Width, 1.9, 2.1);
+            Assert.InRange(small.Height, 10, 20);
+        }
+        finally { dialog?.Close(); if (Directory.Exists(directory)) Directory.Delete(directory, true); }
+    }
+
+    [AvaloniaFact]
+    public async Task CaptionWindowNumbersNavigateAndRenumberRemainingLiveWindows()
+    {
+        var profile = new TerminalProfile("Window navigation", OperatingSystem.IsWindows() ? "cmd.exe /Q" : "exec /bin/sh", Path.GetTempPath());
+        var first = new MainWindow(profile); var second = new MainWindow(profile);
+        var panes = new List<TerminalPane>(); first.Show(); second.Show();
+        try
+        {
+            await Until(() => Panes(first).Length == 1 && Panes(second).Length == 1 && Panes(first)[0].Terminal.IsRunning && Panes(second)[0].Terminal.IsRunning);
+            panes.AddRange(Panes(first)); panes.AddRange(Panes(second));
+            Assert.EndsWith("1", first.FindControl<TerminalTabs>("Tabs")!.WindowShortcut);
+            Assert.EndsWith("2", second.FindControl<TerminalTabs>("Tabs")!.WindowShortcut);
+            var modifiers = OperatingSystem.IsMacOS() ? RawInputModifiers.Meta | RawInputModifiers.Alt : RawInputModifiers.Alt;
+            SendKey(second, Key.D1, modifiers);
+            Assert.True(first.IsActive);
+            Assert.All(panes, p => Assert.True(p.Terminal.IsRunning));
+            first.Close(); await Until(() => !first.IsVisible);
+            Assert.EndsWith("1", second.FindControl<TerminalTabs>("Tabs")!.WindowShortcut);
+        }
+        finally { first.Close(); second.Close(); await Until(() => !first.IsVisible && !second.IsVisible && panes.All(p => !p.Terminal.IsRunning)); }
+    }
+
 }

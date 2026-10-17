@@ -794,3 +794,35 @@ terminal/Settings captures on all three platforms were inspected. Evidence:
 from the first passing baseline, not the final verifier PID. Full UI/feature
 parity and physical OS interaction gaps remain in visual-parity.md and the
 feature matrix. No contest submission is claimed.
+
+## 2026-10-17 — installed iTerm2 3.7.4 comparison, 0.12.0 source checkpoint
+
+The user supplied current screenshots and explicitly authorised inspecting the
+installed app. `/Applications/iTerm.app` identifies its bundle as iTerm2 3.7.4.
+Read-only per-window captures show a 587×462 logical window at 2×, Monaco 12,
+#21212F caption / #15191E terminal, no single-tab insertion button and an actual
+scrollback gutter. Private shell screenshots stay in ignored artifacts; curated
+measurements are in installed-reference-v0.12.0/reference.json.
+
+Aster's saved profiles still selected Cascadia Mono 14, and the pinned renderer
+also multiplies point sizes by 96/72. The app now converts nominal Cocoa-style
+logical points at the profile boundary (12 becomes renderer 9), including font
+zoom increments. Existing stored nominal values and chosen fonts are retained;
+Profiles/Text has a transactional reference preset to choose Monaco 12 on Mac
+or the bundled Cascadia Mono fallback elsewhere. This changes the rendered size
+of existing profiles by 3/4, correcting the unit mismatch rather than rewriting
+user settings. Shell startup scripts/content are untouched.
+
+The single-tab plus is hidden; the numbered-window hint has actual app-local
+Option+Command+digit (Mac) / Alt+digit navigation. Shared caption spacing/colours
+follow the current capture. A native Avalonia scrollbar binds to real retained
+history through TermControl viewport APIs, disables in alternate screen and
+unsubscribes on disposal. Each tmux pane reserves its extra 12 logical points
+when calculating the kernel grid. Main windows can shrink below 620 width to
+match the reference geometry. No dependency/VT host action was added.
+
+Release build passes with zero warnings/errors. Local full suite: 83 passed,
+2 Windows-only skips, 85 total, zero failures. New real-shell tests cover thumb
+drag/history/bottom/alternate screen, numbered-window activation/renumbering and
+preset save/cancel/nominal font metrics. Native package verification on all three
+OSes and exact installed acceptance are pending at this source checkpoint.

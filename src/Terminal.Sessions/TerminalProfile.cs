@@ -30,10 +30,12 @@ public sealed record TerminalProfile(string Name, string Command, string Directo
         Name = Name,
         Commandline = Command,
         StartingDirectory = Directory,
-        FontSize = FontSize,
+        // The renderer converts typographic points to DIPs by 96/72. iTerm's
+        // Cocoa points correspond to logical desktop units, so convert once here.
+        FontSize = FontSize * 72d / 96d,
         FontFace = FontFamily,
         Foreground = Foreground ?? (light ? "#243044" : "#D5D5D5"),
-        Background = Background ?? (light ? "#FAFAFC" : "#15181D"),
+        Background = Background ?? (light ? "#FAFAFC" : "#15191E"),
         CursorColor = light ? "#243044" : "#D5D5D5",
         SelectionBackground = light ? "#B9D3EF" : "#3B506B",
         Padding = "5",
@@ -62,7 +64,7 @@ public sealed record TerminalProfile(string Name, string Command, string Directo
         {
             Name = light ? "Aster Light" : "Aster Dark",
             Foreground = Color(Foreground ?? (light ? "#243044" : "#D5D5D5")),
-            Background = Color(Background ?? (light ? "#FAFAFC" : "#15181D")),
+            Background = Color(Background ?? (light ? "#FAFAFC" : "#15191E")),
             Cursor = light ? 0xFF243044 : 0xFFD5D5D5,
             SelectionBackground = light ? 0xFFB9D3EF : 0xFF3B506B,
             Table = ColorScheme.FromName("Campbell").Table.ToArray()

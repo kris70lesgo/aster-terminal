@@ -60,9 +60,10 @@ public partial class MainWindow : Window
         _sessions = store is null ? null : new SessionCatalog(Path.Combine(Path.GetDirectoryName(store.Path)!, "sessions"));
         InitializeComponent();
         InitializeTabReordering();
+        TerminalWindowNavigation.Attach(this, Tabs);
         Tabs.NewTabRequested += (_, _) => Observe(NewTabAsync());
         MainMenu.IsVisible = !OperatingSystem.IsMacOS();
-        Width = Math.Clamp(settings.WindowWidth, 620, 2400); Height = Math.Clamp(settings.WindowHeight, 320, 1800);
+        Width = Math.Clamp(settings.WindowWidth, 400, 2400); Height = Math.Clamp(settings.WindowHeight, 240, 1800);
         ApplySettings(settings);
         Opened += (_, _) => { if (_initialized) return; _initialized = true; Observe(ChangeLayoutAsync(InitializeSessionsAsync)); };
         Closing += OnClosing;
@@ -396,8 +397,8 @@ public partial class MainWindow : Window
             case "NextPane": CyclePane(1); break;
             case "PreviousPane": CyclePane(-1); break;
             case "ZoomPane": ZoomPane(); break;
-            case "LargerFont": Active?.Terminal.AdjustFontSize(1); break;
-            case "SmallerFont": Active?.Terminal.AdjustFontSize(-1); break;
+            case "LargerFont": Active?.Terminal.AdjustFontSize(.75); break;
+            case "SmallerFont": Active?.Terminal.AdjustFontSize(-.75); break;
             case "ResetFont": Active?.Terminal.ResetFontSize(); break;
             case "PreviousMark": Active?.Terminal.ScrollToMark(ScrollToMarkDirection.Previous); break;
             case "NextMark": Active?.Terminal.ScrollToMark(ScrollToMarkDirection.Next); break;
@@ -491,8 +492,8 @@ public partial class MainWindow : Window
     private void AddMarkClicked(object? sender, RoutedEventArgs e) => Active?.Terminal.AddMark();
     private void PreviousMarkClicked(object? sender, RoutedEventArgs e) => Active?.Terminal.ScrollToMark(ScrollToMarkDirection.Previous);
     private void NextMarkClicked(object? sender, RoutedEventArgs e) => Active?.Terminal.ScrollToMark(ScrollToMarkDirection.Next);
-    private void LargerFontClicked(object? sender, RoutedEventArgs e) => Active?.Terminal.AdjustFontSize(1);
-    private void SmallerFontClicked(object? sender, RoutedEventArgs e) => Active?.Terminal.AdjustFontSize(-1);
+    private void LargerFontClicked(object? sender, RoutedEventArgs e) => Active?.Terminal.AdjustFontSize(.75);
+    private void SmallerFontClicked(object? sender, RoutedEventArgs e) => Active?.Terminal.AdjustFontSize(-.75);
     private void ResetFontClicked(object? sender, RoutedEventArgs e) => Active?.Terminal.ResetFontSize();
     private void FullScreenClicked(object? sender, RoutedEventArgs e) => WindowState = WindowState == WindowState.FullScreen ? WindowState.Normal : WindowState.FullScreen;
     private void DarkThemeClicked(object? sender, RoutedEventArgs e) { try { SetTheme("Dark"); } catch (Exception error) { ShowError(error.Message); } }

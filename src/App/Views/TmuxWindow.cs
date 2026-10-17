@@ -52,6 +52,7 @@ public sealed class TmuxWindow : Window
         Item("Find…", FindAsync);
         Item("Detach", () => { Close(); return Task.CompletedTask; });
         _tabs.MenuBar = menu; _tabs.FindContent = _findBar; _tabs.StatusContent = _message; Content = _tabs;
+        TerminalWindowNavigation.Attach(this, _tabs);
         _tabs.NewTabRequested += (_, _) => Observe(NewWindowAsync());
         if (OperatingSystem.IsMacOS()) { menu.IsVisible = false; NativeMenu.SetMenu(this, NativeMenuBridge.FromMenu(menu, _shortcuts)); }
         _refresh = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(75) };
@@ -198,7 +199,7 @@ public sealed class TmuxWindow : Window
     }
     private static (double Width, double Height) Required(TmuxLayout node, double cellWidth, double cellHeight)
     {
-        if (node.PaneId is not null) return (node.Columns * cellWidth + 10, node.Rows * cellHeight + 10);
+        if (node.PaneId is not null) return (node.Columns * cellWidth + 10 + TerminalScrollBar.GutterWidth, node.Rows * cellHeight + 10);
         var children = node.Children.Select(c => Required(c, cellWidth, cellHeight)).ToArray();
         return node.Vertical ? (children.Max(c => c.Width), children.Sum(c => c.Height) + children.Length - 1)
             : (children.Sum(c => c.Width) + children.Length - 1, children.Max(c => c.Height));

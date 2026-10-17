@@ -17,6 +17,8 @@ public sealed class TerminalTabs : TabControl
     public Control? MenuBar { get => GetValue(MenuBarProperty); set => SetValue(MenuBarProperty, value); }
     public Control? FindContent { get => GetValue(FindContentProperty); set => SetValue(FindContentProperty, value); }
     public Control? StatusContent { get => GetValue(StatusContentProperty); set => SetValue(StatusContentProperty, value); }
+    public static readonly StyledProperty<string> WindowShortcutProperty = AvaloniaProperty.Register<TerminalTabs, string>(nameof(WindowShortcut), "");
+    public string WindowShortcut { get => GetValue(WindowShortcutProperty); set => SetValue(WindowShortcutProperty, value); }
     public event EventHandler? NewTabRequested;
     private ScrollViewer? _viewport;
     private Window? _owner;

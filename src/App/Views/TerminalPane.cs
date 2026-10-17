@@ -20,6 +20,7 @@ public sealed class TerminalPane : Border
     private readonly DispatcherTimer _replayTimer;
     private readonly Button _triggerHistory = new() { Content = "Triggered lines", IsVisible = false, FontSize = 11, MinHeight = 24, Padding = new Thickness(6, 2), HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right };
     private readonly ItermTerminalEngine _engine;
+    private readonly TerminalScrollBar _scrollbar;
     private readonly HostedConnection? _hosted;
     public HostedSession? HostedSession => _hosted?.Session;
     public bool IsHostGridSynchronized => _hosted is null || (_hosted.Columns == Terminal.Engine.Columns && _hosted.Rows == Terminal.Engine.Rows);
@@ -67,8 +68,11 @@ public sealed class TerminalPane : Border
             InteractionOptions = new() { CopyOnSelect = copyOnSelect }
         };
         Find = new(_engine, Terminal);
+        _scrollbar = new(Terminal);
         var layout = new Grid { RowDefinitions = new RowDefinitions("*,Auto,Auto") };
-        layout.Children.Add(Terminal);
+        var viewport = new Grid { ColumnDefinitions = new ColumnDefinitions("*," + TerminalScrollBar.GutterWidth) };
+        viewport.Children.Add(Terminal); Grid.SetColumn(_scrollbar, 1); viewport.Children.Add(_scrollbar);
+        layout.Children.Add(viewport);
         Grid.SetRow(_status, 1);
         layout.Children.Add(_status);
         Grid.SetRow(_triggerHistory, 2); layout.Children.Add(_triggerHistory);
@@ -163,6 +167,7 @@ public sealed class TerminalPane : Border
     private async Task CloseCoreAsync()
     {
         Find.Dispose();
+        _scrollbar.Dispose();
         if (_start is not null) await _start;
         _replayTimer.Stop(); Replay.Clear();
         _engine.TriggersChanged -= TriggersChanged; _engine.ClearTriggerMatches();

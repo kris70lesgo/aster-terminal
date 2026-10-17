@@ -47,6 +47,12 @@ public static class DesktopSmoke
             if (window.WindowDecorations != WindowDecorations.BorderOnly || window.GetVisualDescendants().OfType<WindowButtons>().Count() != 1)
                 throw new InvalidOperationException("Shared compact caption/window controls missing.");
             checks.Add("Shared compact iTerm-style caption and functional window controls configured");
+            var chrome = window.FindControl<TerminalTabs>("Tabs")!;
+            var addTab = chrome.GetVisualDescendants().OfType<Button>().Single(b => b.Name == "NewTabButton");
+            var scrollbar = Panes(window)[0].GetVisualDescendants().OfType<TerminalScrollBar>().Single();
+            if (addTab.IsEffectivelyVisible || !chrome.WindowShortcut.EndsWith("1") || Math.Abs(scrollbar.Bounds.Width - 12) > .1)
+                throw new InvalidOperationException("Reference single-window caption or terminal scrollback gutter differs.");
+            checks.Add("Single-tab caption hides insertion button, displays working window-number shortcut and reserves 12-point real-history scrollbar");
             var columns = terminal.Engine.Columns;
             var resizeWatch = Stopwatch.StartNew();
             window.Width = 850; window.Height = 570;
@@ -60,6 +66,13 @@ public static class DesktopSmoke
             await Task.Delay(300);
             terminal.InvalidateVisual();
             SaveImage(window, Path.Combine(reportDirectory, "dark.png"));
+            window.Width = 587; window.Height = 462;
+            await Until(() => Math.Abs(window.Bounds.Width - 587) < .1 && Panes(window)[0].IsHostGridSynchronized);
+            await Task.Delay(150);
+            SaveImage(window, Path.Combine(reportDirectory, "reference-window.png"));
+            checks.Add("Reference-size 587x462 logical window remains usable with caption and history gutter");
+            window.Width = 850; window.Height = 570;
+            await Until(() => Math.Abs(window.Bounds.Width - 850) < .1 && Panes(window)[0].IsHostGridSynchronized);
             var pane = Panes(window)[0]; pane.CaptureReplay();
             var oldFrame = pane.Replay.Snapshot().Count - 1;
             terminal.RaiseEvent(new TextInputEventArgs { RoutedEvent = InputElement.TextInputEvent, Text = OperatingSystem.IsWindows() ? "cls & echo CURRENT_SCREEN" : "printf '\\033[2J\\033[H%s%s\\r\\n' 'CURRENT_' 'SCREEN'" });

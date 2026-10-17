@@ -309,3 +309,22 @@ Find/layout changes still resize its PTYs. UI reference and platform limitations
 are documented in visual-parity.md. Final source e283c83 passes all three native
 packages (run 39003323494) and the exact installed 2× Mac verifier; test-matrix.md
 records scope and the retained first Python-client timeout.
+
+## Reference terminal viewport, 0.12.0
+
+TerminalPane owns a separate 12-logical-point Avalonia TerminalScrollBar next to
+TermControl. It listens to the control's coalesced UI-thread ViewportChanged
+signal; Maximum is retained HistoryCount, Value is HistoryCount−ScrollOffset,
+and ViewportSize is Rows. Changes call the existing SetScrollOffset. Alternate
+screen disables the history scrollbar. Pane disposal unsubscribes before closing
+its terminal. The gutter never becomes terminal text; tmux's per-leaf required
+width includes padding + gutter, while terminal cell budgets still use the
+TermControl's inner bounds. VT/process ownership is unchanged.
+
+Profile FontSize now denotes logical points as in the Cocoa reference. The
+pinned renderer scales typographic points by 96/72; ToControlProfile converts
+by 72/96 once, with matching menu/key zoom steps. Stored nominal values remain
+unchanged. The reference preset edits a profile transaction, never its command,
+environment, history or user startup files. TerminalWindowNavigation maintains
+weak references to open terminal windows for the displayed app-local numeric
+shortcut; closing a window renumbers the remaining hints.

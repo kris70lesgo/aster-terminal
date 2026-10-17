@@ -117,6 +117,13 @@ public partial class PreferencesWindow : Window
         ShortcutsBox.Text = string.Join('\n', bindings.Select(p => p.Key + "=" + p.Value));
     }
     private void ResetShortcutsClicked(object? sender, RoutedEventArgs e) => ResetShortcuts(true);
+    private void ReferenceAppearanceClicked(object? sender, RoutedEventArgs e)
+    {
+        FontFamilyBox.Text = OperatingSystem.IsMacOS() ? "Monaco" : "Cascadia Mono";
+        FontSizeBox.Value = 12;
+        ForegroundBox.Text = null; BackgroundBox.Text = null;
+        CursorBox.SelectedIndex = 0;
+    }
     private void CancelClicked(object? sender, RoutedEventArgs e) => Close();
     private void SaveClicked(object? sender, RoutedEventArgs e) => Change(() =>
     {

@@ -16,7 +16,7 @@ public sealed class WindowButtons : UserControl
     private static readonly string[] Colors = ["#FF5F57", "#FEBC2E", "#28C840"];
     public WindowButtons()
     {
-        var panel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8, Margin = new Thickness(10, 0, 10, 0), VerticalAlignment = VerticalAlignment.Center };
+        var panel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 9, Margin = new Thickness(9, 0, 9, 0), VerticalAlignment = VerticalAlignment.Center };
         string[] labels = ["Close window", "Minimize window", "Maximize window"];
         string[] shapes = ["M1,1 L7,7 M7,1 L1,7", "M1,4 L7,4", "M1,1 L7,1 L7,7 L1,7 Z"];
         _buttons = Enumerable.Range(0, 3).Select(i =>

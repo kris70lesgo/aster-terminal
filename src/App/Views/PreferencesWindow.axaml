@@ -81,9 +81,10 @@
             <TabItem x:Name="ProfileTextTab" Header="Text">
               <StackPanel Spacing="14" Margin="10,18">
                 <Grid ColumnDefinitions="115,*"><TextBlock Text="Font:" VerticalAlignment="Center" /><TextBox x:Name="FontFamilyBox" Grid.Column="1" /></Grid>
-                <Grid ColumnDefinitions="115,*"><TextBlock Text="Size:" VerticalAlignment="Center" /><NumericUpDown x:Name="FontSizeBox" Grid.Column="1" Width="120" HorizontalAlignment="Left" Minimum="6" Maximum="48" Increment="1" /></Grid>
+                <Grid ColumnDefinitions="115,*"><TextBlock Text="Size (points):" VerticalAlignment="Center" /><NumericUpDown x:Name="FontSizeBox" Grid.Column="1" Width="120" HorizontalAlignment="Left" Minimum="6" Maximum="48" Increment="1" /></Grid>
                 <Grid ColumnDefinitions="115,*"><TextBlock Text="Cursor:" VerticalAlignment="Center" /><ComboBox x:Name="CursorBox" Grid.Column="1" Width="180" HorizontalAlignment="Left" /></Grid>
                 <Grid ColumnDefinitions="115,*"><TextBlock Text="Scrollback:" VerticalAlignment="Center" /><NumericUpDown x:Name="HistorySizeBox" Grid.Column="1" Width="180" HorizontalAlignment="Left" Minimum="100" Maximum="100000" Increment="100" /></Grid>
+                <Button Name="ReferenceAppearanceButton" Content="Use iTerm reference appearance" HorizontalAlignment="Left" Click="ReferenceAppearanceClicked" />
                 <TextBlock Text="Font changes apply immediately. Scrollback capacity applies to new sessions." TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}" />
               </StackPanel>
             </TabItem>

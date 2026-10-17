@@ -3,6 +3,24 @@
              x:Class="Aster.App.App" Name="Aster Terminal" RequestedThemeVariant="Dark">
   <Application.Resources>
     <ResourceDictionary>
+      <ControlTheme x:Key="TerminalScrollThumbTheme" TargetType="Thumb">
+        <Setter Property="Template"><ControlTemplate><Border Background="{DynamicResource ScrollThumb}" CornerRadius="4" Margin="2,1" /></ControlTemplate></Setter>
+      </ControlTheme>
+      <ControlTheme x:Key="TerminalScrollPageTheme" TargetType="RepeatButton">
+        <Setter Property="MinHeight" Value="0" /><Setter Property="MinWidth" Value="0" />
+        <Setter Property="Template"><ControlTemplate><Border Background="Transparent" /></ControlTemplate></Setter>
+      </ControlTheme>
+      <ControlTheme x:Key="TerminalScrollBarTheme" TargetType="views:TerminalScrollBar">
+        <Setter Property="Template"><ControlTemplate>
+          <Border Background="{DynamicResource ScrollTrack}" BorderBrush="{DynamicResource TabDivider}" BorderThickness="0.5,0,0,0" Margin="0,4,2,4">
+            <Track Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}" Value="{TemplateBinding Value, Mode=TwoWay}" ViewportSize="{TemplateBinding ViewportSize}" Orientation="Vertical" IsDirectionReversed="True">
+              <Track.DecreaseButton><RepeatButton Name="PART_PageUpButton" Focusable="False" Theme="{StaticResource TerminalScrollPageTheme}" AutomationProperties.Name="Page up" /></Track.DecreaseButton>
+              <Track.IncreaseButton><RepeatButton Name="PART_PageDownButton" Focusable="False" Theme="{StaticResource TerminalScrollPageTheme}" AutomationProperties.Name="Page down" /></Track.IncreaseButton>
+              <Thumb MinHeight="24" Theme="{StaticResource TerminalScrollThumbTheme}" AutomationProperties.Name="Scroll position" />
+            </Track>
+          </Border>
+        </ControlTemplate></Setter>
+      </ControlTheme>
       <ControlTheme x:Key="CaptionButtonTheme" TargetType="Button">
         <Setter Property="Template"><ControlTemplate><Border Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}"><ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0" Name="CaptionSymbol" /></Border></ControlTemplate></Setter>
         <Style Selector="^:pointerover /template/ ContentPresenter#CaptionSymbol"><Setter Property="Opacity" Value="1" /></Style>
@@ -29,12 +47,13 @@
         <Setter Property="Template"><ControlTemplate>
           <Grid RowDefinitions="Auto,Auto,Auto,*,Auto">
             <Border Name="WindowHeader" Height="32" Background="{DynamicResource ChromeBackground}" BorderBrush="{DynamicResource TabDivider}" BorderThickness="0,0,0,1">
-              <Grid ColumnDefinitions="78,*,36,12">
+              <Grid ColumnDefinitions="78,*,64,10">
                 <views:WindowButtons />
                 <ScrollViewer Name="HeaderViewport" Grid.Column="1" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
                   <ItemsPresenter Name="PART_ItemsPresenter" ItemsPanel="{TemplateBinding ItemsPanel}" />
                 </ScrollViewer>
-                <TextBlock Name="WindowCaption" Grid.Column="1" IsVisible="False" Text="{Binding $parent[Window].Title}" TextTrimming="CharacterEllipsis" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource MutedForeground}" Margin="8,0" VerticalAlignment="Center" />
+                <TextBlock Name="WindowCaption" Grid.Column="1" IsVisible="False" Text="{Binding $parent[Window].Title}" TextTrimming="CharacterEllipsis" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource MutedForeground}" Margin="6,0" VerticalAlignment="Center" />
+                <TextBlock Name="WindowShortcut" Grid.Column="2" IsVisible="False" Text="{TemplateBinding WindowShortcut}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource MutedForeground}" Opacity="0.4" HorizontalAlignment="Right" VerticalAlignment="Center" AutomationProperties.Name="Window shortcut" />
                 <Button Name="NewTabButton" Grid.Column="2" Classes="chrome-button" Content="+" ToolTip.Tip="New tab" AutomationProperties.Name="New tab" FontSize="19" Padding="0" Width="28" Height="26" MinHeight="0" MinWidth="0" VerticalAlignment="Center" />
               </Grid>
             </Border>
@@ -49,6 +68,8 @@
         </ControlTemplate></Setter>
         <Style Selector="^.single /template/ ScrollViewer#HeaderViewport"><Setter Property="IsVisible" Value="False" /></Style>
         <Style Selector="^.single /template/ TextBlock#WindowCaption"><Setter Property="IsVisible" Value="True" /></Style>
+        <Style Selector="^.single /template/ Button#NewTabButton"><Setter Property="IsVisible" Value="False" /></Style>
+        <Style Selector="^.single /template/ TextBlock#WindowShortcut"><Setter Property="IsVisible" Value="True" /></Style>
         <Style Selector="^.inactive /template/ TextBlock#WindowCaption"><Setter Property="Opacity" Value="0.6" /></Style>
       </ControlTheme>
       <ControlTheme x:Key="SettingsCategoryTheme" TargetType="TabItem">
@@ -64,13 +85,15 @@
       </ControlTheme>
       <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Dark">
-          <SolidColorBrush x:Key="WindowBackground">#15181D</SolidColorBrush>
+          <SolidColorBrush x:Key="WindowBackground">#15191E</SolidColorBrush>
           <SolidColorBrush x:Key="ChromeForeground">#E4E4E6</SolidColorBrush>
           <SolidColorBrush x:Key="TabHoverBackground">#2D2D35</SolidColorBrush>
           <SolidColorBrush x:Key="ControlBackground">#303034</SolidColorBrush>
           <SolidColorBrush x:Key="ControlBorder">#55555B</SolidColorBrush>
-          <SolidColorBrush x:Key="ChromeBackground">#21212D</SolidColorBrush>
-          <SolidColorBrush x:Key="MutedForeground">#B5BEC9</SolidColorBrush>
+          <SolidColorBrush x:Key="ChromeBackground">#21212F</SolidColorBrush>
+          <SolidColorBrush x:Key="MutedForeground">#9B9BA8</SolidColorBrush>
+          <SolidColorBrush x:Key="ScrollTrack">#22262B</SolidColorBrush>
+          <SolidColorBrush x:Key="ScrollThumb">#919395</SolidColorBrush>
           <SolidColorBrush x:Key="SelectedTabBackground">#3B3B43</SolidColorBrush>
           <SolidColorBrush x:Key="TabDivider">#303037</SolidColorBrush>
         </ResourceDictionary>
@@ -82,6 +105,8 @@
           <SolidColorBrush x:Key="ControlBorder">#B8B8BC</SolidColorBrush>
           <SolidColorBrush x:Key="ChromeBackground">#E8E8E8</SolidColorBrush>
           <SolidColorBrush x:Key="MutedForeground">#455368</SolidColorBrush>
+          <SolidColorBrush x:Key="ScrollTrack">#F1F1F1</SolidColorBrush>
+          <SolidColorBrush x:Key="ScrollThumb">#909090</SolidColorBrush>
           <SolidColorBrush x:Key="SelectedTabBackground">#FAFAFC</SolidColorBrush>
           <SolidColorBrush x:Key="TabDivider">#C4C4C4</SolidColorBrush>
         </ResourceDictionary>

@@ -59,7 +59,7 @@ public sealed partial class DesktopTests
             Assert.Equal(0xFFFAFAFCu, Panes(firstWindow)[0].Terminal.Engine.Scheme.Background);
             var changed = profile with { FontSize = 18 };
             firstWindow.ApplySettings(store.Settings with { Profiles = [changed] });
-            Assert.Equal(18, Panes(firstWindow)[0].Terminal.FontSize);
+            Assert.Equal(13.5, Panes(firstWindow)[0].Terminal.FontSize);
             var command = OperatingSystem.IsMacOS() ? RawInputModifiers.Meta : RawInputModifiers.Control | RawInputModifiers.Shift;
             SendKey(firstWindow, Key.D, command);
             await Until(() => Panes(firstWindow).Length == 2 && Panes(firstWindow).All(p => p.Terminal.IsRunning));

@@ -7,6 +7,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Media.Imaging;
 using Avalonia.VisualTree;
+using Avalonia.Threading;
 using Aster.Sessions;
 using Aster.Sessions.Hotkeys;
 using Aster.Sessions.Persistence;
@@ -35,7 +36,10 @@ public static class HotkeySmoke
             };
             window.Opened += (_, _) => window.Activate(); return window;
         }
-        window.Opened += async (_, _) => await Run(window, desktop, report, global, manual);
+        // Registration/Carbon dispatch can finish synchronously. Let the
+        // desktop lifetime enter its loop before a fast fixture shuts it down.
+        window.Opened += (_, _) => Dispatcher.UIThread.Post(async () =>
+            await Run(window, desktop, report, global, manual), DispatcherPriority.Background);
         return window;
     }
     private static async Task Run(Window owner, IClassicDesktopStyleApplicationLifetime desktop, string report, bool global, bool manual)

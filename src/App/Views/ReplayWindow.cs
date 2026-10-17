@@ -70,7 +70,7 @@ public sealed class ReplayWindow : Window
         var frame = _frames[SelectedFrameIndex]; var snapshot = frame.Snapshot; var buffer = snapshot.Buffer;
         _engine.ShowFrame(frame);
         var cell = TermControl.MeasureCell(_profile.ToControlProfile(), RenderScaling);
-        _screen.Width = Math.Ceiling(buffer.Columns * cell.Width + 10); _screen.Height = Math.Ceiling(buffer.Rows * cell.Height + 4);
+        _screen.Width = Math.Ceiling(buffer.Columns * cell.Width + TerminalProfile.HorizontalPadding); _screen.Height = Math.Ceiling(buffer.Rows * cell.Height + TerminalProfile.VerticalPadding);
         _screen.InvalidateVisual();
         _timestamp.Text = $"{frame.Timestamp.ToLocalTime():HH:mm:ss.fff} · {SelectedFrameIndex + 1}/{_frames.Count}";
         if ((int)Math.Round(_timeline.Value) != SelectedFrameIndex) _timeline.Value = SelectedFrameIndex;

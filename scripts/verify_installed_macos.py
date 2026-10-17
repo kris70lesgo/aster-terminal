@@ -5,6 +5,7 @@ Every run owns a fresh report directory. A successful JSON report is insufficien
 its process must exit, and scripting must also record a clean main-loop return.
 """
 import argparse
+import ctypes
 from datetime import datetime, timezone
 import json
 import os
@@ -75,6 +76,8 @@ def main():
             assert report["processId"] == pid, "Report belongs to a different process"
         if not abrupt:
             assert report["passed"], report.get("error")
+            marker = f"pid={pid} main loop returned exitCode=0"
+            assert marker in (expected.parent / "process.log").read_text(), "No clean native main-loop return"
         if arguments[0] == "--scripting-smoke":
             marker = f"pid={pid} main loop returned exitCode=0"
             assert marker in (expected.parent / "lifecycle.log").read_text(), "No clean main-loop return"
@@ -84,7 +87,22 @@ def main():
 
     passed = False
     error = None
+    keep_awake = None
     try:
+        # A sleeping display may disappear from CG's active list and Avalonia
+        # cannot create a native window. Wake it for this owned GUI verification
+        # and release the assertion on completion; never change app focus.
+        keep_awake = subprocess.Popen(["caffeinate", "-d", "-u", "-t", "900"],
+                                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        graphics = ctypes.CDLL("/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics")
+        display_count = ctypes.c_uint32()
+        for _ in range(50):
+            graphics.CGGetActiveDisplayList(0, None, ctypes.byref(display_count))
+            if display_count.value:
+                break
+            time.sleep(.1)
+        if not display_count.value:
+            raise RuntimeError("No active display; native GUI verification requires a connected, awake display")
         if args.mode == "all":
             run(["--smoke-test", "--smoke-report", str(base / "baseline")], base / "baseline/native-smoke.json")
             recovery = str(base / "recovery")
@@ -105,6 +123,9 @@ def main():
         error = str(failure)
         raise
     finally:
+        if keep_awake is not None:
+            keep_awake.terminate()
+            keep_awake.wait(timeout=5)
         (base / "verification.json").write_text(json.dumps({
             "passed": passed, "timestamp": datetime.now(timezone.utc).isoformat(),
             "scope": "Fresh installed-app fixtures; preserved foreground; actual process exits required",

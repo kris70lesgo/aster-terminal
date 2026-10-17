@@ -900,3 +900,15 @@ upstream UI/features remain outside this acceptance; no contest submission.
 - Official contest page rechecked at this rendering milestone: open source,
   runnable per-target builds, before/after images and migration write-up still
   required; 23 October 23:59 UTC deadline unchanged. No form submitted.
+
+- First native CI 39013423804 passes Windows and macOS (101 cases each).
+  Linux's tmux fit assertion still used the old 10-pixel vertical margin although
+  the actual pane and PTY grids matched; changed all fit checks/replay/layout to
+  shared profile padding constants. Preserve the failed run as evidence.
+- Installed checks exposed a synchronous hotkey-fixture shutdown during Opened,
+  before Avalonia's native loop starts. Dispatch the fixture after the loop starts;
+  all non-crash fixtures now require matching PID/clean main-loop-return markers.
+  Startup failures are logged in process.log, including the observed no-display
+  render-timer error (-6661). The verifier temporarily wakes/holds the display
+  and releases that assertion after its owned runs. Original NO_COLOR opt-outs
+  and foreground application remain untouched.

@@ -6,6 +6,9 @@ namespace Aster.Sessions;
 
 public sealed record TerminalProfile(string Name, string Command, string Directory, double FontSize = 12)
 {
+    public const double HorizontalPadding = 10;
+    public const double VerticalPadding = 4;
+    private const string PaddingText = "5,4,5,0";
     public string Id { get; init; } = Guid.NewGuid().ToString("N");
     public string FontFamily { get; init; } = OperatingSystem.IsMacOS() ? "Monaco" : "Cascadia Mono";
     public int HistorySize { get; init; } = 10000;
@@ -38,7 +41,7 @@ public sealed record TerminalProfile(string Name, string Command, string Directo
         Background = Background ?? (light ? "#FAFAFC" : "#14191E"),
         CursorColor = light ? "#243044" : "#FFFFFF",
         SelectionBackground = light ? "#B9D3EF" : "#B3D7FF",
-        Padding = "5,4,5,0",
+        Padding = PaddingText,
         CursorShape = CursorShape,
         HistorySize = HistorySize,
         CloseOnExit = CloseOnExitMode.Never,

@@ -11,6 +11,15 @@ internal static class Program
         Startup.Restart();
         if (args is ["--session-host", var descriptor]) return Aster.Sessions.Hosting.SessionHost.RunAsync(descriptor).GetAwaiter().GetResult();
         if (args is ["--benchmark", var report]) return Services.TerminalBenchmark.Run(report);
+        var reportIndex = Array.FindIndex(args, arg => arg is "--smoke-report" or "--hotkey-report" or "--tmux-report" or "--recovery-report" or "--scripting-report");
+        var fixtureReport = reportIndex >= 0 && reportIndex + 1 < args.Length ? Path.GetFullPath(args[reportIndex + 1]) : null;
+        void TraceFixture(string text)
+        {
+            if (fixtureReport is null) return;
+            Directory.CreateDirectory(fixtureReport);
+            File.AppendAllText(Path.Combine(fixtureReport, "process.log"), $"{DateTimeOffset.UtcNow:O} pid={Environment.ProcessId} {text}\n");
+        }
+        TraceFixture("starting native desktop");
         int exitCode;
         try
         {
@@ -22,7 +31,13 @@ internal static class Program
                 });
             exitCode = builder.LogToTrace().StartWithClassicDesktopLifetime(args);
         }
+        catch (Exception error)
+        {
+            TraceFixture("native desktop failed: " + error);
+            throw;
+        }
         finally { Platform.MacExitWakeup.Stop(); }
+        TraceFixture($"main loop returned exitCode={exitCode}");
         if (args.Contains("--scripting-smoke"))
         {
             var index = Array.IndexOf(args, "--scripting-report");

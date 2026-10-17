@@ -199,7 +199,7 @@ public sealed class TmuxWindow : Window
     }
     private static (double Width, double Height) Required(TmuxLayout node, double cellWidth, double cellHeight)
     {
-        if (node.PaneId is not null) return (node.Columns * cellWidth + 10 + TerminalScrollBar.GutterWidth, node.Rows * cellHeight + 4);
+        if (node.PaneId is not null) return (node.Columns * cellWidth + TerminalProfile.HorizontalPadding + TerminalScrollBar.GutterWidth, node.Rows * cellHeight + TerminalProfile.VerticalPadding);
         var children = node.Children.Select(c => Required(c, cellWidth, cellHeight)).ToArray();
         return node.Vertical ? (children.Max(c => c.Width), children.Sum(c => c.Height) + children.Length - 1)
             : (children.Sum(c => c.Width) + children.Length - 1, children.Max(c => c.Height));

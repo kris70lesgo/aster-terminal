@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-17T05:04:32.908994+00:00",
+  "installedVersion": "0.11.0",
+  "installedPath": "/Applications/Aster Terminal.app",
+  "processId": 20191,
+  "running": true,
+  "onScreenWindowCount": 1,
+  "foregroundPreserved": true,
+  "scope": "Normal installed launch; window metadata only, no user-shell screenshot or input. Existing user sessions left running."
+}

@@ -2,11 +2,16 @@
 
 A real C#/Avalonia terminal bringing a documented subset of **iTerm2** workflows
 to macOS, Windows and Linux. Independent project; no iTerm2 endorsement.
-GPL-3.0-or-later. **Version 0.10.0 is the competition release; full iTerm2 parity
+GPL-3.0-or-later. **Version 0.11.0 is the competition release; full iTerm2 parity
 is a separate milestone.**
 
-[Download v0.10.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.10.0)
+[Download v0.11.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.11.0)
 · [Runtime evidence](docs/test-matrix.md) · [Feature boundaries](docs/iterm2-feature-parity.md)
+
+Version 0.11.0 aligns the desktop with the saved iTerm2 reference: one compact
+caption/tab row, stretched tabs, real window/new-tab buttons, reference dark
+colours and icon/segmented Settings navigation. [Visual evidence and remaining
+differences](docs/visual-parity.md) distinguish this pass from full UI parity.
 
 Enable the optional summon window in Preferences → General with
 **Ctrl+Alt+Space** (Control+Option+Space on macOS). The chord shows a dedicated
@@ -32,9 +37,9 @@ folders; no SDK, account or subscription is required.
 
 | Download | Run | Platform scope |
 |---|---|---|
-| `aster-terminal-0.10.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26, including installed 2× Retina |
-| `aster-terminal-0.10.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
-| `aster-terminal-0.10.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
+| `aster-terminal-0.11.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26, including installed 2× Retina |
+| `aster-terminal-0.11.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
+| `aster-terminal-0.11.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
 
 Extract the Mac ZIP with Finder/Archive Utility (or `ditto`) to preserve signing
 metadata. macOS is ad-hoc signed, without Developer ID notarization. For a downloaded copy,
@@ -200,12 +205,13 @@ GitHub Actions and local terminal tools. [Performance evidence](docs/performance
 is measured on a defined workload and makes no superiority claim.
 
 ![Original iTerm2 3.6.6 startup reference](docs/evidence/iterm2-original.png)
-![Aster native dark theme with actual shell output](docs/evidence/v0.10.0-osx-arm64/dark.png)
-![Aster compact Unicode regex Find](docs/evidence/v0.10.0-osx-arm64/find-compact.png)
-![Aster native profile output rules](docs/evidence/v0.10.0-osx-arm64/preferences-triggers.png)
-![Aster shell-generated inline graphics](docs/evidence/v0.10.0-osx-arm64/graphics.png)
-![Aster native tmux control panes](docs/evidence/v0.10.0-osx-arm64/tmux/tmux-splits.png)
-![Aster compact Find in native tmux](docs/evidence/v0.10.0-osx-arm64/tmux/tmux-find-compact.png)
+![Aster native dark theme with actual shell output](docs/evidence/v0.11.0-osx-arm64/dark.png)
+![Aster compact Unicode regex Find](docs/evidence/v0.11.0-osx-arm64/find-compact.png)
+![Aster compact Settings at minimum width](docs/evidence/v0.11.0-osx-arm64/preferences-compact.png)
+![Aster native profile output rules](docs/evidence/v0.11.0-osx-arm64/preferences-triggers.png)
+![Aster shell-generated inline graphics](docs/evidence/v0.11.0-osx-arm64/graphics.png)
+![Aster native tmux control panes](docs/evidence/v0.11.0-osx-arm64/tmux/tmux-splits.png)
+![Aster compact Find in native tmux](docs/evidence/v0.11.0-osx-arm64/tmux/tmux-find-compact.png)
 
 Original screenshot © George Nachman/contributors; installed iTerm2 3.6.6 is a
 different version and geometry from the source audit. Captures show actual

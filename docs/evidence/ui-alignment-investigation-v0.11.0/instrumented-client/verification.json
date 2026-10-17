@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "timestamp": "2026-10-17T04:45:40.839324+00:00",
+  "scope": "Fresh installed-app fixtures; preserved foreground; actual process exits required",
+  "results": [
+    {
+      "mode": "--scripting-smoke",
+      "processId": 15837,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 3.254334375000326,
+      "report": "scripting/scripting.json"
+    }
+  ],
+  "error": null
+}

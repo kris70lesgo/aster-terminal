@@ -1,0 +1,12 @@
+{
+  "SessionId": "c00991b0-87d4-40d7-a079-339d58a99903",
+  "Process": {
+    "SessionId": "0e660dad-8dcf-45d1-804b-9ea7e174a7f4",
+    "ProcessId": 16096,
+    "CommandLine": "export PS1=\u0027ASTER_READY\u003E \u0027; exec /bin/sh",
+    "WorkingDirectory": "/var/folders/hn/hx22v5hj5j7f5_fd8ztly2m40000gn/T/",
+    "StartedAt": "2026-10-17T04:46:12.167276+00:00"
+  },
+  "StateDirectory": "/var/folders/hn/hx22v5hj5j7f5_fd8ztly2m40000gn/T/aster-native-recovery-e9b0fcc028c341f1aa1cdcbffb88366f",
+  "ShellPid": "16097"
+}

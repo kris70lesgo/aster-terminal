@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "processId": 16158,
+  "timestamp": "2026-10-17T04:46:23.704534+00:00",
+  "os": "macOS 26.7.2",
+  "renderScaling": 2,
+  "checks": [
+    "Original Python client controls actual native tabs/panes, sends real shell commands and reads Unicode screen contents",
+    "Only the initial real shell remains after script closes its created tab and split",
+    "API listener stops and removes private credentials",
+    "Normal native window close cleans up remaining PTY"
+  ],
+  "error": null
+}

@@ -1,0 +1,36 @@
+{
+  "reference": "docs/evidence/iterm2-original.png",
+  "referenceSha256": "0c63a4341a7091072b5fae2286511b25c9ba704571599a79343f2ae7d6b1419d",
+  "sampledRgb": {
+    "darkCaption": [
+      33,
+      33,
+      45
+    ],
+    "darkTerminal": [
+      21,
+      24,
+      29
+    ],
+    "inactiveCaptionControl": [
+      68,
+      68,
+      80
+    ]
+  },
+  "pixelCoordinates": {
+    "darkCaption": [
+      400,
+      30
+    ],
+    "darkTerminal": [
+      400,
+      100
+    ],
+    "inactiveCaptionControl": [
+      31,
+      31
+    ]
+  },
+  "scope": "Samples from the existing attributed reference; not an automated whole-window pixel similarity score."
+}

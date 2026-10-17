@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "processId": 15180,
+  "timestamp": "2026-10-17T04:44:18.508201+00:00",
+  "os": "macOS 26.7.2",
+  "renderScaling": 2,
+  "checks": [
+    "Normal native window close cleans up remaining PTY"
+  ],
+  "error": "System.TimeoutException: The operation has timed out.\n   at Aster.App.Services.ScriptingSmoke.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CConfigure\u003Eb__3\u003Ed.MoveNext() in /Users/runner/work/aster-terminal/aster-terminal/src/App/Services/ScriptingSmoke.cs:line 60"
+}

@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "os": "Microsoft Windows 10.0.26100",
+  "architecture": "X64",
+  "timestamp": "2026-10-17T04:41:27.1569768+00:00",
+  "renderScaling": 1,
+  "startupToShellOutputMs": 1364.6339,
+  "nativeResizeToGridMs": 53.3573,
+  "initialWorkingSetBytes": 160374784,
+  "measurementScope": "One native acceptance launch; startup includes sentinel command/polling. Resize includes dispatcher/polling. Not a cold-start or comparative benchmark.",
+  "checks": [
+    "Native window, PTY and routed text/Enter \u2192 real shell output",
+    "Shared compact iTerm-style caption and functional window controls configured",
+    "Native layout resized terminal grid",
+    "Native screen replay seeks historical text while the real shell continues; independent read-only renderer",
+    "Historical grid survives viewer resize without reflow",
+    "Profile output rule matches real shell output and exposes per-pane history",
+    "Real shell sixel / OSC1337 PNG / kitty RGBA render red / green / blue native pixels",
+    "Dark and light native render snapshots",
+    "Native tab move-left/right and wrap preserve the selected pane, scripting identity, independent processes and shell-local variable",
+    "Native Find searches real shell Unicode with regex/case/whole-word, navigates, rejects malformed patterns and fits a compact window",
+    "Native shortcuts create tabs, nested panes and search",
+    "Native preferences render",
+    "Window/session cleanup completed"
+  ],
+  "error": null
+}

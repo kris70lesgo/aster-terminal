@@ -1,0 +1,15 @@
+{
+  "processId": 15022,
+  "capturedOwnFixture": true,
+  "captionActions": [
+    "Close window",
+    "Minimize window",
+    "Maximize window"
+  ],
+  "newTabAccessible": true,
+  "screenshotWidth": 1240,
+  "screenshotHeight": 1140,
+  "renderScale": 2,
+  "scope": "Read-only accessibility snapshot of the isolated installed native baseline, not a user shell; no physical click or window-drag claim.",
+  "provenance": "Read-only snapshot from the first passing installed baseline (PID 15022); distinct from final ordered baseline PID 15961."
+}

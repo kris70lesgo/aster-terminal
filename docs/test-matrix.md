@@ -1,4 +1,43 @@
-# Verification matrix — release 0.10.0, 2026-10-17
+# Verification matrix — release 0.11.0, 2026-10-17
+
+Final UI source **e283c832610ba307e9861310dee86c3b289f24fe**, run
+[39003323494](https://github.com/kris70lesgo/aster-terminal/actions/runs/39003323494):
+macOS/Linux **80 passed + 2 Windows-only skips**; Windows **71 passed + 11
+Unix-only skips**; **82 total, zero failures** on each target. All three final
+native packages pass baseline, global hotkey, crash/reopen and the original
+Python client with clean scripting main-loop return. Unix also passes native tmux.
+
+Reports/TRX/native captures: `evidence/v0.11.0-{rid}`. Source/run provenance:
+`ci-v0.11.0.json`. Final archive inventories, checksums, versions, notices,
+signatures and installed-byte audit: `payload-v0.11.0.json`.
+
+| New acceptance | Evidence |
+|---|---|
+| Actual caption new/minimize/maximize/close, independent real shells and disposal | ChromeDesktopTests; all three target TRX files |
+| Shared 32-point caption, three tabs fill 620 width; overflow reveals selected tab without stealing focus | ChromeDesktopTests; native-smoke.json and tab captures |
+| Settings categories and profile segments navigate and retain focus at 760×540 minimum | ChromeDesktopTests; native preferences-compact.png |
+| Tab movement, Find and same-session shell state survive new chrome | Existing desktop regressions and all native baselines |
+| Native tmux kernel grid follows selected content/Find height | Unix desktop regression and native tmux.json |
+
+The exact installed Mac archive passes the full ordered verifier at **2× Retina
+on macOS 26.7.2**: all eight fixture processes exited, including three unchanged
+original Python client runs with matching clean native-loop return. A separate
+normal installed launch created an on-screen window; only window metadata was
+recorded, with no input or screenshot of the user shell. The first installed
+attempt had a Python pre-connection timeout; its parent exited cleanly with code
+1. The cause is unconfirmed. The failed attempt and successful instrumented
+diagnostic remain in `ui-alignment-investigation-v0.11.0`; the full subsequent
+unchanged pass remains in `v0.11.0-macos-retina`.
+
+Native captures were inspected on all three targets. These checks establish the
+implemented UI subset, not pixel identity with upstream. OS window rendering,
+font availability, physical drag/snap/IME/AltGr/clipboard, broader desktops and
+Wayland/multi-monitor coverage, the human local Mac hotkey and unimplemented
+settings pages remain gaps. See [visual parity](visual-parity.md).
+
+## Historical release 0.10.0
+
+### Verification matrix — release 0.10.0, 2026-10-17
 
 Final source **87184b04c8c69a10ebc5a94647293b3fe3501732**, run
 [39001628564](https://github.com/kris70lesgo/aster-terminal/actions/runs/39001628564):

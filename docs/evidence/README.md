@@ -1,6 +1,6 @@
 # Screenshot and runtime evidence
 
-## Current release 0.9.0
+## Historical release 0.9.0
 
 `v0.9.0-{rid}` contains final 78-test/native package reports/images from source
 78376eec31ba30d01e3c31c91fd0ac56fafab958 / run 38906845116. Unix adds the
@@ -154,3 +154,13 @@ and retained shell state. v0.10.0-macos-retina contains the exact installed
 eight-process/three-scripting batch and normal-launch metadata. The first Linux
 candidate failures remain in tab-reorder-investigation-v0.10.0. Full inventory,
 version, notice, signature and installed-byte checks are in payload-v0.10.0.json.
+
+## Current release 0.11.0
+
+- `ci-v0.11.0.json`: final source e283c83 / run 39003323494, all three jobs successful.
+- `v0.11.0-{rid}`: final 82-test TRX with OS skips and native baseline/hotkey/recovery/original Python evidence; Unix native tmux, terminal/Settings screenshots.
+- `v0.11.0-macos-retina`: exact installed CI archive, full ordered eight-process verifier at 2×, three unchanged original Python passes with clean native exit; metadata-only ordinary launch. `native-caption-first-baseline.json` is a separate first passing baseline PID, clearly labelled.
+- `ui-alignment-investigation-v0.11.0`: invalid-style regression failure, corrected local 82-test TRX, first installed pre-connect Python timeout (clean parent exit 1, cause unconfirmed), then instrumented diagnostic pass. These are retained separately from the final unchanged full pass.
+- `payload-v0.11.0.json`: archive digests, inventory, required notices, runtime/version, Mac signatures and installed-byte comparison.
+- `visual-reference-v0.11.0.json`: attributed reference image hash and sampled colours, not a whole-window similarity score. See ../visual-parity.md for gaps and native captures.
+- `rules-v0.11.0.json`: official announcement check for this milestone; no contest submission claim.

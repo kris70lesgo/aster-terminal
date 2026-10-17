@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "checks": [
+    "Original iterm2 2.30 async_get_app lists the real window/tab/session and subscribes to layout/focus notifications",
+    "Original client creates a separate native window and closes its only tab without ending the original window",
+    "Original client creates a real tab and split pane with distinct stable session identities",
+    "Original send_text and get_screen_contents preserve a shell-local variable, wide Unicode and a combining grapheme",
+    "Updated layout notifications and explicit refresh describe actual tab/pane grids",
+    "Original close removes only owned new sessions and leaves the original real shell running"
+  ],
+  "python": "3.12.15",
+  "packages": {
+    "iterm2": "2.30",
+    "protobuf": "7.36.2",
+    "websockets": "17.2"
+  }
+}

@@ -39,3 +39,12 @@ packages check keyboard movement and retained shell state. Pane drag,
 grouped/pinned/cross-window tabs and tmux server window ordering remain unstarted.
 
 Inspection findings: parser has a byte stream and saved partial-parse state; VT100Terminal executes tokens into VT100Screen. PTYTask delegates process/server lifecycle to job managers and reads in bounded batches with documented backpressure. PTYSession joins task, screen and views. The Metal driver has separate background/text/cursor/image renderers. Profiles use NSUserDefaults; DVR encodes screen states, not just raw output. Aster rewrites these boundaries, adapts the identified OSC algorithms and bundles original bash/zsh integration with a marked terminal-name adaptation.
+
+0.11.0: compact shared caption/tab strip, real window/new-tab controls,
+stretched/overflow headers, reference default dark colours and functional icon/
+segmented Settings are **implemented and verified within the documented subset**.
+ChromeDesktopTests and native Windows/Linux/macOS run 39003323494 pass, with
+exact installed 2× Mac evidence. Original reference/source versions differ;
+pixel identity, all upstream settings pages and physical window-manager behavior
+are not established. See visual-parity.md and test-matrix.md, including the
+retained first local Python-client timeout and subsequent full unchanged pass.

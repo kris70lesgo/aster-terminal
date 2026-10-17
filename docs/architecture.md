@@ -292,7 +292,7 @@ and native package acceptance on all three targets. The exact installed Mac
 archive also passes the complete ordered 2× Retina batch with three scripting
 repetitions and actual process/native-loop exits.
 
-## Shared compact desktop chrome, 0.11.0 candidate
+## Shared compact desktop chrome, 0.11.0
 
 TerminalTabs is a TabControl with slots for the existing menu, Find and status
 controls. Its template combines a 32-point caption/tab strip and selected
@@ -306,4 +306,6 @@ windows. No native input hook, forced process exit or terminal simulation.
 Settings retains its transaction and named fields while changing category and
 profile navigation visuals. Tmux listens to selected content size changes so
 Find/layout changes still resize its PTYs. UI reference and platform limitations
-are documented in visual-parity.md; exact native acceptance is required.
+are documented in visual-parity.md. Final source e283c83 passes all three native
+packages (run 39003323494) and the exact installed 2× Mac verifier; test-matrix.md
+records scope and the retained first Python-client timeout.

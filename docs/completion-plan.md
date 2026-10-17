@@ -80,3 +80,12 @@ Release version labels now share the project version. First candidate Linux
 test races and their corrected synchronization are retained as evidence.
 Full iTerm2 parity, pane dragging, grouped/pinned/cross-window tabs and tmux
 server ordering remain separate targets.
+
+0.11.0 completes the scoped iTerm2 UI alignment pass: compact shared caption,
+real window/new-tab controls, stretched/overflow tabs and icon/segmented
+Settings. Corrected source e283c83 passes run 39003323494 on all three targets,
+82 tests per target with documented OS skips, and the exact installed 2× Mac
+ordered verifier. The first local Python-client timeout remains documented;
+subsequent unchanged verification passed. visual-parity.md records remaining
+OS rendering, physical interaction and unimplemented settings differences.
+This milestone does not complete all iTerm2 features or pixel-identical UI.

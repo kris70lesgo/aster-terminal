@@ -1,0 +1,53 @@
+{
+  "passed": false,
+  "timestamp": "2026-10-17T04:44:18.655694+00:00",
+  "scope": "Fresh installed-app fixtures; preserved foreground; actual process exits required",
+  "results": [
+    {
+      "mode": "--smoke-test",
+      "processId": 15022,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 9.027299166002194,
+      "report": "baseline/native-smoke.json"
+    },
+    {
+      "mode": "--recovery-start",
+      "processId": 15141,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 1.0175223749974975,
+      "report": "recovery/before.json"
+    },
+    {
+      "mode": "--recovery-resume",
+      "processId": 15149,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 1.4029845829936676,
+      "report": "recovery/recovery.json"
+    },
+    {
+      "mode": "--tmux-smoke",
+      "processId": 15155,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 3.709684332992765,
+      "report": "tmux/tmux.json"
+    },
+    {
+      "mode": "--hotkey-smoke",
+      "processId": 15177,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 1.2577957500034245,
+      "report": "hotkey/hotkey.json"
+    },
+    {
+      "mode": "--scripting-smoke",
+      "processId": 15180,
+      "passed": false
+    }
+  ],
+  "error": "System.TimeoutException: The operation has timed out.\n   at Aster.App.Services.ScriptingSmoke.<>c__DisplayClass0_0.<<Configure>b__3>d.MoveNext() in /Users/runner/work/aster-terminal/aster-terminal/src/App/Services/ScriptingSmoke.cs:line 60"
+}

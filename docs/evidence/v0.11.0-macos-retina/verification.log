@@ -1,0 +1,16 @@
+Checking --smoke-test PID 15961
+Passed --smoke-test
+Checking --recovery-start PID 16094
+Passed --recovery-start
+Checking --recovery-resume PID 16102
+Passed --recovery-resume
+Checking --tmux-smoke PID 16106
+Passed --tmux-smoke
+Checking --hotkey-smoke PID 16130
+Passed --hotkey-smoke
+Checking --scripting-smoke PID 16133
+Passed --scripting-smoke
+Checking --scripting-smoke PID 16158
+Passed --scripting-smoke
+Checking --scripting-smoke PID 16182
+Passed --scripting-smoke

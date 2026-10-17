@@ -763,3 +763,34 @@ resolved it. Failure evidence is retained in ui-alignment-investigation-v0.11.0.
 Earlier CI candidates were cancelled before release; final native checks must
 use the corrected source. Settings icons are original outlined vectors, and
 inactive title/tab dimming follows the reference's background-window treatment.
+
+## 2026-10-17 — final 0.11.0 UI acceptance
+
+Final UI source **e283c832610ba307e9861310dee86c3b289f24fe**, run
+[39003323494](https://github.com/kris70lesgo/aster-terminal/actions/runs/39003323494):
+macOS/Linux **80 passed + 2 Windows-only skips**; Windows **71 passed + 11
+Unix-only skips**; **82 total, zero failures** on each target. All three final
+native packages pass baseline, global hotkey, crash/reopen and the original
+Python client with clean scripting main-loop return. Unix also passes native tmux.
+
+The exact installed Mac archive passes the full ordered verifier at **2× Retina
+on macOS 26.7.2**: all eight fixture processes exited, including three unchanged
+original Python client runs with matching clean native-loop return. A separate
+normal installed launch created an on-screen window; only window metadata was
+recorded, with no input or screenshot of the user shell. The first installed
+attempt had a Python pre-connection timeout; its parent exited cleanly with code
+1. The cause is unconfirmed. The failed attempt and successful instrumented
+diagnostic remain in `ui-alignment-investigation-v0.11.0`; the full subsequent
+unchanged pass remains in `v0.11.0-macos-retina`.
+
+The invalid inactive-selector candidate was corrected before publication; the
+first failed TRX remains alongside the passing local 82-test result. No new
+dependency, VT host action or session ownership change was introduced. All three
+payload inventories, notices, versions and checksums pass; the extracted and
+installed Mac assembly/native bridge match and signatures verify. Native
+terminal/Settings captures on all three platforms were inspected. Evidence:
+`ci-v0.11.0.json`, `payload-v0.11.0.json`, `v0.11.0-{rid}` and
+`v0.11.0-macos-retina`. The read-only caption accessibility record is explicitly
+from the first passing baseline, not the final verifier PID. Full UI/feature
+parity and physical OS interaction gaps remain in visual-parity.md and the
+feature matrix. No contest submission is claimed.

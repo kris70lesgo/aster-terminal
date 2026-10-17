@@ -1,0 +1,21 @@
+Checking --smoke-test PID 15022
+Passed --smoke-test
+Checking --recovery-start PID 15141
+Passed --recovery-start
+Checking --recovery-resume PID 15149
+Passed --recovery-resume
+Checking --tmux-smoke PID 15155
+Passed --tmux-smoke
+Checking --hotkey-smoke PID 15177
+Passed --hotkey-smoke
+Checking --scripting-smoke PID 15180
+Traceback (most recent call last):
+  File "/Users/agastya/Documents/ChatGPT/alvonia real/scripts/verify_installed_macos.py", line 111, in <module>
+    main()
+  File "/Users/agastya/Documents/ChatGPT/alvonia real/scripts/verify_installed_macos.py", line 95, in main
+    run(["--scripting-smoke", "--scripting-report", str(folder),
+  File "/Users/agastya/Documents/ChatGPT/alvonia real/scripts/verify_installed_macos.py", line 72, in run
+    assert report["passed"], report.get("error")
+           ~~~~~~^^^^^^^^^^
+AssertionError: System.TimeoutException: The operation has timed out.
+   at Aster.App.Services.ScriptingSmoke.<>c__DisplayClass0_0.<<Configure>b__3>d.MoveNext() in /Users/runner/work/aster-terminal/aster-terminal/src/App/Services/ScriptingSmoke.cs:line 60

@@ -10,7 +10,7 @@ namespace Aster.App.Views;
 /// <summary>Native scrollbar over the terminal's actual retained history.</summary>
 public sealed class TerminalScrollBar : ScrollBar, IDisposable
 {
-    public const double GutterWidth = 12;
+    public const double GutterWidth = 14;
     private readonly TermControl _terminal;
     private bool _updating, _disposed;
 

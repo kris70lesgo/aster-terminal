@@ -912,3 +912,11 @@ upstream UI/features remain outside this acceptance; no contest submission.
   render-timer error (-6661). The verifier temporarily wakes/holds the display
   and releases that assertion after its owned runs. Original NO_COLOR opt-outs
   and foreground application remain untouched.
+
+- Strict final verification caught bootstrap logging creating the scripting
+  report directory before its freshness guard. Keep bootstrap `.process.log`
+  beside the directory, preserving the guard. The failed 39013686122 run is
+  retained; it is not final acceptance. Adjusted the losslessly measured gutter
+  to 14 logical pixels (11-point track, 3-point right inset), bottom inset and
+  8-point thumb, with the corrected sRGB track colour. Pane sizing reserves the
+  same gutter constant on every target.

@@ -4,7 +4,7 @@
   <Application.Resources>
     <ResourceDictionary>
       <ControlTheme x:Key="TerminalScrollThumbTheme" TargetType="Thumb">
-        <Setter Property="Template"><ControlTemplate><Border Background="{DynamicResource ScrollThumb}" CornerRadius="4" Margin="1,1" /></ControlTemplate></Setter>
+        <Setter Property="Template"><ControlTemplate><Border Background="{DynamicResource ScrollThumb}" CornerRadius="4" Margin="1.25,1" /></ControlTemplate></Setter>
       </ControlTheme>
       <ControlTheme x:Key="TerminalScrollPageTheme" TargetType="RepeatButton">
         <Setter Property="MinHeight" Value="0" /><Setter Property="MinWidth" Value="0" />
@@ -12,7 +12,7 @@
       </ControlTheme>
       <ControlTheme x:Key="TerminalScrollBarTheme" TargetType="views:TerminalScrollBar">
         <Setter Property="Template"><ControlTemplate>
-          <Border Background="{DynamicResource ScrollTrack}" BorderBrush="{DynamicResource TabDivider}" BorderThickness="0.5,0,0,0" Margin="0,4,1,4">
+          <Border Background="{DynamicResource ScrollTrack}" BorderBrush="{DynamicResource ScrollDivider}" BorderThickness="0.5,0,0,0" Margin="0,4,3,11">
             <Track Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}" Value="{TemplateBinding Value, Mode=TwoWay}" ViewportSize="{TemplateBinding ViewportSize}" Orientation="Vertical" IsDirectionReversed="True">
               <Track.DecreaseButton><RepeatButton Name="PART_PageUpButton" Focusable="False" Theme="{StaticResource TerminalScrollPageTheme}" AutomationProperties.Name="Page up" /></Track.DecreaseButton>
               <Track.IncreaseButton><RepeatButton Name="PART_PageDownButton" Focusable="False" Theme="{StaticResource TerminalScrollPageTheme}" AutomationProperties.Name="Page down" /></Track.IncreaseButton>
@@ -92,7 +92,8 @@
           <SolidColorBrush x:Key="ControlBorder">#55555B</SolidColorBrush>
           <SolidColorBrush x:Key="ChromeBackground">#1F202E</SolidColorBrush>
           <SolidColorBrush x:Key="MutedForeground">#9B9BA8</SolidColorBrush>
-          <SolidColorBrush x:Key="ScrollTrack">#22262B</SolidColorBrush>
+          <SolidColorBrush x:Key="ScrollTrack">#21262B</SolidColorBrush>
+          <SolidColorBrush x:Key="ScrollDivider">#33383C</SolidColorBrush>
           <SolidColorBrush x:Key="ScrollThumb">#919395</SolidColorBrush>
           <SolidColorBrush x:Key="SelectedTabBackground">#3B3B43</SolidColorBrush>
           <SolidColorBrush x:Key="TabDivider">#303037</SolidColorBrush>
@@ -106,6 +107,7 @@
           <SolidColorBrush x:Key="ChromeBackground">#E8E8E8</SolidColorBrush>
           <SolidColorBrush x:Key="MutedForeground">#455368</SolidColorBrush>
           <SolidColorBrush x:Key="ScrollTrack">#F1F1F1</SolidColorBrush>
+          <SolidColorBrush x:Key="ScrollDivider">#C4C4C4</SolidColorBrush>
           <SolidColorBrush x:Key="ScrollThumb">#909090</SolidColorBrush>
           <SolidColorBrush x:Key="SelectedTabBackground">#FAFAFC</SolidColorBrush>
           <SolidColorBrush x:Key="TabDivider">#C4C4C4</SolidColorBrush>

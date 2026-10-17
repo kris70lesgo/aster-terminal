@@ -77,7 +77,7 @@ def main():
         if not abrupt:
             assert report["passed"], report.get("error")
             marker = f"pid={pid} main loop returned exitCode=0"
-            assert marker in (expected.parent / "process.log").read_text(), "No clean native main-loop return"
+            assert marker in Path(str(expected.parent) + ".process.log").read_text(), "No clean native main-loop return"
         if arguments[0] == "--scripting-smoke":
             marker = f"pid={pid} main loop returned exitCode=0"
             assert marker in (expected.parent / "lifecycle.log").read_text(), "No clean main-loop return"

@@ -16,8 +16,10 @@ internal static class Program
         void TraceFixture(string text)
         {
             if (fixtureReport is null) return;
-            Directory.CreateDirectory(fixtureReport);
-            File.AppendAllText(Path.Combine(fixtureReport, "process.log"), $"{DateTimeOffset.UtcNow:O} pid={Environment.ProcessId} {text}\n");
+            // Keep bootstrap diagnostics beside the report: scripting requires
+            // its report directory to be fresh when it configures the fixture.
+            Directory.CreateDirectory(Path.GetDirectoryName(fixtureReport)!);
+            File.AppendAllText(fixtureReport + ".process.log", $"{DateTimeOffset.UtcNow:O} pid={Environment.ProcessId} {text}\n");
         }
         TraceFixture("starting native desktop");
         int exitCode;

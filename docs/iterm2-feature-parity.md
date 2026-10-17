@@ -48,3 +48,13 @@ exact installed 2× Mac evidence. Original reference/source versions differ;
 pixel identity, all upstream settings pages and physical window-manager behavior
 are not established. See visual-parity.md and test-matrix.md, including the
 retained first local Python-client timeout and subsequent full unchanged pass.
+
+0.12.0: installed iTerm.app / iTerm2 3.7.4 reference alignment is **implemented
+and verified for the scoped surfaces**: single-tab caption, app-local numbered
+window selection, actual scrollback gutter, nominal font-unit correction,
+transactional reference preset and reference default ANSI/cursor/selection
+colours. Final source e4e1646 / run 39009937189 passes 85 cases per target with
+OS skips and all native packages; exact installed 2× Mac verifier passes eight
+process exits / three original Python runs. Failed first numbering tests remain
+preserved. visual-parity.md records current reference, privacy boundaries,
+portable font/menu differences and remaining full UI/feature gaps.

@@ -1,0 +1,16 @@
+{
+  "run": 39009937189,
+  "url": "https://github.com/kris70lesgo/aster-terminal/actions/runs/39009937189",
+  "buildSource": "e4e1646e98315136502b98866ac385f911de8827",
+  "conclusion": "success",
+  "nativePackages": [
+    "osx-arm64",
+    "win-x64",
+    "linux-x64"
+  ],
+  "casesPerTarget": 85,
+  "passedUnix": 83,
+  "passedWindows": 74,
+  "failed": 0,
+  "priorFailureEvidence": "installed-reference-v0.12.0/first-ci-failed.log"
+}

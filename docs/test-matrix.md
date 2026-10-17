@@ -1,4 +1,45 @@
-# Verification matrix — release 0.11.0, 2026-10-17
+# Verification matrix — release 0.12.0, 2026-10-17
+
+Final source **e4e1646e98315136502b98866ac385f911de8827**, native CI
+[39009937189](https://github.com/kris70lesgo/aster-terminal/actions/runs/39009937189):
+macOS/Linux **83 passed + 2 Windows-only skips**, Windows **74 passed + 11
+Unix-only skips**; **85 total, zero failures** on each target. All three final
+packages pass baseline, global hotkey, crash/reopen and original Python-client
+acceptance; Unix also passes native tmux with exact kernel-grid checks.
+
+| New acceptance | Evidence |
+|---|---|
+| Single-tab plus hidden; real window-number shortcuts; multi-tab insertion/overflow retained | ChromeDesktopTests and all final native baselines |
+| Numbering survives hidden/reopened windows and separate application lifetimes | Corrected application-scoped weak registry, hide/show/navigation regression; first failed Mac/Windows TRX/log retained |
+| Real history thumb drag, top/bottom sync, alternate-screen disabling, independent shell lifetime | NativeScrollbar real-shell desktop regression on all targets |
+| Transactional reference preset preserves command/environment; 12 nominal points produce expected cell metrics | ReferenceAppearancePreset regression, settings save/cancel tests |
+| Caption/history gutter remain usable at 587×462; tmux includes per-pane gutter in exact PTY size | reference-window.png on each native target; final Unix tmux.json |
+
+The exact installed Mac archive passes the full ordered verifier at **2× Retina
+on macOS 26.7.2**: all eight fixture processes exited, including three original
+Python runs with matching clean native-loop return. A separate normal window
+was inspected at the reference's 587×462 logical size / 1174×924 captured pixels.
+The default profile now uses Monaco 12, with backup; command/environment and
+saved startup layout are retained. Command-comma is unsupported by the driver,
+so the preset was applied atomically to saved settings. One initial fresh
+comparison instance was closed through real caption/confirmation clicks; older
+user windows were left running. Private shell screenshots remain unpublished.
+
+Evidence: `ci-v0.12.0.json`, `payload-v0.12.0.json`, `v0.12.0-{rid}` and
+`v0.12.0-macos-retina`. `installed-reference-v0.12.0` preserves source-reference
+measurements, failed first CI evidence, passing corrected local TRX and the first
+local installed candidate's scoped report. Superseded runs 39009681029 and
+39009839002 were cancelled; final claims use source/run above.
+
+Physical window drag/snap, broader DPI/monitor/IME/clipboard matrices, the local
+human Mac hotkey and complete upstream settings/feature parity remain gaps.
+The font fallback and Windows/Linux in-window menu placement differ from the
+Mac reference. Shell-generated startup text is not reconstructed as UI. See
+[visual parity](visual-parity.md) for measured correspondence and limitations.
+
+## Historical release 0.11.0
+
+### Verification matrix — release 0.11.0, 2026-10-17
 
 Final UI source **e283c832610ba307e9861310dee86c3b289f24fe**, run
 [39003323494](https://github.com/kris70lesgo/aster-terminal/actions/runs/39003323494):

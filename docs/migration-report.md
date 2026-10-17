@@ -173,3 +173,30 @@ terminal/Settings captures on all three platforms were inspected. Evidence:
 from the first passing baseline, not the final verifier PID. Full UI/feature
 parity and physical OS interaction gaps remain in visual-parity.md and the
 feature matrix. No contest submission is claimed.
+
+## 2026-10-17 — final installed-reference UI release 0.12.0
+
+Final source **e4e1646e98315136502b98866ac385f911de8827**, native CI
+[39009937189](https://github.com/kris70lesgo/aster-terminal/actions/runs/39009937189):
+macOS/Linux **83 passed + 2 Windows-only skips**, Windows **74 passed + 11
+Unix-only skips**; **85 total, zero failures** on each target. All three final
+packages pass baseline, global hotkey, crash/reopen and original Python-client
+acceptance; Unix also passes native tmux with exact kernel-grid checks.
+
+The exact installed Mac archive passes the full ordered verifier at **2× Retina
+on macOS 26.7.2**: all eight fixture processes exited, including three original
+Python runs with matching clean native-loop return. A separate normal window
+was inspected at the reference's 587×462 logical size / 1174×924 captured pixels.
+The default profile now uses Monaco 12, with backup; command/environment and
+saved startup layout are retained. Command-comma is unsupported by the driver,
+so the preset was applied atomically to saved settings. One initial fresh
+comparison instance was closed through real caption/confirmation clicks; older
+user windows were left running. Private shell screenshots remain unpublished.
+
+All three archive hashes/inventories, notices, runtime/app versions and compiler/
+credential exclusions pass. Mac signatures verify; installed assembly and native
+exit bridge match the extracted CI archive. Evidence: ci-v0.12.0.json,
+payload-v0.12.0.json, v0.12.0-{rid} and v0.12.0-macos-retina. The first CI
+numbering failures and repairs remain in installed-reference-v0.12.0. No dependency
+or upstream asset was introduced. OS font/compositing/menu differences and full
+upstream UI/features remain outside this acceptance; no contest submission.

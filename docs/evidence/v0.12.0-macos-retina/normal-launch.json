@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-10-17T06:35:18.011782+00:00",
+  "installedVersion": "0.12.0",
+  "installedPath": "/Applications/Aster Terminal.app",
+  "processId": 37721,
+  "running": true,
+  "onScreenWindowCount": 1,
+  "logicalWindow": {
+    "width": 587,
+    "height": 462
+  },
+  "capturePixels": {
+    "width": 1174,
+    "height": 924
+  },
+  "renderScale": 2,
+  "nativeCaptionAndHistoryScrollbarObserved": true,
+  "singleTabInsertionButtonAbsent": true,
+  "defaultProfileFont": {
+    "family": "Monaco",
+    "nominalSize": 12
+  },
+  "savedStartupLayoutPreserved": true,
+  "settingsBackup": "Private ignored artifacts/user-settings-before-reference-v0120.json",
+  "scope": "Normal installed reference comparison. Command-comma unsupported by native driver, so appearance preset was applied atomically to saved default-profile settings with backup. Private shell capture retained only in ignored artifacts. Earlier user terminal windows were left running.",
+  "freshInitialComparisonInstanceClosed": {
+    "processId": 35965,
+    "processExited": true,
+    "method": "Caption button and confirmation pixel clicks through cua-driver; only the two fresh task-owned shells, no user commands typed."
+  }
+}

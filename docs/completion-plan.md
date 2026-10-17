@@ -89,3 +89,12 @@ ordered verifier. The first local Python-client timeout remains documented;
 subsequent unchanged verification passed. visual-parity.md records remaining
 OS rendering, physical interaction and unimplemented settings differences.
 This milestone does not complete all iTerm2 features or pixel-identical UI.
+
+0.12.0 completes the installed 3.7.4 reference pass: real scrollbar, corrected
+font scale, clean single-tab caption and actual window-number shortcuts,
+reference defaults/preset. Source e4e1646 / run 39009937189 passes all three
+native packages and the exact installed 2× eight-process/three-Python batch;
+85 cases per OS, documented skips, zero failures. The first CI registry failure
+was corrected and retained. Default-profile Monaco 12/reference geometry was
+applied with backup; existing user windows and saved startup layout retained.
+Whole upstream UI/feature parity remains a separate milestone.

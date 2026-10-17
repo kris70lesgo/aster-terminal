@@ -18,7 +18,32 @@ reference and 0.11.0 acceptance are historical evidence below.
 | 587×462 logical reference window | Main window minimum reduced to 400×240; native acceptance captures the reference geometry. Existing saved window geometry is retained. |
 
 Native Windows/Linux/macOS and final installed archive verification:
-FINAL_REFERENCE_ACCEPTANCE_PENDING
+Final source **e4e1646e98315136502b98866ac385f911de8827**, native CI
+[39009937189](https://github.com/kris70lesgo/aster-terminal/actions/runs/39009937189):
+macOS/Linux **83 passed + 2 Windows-only skips**, Windows **74 passed + 11
+Unix-only skips**; **85 total, zero failures** on each target. All three final
+packages pass baseline, global hotkey, crash/reopen and original Python-client
+acceptance; Unix also passes native tmux with exact kernel-grid checks.
+
+The exact installed Mac archive passes the full ordered verifier at **2× Retina
+on macOS 26.7.2**: all eight fixture processes exited, including three original
+Python runs with matching clean native-loop return. A separate normal window
+was inspected at the reference's 587×462 logical size / 1174×924 captured pixels.
+The default profile now uses Monaco 12, with backup; command/environment and
+saved startup layout are retained. Command-comma is unsupported by the driver,
+so the preset was applied atomically to saved settings. One initial fresh
+comparison instance was closed through real caption/confirmation clicks; older
+user windows were left running. Private shell screenshots remain unpublished.
+
+Evidence: `evidence/ci-v0.12.0.json`, `evidence/payload-v0.12.0.json`,
+`evidence/v0.12.0-{rid}` and `evidence/v0.12.0-macos-retina`. The first CI
+numbering failures are retained with the application-scope/visibility correction.
+Normal native AX inspection confirms caption/number hint/scrollbar and absence
+of the single-tab insertion button. That shell screenshot stays private.
+
+![Final native Mac at reference size](evidence/v0.12.0-osx-arm64/reference-window.png)
+![Final native Linux terminal](evidence/v0.12.0-linux-x64/dark.png)
+![Final native Windows terminal](evidence/v0.12.0-win-x64/dark.png)
 
 The shell's fastfetch, prompt, output colours and startup scripts belong to the
 shell; they are not recreated as UI text. Equal geometry, font settings and tab

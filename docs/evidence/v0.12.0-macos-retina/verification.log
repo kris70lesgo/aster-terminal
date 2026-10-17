@@ -1,0 +1,16 @@
+Checking --smoke-test PID 34611
+Passed --smoke-test
+Checking --recovery-start PID 35082
+Passed --recovery-start
+Checking --recovery-resume PID 35104
+Passed --recovery-resume
+Checking --tmux-smoke PID 35120
+Passed --tmux-smoke
+Checking --hotkey-smoke PID 35170
+Passed --hotkey-smoke
+Checking --scripting-smoke PID 35172
+Passed --scripting-smoke
+Checking --scripting-smoke PID 35320
+Passed --scripting-smoke
+Checking --scripting-smoke PID 35357
+Passed --scripting-smoke

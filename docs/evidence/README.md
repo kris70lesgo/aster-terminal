@@ -155,7 +155,7 @@ eight-process/three-scripting batch and normal-launch metadata. The first Linux
 candidate failures remain in tab-reorder-investigation-v0.10.0. Full inventory,
 version, notice, signature and installed-byte checks are in payload-v0.10.0.json.
 
-## Current release 0.11.0
+## Historical release 0.11.0
 
 - `ci-v0.11.0.json`: final source e283c83 / run 39003323494, all three jobs successful.
 - `v0.11.0-{rid}`: final 82-test TRX with OS skips and native baseline/hotkey/recovery/original Python evidence; Unix native tmux, terminal/Settings screenshots.
@@ -164,3 +164,12 @@ version, notice, signature and installed-byte checks are in payload-v0.10.0.json
 - `payload-v0.11.0.json`: archive digests, inventory, required notices, runtime/version, Mac signatures and installed-byte comparison.
 - `visual-reference-v0.11.0.json`: attributed reference image hash and sampled colours, not a whole-window similarity score. See ../visual-parity.md for gaps and native captures.
 - `rules-v0.11.0.json`: official announcement check for this milestone; no contest submission claim.
+
+## Current release 0.12.0
+
+- `ci-v0.12.0.json`: final source e4e1646 / run 39009937189; all three targets successful, 85 cases with documented OS skips.
+- `v0.12.0-{rid}`: final TRX, native baseline/reference-size/settings images, global hotkey, original Python and crash/reopen; Unix exact tmux acceptance.
+- `v0.12.0-macos-retina`: exact installed CI archive, eight-process verifier, three original Python clean native exits, plus curated normal 587×462 / Monaco 12 inspection. Private normal-shell screenshots are not published.
+- `installed-reference-v0.12.0`: iTerm.app bundle/version, sampled geometry/colours and appearance-only profile values; first failed CI Mac/Windows TRX/logs, corrected local 85-case TRX and scoped first local installed-candidate result. Superseded runs are not final evidence.
+- `payload-v0.12.0.json`: archive hashes, inventory/notices, runtime/version, compiler/credential exclusion, Mac signatures and installed-byte comparison.
+- `rules-v0.12.0.json`: official challenge recheck; no form submission.

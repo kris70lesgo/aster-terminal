@@ -21,5 +21,29 @@
     "scrollThumb": "#919395"
   },
   "referenceCaptureSha256": "dc34d921ca8df216c51bf007cb451068397479a76067a365bde40395c4dcc227",
-  "limits": "Colours/geometry are sampled measurements, not whole-window similarity or complete UI parity. Shell startup content is not copied or simulated; font fallback differs across operating systems."
+  "limits": "Colours/geometry are sampled measurements, not whole-window similarity or complete UI parity. Shell startup content is not copied or simulated; font fallback differs across operating systems.",
+  "profileColours": {
+    "method": "Appearance-only values read from the installed iTerm profile; separate from sampled screenshot colours. No command/environment imported.",
+    "foreground": "#DCDCDC",
+    "cursor": "#FFFFFF",
+    "selection": "#B3D7FF",
+    "ansi": [
+      "#14191E",
+      "#B43C2A",
+      "#00C200",
+      "#C7C400",
+      "#2744C7",
+      "#C040BE",
+      "#00C5C7",
+      "#C7C7C7",
+      "#686868",
+      "#DD7975",
+      "#58E790",
+      "#ECE100",
+      "#A7ABF2",
+      "#E17EE1",
+      "#60FDFF",
+      "#FFFFFF"
+    ]
+  }
 }

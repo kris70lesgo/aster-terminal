@@ -34,10 +34,10 @@ public sealed record TerminalProfile(string Name, string Command, string Directo
         // Cocoa points correspond to logical desktop units, so convert once here.
         FontSize = FontSize * 72d / 96d,
         FontFace = FontFamily,
-        Foreground = Foreground ?? (light ? "#243044" : "#D5D5D5"),
+        Foreground = Foreground ?? (light ? "#243044" : "#DCDCDC"),
         Background = Background ?? (light ? "#FAFAFC" : "#15191E"),
-        CursorColor = light ? "#243044" : "#D5D5D5",
-        SelectionBackground = light ? "#B9D3EF" : "#3B506B",
+        CursorColor = light ? "#243044" : "#FFFFFF",
+        SelectionBackground = light ? "#B9D3EF" : "#B3D7FF",
         Padding = "5",
         CursorShape = CursorShape,
         HistorySize = HistorySize,
@@ -63,11 +63,16 @@ public sealed record TerminalProfile(string Name, string Command, string Directo
         return new ColorScheme
         {
             Name = light ? "Aster Light" : "Aster Dark",
-            Foreground = Color(Foreground ?? (light ? "#243044" : "#D5D5D5")),
+            Foreground = Color(Foreground ?? (light ? "#243044" : "#DCDCDC")),
             Background = Color(Background ?? (light ? "#FAFAFC" : "#15191E")),
-            Cursor = light ? 0xFF243044 : 0xFFD5D5D5,
-            SelectionBackground = light ? 0xFFB9D3EF : 0xFF3B506B,
-            Table = ColorScheme.FromName("Campbell").Table.ToArray()
+            Cursor = light ? 0xFF243044 : 0xFFFFFFFF,
+            SelectionBackground = light ? 0xFFB9D3EF : 0xFFB3D7FF,
+            // Reference profile's 16 ANSI colours, read without importing its
+            // command/environment or any app asset. Truecolour output is unchanged.
+            Table = new uint[] { 0xFF14191E, 0xFFB43C2A, 0xFF00C200, 0xFFC7C400,
+                0xFF2744C7, 0xFFC040BE, 0xFF00C5C7, 0xFFC7C7C7,
+                0xFF686868, 0xFFDD7975, 0xFF58E790, 0xFFECE100,
+                0xFFA7ABF2, 0xFFE17EE1, 0xFF60FDFF, 0xFFFFFFFF }
         };
     }
 

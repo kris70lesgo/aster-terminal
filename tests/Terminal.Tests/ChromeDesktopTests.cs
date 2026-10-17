@@ -184,6 +184,9 @@ public sealed partial class DesktopTests
             Assert.Equal(profile.Command, saved.Command); Assert.Equal("preserved", saved.EnvironmentVariables["KEEP_ME"]);
             Assert.Equal(OperatingSystem.IsMacOS() ? "Monaco" : "Cascadia Mono", saved.FontFamily);
             Assert.Equal(9, saved.ToControlProfile().FontSize);
+            Assert.Equal(0xFFA7ABF2u, saved.ResolveColors(false).Table[12]);
+            Assert.Equal(0xFFFFFFFFu, saved.ResolveColors(false).Cursor);
+            Assert.Equal(0xFFB3D7FFu, saved.ResolveColors(false).SelectionBackground);
             var small = Devolutions.Terminal.TermControl.MeasureCell(saved.ToControlProfile());
             var large = Devolutions.Terminal.TermControl.MeasureCell((saved with { FontSize = 24 }).ToControlProfile());
             Assert.InRange(large.Width / small.Width, 1.9, 2.1);

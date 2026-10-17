@@ -844,3 +844,10 @@ live numbering and navigation. Failed target TRX/logs are retained in
 installed-reference-v0.12.0. The superseded margin-only run 39009681029 was
 cancelled; no release was published from either. Corrected source again passes
 the full local 85-case suite (83 pass + 2 skips); final three-OS CI is pending.
+
+The default 16-colour table also differed: it still used the dependency's
+Campbell scheme. Appearance-only reads from the installed iTerm profile now
+provide the reference table plus foreground/cursor/selection defaults. Screenshot
+colour samples and stored profile colours are recorded separately; no shell
+command/environment, credential, startup file or upstream asset was imported.
+Explicit foreground/background overrides and terminal truecolour remain intact.

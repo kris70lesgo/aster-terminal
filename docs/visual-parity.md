@@ -1,4 +1,32 @@
-# iTerm2 visual alignment
+# iTerm2 visual alignment — installed reference 3.7.4
+
+The current target is the user's installed `/Applications/iTerm.app`: its bundle
+name is **iTerm2**, version **3.7.4**. The user supplied screenshots and authorised
+read-only inspection. Curated measurements are in
+[evidence/installed-reference-v0.12.0/reference.json](evidence/installed-reference-v0.12.0/reference.json).
+Private shell screenshots remain outside the repository. The previous 3.6.6
+reference and 0.11.0 acceptance are historical evidence below.
+
+| Measured difference | 0.12.0 change / acceptance |
+|---|---|
+| Single terminal has no insertion button; title starts beside window controls | Hide the single-tab plus, retain insertion in the tab strip. Caption inset matches 16/39/62-point button centres; 32-point row. |
+| Faint window-number shortcut at the right | Real Option+Command+digit navigation on Mac; Alt+digit on Windows/Linux. Open/close renumbers hints; real-shell desktop regression covers activation and identity. |
+| Visible slim scrollbar | Native Avalonia scrollbar over actual retained history; thumb/page controls, wheel sync, bottom-follow, alternate-screen disabling and disposal. Real-shell regression drags the thumb and verifies offset/session identity. Each tmux pane reserves the gutter in its grid budget. |
+| Monaco 12 vs old saved Cascadia Mono 14; renderer also enlarged point sizes | Nominal profile size now maps to Cocoa-style logical points. A 12-point setting becomes renderer 9 before its 96/72 conversion. Stored nominal values/fonts remain; existing rendering shrinks by 3/4. Transactional Profiles → Text reference preset selects Monaco 12 on Mac, bundled Cascadia Mono elsewhere, default cursor/theme colours; shell command/environment are retained. |
+| Current capture colours | Header #21212F, terminal #15191E; track #22262B and thumb #919395. These supersede the older screenshot's samples. |
+| 587×462 logical reference window | Main window minimum reduced to 400×240; native acceptance captures the reference geometry. Existing saved window geometry is retained. |
+
+Native Windows/Linux/macOS and final installed archive verification:
+FINAL_REFERENCE_ACCEPTANCE_PENDING
+
+The shell's fastfetch, prompt, output colours and startup scripts belong to the
+shell; they are not recreated as UI text. Equal geometry, font settings and tab
+count are required for a useful comparison. Monaco is not bundled on Windows or
+Linux. OS font rasterization, shadows, corners, compositing, unimplemented
+settings pages and physical interaction gaps remain. Matching selected colour
+and spacing measurements does not establish complete pixel identity.
+
+# Historical 0.11.0 visual alignment
 
 Target: the attributed iTerm2 3.6.6 dark reference in
 [evidence/iterm2-original.png](evidence/iterm2-original.png), supplemented by

@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "timestamp": "2026-10-17T06:21:40.649772+00:00",
+  "scope": "First locally packaged installed candidate, before final 1-point scrollbar margin refinement; not final CI archive evidence. Raw fixture outputs retained in ignored artifacts/installed-v0.12.0-local.",
+  "results": [
+    {
+      "mode": "--smoke-test",
+      "processId": 29387,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 9.438499041003524,
+      "report": "baseline/native-smoke.json"
+    },
+    {
+      "mode": "--recovery-start",
+      "processId": 29606,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 0.9906995830097003,
+      "report": "recovery/before.json"
+    },
+    {
+      "mode": "--recovery-resume",
+      "processId": 29615,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 1.4084497089934302,
+      "report": "recovery/recovery.json"
+    },
+    {
+      "mode": "--tmux-smoke",
+      "processId": 29629,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 3.671951917000115,
+      "report": "tmux/tmux.json"
+    },
+    {
+      "mode": "--hotkey-smoke",
+      "processId": 29664,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 1.242064374993788,
+      "report": "hotkey/hotkey.json"
+    },
+    {
+      "mode": "--scripting-smoke",
+      "processId": 29666,
+      "passed": true,
+      "processExited": true,
+      "elapsedSeconds": 34.0258025410003,
+      "report": "scripting/scripting.json"
+    }
+  ],
+  "error": null,
+  "buildSource": "f833e689b8be9c355b4f7b03c898ec61d2206dd0"
+}

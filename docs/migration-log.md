@@ -826,3 +826,10 @@ Release build passes with zero warnings/errors. Local full suite: 83 passed,
 drag/history/bottom/alternate screen, numbered-window activation/renumbering and
 preset save/cancel/nominal font metrics. Native package verification on all three
 OSes and exact installed acceptance are pending at this source checkpoint.
+
+The first local installed candidate (f833e68) passed six ordered native fixtures,
+including tmux's exact kernel grids and original Python clean exit. A final
+1-point thumb/track margin refinement matches the measured 8.5-point thumb
+inside its 12-point gutter; corrected local source again passes 83 + 2 skips.
+Final native CI must use the new source; earlier candidate evidence is labelled
+separately in installed-reference-v0.12.0/first-installed-verification.json.

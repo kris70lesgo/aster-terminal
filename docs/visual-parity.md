@@ -1,4 +1,4 @@
-# Lossless reference pass — 0.13 candidate
+# Lossless reference pass — release 0.13.0
 
 This pass compares actual PNG captures from `screenshot(format=png)`. The
 `get_window_state` screenshot path may contain JPEG bytes even with a .png name;
@@ -25,10 +25,26 @@ Full pixel identity is **not established**: antialiasing edge pixels, some
 caption/gutter details, activity/cursor state and available platform fonts still
 need separate comparison. A text-region score cannot establish whole-window
 identity. Windows/Linux do not bundle Monaco or Apple's colour emoji font.
-Current candidate native verification is recorded separately below when complete;
-the following 0.12 record remains historical released evidence.
+Final runtime source **1a4ff56cbda02076575a11b12966db09383f9b63**, native CI
+[39034987649](https://github.com/kris70lesgo/aster-terminal/actions/runs/39034987649):
+101 cases per target, Mac/Linux 99 pass + 2 skips, Windows 90 pass + 11 skips,
+zero failures. All package baselines/hotkey/recovery/original Python-client
+fixtures pass; Unix tmux checks exact kernel grids and cell fit. The exact Mac
+CI archive passes eight installed runs at 2×, including three original Python
+runs; every non-crash fixture records its matching clean main-loop return.
 
-# iTerm2 visual alignment — installed reference 3.7.4
+The final history gutter reserves 14 logical pixels: an 11-point track and
+3-point right inset, 8-point thumb, 4-point top / 11-point bottom track inset.
+The lossless comparison records identical sampled header/terminal/cyan/red
+values. The same-position date text mask overlaps 98.49%, while the bright cyan
+quote mask overlaps 89.37% under the documented threshold. Those selected crops
+are **not** a whole-window similarity score; bright antialiasing edges still
+show differences. [Structured measurement evidence](evidence/pixel-reference-v0.13.0.json)
+contains the method, crop bounds, image hashes and limits without user images.
+
+The following 0.12 record is historical released evidence.
+
+# Historical 0.12 alignment — installed reference 3.7.4
 
 The current target is the user's installed `/Applications/iTerm.app`: its bundle
 name is **iTerm2**, version **3.7.4**. The user supplied screenshots and authorised

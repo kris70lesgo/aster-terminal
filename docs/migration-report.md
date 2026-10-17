@@ -1,4 +1,14 @@
-# Migration report — competition release 0.9.0
+# Migration report — competition release 0.13.0
+
+The latest rendering pass uses lossless captures of installed iTerm 3.7.4.
+It corrects font cell geometry, shared margins, bold ANSI colours, Mac display
+colour management, synthetic text and emoji. The sealed dependency control
+required a pinned, attributed source adaptation of its presentation layer;
+the parser/engine/process boundary stays unchanged. All three final native
+archives pass 101 cases, and the exact installed Mac archive passes eight
+ordered 2× fixture exits. Private terminal images stay unpublished; measured
+limits and provenance are in visual-parity.md. Pixel identity is not claimed.
+
 
 Aster Terminal delivers the competition subset of an iTerm2 behavior migration:
 real local terminals, profiles, tabs, nested panes, search, themes, persisted

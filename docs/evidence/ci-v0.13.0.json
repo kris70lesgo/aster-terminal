@@ -1,0 +1,33 @@
+{
+  "source": "1a4ff56cbda02076575a11b12966db09383f9b63",
+  "runId": 39034987649,
+  "url": "https://github.com/kris70lesgo/aster-terminal/actions/runs/39034987649",
+  "conclusion": "success",
+  "verifiedAt": "2026-10-17T13:07:52.975983+00:00",
+  "targets": {
+    "osx-arm64": {
+      "total": 101,
+      "passed": 99,
+      "skipped": 2,
+      "failed": 0,
+      "nativeAcceptancePassed": true,
+      "nativeCleanReturnsVerified": true
+    },
+    "win-x64": {
+      "total": 101,
+      "passed": 90,
+      "skipped": 11,
+      "failed": 0,
+      "nativeAcceptancePassed": true,
+      "nativeCleanReturnsVerified": true
+    },
+    "linux-x64": {
+      "total": 101,
+      "passed": 99,
+      "skipped": 2,
+      "failed": 0,
+      "nativeAcceptancePassed": true,
+      "nativeCleanReturnsVerified": true
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "processId": 4084,
+  "timestamp": "2026-10-17T13:06:16.2013312+00:00",
+  "os": "Microsoft Windows 10.0.26100",
+  "renderScaling": 1,
+  "checks": [
+    "Original Python client controls actual native tabs/panes, sends real shell commands and reads Unicode screen contents",
+    "Only the initial real shell remains after script closes its created tab and split",
+    "API listener stops and removes private credentials",
+    "Normal native window close cleans up remaining PTY"
+  ],
+  "error": null
+}

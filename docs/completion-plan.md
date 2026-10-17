@@ -98,3 +98,13 @@ native packages and the exact installed 2× eight-process/three-Python batch;
 was corrected and retained. Default-profile Monaco 12/reference geometry was
 applied with backup; existing user windows and saved startup layout retained.
 Whole upstream UI/feature parity remains a separate milestone.
+
+
+## Rendering completion, 0.13.0
+
+Lossless installed-reference pass is complete for the documented UI subset.
+Source 1a4ff56 / native run 39034987649 passes 101 cases per target and all final
+package fixtures. The exact installed Mac archive passes eight ordered 2× runs.
+Header/background samples, row geometry, shared-text baselines and gutter
+placement align; glyph/emoji/caption edges retain measured differences.
+This does not close the advanced functionality or complete pixel-parity gaps.

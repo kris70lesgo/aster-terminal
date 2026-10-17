@@ -43,7 +43,7 @@ NuGet dependency is added. Full corresponding source/build instructions and
 GPL notices accompany the distributed app. The final binary dependency list
 and deployment target are checked during payload audit.
 
-## Presentation source adaptation, 0.13 candidate
+## Presentation source adaptation, 0.13.0
 
 `src/Terminal.Rendering` vendors only Control and Render C# source from the
 already-pinned Devolutions commit under Aster namespaces. The retained MIT

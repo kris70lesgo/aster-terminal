@@ -920,3 +920,21 @@ upstream UI/features remain outside this acceptance; no contest submission.
   to 14 logical pixels (11-point track, 3-point right inset), bottom inset and
   8-point thumb, with the corrected sRGB track colour. Pane sizing reserves the
   same gutter constant on every target.
+
+
+### 2026-10-17 — final 0.13.0 rendering acceptance
+
+Final runtime source 1a4ff56cbda02076575a11b12966db09383f9b63, native CI
+39034987649: 101 cases each, Mac/Linux 99 pass + 2 skips, Windows 90 pass +
+11 skips; all native package fixtures pass. Corrected remaining old 12-point
+assertions to the shared gutter constant; superseded 39034902148 was cancelled.
+The exact CI Mac archive passes all eight ordered 2× installed fixtures, including
+three original Python-client runs, with matching clean-loop-return markers.
+Signed extracted/installed main and presentation assemblies and native bridge
+match; final payload notices, archive checksums and forbidden-data checks pass.
+A fresh normal exact-CI window (PID 65553 / 7385) was captured as a true PNG;
+header, terminal, cyan and red samples match. Shared date/quote baselines align,
+with residual edge differences documented without a whole-window score. Only
+curated statistics are published; private shell images remain ignored. Original
+two-tab startup layout was restored after closing only owned temporary windows,
+while current appearance/other settings and older user sessions are preserved.

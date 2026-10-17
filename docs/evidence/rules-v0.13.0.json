@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-10-17T13:08:24.661269+00:00",
+  "url": "https://avaloniaui.net/blog/avalonia-port-challenge",
+  "scope": "Official announcement rechecked during lossless reference rendering milestone. Open source, native downloads, before/after images and write-up required; unchanged October 23 23:59 UTC deadline.",
+  "entryDeadlineUtc": "2026-10-23T23:59:00Z",
+  "newPackageVersions": false,
+  "sourceAdaptation": "Pinned MIT control/render sources with GPL font drawing adaptations; original hashes and notices retained.",
+  "newUpstreamBinaryAssets": false,
+  "contestFormSubmitted": false
+}

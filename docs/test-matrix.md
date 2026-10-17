@@ -1,13 +1,33 @@
-# Rendering candidate 0.13 — verification in progress
+# Verification matrix — release 0.13.0, 2026-10-17
 
-Added paint-time bold ANSI/extended/RGB/inverse checks, asymmetric cursor padding,
-native emoji font selection and 1×/2× Monaco geometry checks. Graphics regression
-now exercises Aster's adapted renderer; existing Find/replay/chrome/process tests
-exercise the adapted control. Native packages still require all three OS runs.
-A test setup race in the first geometry test was corrected by using AvaloniaFact,
-so its asset loader is initialized independently of test ordering.
+Runtime source **1a4ff56cbda02076575a11b12966db09383f9b63**, native CI
+[39034987649](https://github.com/kris70lesgo/aster-terminal/actions/runs/39034987649):
+**101 cases on each target**, Mac/Linux **99 pass + 2 Windows-only skips**,
+Windows **90 pass + 11 Unix-only skips**, zero failures. The final archives pass
+native baseline, global hotkey, recovery and original Python-client fixtures;
+Unix additionally passes tmux exact PTY grids and cell fit. Native dark/light,
+Find/settings/graphics/tmux captures are in `evidence/v0.13.0-{rid}`.
 
-# Verification matrix — release 0.12.0, 2026-10-17
+New checks cover paint-time bold low ANSI colours, background preservation,
+extended/RGB/inverse colours, asymmetric cursor/background coordinates, native
+emoji font selection and Monaco 7×17 cell geometry at 1×/2×. Graphics regression
+now uses the adapted renderer, and existing desktop tests exercise its control.
+The exact installed Mac CI archive passes eight ordered process exits at **2×**,
+including three original Python-client runs. Every non-crash fixture must record
+a PID-matched clean native main-loop return; report files alone cannot pass.
+`v0.13.0-macos-retina`, `ci-v0.13.0.json` and `payload-v0.13.0.json` pin that proof.
+
+The final normal window was captured losslessly at 587×462 logical pixels.
+Private user images stay ignored; curated pixel statistics and their limited
+scope are in `pixel-reference-v0.13.0.json`. Complete pixel/IME/Wayland/multi-monitor
+parity remains unproven. Earlier failed and superseded runs remain in migration
+log: stale margin expectations, bootstrap logging versus fresh-report ownership,
+and synchronous hotkey shutdown before the native loop. The first geometry test
+setup race was fixed with AvaloniaFact. The verifier temporarily wakes/holds the
+physical display and releases its assertion afterward; startup logs record the
+observed no-display RenderTimer error rather than crediting it as GUI support.
+
+# Historical verification — release 0.12.0, 2026-10-17
 
 Final source **e4e1646e98315136502b98866ac385f911de8827**, native CI
 [39009937189](https://github.com/kris70lesgo/aster-terminal/actions/runs/39009937189):

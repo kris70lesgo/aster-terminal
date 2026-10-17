@@ -1,8 +1,8 @@
-> 0.13 rendering candidate: lossless reference alignment improves row geometry,
-> bold ANSI colours, Mac sRGB colour management, padding and glyph rendering.
-> Complete upstream UI parity and pixel identity remain unproven. See
-> [visual measurements](visual-parity.md); the released 0.12 functionality
-> matrix below is unchanged pending native acceptance.
+> Release 0.13.0: native rendering now aligns row geometry, bold ANSI colours,
+> Mac sRGB colour management, margins/gutter, synthetic text and emoji with the
+> installed iTerm 3.7.4 reference. The final 101-case/three-OS native matrix and
+> exact installed Mac verification pass. Complete upstream UI parity and whole-
+> window pixel identity remain unproven. See [measured limits](visual-parity.md).
 
 # iTerm2 feature inventory
 

@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "timestamp": "2026-10-17T13:05:53.571504+00:00",
+  "os": "macOS 15.7.9",
+  "renderScaling": 1,
+  "checks": [
+    "Abrupt native UI process exit and reopen recover the same host session/process metadata",
+    "Shell-local variable and actual Unix shell PID survive UI termination; fresh shells cannot satisfy this",
+    "Recovered shell accepts routed input and native resize",
+    "Normal window close terminates the recovered host/PTY and removes its descriptor"
+  ],
+  "error": null
+}

@@ -2,20 +2,24 @@
 
 A real C#/Avalonia terminal bringing a documented subset of **iTerm2** workflows
 to macOS, Windows and Linux. Independent project; no iTerm2 endorsement.
-GPL-3.0-or-later. **Version 0.12.0 is the competition release; full iTerm2 parity
+GPL-3.0-or-later. **Version 0.13.0 is the competition release; full iTerm2 parity
 is a separate milestone.**
 
-[Download v0.12.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.12.0)
+[Download v0.13.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.13.0)
 · [Runtime evidence](docs/test-matrix.md) · [Feature boundaries](docs/iterm2-feature-parity.md)
 
-Version 0.12.0 follows the installed **iTerm2 3.7.4** reference: a clean
-single-tab caption with working window-number hint, native scrollback scrollbar,
-reference dark/ANSI colours, and corrected font sizing. Existing nominal font
-values now render at 3/4 of earlier builds, fixing the point-unit mismatch.
+Version 0.13.0 aligns rendering with lossless captures of installed **iTerm2
+3.7.4**: 7×17 Monaco cells at 12 points, corrected margins and history gutter,
+bright ANSI bold colours, Mac sRGB colour management, grayscale antialiasing,
+synthetic bold/italic and native colour emoji. It adapts the already-pinned MIT
+control/render source in a separate native presentation assembly; parser and
+process connections stay pinned. All three native packages pass 101 test cases
+(with platform-specific skips). The exact Mac CI archive also passes eight
+installed fixture exits at 2×, including three original Python-client runs.
 Preferences → Profiles → Text → **Use iTerm reference appearance** selects
 Monaco 12 on Mac or bundled Cascadia Mono 12 elsewhere; Save/Cancel stays
-transactional. [Visual evidence and remaining differences](docs/visual-parity.md)
-distinguish this from complete pixel/UI parity.
+transactional. [Measurements and remaining differences](docs/visual-parity.md)
+explicitly distinguish this from complete pixel/UI parity.
 
 Enable the optional summon window in Preferences → General with
 **Ctrl+Alt+Space** (Control+Option+Space on macOS). The chord shows a dedicated
@@ -41,9 +45,9 @@ folders; no SDK, account or subscription is required.
 
 | Download | Run | Platform scope |
 |---|---|---|
-| `aster-terminal-0.12.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26, including installed 2× Retina |
-| `aster-terminal-0.12.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
-| `aster-terminal-0.12.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
+| `aster-terminal-0.13.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26, including installed 2× Retina |
+| `aster-terminal-0.13.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
+| `aster-terminal-0.13.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
 
 Extract the Mac ZIP with Finder/Archive Utility (or `ditto`) to preserve signing
 metadata. macOS is ad-hoc signed, without Developer ID notarization. For a downloaded copy,
@@ -185,7 +189,8 @@ Started from an empty repository on **2026-10-14** for the
 iTerm2 source is pinned at `069b6e0dd8f3f0d82fc08ea5d294d28f7c5b986e`.
 Its AppKit/Metal/CoreText UI and long-lived forkpty servers require different
 boundaries on portable desktops. Aster rewrites the window/session/profile layer
-in Avalonia, reuses Devolutions' MIT terminal engine/control, and uses ConPTY on
+in Avalonia, reuses Devolutions' MIT terminal engine and adapts its pinned
+control/render sources for reference drawing. It uses ConPTY on
 Windows and a native forkpty relay on Unix. It adapts iTerm2's semantic exit-code
 scan and metadata protocols and bundles its actual bash/zsh integration scripts.
 This is a behavior migration, not a literal translation of the Metal renderer.
@@ -195,6 +200,10 @@ Avalonia Headless/xUnit version mismatch, Linux background jobs retaining the PT
 font/colour settings that the control did not apply automatically, and renderer
 disposal racing a queued draw. Recovery exposed ConPTY terminating a live shell
 when frontend detach cancelled an accepted write; host-lifetime input fixed it.
+Lossless UI comparison additionally exposed automation-inherited NO_COLOR,
+JPEG snapshots with .png names, sRGB/display-profile differences and asymmetric
+padding that painting did not honour. The adapted presentation sources retain
+upstream hashes/notices and isolate these changes from VT/process work.
 Native tmux required byte-preserving parsing, ordered server-owned grids and
 correct pixel padding/divider budgets. Each was reproduced and repaired. The hosted
 pipeline runs real-process tests and launches the final package on all three OSes;
@@ -209,14 +218,14 @@ GitHub Actions and local terminal tools. [Performance evidence](docs/performance
 is measured on a defined workload and makes no superiority claim.
 
 ![Original iTerm2 3.6.6 startup reference](docs/evidence/iterm2-original.png)
-![Aster native dark theme with actual shell output](docs/evidence/v0.12.0-osx-arm64/dark.png)
-![Aster at the installed reference window size](docs/evidence/v0.12.0-osx-arm64/reference-window.png)
-![Aster compact Unicode regex Find](docs/evidence/v0.12.0-osx-arm64/find-compact.png)
-![Aster compact Settings at minimum width](docs/evidence/v0.12.0-osx-arm64/preferences-compact.png)
-![Aster native profile output rules](docs/evidence/v0.12.0-osx-arm64/preferences-triggers.png)
-![Aster shell-generated inline graphics](docs/evidence/v0.12.0-osx-arm64/graphics.png)
-![Aster native tmux control panes](docs/evidence/v0.12.0-osx-arm64/tmux/tmux-splits.png)
-![Aster compact Find in native tmux](docs/evidence/v0.12.0-osx-arm64/tmux/tmux-find-compact.png)
+![Aster native dark theme with actual shell output](docs/evidence/v0.13.0-osx-arm64/dark.png)
+![Aster at the installed reference window size](docs/evidence/v0.13.0-osx-arm64/reference-window.png)
+![Aster compact Unicode regex Find](docs/evidence/v0.13.0-osx-arm64/find-compact.png)
+![Aster compact Settings at minimum width](docs/evidence/v0.13.0-osx-arm64/preferences-compact.png)
+![Aster native profile output rules](docs/evidence/v0.13.0-osx-arm64/preferences-triggers.png)
+![Aster shell-generated inline graphics](docs/evidence/v0.13.0-osx-arm64/graphics.png)
+![Aster native tmux control panes](docs/evidence/v0.13.0-osx-arm64/tmux/tmux-splits.png)
+![Aster compact Find in native tmux](docs/evidence/v0.13.0-osx-arm64/tmux/tmux-find-compact.png)
 
 Original screenshot © George Nachman/contributors; installed iTerm2 3.6.6 is a
 different version and geometry from the source audit. Captures show actual

@@ -173,3 +173,12 @@ version, notice, signature and installed-byte checks are in payload-v0.10.0.json
 - `installed-reference-v0.12.0`: iTerm.app bundle/version, sampled geometry/colours and appearance-only profile values; first failed CI Mac/Windows TRX/logs, corrected local 85-case TRX and scoped first local installed-candidate result. Superseded runs are not final evidence.
 - `payload-v0.12.0.json`: archive hashes, inventory/notices, runtime/version, compiler/credential exclusion, Mac signatures and installed-byte comparison.
 - `rules-v0.12.0.json`: official challenge recheck; no form submission.
+
+
+Release 0.13.0 uses runtime source 1a4ff56cbda02076575a11b12966db09383f9b63
+and successful native run 39034987649. v0.13.0-{rid} contains only controlled
+real-shell fixture captures/reports/TRX and native exit logs. The exact Mac
+archive is independently verified at 2× in v0.13.0-macos-retina. New-reference
+user shell captures are intentionally not published; pixel-reference-v0.13.0.json
+contains lossless signatures/hashes, geometry, sampled colours and selected-text
+statistics with explicit limits. No selected crop establishes whole-window parity.

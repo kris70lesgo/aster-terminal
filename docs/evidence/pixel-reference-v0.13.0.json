@@ -1,0 +1,146 @@
+{
+  "timestamp": "2026-10-17T13:09:10.850507+00:00",
+  "appVersion": "0.13.0",
+  "source": "1a4ff56cbda02076575a11b12966db09383f9b63",
+  "ciRun": 39034987649,
+  "reference": {
+    "bundle": "com.googlecode.iterm2",
+    "version": "3.7.4",
+    "windowId": 5877,
+    "captureSha256": "d1b29276b48cf600e409958d9c815d0e3988e1e885199b4f488cc5884a0d94ee"
+  },
+  "aster": {
+    "processId": 65553,
+    "windowId": 7385,
+    "captureSha256": "bb98372d923f49f1cced583ebda1127dabb608946496513729833f7a3cce334b",
+    "exactCiArchiveInstalled": true
+  },
+  "capture": {
+    "format": "PNG lossless, signature checked",
+    "logicalSize": [
+      587,
+      462
+    ],
+    "physicalSize": [
+      1174,
+      924
+    ],
+    "renderScale": 2,
+    "fontFamily": "Monaco",
+    "fontNominalSize": 12,
+    "cellLogicalSize": [
+      7,
+      17
+    ],
+    "userImagesPublished": false
+  },
+  "samplesDisplayProfileRgb": {
+    "terminal": {
+      "reference": [
+        21,
+        25,
+        30
+      ],
+      "aster": [
+        21,
+        25,
+        30
+      ]
+    },
+    "caption": {
+      "reference": [
+        31,
+        32,
+        45
+      ],
+      "aster": [
+        31,
+        32,
+        45
+      ]
+    },
+    "scrollTrack": {
+      "reference": [
+        34,
+        38,
+        43
+      ],
+      "aster": [
+        34,
+        38,
+        42
+      ]
+    },
+    "scrollThumb": {
+      "reference": [
+        144,
+        147,
+        149
+      ],
+      "aster": [
+        145,
+        147,
+        149
+      ]
+    },
+    "cyan": {
+      "reference": [
+        142,
+        250,
+        253
+      ],
+      "aster": [
+        142,
+        250,
+        253
+      ]
+    },
+    "red": {
+      "reference": [
+        208,
+        126,
+        120
+      ],
+      "aster": [
+        208,
+        126,
+        120
+      ]
+    }
+  },
+  "selectedSharedTextRegions": {
+    "quote": {
+      "cropPixels": [
+        110,
+        645,
+        900,
+        685
+      ],
+      "foregroundMaskThreshold": 35,
+      "foregroundMaskIntersectionOverUnion": 0.8937314540059347,
+      "samePixelFractionInCrop": 0.8956645569620253,
+      "meanAbsoluteChannelDifferenceOverWholeCrop": 3.429113924050633,
+      "alignmentOffsetPixels": [
+        0,
+        0
+      ]
+    },
+    "date": {
+      "cropPixels": [
+        110,
+        748,
+        800,
+        789
+      ],
+      "foregroundMaskThreshold": 35,
+      "foregroundMaskIntersectionOverUnion": 0.984887368120901,
+      "samePixelFractionInCrop": 0.9174266525273949,
+      "meanAbsoluteChannelDifferenceOverWholeCrop": 0.3876870507835513,
+      "alignmentOffsetPixels": [
+        0,
+        0
+      ]
+    }
+  },
+  "limits": "Selected shared text crops only, never a whole-window score. Live fastfetch values/module count, title and cursor state differ. Native caption/glyph/emoji edge pixels remain different. Windows/Linux use available licensed fonts, not redistributed Monaco. Private user captures are retained only in ignored artifacts."
+}

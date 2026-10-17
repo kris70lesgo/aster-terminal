@@ -18,7 +18,7 @@ The selected NuGet package **does not bundle the Unix `dt-pty-host` executable**
 
 ## Boundaries
 
-`src/App`: Avalonia XAML window, session tabs/split layouts, focus, clipboard/search commands. `src/Terminal.Sessions`: platform factory, profiles and bounded iTerm2 protocol adapter. `native/unix-pty`: pinned forkpty host. `tests/Terminal.Tests`: engine regression tests, iTerm2 protocol tests, real PTY/process integration. Two production assemblies keep these boundaries explicit without proliferating projects. Profiles/settings persistence, safe opt-in bash/zsh launch wrappers, and shortcut resolution belong in their dedicated classes. Preferences edit a transaction and apply validated appearance changes to existing panes; shell changes affect new processes. A binary pane tree captures layout ratios and starts fresh shells on reopen.
+`src/App`: Avalonia XAML window, session tabs/split layouts, focus, clipboard/search commands. `src/Terminal.Sessions`: platform factory, profiles and bounded iTerm2 protocol adapter. `native/unix-pty`: pinned forkpty host. `tests/Terminal.Tests`: engine regression tests, iTerm2 protocol tests, real PTY/process integration. Three production assemblies keep session, native UI and pinned presentation adaptations separate. Profiles/settings persistence, safe opt-in bash/zsh launch wrappers, and shortcut resolution belong in their dedicated classes. Preferences edit a transaction and apply validated appearance changes to existing panes; shell changes affect new processes. A binary pane tree captures layout ratios and starts fresh shells on reopen.
 
 Each pane owns one TermControl, one engine and one connection. The package processes output away from the UI thread, caps input queue at 4 MiB and posts invalidation to the dispatcher. UI close awaits asynchronous disposal of every session. Failed startup remains visible with its error; no simulated output. Independent sessions survive tab switching. Configuration restores fresh layouts; the separate local host architecture below additionally preserves live processes across UI loss when enabled. Normal close terminates sessions.
 
@@ -329,7 +329,7 @@ environment, history or user startup files. TerminalWindowNavigation maintains
 weak references to open terminal windows for the displayed app-local numeric
 shortcut; closing a window renumbers the remaining hints.
 
-## Reference rendering pass, 0.13 candidate
+## Reference rendering pass, 0.13.0
 
 `src/Terminal.Rendering` is a third assembly containing the pinned MIT control
 and renderer under Aster namespaces. It owns drawing/input presentation, not

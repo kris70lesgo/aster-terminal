@@ -1,0 +1,3217 @@
+// Derived from Devolutions.Terminal, fa23083f1bda1a60fe2b322c6cfab4a616af9edb.
+// Copyright (c) Devolutions Inc.; portions Copyright (c) Microsoft Corporation.
+// MIT notice: licenses/Devolutions-MIT.txt. Aster adaptations: 2026-10-17.
+using System.Buffers;
+using System.Diagnostics;
+using System.Globalization;
+using System.Runtime.Versioning;
+using System.Text;
+using Avalonia;
+using Avalonia.Automation.Peers;
+using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Input.Platform;
+using Avalonia.Input.TextInput;
+using Avalonia.Interactivity;
+using Avalonia.Media;
+using Avalonia.Platform;
+using Avalonia.Platform.Storage;
+using Avalonia.Threading;
+using Devolutions.Terminal.Connection;
+using Devolutions.Terminal.Core;
+using Aster.Terminal.Render;
+using Devolutions.Terminal.Settings;
+
+namespace Aster.Terminal;
+
+[Flags]
+public enum TerminalControlCapabilities
+{
+    None = 0,
+    ClearBuffer = 1 << 0,
+    Reset = 1 << 1,
+    ShowHide = 1 << 2,
+    Restart = 1 << 3,
+}
+
+public sealed class TermControl : Avalonia.Controls.Control
+{
+    private static readonly DataFormat<byte[]> HtmlClipboardFormat =
+        DataFormat.CreateBytesPlatformFormat(
+            OperatingSystem.IsMacOS() ? "public.html" : "HTML Format");
+    private static readonly DataFormat<byte[]> RtfClipboardFormat =
+        DataFormat.CreateBytesPlatformFormat(
+            OperatingSystem.IsMacOS() ? "public.rtf" : "Rich Text Format");
+    private readonly DispatcherTimer _blinkTimer;
+    private readonly object _outputLock = new();
+    private bool _acceptOutput;
+    private readonly SkiaTerminalRenderer _renderer = new();
+    private readonly TerminalSearchSession _search;
+    private readonly Guid _terminalSessionId = Guid.NewGuid();
+    private IRestartableTerminalConnection? _connection;
+    private double _fontSize = 12;
+    private double _defaultFontSize = 12;
+    private IReadOnlyList<TerminalCellRange> _searchHighlights = [];
+    private IReadOnlyList<TerminalCellRange> _hoveredHyperlink = [];
+    private TerminalRenderFrame? _lastFrame;
+    private IReadOnlyList<int> _lastDirtyRows = [];
+    private double _cellWidth = 8;
+    private double _cellHeight = 16;
+    private uint _engineCellWidthPixels;
+    private uint _engineCellHeightPixels;
+    private bool _cursorOn = true;
+    private bool _selecting;
+    private TerminalSelection? _selection;
+    private TerminalSelectionPoint _markCaret;
+    private bool _isMarkMode;
+    private readonly List<TerminalScrollMark> _userScrollMarks = [];
+    private readonly HashSet<(int Line, TerminalScrollMarkKind Kind)> _clearedScrollMarks = [];
+    private readonly HashSet<Key> _pressedKeys = [];
+    private string? _pendingEncodedTextInput;
+    private bool _suppressOptionTextInput;
+    private TerminalCompositionOverlay? _composition;
+    private readonly TerminalTextInputMethodClient _textInputMethodClient;
+    private Point? _touchPoint;
+    private string _accessibleName = "Terminal";
+    private int _pressedMouseButton = -1;
+    private long _selectionCoordinateVersion;
+    private bool _selectionAlternateBuffer;
+    private bool _rendererDisposed;
+    private bool _shaderEffectsEnabled = true;
+    private long _invalidationPosts;
+    private long _invalidationDrains;
+    private int _invalidationPending;
+    private TerminalInteractionOptions _interactionOptions = new();
+    private Thickness _padding = new(8);
+    private readonly DispatcherTimer _ptyResizeTimer;
+    private readonly Stopwatch _recordingStopwatch = new();
+    private int _pendingPtyColumns;
+    private int _pendingPtyRows;
+    private int _pendingPtyPixelWidth;
+    private int _pendingPtyPixelHeight;
+    private bool _hasPendingPtyResize;
+    private bool _connectionStarting;
+    private AsciicastRecording? _activeRecording;
+    private AsciicastRecording? _lastRecording;
+    private string? _recordingPath;
+    private long _recordingVersion;
+    private long _savedRecordingVersion;
+    private Decoder _recordingDecoder = Encoding.UTF8.GetDecoder();
+    private AsciicastWebSocketStreamer? _recordingStreamer;
+    private Task? _recordingStreamCompletion;
+    private Exception? _recordingStreamError;
+    private bool _recordingStartPending;
+    private readonly object _replayLock = new();
+    private CancellationTokenSource? _replayCancellationTokenSource;
+    private AsciicastRecording? _replayRecording;
+    private TaskCompletionSource<bool>? _replayResumeSource;
+    private bool _isReplayPaused;
+    private double _replaySpeed = 1d;
+    private double _replayPositionSeconds;
+    private double _replayDurationSeconds;
+
+    // Throughput-harness diagnostics (Devolutions.Terminal.Bench): posts requested by
+    // the engine-invalidated handler vs UI drains actually executed.
+    internal long InvalidationPosts => Interlocked.Read(ref _invalidationPosts);
+    internal long InvalidationDrains => Interlocked.Read(ref _invalidationDrains);
+
+    // True when a blink-timer tick can change pixels. Unfocused panes draw a static
+    // cursor, steady/hidden cursor modes (DECRST 12/25) never blink, and hidden
+    // controls do not present.
+    internal bool ShouldAnimateCursor =>
+        IsFocused &&
+        Engine.CursorBlinking &&
+        Engine.CursorVisible &&
+        IsEffectivelyVisible;
+
+    public TermControl(ITerminalEngine? engine = null)
+    {
+        Engine = engine ?? new TerminalEngine();
+        _textInputMethodClient = new TerminalTextInputMethodClient(this);
+        _search = new TerminalSearchSession(Engine);
+        _search.Changed += (_, _) =>
+        {
+            UpdateSearchHighlights();
+            ScrollMarksChanged?.Invoke(this, EventArgs.Empty);
+            ViewportChanged?.Invoke(this, EventArgs.Empty);
+            AccessibilityChanged?.Invoke(this, EventArgs.Empty);
+        };
+        Focusable = true;
+        ClipToBounds = true;
+        DragDrop.SetAllowDrop(this, true);
+        AddHandler(DragDrop.DragOverEvent, OnDragOver);
+        AddHandler(DragDrop.DropEvent, OnDrop);
+        TextInputMethodClientRequested += OnTextInputMethodClientRequested;
+        GotFocus += (_, _) => SendFocusChanged(focused: true);
+        LostFocus += (_, _) =>
+        {
+            SendFocusChanged(focused: false);
+            if (!_cursorOn)
+            {
+                // The unfocused pane draws a static cursor and the blink timer no
+                // longer animates it — repaint out of a mid-blink dark phase.
+                _cursorOn = true;
+                InvalidateVisual();
+            }
+        };
+
+        _ptyResizeTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(32) };
+        _ptyResizeTimer.Tick += (_, _) => FlushPtyResize();
+        _blinkTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(530) };
+        _blinkTimer.Tick += (_, _) =>
+        {
+            // Damage-gated idle rendering: skip the tick when blinking cannot change
+            // any pixel — unfocused panes draw a static cursor (see the drawCursor
+            // expression in Render), steady/hidden cursor modes never blink, and
+            // hidden controls do not present. When the animation is off, pin
+            // _cursorOn so the cursor is solid, repainting once if it was mid-blink.
+            if (!ShouldAnimateCursor)
+            {
+                if (!_cursorOn)
+                {
+                    _cursorOn = true;
+                    InvalidateVisual();
+                }
+
+                return;
+            }
+
+            _cursorOn = !_cursorOn;
+            InvalidateVisual();
+        };
+
+        Engine.Invalidated += (_, _) =>
+        {
+            // Viewport/UIA listeners (scrollbar marks, automation peers) touch
+            // Avalonia controls and may snapshot history. That work must not
+            // run on the PTY thread or throw back into Engine.Feed — either
+            // kills ConPTY ReadLoop and leaves the constructor-sized blank grid.
+            //
+            // Coalesce bursts: the PTY ReadLoop raises one invalidation per 16 KiB
+            // chunk, and each drain fires listener fan-out + InvalidateVisual.
+            // Collapse queued invalidations into a single trailing drain (the
+            // winterm-ghostty lesson: per-chunk UI work was the whole throughput
+            // gap). A drain re-queues itself if more output arrived mid-drain.
+            Interlocked.Increment(ref _invalidationPosts);
+            if (Dispatcher.UIThread.CheckAccess())
+            {
+                HandleEngineInvalidated();
+            }
+            else if (Interlocked.Exchange(ref _invalidationPending, 1) == 0)
+            {
+                Dispatcher.UIThread.Post(DrainEngineInvalidation, DispatcherPriority.Render);
+            }
+        };
+        Engine.TitleChanged += (_, title) =>
+        {
+            if (Dispatcher.UIThread.CheckAccess())
+            {
+                TitleChanged?.Invoke(this, title);
+            }
+            else
+            {
+                Dispatcher.UIThread.Post(() => TitleChanged?.Invoke(this, title));
+            }
+        };
+        Engine.ResponseReady += (_, data) => TryWriteInput(data);
+        Engine.ClipboardWriteRequested += (_, text) =>
+            Dispatcher.UIThread.Post(() => SetClipboardFromTerminalObservedAsync(text));
+        Engine.NotificationRequested += (_, notification) =>
+            Dispatcher.UIThread.Post(() => NotificationRequested?.Invoke(this, notification));
+        Engine.Diagnostic += (_, diagnostic) =>
+            Dispatcher.UIThread.Post(() => NotificationRequested?.Invoke(
+                this,
+                new TerminalNotification("Terminal engine limitation", diagnostic.Message)));
+    }
+
+    public ITerminalEngine Engine { get; }
+    public TerminalSearchSession Search => _search;
+    public CellSize CellSize => _renderer.CellSize;
+    public Func<ProfileSettings, IRestartableTerminalConnection>? ConnectionFactory { get; set; }
+    public ProfileSettings? Profile { get; private set; }
+    public bool IsRunning => _connection?.IsRunning == true;
+    public bool HasSelection => _selection is not null;
+    public bool HasSupportedShaderEffects => Profile?.RetroTerminalEffect == true;
+    public bool ShaderEffectsEnabled => _shaderEffectsEnabled && HasSupportedShaderEffects;
+    public TerminalSelection? Selection => _selection;
+    public bool IsMarkMode => _isMarkMode;
+    public string AccessibleName
+    {
+        get => _accessibleName;
+        set
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(value);
+            if (string.Equals(_accessibleName, value, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            _accessibleName = value;
+            AccessibilityChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    public TerminalInteractionOptions InteractionOptions
+    {
+        get => _interactionOptions;
+        set
+        {
+            _interactionOptions = value ?? new TerminalInteractionOptions();
+            WcWidth.AmbiguousAsWide = string.Equals(
+                _interactionOptions.AmbiguousWidth,
+                "wide",
+                StringComparison.OrdinalIgnoreCase);
+        }
+    }
+    public double FontSize => _fontSize;
+    public TerminalConnectionState ConnectionState =>
+        _connection?.State ?? TerminalConnectionState.NotConnected;
+    public TerminalProcessMetadata? ProcessMetadata => _connection?.ProcessMetadata;
+    public TerminalControlCapabilities Capabilities { get; } =
+        TerminalControlCapabilities.ClearBuffer |
+        TerminalControlCapabilities.Reset |
+        TerminalControlCapabilities.ShowHide |
+        TerminalControlCapabilities.Restart;
+
+    public static CellSize MeasureCell(ProfileSettings profile, double scale = 1)
+    {
+        ArgumentNullException.ThrowIfNull(profile);
+        using var renderer = new SkiaTerminalRenderer(CreateRendererSettings(
+            profile,
+            profile.FontSize <= 0 ? 12 : profile.FontSize));
+        renderer.Resize(new RenderViewport(1, 1, scale));
+        return renderer.CellSize;
+    }
+
+    public event EventHandler<string>? TitleChanged;
+    public event EventHandler<int>? ProcessExited;
+    public event EventHandler<TerminalExitInfo>? SessionExited;
+    public event EventHandler? CloseRequested;
+    public event EventHandler<TerminalNotification>? NotificationRequested;
+    public event EventHandler? SelectionChanged;
+    public event EventHandler? AccessibilityChanged;
+    internal event EventHandler? AccessibilityTextChanged;
+    public event EventHandler? ScrollMarksChanged;
+    public event EventHandler? ViewportChanged;
+    public event EventHandler<TerminalPasteWarningEventArgs>? PasteWarning;
+    public event EventHandler<TerminalHyperlinkEventArgs>? HyperlinkOpenRequested;
+    public event EventHandler<TerminalHyperlinkEventArgs>? HyperlinkContextRequested;
+    public event EventHandler<TerminalInteractionErrorEventArgs>? InteractionError;
+
+    public async Task StartAsync(ProfileSettings profile, int columns, int rows)
+    {
+        ClearPendingPtyResize();
+        Profile = profile;
+        _padding = ParsePadding(profile.Padding);
+        _shaderEffectsEnabled = true;
+        _defaultFontSize = profile.FontSize <= 0 ? 12 : profile.FontSize;
+        _fontSize = _defaultFontSize;
+        ConfigureRenderer(profile);
+        var scale = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1;
+        _renderer.Resize(new RenderViewport(columns, rows, scale));
+        MeasureGlyph();
+        Engine.Scheme = profile.ResolveScheme();
+        Engine.ConfigureOptionalFeatures(
+            profile.AllowVtClipboardWrite,
+            profile.AllowOscNotifications,
+            profile.AllowKittyKeyboardMode);
+        ResizeEngine(columns, rows);
+
+        _connectionStarting = true;
+        try
+        {
+            await StartConnectionAsync(profile, columns, rows).ConfigureAwait(true);
+        }
+        catch
+        {
+            ClearPendingPtyResize();
+            throw;
+        }
+        finally
+        {
+            _connectionStarting = false;
+        }
+
+        FlushPtyResize();
+        _blinkTimer.Start();
+        InvalidateVisual();
+    }
+
+    private async Task StartConnectionAsync(ProfileSettings profile, int columns, int rows)
+    {
+        var connection = ConnectionFactory?.Invoke(profile) ??
+            CreateDefaultConnection();
+        connection.OutputReceived += OnOutput;
+        connection.SessionExited += OnSessionExited;
+        connection.Faulted += OnConnectionFaulted;
+        _connection = connection;
+        lock (_outputLock)
+        {
+            _acceptOutput = true;
+        }
+        try
+        {
+            if (profile.Elevate && connection is not ConPtyConnection)
+            {
+                throw new PlatformNotSupportedException(
+                    "Only local Windows profiles can run as Administrator through gsudo.");
+            }
+
+            await connection.StartAsync(
+                new TerminalLaunchOptions
+                {
+                    CommandLine = profile.ExpandCommandline(),
+                    WorkingDirectory = profile.ExpandStartingDirectory(),
+                    Columns = columns,
+                    Rows = rows,
+                    ReloadEnvironmentVariables = profile.ReloadEnvironmentVariables,
+                    EnvironmentVariables = BuildTerminalEnvironment(profile),
+                    CloseOnExit = ToConnectionPolicy(profile.CloseOnExit),
+                    Elevate = profile.Elevate,
+                }).ConfigureAwait(true);
+        }
+        catch
+        {
+            connection.OutputReceived -= OnOutput;
+            connection.SessionExited -= OnSessionExited;
+            connection.Faulted -= OnConnectionFaulted;
+            _connection = null;
+            lock (_outputLock)
+            {
+                _acceptOutput = false;
+            }
+            await connection.DisposeAsync().ConfigureAwait(false);
+            throw;
+        }
+    }
+
+    private static IRestartableTerminalConnection CreateDefaultConnection()
+    {
+        if (OperatingSystem.IsBrowser())
+        {
+            return new BrowserShellConnection();
+        }
+
+        if (OperatingSystem.IsWindows())
+        {
+            return new ConPtyConnection();
+        }
+
+        if (OperatingSystem.IsLinux())
+        {
+            return CreateUnixPtyConnection();
+        }
+
+        if (OperatingSystem.IsMacOS())
+        {
+            return CreateUnixPtyConnection();
+        }
+
+        throw new PlatformNotSupportedException(
+            "No local PTY implementation is available for this platform.");
+    }
+
+    [SupportedOSPlatform("linux")]
+    [SupportedOSPlatform("macos")]
+    private static LinuxPtyConnection CreateUnixPtyConnection() => new();
+
+    public async Task RestartAsync(CancellationToken cancellationToken = default)
+    {
+        var connection = _connection
+            ?? throw new InvalidOperationException("The terminal connection has not been started.");
+        _connectionStarting = true;
+        try
+        {
+            await connection.CloseAsync(cancellationToken).ConfigureAwait(true);
+            ResetTerminal();
+            await connection.RestartAsync(cancellationToken: cancellationToken).ConfigureAwait(true);
+        }
+        catch
+        {
+            ClearPendingPtyResize();
+            throw;
+        }
+        finally
+        {
+            _connectionStarting = false;
+        }
+
+        if (!_hasPendingPtyResize)
+        {
+            SchedulePtyResize(
+                Engine.Columns,
+                Engine.Rows,
+                checked((int)Math.Max(1, Engine.Columns * _engineCellWidthPixels)),
+                checked((int)Math.Max(1, Engine.Rows * _engineCellHeightPixels)));
+        }
+
+        FlushPtyResize();
+        _blinkTimer.Start();
+    }
+
+    public async Task CloseAsync()
+    {
+        _replayCancellationTokenSource?.Cancel();
+        _blinkTimer.Stop();
+        ClearPendingPtyResize();
+        if (IsRecording)
+        {
+            StopRecording();
+        }
+
+        var recordingStreamCompletion = RecordingStreamCompletion;
+        if (recordingStreamCompletion is not null)
+        {
+            try
+            {
+                await recordingStreamCompletion.ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                ReportInteractionError("Asciicast WebSocket streaming", exception);
+            }
+        }
+
+        if (_connection is not null)
+        {
+            var connection = _connection;
+            _connection = null;
+            connection.OutputReceived -= OnOutput;
+            connection.SessionExited -= OnSessionExited;
+            connection.Faulted -= OnConnectionFaulted;
+            lock (_outputLock)
+            {
+                _acceptOutput = false;
+            }
+
+            await connection.DisposeAsync().ConfigureAwait(false);
+        }
+
+        _renderer.Dispose();
+        _search.Dispose();
+        Engine.Dispose();
+        _rendererDisposed = true;
+    }
+
+    public async Task CopyAsync(bool singleLine = false)
+    {
+        var options = InteractionOptions.Copy with { SingleLine = singleLine };
+        await CopyAsync(options).ConfigureAwait(true);
+    }
+
+    public async Task<TerminalClipboardPayload?> CopyAsync(TerminalCopyOptions options)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        var payload = BuildCopyPayload(options);
+        if (payload is null)
+        {
+            return null;
+        }
+
+        var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
+        if (clipboard is null)
+        {
+            return payload;
+        }
+
+        var data = CreateClipboardDataTransfer(payload);
+        await clipboard.SetDataAsync(data).ConfigureAwait(true);
+        return payload;
+    }
+
+    public TerminalClipboardPayload? BuildCopyPayload(TerminalCopyOptions? options = null)
+    {
+        if (_selection is null)
+        {
+            return null;
+        }
+
+        options ??= InteractionOptions.Copy;
+        var snapshot = Engine.CreateSnapshot(includeHistory: true).Buffer;
+        var selected = TerminalInteractionModel.GetSelectedText(
+            snapshot,
+            _selection,
+            options.TrimBlockSelection);
+        return string.IsNullOrEmpty(selected)
+            ? null
+            : TerminalInteractionModel.BuildClipboardPayload(selected, options);
+    }
+
+    internal static DataTransfer CreateClipboardDataTransfer(TerminalClipboardPayload payload)
+    {
+        ArgumentNullException.ThrowIfNull(payload);
+        var item = DataTransferItem.CreateText(payload.Text);
+        if (payload.Html is not null)
+        {
+            item.Set(HtmlClipboardFormat, Encoding.UTF8.GetBytes(ToPlatformHtmlClipboard(payload.Html)));
+        }
+
+        if (payload.Rtf is not null)
+        {
+            item.Set(RtfClipboardFormat, Encoding.ASCII.GetBytes(payload.Rtf));
+        }
+
+        var data = new DataTransfer();
+        data.Add(item);
+        return data;
+    }
+
+    public async Task<TerminalPasteResult> PasteAsync()
+    {
+        return await PasteAsync(InteractionOptions.Paste).ConfigureAwait(true);
+    }
+
+    public async Task<TerminalPasteResult> PasteAsync(TerminalPasteOptions options)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
+        var text = clipboard is null ? null : await clipboard.TryGetTextAsync().ConfigureAwait(true);
+        return await PasteTextAsync(text, options).ConfigureAwait(true);
+    }
+
+    public Func<TerminalPasteRequest, Task<bool>>? ConfirmPasteAsync { get; set; }
+
+    public async Task<TerminalPasteResult> PasteTextAsync(
+        string? text, TerminalPasteOptions? options = null)
+    {
+        var request = TerminalInteractionModel.PreparePaste(
+            text, options ?? InteractionOptions.Paste, Engine.BracketedPaste);
+        var connection = _connection;
+        var session = ProcessMetadata;
+        if (request.RequiresConfirmation && ConfirmPasteAsync is { } confirm)
+        {
+            if (!await confirm(request).ConfigureAwait(true))
+            {
+                return TerminalPasteResult.Cancelled;
+            }
+
+            if (!ReferenceEquals(connection, _connection) || connection?.IsRunning != true ||
+                !Equals(session, ProcessMetadata) || Engine.BracketedPaste != request.BracketedPaste)
+            {
+                return TerminalPasteResult.NoConnection;
+            }
+
+            return WritePaste(request);
+        }
+
+        return PasteText(text, options);
+    }
+
+    public TerminalPasteResult PasteText(string? text, TerminalPasteOptions? options = null)
+    {
+        var request = TerminalInteractionModel.PreparePaste(
+            text,
+            options ?? InteractionOptions.Paste,
+            Engine.BracketedPaste);
+        if (request.Text.Length == 0 && !request.BracketedPaste)
+        {
+            return TerminalPasteResult.Empty;
+        }
+
+        if (request.RequiresConfirmation)
+        {
+            var args = new TerminalPasteWarningEventArgs(request);
+            PasteWarning?.Invoke(this, args);
+            if (!args.Allow)
+            {
+                return TerminalPasteResult.Cancelled;
+            }
+        }
+
+        return WritePaste(request);
+    }
+
+    private TerminalPasteResult WritePaste(TerminalPasteRequest request)
+    {
+        if (_connection is null)
+        {
+            return TerminalPasteResult.NoConnection;
+        }
+
+        if (!TryWriteInput(Engine.WrapPaste(request.Text)))
+        {
+            return TerminalPasteResult.InputRejected;
+        }
+        SetScrollOffset(0);
+        return TerminalPasteResult.Written;
+    }
+
+    public void ClearBuffer()
+    {
+        Engine.Feed("\u001b[3J\u001b[2J\u001b[H");
+        SetSelection(null);
+        InvalidateVisual();
+    }
+
+    public void WriteInput(string input)
+    {
+        ArgumentNullException.ThrowIfNull(input);
+        TryWriteInput(input);
+        SetScrollOffset(0);
+    }
+
+    private bool TryWriteInput(string input) => TryWriteInput(Encoding.UTF8.GetBytes(input));
+
+    private bool TryWriteInput(ReadOnlySpan<byte> input)
+    {
+        if (_connection is null)
+        {
+            return false;
+        }
+
+        try
+        {
+            _connection.Write(input);
+            return true;
+        }
+        catch (Exception ex) when (ex is IOException or InvalidOperationException or ObjectDisposedException)
+        {
+            ReportInteractionError("Terminal input was not accepted", ex);
+            return false;
+        }
+    }
+
+    public void SelectAll()
+    {
+        var snapshot = Engine.CreateSnapshot(includeHistory: true).Buffer;
+        SetSelection(new TerminalSelection(
+            new TerminalSelectionPoint(0, 0),
+            new TerminalSelectionPoint(snapshot.Columns - 1, snapshot.Lines.Count - 1)));
+    }
+
+    public void ClearSelection() => SetSelection(null);
+
+    public void BeginSelection(
+        int viewportColumn,
+        int viewportRow,
+        TerminalSelectionMode mode = TerminalSelectionMode.Linear)
+    {
+        if (mode is TerminalSelectionMode.Command or TerminalSelectionMode.Output)
+        {
+            var history = Engine.CreateSnapshot(includeHistory: true).Buffer;
+            SetSelection(TerminalInteractionModel.SelectAt(
+                history,
+                ViewportToBuffer(history, viewportColumn, viewportRow),
+                mode,
+                InteractionOptions.WordDelimiters));
+        }
+        else
+        {
+            var viewport = Engine.CreateSnapshot().Buffer;
+            var local = TerminalInteractionModel.Clamp(
+                viewport,
+                new TerminalSelectionPoint(viewportColumn, viewportRow));
+            var selected = TerminalInteractionModel.SelectAt(
+                viewport,
+                local,
+                mode,
+                InteractionOptions.WordDelimiters);
+            SetSelection(OffsetSelection(selected, Engine.HistoryCount - Engine.ScrollOffset));
+        }
+
+        _selecting = true;
+    }
+
+    public void UpdateSelection(int viewportColumn, int viewportRow)
+    {
+        if (_selection is null)
+        {
+            return;
+        }
+
+        var viewport = Engine.CreateSnapshot().Buffer;
+        var local = TerminalInteractionModel.Clamp(
+            viewport,
+            new TerminalSelectionPoint(viewportColumn, viewportRow));
+        var point = new TerminalSelectionPoint(
+            local.Column,
+            Engine.HistoryCount - Engine.ScrollOffset + local.Line);
+        SetSelection(_selection.ActiveEndpoint == TerminalSelectionEndpoint.Active
+            ? _selection with { Active = point }
+            : _selection with { Anchor = point });
+    }
+
+    public void EndSelection()
+    {
+        _selecting = false;
+        if (!_isMarkMode &&
+            _selection is { } selection &&
+            selection.Anchor == selection.Active)
+        {
+            SetSelection(null);
+            return;
+        }
+
+        if (InteractionOptions.CopyOnSelect && _selection is not null)
+        {
+            ObserveInteractionAsync("copy on select", CopyAsync(InteractionOptions.Copy));
+        }
+    }
+
+    public void SelectWordAt(int viewportColumn, int viewportRow) =>
+        BeginAndEndSelection(viewportColumn, viewportRow, TerminalSelectionMode.Word);
+
+    public void SelectLineAt(int viewportColumn, int viewportRow) =>
+        BeginAndEndSelection(viewportColumn, viewportRow, TerminalSelectionMode.Line);
+
+    public void SelectCommandAt(int viewportColumn, int viewportRow) =>
+        BeginAndEndSelection(viewportColumn, viewportRow, TerminalSelectionMode.Command);
+
+    public void SelectOutputAt(int viewportColumn, int viewportRow) =>
+        BeginAndEndSelection(viewportColumn, viewportRow, TerminalSelectionMode.Output);
+
+    public bool SelectCommand(TerminalShellSelectionDirection direction) =>
+        SelectShellRegion(direction, selectOutput: false);
+
+    public bool SelectOutput(TerminalShellSelectionDirection direction) =>
+        SelectShellRegion(direction, selectOutput: true);
+
+    public void ExpandSelectionToWord()
+    {
+        if (_selection is null)
+        {
+            return;
+        }
+
+        var snapshot = Engine.CreateSnapshot(includeHistory: true).Buffer;
+        SetSelection(TerminalInteractionModel.ExpandToWord(
+            snapshot,
+            _selection,
+            InteractionOptions.WordDelimiters));
+    }
+
+    public void ToggleBlockSelection()
+    {
+        if (_selection is null)
+        {
+            return;
+        }
+
+        SetSelection(_selection with
+        {
+            Mode = _selection.Mode == TerminalSelectionMode.Block
+                ? TerminalSelectionMode.Linear
+                : TerminalSelectionMode.Block,
+        });
+    }
+
+    private bool SelectShellRegion(
+        TerminalShellSelectionDirection direction,
+        bool selectOutput)
+    {
+        var snapshot = Engine.CreateSnapshot(includeHistory: true).Buffer;
+        var ranges = TerminalBufferExport.GetShellCommandRanges(snapshot)
+            .Select(range => selectOutput ? range.Output : range.Command)
+            .Where(static range => range is not null)
+            .Select(static range => range!.Value)
+            .ToArray();
+        if (ranges.Length == 0)
+        {
+            return false;
+        }
+
+        var current = _selection is null
+            ? new TerminalSelectionPoint(
+                snapshot.CursorX,
+                snapshot.HistoryCount + snapshot.CursorY)
+            : direction == TerminalShellSelectionDirection.Previous
+                ? Min(_selection.Anchor, _selection.Active)
+                : Max(_selection.Anchor, _selection.Active);
+        var candidates = ranges
+            .Where(range => direction == TerminalShellSelectionDirection.Previous
+                ? Compare(range.Start, current) < 0
+                : Compare(range.Start, current) > 0)
+            .ToArray();
+        if (candidates.Length == 0)
+        {
+            return false;
+        }
+
+        var range = direction == TerminalShellSelectionDirection.Previous
+            ? candidates[^1]
+            : candidates[0];
+        SetSelection(new TerminalSelection(
+            new TerminalSelectionPoint(range.Start.Column, range.Start.Line),
+            new TerminalSelectionPoint(
+                Math.Max(0, range.End.Column - 1),
+                range.End.Line),
+            selectOutput ? TerminalSelectionMode.Output : TerminalSelectionMode.Command));
+        return true;
+    }
+
+    private static TerminalSelectionPoint Min(
+        TerminalSelectionPoint left,
+        TerminalSelectionPoint right) =>
+        Compare(left, right) <= 0 ? left : right;
+
+    private static TerminalSelectionPoint Max(
+        TerminalSelectionPoint left,
+        TerminalSelectionPoint right) =>
+        Compare(left, right) >= 0 ? left : right;
+
+    private static int Compare(BufferPosition left, TerminalSelectionPoint right)
+    {
+        var line = left.Line.CompareTo(right.Line);
+        return line != 0 ? line : left.Column.CompareTo(right.Column);
+    }
+
+    private static int Compare(
+        TerminalSelectionPoint left,
+        TerminalSelectionPoint right)
+    {
+        var line = left.Line.CompareTo(right.Line);
+        return line != 0 ? line : left.Column.CompareTo(right.Column);
+    }
+
+    public void EnterMarkMode()
+    {
+        var snapshot = Engine.CreateSnapshot(includeHistory: true).Buffer;
+        _markCaret = new TerminalSelectionPoint(
+            snapshot.CursorX,
+            snapshot.HistoryCount + snapshot.CursorY);
+        _isMarkMode = true;
+        SetSelection(new TerminalSelection(_markCaret, _markCaret));
+    }
+
+    public void ExitMarkMode(bool clearSelection = false)
+    {
+        _isMarkMode = false;
+        if (clearSelection)
+        {
+            SetSelection(null);
+        }
+        else
+        {
+            AccessibilityChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    public void SwitchSelectionEndpoint()
+    {
+        if (_selection is null)
+        {
+            return;
+        }
+
+        var endpoint = _selection.ActiveEndpoint == TerminalSelectionEndpoint.Active
+            ? TerminalSelectionEndpoint.Anchor
+            : TerminalSelectionEndpoint.Active;
+        _markCaret = endpoint == TerminalSelectionEndpoint.Active
+            ? _selection.Active
+            : _selection.Anchor;
+        SetSelection(_selection with { ActiveEndpoint = endpoint });
+    }
+
+    public void MoveMarkCaret(int columns, int rows, bool extend = true)
+    {
+        if (!_isMarkMode)
+        {
+            EnterMarkMode();
+        }
+
+        var snapshot = Engine.CreateSnapshot(includeHistory: true).Buffer;
+        _markCaret = TerminalInteractionModel.Clamp(
+            snapshot,
+            new TerminalSelectionPoint(_markCaret.Column + columns, _markCaret.Line + rows));
+        if (!extend || _selection is null)
+        {
+            SetSelection(new TerminalSelection(_markCaret, _markCaret));
+            return;
+        }
+
+        SetSelection(_selection.ActiveEndpoint == TerminalSelectionEndpoint.Active
+            ? _selection with { Active = _markCaret }
+            : _selection with { Anchor = _markCaret });
+    }
+
+    public void AdjustFontSize(double delta)
+    {
+        _fontSize = Math.Clamp(_fontSize + delta, 1, 72);
+        if (Profile is not null)
+        {
+            ConfigureRenderer(Profile);
+        }
+
+        if (VisualRoot is not null)
+        {
+            MeasureGlyph();
+        }
+
+        InvalidateMeasure();
+        InvalidateVisual();
+    }
+
+    public void ApplyAppearance(ProfileSettings profile)
+    {
+        ArgumentNullException.ThrowIfNull(profile);
+        ObjectDisposedException.ThrowIf(_rendererDisposed, this);
+        Profile = profile;
+        _padding = ParsePadding(profile.Padding);
+        _defaultFontSize = profile.FontSize <= 0 ? 12 : profile.FontSize;
+        ConfigureRenderer(profile);
+        if (VisualRoot is not null) MeasureGlyph();
+        InvalidateMeasure();
+        InvalidateVisual();
+    }
+
+    public void ResetFontSize()
+    {
+        _fontSize = _defaultFontSize;
+        if (Profile is not null)
+        {
+            ConfigureRenderer(Profile);
+        }
+
+        if (VisualRoot is not null)
+        {
+            MeasureGlyph();
+        }
+
+        InvalidateMeasure();
+        InvalidateVisual();
+    }
+
+    public bool ToggleShaderEffects()
+    {
+        if (!HasSupportedShaderEffects)
+        {
+            return false;
+        }
+
+        _shaderEffectsEnabled = !_shaderEffectsEnabled;
+        ConfigureRenderer(Profile!);
+        InvalidateVisual();
+        return _shaderEffectsEnabled;
+    }
+
+    public void ScrollBy(int rows)
+    {
+        SetScrollOffset(Engine.ScrollOffset + rows);
+    }
+
+    public void ScrollPage(int direction) => ScrollBy(direction * Math.Max(1, Engine.Rows - 1));
+
+    public void ScrollToTop()
+    {
+        SetScrollOffset(Engine.HistoryCount);
+    }
+
+    public void ScrollToBottom()
+    {
+        SetScrollOffset(0);
+    }
+
+    public void SetScrollOffset(int offset)
+    {
+        var normalized = Math.Clamp(offset, 0, Engine.HistoryCount);
+        if (Engine.ScrollOffset == normalized)
+        {
+            return;
+        }
+
+        Engine.SetScrollOffset(normalized);
+        ViewportChanged?.Invoke(this, EventArgs.Empty);
+        InvalidateVisual();
+    }
+
+    public bool Find(string query, bool previous = false)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            _search.Clear();
+            _searchHighlights = [];
+            return false;
+        }
+
+        if (!string.Equals(_search.Query, query, StringComparison.Ordinal))
+        {
+            _search.Update(query);
+        }
+        else if (!_search.MoveNext(reverse: previous))
+        {
+            return false;
+        }
+
+        if (_search.Current is not { } current)
+        {
+            return false;
+        }
+
+        var snapshot = Engine.CreateSnapshot(includeHistory: true).Buffer;
+        SetSelection(new TerminalSelection(
+            new TerminalSelectionPoint(current.Start.Column, current.Start.Line),
+            new TerminalSelectionPoint(
+                Math.Max(current.Start.Column, current.End.Column - 1),
+                current.End.Line)));
+        UpdateSearchHighlights();
+        return true;
+    }
+
+    public void ResetTerminal()
+    {
+        Engine.Reset();
+        SetSelection(null);
+        _isMarkMode = false;
+        _composition = null;
+        _cursorOn = true;
+        InvalidateVisual();
+    }
+
+    public bool IsRecording
+    {
+        get
+        {
+            lock (_outputLock)
+            {
+                return _activeRecording is not null;
+            }
+        }
+    }
+
+    public bool HasRecording
+    {
+        get
+        {
+            lock (_outputLock)
+            {
+                return _activeRecording is not null || _lastRecording is not null;
+            }
+        }
+    }
+
+    public bool HasUnsavedRecording
+    {
+        get
+        {
+            lock (_outputLock)
+            {
+                return (_activeRecording is not null || _lastRecording is not null) &&
+                       _recordingVersion != _savedRecordingVersion;
+            }
+        }
+    }
+
+    public TimeSpan RecordingElapsed
+    {
+        get
+        {
+            lock (_outputLock)
+            {
+                var seconds = _activeRecording is not null
+                    ? _recordingStopwatch.Elapsed.TotalSeconds
+                    : _lastRecording?.Frames.LastOrDefault()?.Timestamp ?? 0d;
+                return TimeSpan.FromSeconds(seconds);
+            }
+        }
+    }
+
+    public AsciicastFormat? RecordingFormat
+    {
+        get
+        {
+            lock (_outputLock)
+            {
+                return (_activeRecording ?? _lastRecording)?.Format;
+            }
+        }
+    }
+
+    public string? RecordingPath
+    {
+        get
+        {
+            lock (_outputLock)
+            {
+                return _recordingPath;
+            }
+        }
+    }
+
+    public bool IsStreamingRecording
+    {
+        get
+        {
+            lock (_outputLock)
+            {
+                return _recordingStartPending || _recordingStreamer is not null;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the active or most recently completed WebSocket streaming operation.
+    /// Await this task to observe transport errors and confirm all frames were flushed.
+    /// </summary>
+    public Task? RecordingStreamCompletion
+    {
+        get
+        {
+            lock (_outputLock)
+            {
+                return _recordingStreamCompletion;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the last WebSocket recording transport error.
+    /// </summary>
+    public Exception? RecordingStreamError
+    {
+        get
+        {
+            lock (_outputLock)
+            {
+                return _recordingStreamError;
+            }
+        }
+    }
+
+    public bool HasReplay
+    {
+        get
+        {
+            lock (_replayLock)
+            {
+                return _replayRecording is not null;
+            }
+        }
+    }
+
+    public bool IsReplaying
+    {
+        get
+        {
+            lock (_replayLock)
+            {
+                return _replayCancellationTokenSource is not null;
+            }
+        }
+    }
+
+    public bool IsReplayPaused
+    {
+        get
+        {
+            lock (_replayLock)
+            {
+                return _isReplayPaused;
+            }
+        }
+    }
+
+    public double ReplaySpeed
+    {
+        get
+        {
+            lock (_replayLock)
+            {
+                return _replaySpeed;
+            }
+        }
+    }
+
+    public TimeSpan ReplayPosition
+    {
+        get
+        {
+            lock (_replayLock)
+            {
+                return TimeSpan.FromSeconds(_replayPositionSeconds);
+            }
+        }
+    }
+
+    public TimeSpan ReplayDuration
+    {
+        get
+        {
+            lock (_replayLock)
+            {
+                return TimeSpan.FromSeconds(_replayDurationSeconds);
+            }
+        }
+    }
+
+    public event EventHandler? RecordingStateChanged;
+    public event EventHandler? ReplayStateChanged;
+
+    public void StartRecording(
+        string? path = null,
+        AsciicastFormat format = AsciicastFormat.V2)
+    {
+        lock (_outputLock)
+        {
+            if (_activeRecording is not null || _recordingStartPending)
+            {
+                throw new InvalidOperationException("This terminal is already being recorded.");
+            }
+
+            BeginRecording(path, format, streamer: null);
+        }
+
+        RecordingStateChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// Starts recording and streams asciicast v2 JSONL to a caller-supplied
+    /// WebSocket push URI. The URI may already contain authentication query
+    /// parameters; <c>fileType=asciicast</c> is added automatically.
+    /// </summary>
+    public async Task StartRecordingAsync(
+        Uri streamingUri,
+        string? path = null,
+        CancellationToken cancellationToken = default)
+    {
+        await StartRecordingAsyncCore(
+            streamingUri,
+            AsciicastFormat.V2,
+            useAsciinemaSubProtocol: false,
+            path,
+            cancellationToken).ConfigureAwait(true);
+    }
+
+    /// <summary>
+    /// Starts recording and streams asciicast v2 or v3 JSONL to an official
+    /// asciinema server producer URI using the matching WebSocket subprotocol.
+    /// </summary>
+    public async Task StartRecordingAsync(
+        Uri streamingUri,
+        AsciicastFormat format,
+        string? path = null,
+        CancellationToken cancellationToken = default)
+    {
+        await StartRecordingAsyncCore(
+            streamingUri,
+            format,
+            useAsciinemaSubProtocol: true,
+            path,
+            cancellationToken).ConfigureAwait(true);
+    }
+
+    private async Task StartRecordingAsyncCore(
+        Uri streamingUri,
+        AsciicastFormat format,
+        bool useAsciinemaSubProtocol,
+        string? path,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(streamingUri);
+        AsciicastRecording header;
+        lock (_outputLock)
+        {
+            if (_activeRecording is not null || _recordingStartPending)
+            {
+                throw new InvalidOperationException("This terminal is already being recorded.");
+            }
+
+            _recordingStartPending = true;
+            _recordingStreamCompletion = null;
+            _recordingStreamError = null;
+            header = new AsciicastRecording(
+                Engine.Columns,
+                Engine.Rows,
+                Engine.Title,
+                format)
+            {
+                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+            };
+        }
+
+        AsciicastWebSocketStreamer? streamer = null;
+        try
+        {
+            streamer = useAsciinemaSubProtocol
+                ? AsciicastWebSocketStreamer.CreateForAsciinema(streamingUri, format)
+                : new AsciicastWebSocketStreamer(streamingUri);
+            await streamer.StartAsync(header, cancellationToken).ConfigureAwait(true);
+            lock (_outputLock)
+            {
+                BeginRecording(path, format, streamer, header.Timestamp);
+                _recordingStreamCompletion = streamer.Completion;
+                _recordingStartPending = false;
+            }
+        }
+        catch
+        {
+            lock (_outputLock)
+            {
+                _recordingStartPending = false;
+            }
+
+            if (streamer is not null)
+            {
+                await streamer.DisposeAsync().ConfigureAwait(false);
+            }
+
+            throw;
+        }
+
+        RecordingStateChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public string? StopRecording()
+    {
+        AsciicastRecording recording;
+        string? destinationPath;
+        AsciicastWebSocketStreamer? streamer;
+        lock (_outputLock)
+        {
+            if (_activeRecording is null)
+            {
+                return null;
+            }
+
+            FlushRecordingDecoder(_activeRecording);
+            _recordingStopwatch.Stop();
+            recording = _activeRecording.Copy();
+            _lastRecording = recording;
+            _activeRecording = null;
+            destinationPath = _recordingPath;
+            streamer = _recordingStreamer;
+            _recordingStreamer = null;
+            if (streamer is not null)
+            {
+                _recordingStreamCompletion = CompleteRecordingStreamAsync(streamer);
+            }
+        }
+
+        if (destinationPath is not null)
+        {
+            WriteRecording(recording, destinationPath);
+            lock (_outputLock)
+            {
+                _savedRecordingVersion = _recordingVersion;
+            }
+        }
+
+        RecordingStateChanged?.Invoke(this, EventArgs.Empty);
+        return destinationPath;
+    }
+
+    /// <summary>
+    /// Stops recording, saves any configured file destination, and waits until
+    /// the WebSocket stream has flushed and closed.
+    /// </summary>
+    public async Task<string?> StopRecordingAsync(CancellationToken cancellationToken = default)
+    {
+        var path = StopRecording();
+        var completion = RecordingStreamCompletion;
+        if (completion is not null)
+        {
+            await completion.WaitAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        return path;
+    }
+
+    public string SaveRecording(string? path = null, AsciicastFormat? format = null)
+    {
+        AsciicastRecording recording;
+        string resolvedPath;
+        long recordingVersion;
+        lock (_outputLock)
+        {
+            var sourceRecording = _activeRecording ?? _lastRecording;
+            recording = sourceRecording?.Copy(format)
+                ?? throw new InvalidOperationException("This terminal does not have a recording to save.");
+            resolvedPath = ResolveRecordingPath(path ?? _recordingPath, createDefault: true)!;
+            _recordingPath = resolvedPath;
+            recordingVersion = _recordingVersion;
+        }
+
+        WriteRecording(recording, resolvedPath);
+        lock (_outputLock)
+        {
+            _savedRecordingVersion = Math.Max(_savedRecordingVersion, recordingVersion);
+        }
+
+        RecordingStateChanged?.Invoke(this, EventArgs.Empty);
+        return resolvedPath;
+    }
+
+    public AsciicastRecording GetRecording(string? path = null)
+    {
+        if (!string.IsNullOrWhiteSpace(path))
+        {
+            var resolvedPath = ResolveRecordingPath(path, createDefault: false)!;
+            return AsciicastRecording.FromJson(File.ReadAllText(resolvedPath));
+        }
+
+        lock (_outputLock)
+        {
+            return (_activeRecording ?? _lastRecording)?.Copy()
+                ?? throw new InvalidOperationException("This terminal does not have a recording to replay.");
+        }
+    }
+
+    public async Task ReplayRecordingAsync(
+        AsciicastRecording recording,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(recording);
+
+        CancellationTokenSource? previousReplay;
+        var replayCancellationTokenSource =
+            CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        lock (_replayLock)
+        {
+            previousReplay = _replayCancellationTokenSource;
+            _replayCancellationTokenSource = replayCancellationTokenSource;
+            _replayRecording = recording.Copy();
+            _replayResumeSource?.TrySetResult(true);
+            _replayResumeSource = null;
+            _isReplayPaused = false;
+            _replayPositionSeconds = 0d;
+            _replayDurationSeconds = recording.Frames.LastOrDefault()?.Timestamp ?? 0d;
+        }
+
+        previousReplay?.Cancel();
+        ReplayStateChanged?.Invoke(this, EventArgs.Empty);
+        var replayToken = replayCancellationTokenSource.Token;
+        var completed = false;
+
+        try
+        {
+            Engine.Resize(recording.Width, recording.Height);
+            ResetTerminal();
+            var previousTimestamp = 0d;
+            foreach (var frame in recording.Frames)
+            {
+                var delay = Math.Max(0d, frame.Timestamp - previousTimestamp);
+                await DelayReplayAsync(delay, replayCancellationTokenSource).ConfigureAwait(true);
+
+                replayToken.ThrowIfCancellationRequested();
+                Engine.Feed(frame.Data);
+                previousTimestamp = frame.Timestamp;
+                lock (_replayLock)
+                {
+                    if (ReferenceEquals(_replayCancellationTokenSource, replayCancellationTokenSource))
+                    {
+                        _replayPositionSeconds = frame.Timestamp;
+                    }
+                }
+
+                ReplayStateChanged?.Invoke(this, EventArgs.Empty);
+            }
+
+            InvalidateVisual();
+            completed = true;
+        }
+        finally
+        {
+            lock (_replayLock)
+            {
+                if (ReferenceEquals(_replayCancellationTokenSource, replayCancellationTokenSource))
+                {
+                    _replayCancellationTokenSource = null;
+                    _replayResumeSource?.TrySetResult(true);
+                    _replayResumeSource = null;
+                    _isReplayPaused = false;
+                    if (completed)
+                    {
+                        _replayPositionSeconds = _replayDurationSeconds;
+                    }
+                }
+            }
+
+            replayCancellationTokenSource.Dispose();
+            ReplayStateChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    public void PauseReplay()
+    {
+        lock (_replayLock)
+        {
+            if (_replayCancellationTokenSource is null || _isReplayPaused)
+            {
+                return;
+            }
+
+            _isReplayPaused = true;
+            _replayResumeSource = new TaskCompletionSource<bool>(
+                TaskCreationOptions.RunContinuationsAsynchronously);
+        }
+
+        ReplayStateChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void ResumeReplay()
+    {
+        TaskCompletionSource<bool>? resumeSource;
+        lock (_replayLock)
+        {
+            if (!_isReplayPaused)
+            {
+                return;
+            }
+
+            _isReplayPaused = false;
+            resumeSource = _replayResumeSource;
+            _replayResumeSource = null;
+        }
+
+        resumeSource?.TrySetResult(true);
+        ReplayStateChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void SetReplaySpeed(double speed)
+    {
+        if (!double.IsFinite(speed) || speed is < 0.25 or > 4)
+        {
+            throw new ArgumentOutOfRangeException(nameof(speed), speed, "Replay speed must be between 0.25x and 4x.");
+        }
+
+        lock (_replayLock)
+        {
+            _replaySpeed = speed;
+        }
+
+        ReplayStateChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public Task RestartReplayAsync(CancellationToken cancellationToken = default)
+    {
+        AsciicastRecording recording;
+        lock (_replayLock)
+        {
+            recording = _replayRecording?.Copy()
+                ?? throw new InvalidOperationException("This terminal does not have a recording to replay.");
+        }
+
+        return ReplayRecordingAsync(recording, cancellationToken);
+    }
+
+    private async Task DelayReplayAsync(
+        double sourceSeconds,
+        CancellationTokenSource replayCancellationTokenSource)
+    {
+        var remaining = sourceSeconds;
+        var replayToken = replayCancellationTokenSource.Token;
+        while (remaining > 0)
+        {
+            Task? resumeTask = null;
+            double speed;
+            lock (_replayLock)
+            {
+                if (!ReferenceEquals(_replayCancellationTokenSource, replayCancellationTokenSource))
+                {
+                    replayToken.ThrowIfCancellationRequested();
+                }
+
+                if (_isReplayPaused)
+                {
+                    resumeTask = _replayResumeSource?.Task;
+                }
+
+                speed = _replaySpeed;
+            }
+
+            if (resumeTask is not null)
+            {
+                await resumeTask.WaitAsync(replayToken).ConfigureAwait(true);
+                continue;
+            }
+
+            var sourceSlice = Math.Min(remaining, speed * 0.05);
+            await Task.Delay(TimeSpan.FromSeconds(sourceSlice / speed), replayToken).ConfigureAwait(true);
+            remaining -= sourceSlice;
+            lock (_replayLock)
+            {
+                if (ReferenceEquals(_replayCancellationTokenSource, replayCancellationTokenSource))
+                {
+                    _replayPositionSeconds = Math.Min(
+                        _replayDurationSeconds,
+                        _replayPositionSeconds + sourceSlice);
+                }
+            }
+
+            ReplayStateChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    private void AppendRecordingOutput(ReadOnlySpan<byte> data)
+    {
+        if (_activeRecording is null || data.IsEmpty)
+        {
+            return;
+        }
+
+        var rented = ArrayPool<char>.Shared.Rent(Encoding.UTF8.GetMaxCharCount(data.Length));
+        try
+        {
+            _recordingDecoder.Convert(
+                data,
+                rented,
+                flush: false,
+                out _,
+                out var charsUsed,
+                out _);
+            if (charsUsed > 0)
+            {
+                _activeRecording.AppendFrame(
+                    _recordingStopwatch.Elapsed.TotalSeconds,
+                    new string(rented, 0, charsUsed));
+                WriteRecordingStreamFrame(_activeRecording.Frames[^1]);
+                _recordingVersion++;
+            }
+        }
+        finally
+        {
+            ArrayPool<char>.Shared.Return(rented);
+        }
+    }
+
+    private void FlushRecordingDecoder(AsciicastRecording recording)
+    {
+        Span<char> remaining = stackalloc char[2];
+        _recordingDecoder.Convert(
+            [],
+            remaining,
+            flush: true,
+            out _,
+            out var charsUsed,
+            out _);
+        if (charsUsed > 0)
+        {
+            recording.AppendFrame(
+                _recordingStopwatch.Elapsed.TotalSeconds,
+                new string(remaining[..charsUsed]));
+            WriteRecordingStreamFrame(recording.Frames[^1]);
+            _recordingVersion++;
+        }
+    }
+
+    private void BeginRecording(
+        string? path,
+        AsciicastFormat format,
+        AsciicastWebSocketStreamer? streamer,
+        long? timestamp = null)
+    {
+        _recordingPath = ResolveRecordingPath(path, createDefault: false);
+        _activeRecording = new AsciicastRecording(Engine.Columns, Engine.Rows, Engine.Title, format)
+        {
+            Timestamp = timestamp ?? DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+        };
+        _recordingStreamer = streamer;
+        _recordingStreamCompletion = streamer?.Completion;
+        _recordingStreamError = null;
+        _recordingDecoder = Encoding.UTF8.GetDecoder();
+        _recordingStopwatch.Restart();
+        var initialSnapshot = TerminalBufferExport.ToPlainText(
+            Engine.CreateSnapshot().Buffer,
+            trimTrailingWhitespace: true);
+        if (!string.IsNullOrWhiteSpace(initialSnapshot))
+        {
+            _activeRecording.AppendFrame(0d, initialSnapshot);
+            WriteRecordingStreamFrame(_activeRecording.Frames[^1]);
+        }
+
+        _recordingVersion++;
+    }
+
+    private void WriteRecordingStreamFrame(AsciicastFrame frame)
+    {
+        if (_recordingStreamer is null)
+        {
+            return;
+        }
+
+        try
+        {
+            _recordingStreamer.Write(frame);
+        }
+        catch (Exception exception)
+        {
+            _recordingStreamError = exception;
+            _recordingStreamCompletion = Task.FromException(exception);
+            _recordingStreamer = null;
+            Dispatcher.UIThread.Post(
+                () => ReportInteractionError("Asciicast WebSocket streaming", exception));
+        }
+    }
+
+    private async Task CompleteRecordingStreamAsync(AsciicastWebSocketStreamer streamer)
+    {
+        try
+        {
+            await streamer.DisposeAsync().ConfigureAwait(false);
+        }
+        catch (Exception exception)
+        {
+            lock (_outputLock)
+            {
+                _recordingStreamError = exception;
+            }
+
+            Dispatcher.UIThread.Post(
+                () => ReportInteractionError("Asciicast WebSocket streaming", exception));
+            throw;
+        }
+        finally
+        {
+            Dispatcher.UIThread.Post(
+                () => RecordingStateChanged?.Invoke(this, EventArgs.Empty));
+        }
+    }
+
+    private static void WriteRecording(AsciicastRecording recording, string path)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
+        File.WriteAllText(path, recording.ToJson(), new UTF8Encoding(false));
+    }
+
+    private static string? ResolveRecordingPath(string? path, bool createDefault)
+    {
+        var requested = string.IsNullOrWhiteSpace(path)
+            ? null
+            : Environment.ExpandEnvironmentVariables(path);
+
+        if (!string.IsNullOrWhiteSpace(requested))
+        {
+            return requested;
+        }
+
+        if (!createDefault)
+        {
+            return null;
+        }
+
+        var directory = Path.Combine(
+            Path.GetDirectoryName(Path.GetFullPath(SettingsService.SettingsPath))!,
+            "recordings");
+        return Path.Combine(
+            directory,
+            $"terminal-recording-{DateTime.Now:yyyyMMdd-HHmmss-fff}.cast");
+    }
+
+    public void ShowHide(bool show)
+    {
+        IsVisible = show;
+        if (show)
+        {
+            Focus();
+        }
+    }
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        MeasureGlyph();
+        var padX = HorizontalPadding;
+        var padY = VerticalPadding;
+        var cols = Math.Max(1, (int)((availableSize.Width - padX) / _cellWidth));
+        var rows = Math.Max(1, (int)((availableSize.Height - padY) / _cellHeight));
+        return new Size((cols * _cellWidth) + padX, (rows * _cellHeight) + padY);
+    }
+
+    protected override Size ArrangeOverride(Size finalSize)
+    {
+        MeasureGlyph();
+        var cols = Math.Max(1, (int)((finalSize.Width - HorizontalPadding) / _cellWidth));
+        var rows = Math.Max(1, (int)((finalSize.Height - VerticalPadding) / _cellHeight));
+        var gridChanged = cols != Engine.Columns || rows != Engine.Rows;
+        var previousCellWidth = _engineCellWidthPixels;
+        var previousCellHeight = _engineCellHeightPixels;
+        ResizeEngine(cols, rows);
+        if (gridChanged ||
+            previousCellWidth != _engineCellWidthPixels ||
+            previousCellHeight != _engineCellHeightPixels)
+        {
+            SchedulePtyResize(
+                cols,
+                rows,
+                checked((int)Math.Max(1, cols * _engineCellWidthPixels)),
+                checked((int)Math.Max(1, rows * _engineCellHeightPixels)));
+        }
+
+        return finalSize;
+    }
+
+    private void SchedulePtyResize(int columns, int rows, int pixelWidth, int pixelHeight)
+    {
+        _pendingPtyColumns = columns;
+        _pendingPtyRows = rows;
+        _pendingPtyPixelWidth = pixelWidth;
+        _pendingPtyPixelHeight = pixelHeight;
+        _hasPendingPtyResize = true;
+        _ptyResizeTimer.Stop();
+        _ptyResizeTimer.Start();
+    }
+
+    private void ClearPendingPtyResize()
+    {
+        _ptyResizeTimer.Stop();
+        _hasPendingPtyResize = false;
+    }
+
+    private void FlushPtyResize()
+    {
+        _ptyResizeTimer.Stop();
+        if (!_hasPendingPtyResize || _connectionStarting || _connection?.IsRunning != true)
+        {
+            return;
+        }
+
+        try
+        {
+            _connection.Resize(
+                _pendingPtyColumns,
+                _pendingPtyRows,
+                _pendingPtyPixelWidth,
+                _pendingPtyPixelHeight);
+        }
+        catch (Exception ex) when (ex is IOException or InvalidOperationException or OverflowException)
+        {
+            ReportInteractionError("Terminal resize was not accepted; resize again after input drains", ex);
+        }
+        finally
+        {
+            _hasPendingPtyResize = false;
+        }
+    }
+
+    private void ResizeEngine(int columns, int rows)
+    {
+        var scale = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1;
+        var cellWidthPixels = checked((uint)Math.Max(1, Math.Round(_renderer.CellSize.Width * scale)));
+        var cellHeightPixels = checked((uint)Math.Max(1, Math.Round(_renderer.CellSize.Height * scale)));
+        if (columns == Engine.Columns &&
+            rows == Engine.Rows &&
+            cellWidthPixels == _engineCellWidthPixels &&
+            cellHeightPixels == _engineCellHeightPixels)
+        {
+            return;
+        }
+
+        Engine.Resize(
+            columns,
+            rows,
+            cellWidthPixels,
+            cellHeightPixels);
+        _engineCellWidthPixels = cellWidthPixels;
+        _engineCellHeightPixels = cellHeightPixels;
+    }
+
+    public override void Render(DrawingContext context)
+    {
+        if (_rendererDisposed)
+        {
+            return;
+        }
+
+        TerminalSnapshot snapshot;
+        lock (_outputLock)
+        {
+            var scale = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1;
+            _renderer.Resize(new RenderViewport(Engine.Columns, Engine.Rows, scale));
+            var measureInvalidated = MeasureGlyph(deferInvalidation: true);
+            if (!measureInvalidated &&
+                (checked((uint)Math.Max(1, Math.Round(_renderer.CellSize.Width * scale))) != _engineCellWidthPixels ||
+                 checked((uint)Math.Max(1, Math.Round(_renderer.CellSize.Height * scale))) != _engineCellHeightPixels))
+            {
+                Dispatcher.UIThread.Post(InvalidateMeasure, DispatcherPriority.Background);
+            }
+            snapshot = Engine.CreateSnapshot();
+        }
+        var profile = Profile;
+        var frame = TerminalRenderPlanner.Create(
+            snapshot,
+            Engine.Scheme,
+            new TerminalRenderOptions
+            {
+                CursorStyle = ResolveCursorStyle(Engine.CursorStyle, profile?.CursorShape),
+                CursorHeightPercentage = profile?.CursorHeight ?? 25,
+            });
+
+        var selection = CreateSelectionOverlays(frame);
+        var overlays = new TerminalRenderOverlays(
+            selection,
+            _searchHighlights,
+            _hoveredHyperlink)
+        {
+            Composition = Engine.ScrollOffset == 0 ? _composition : null,
+        };
+        _lastDirtyRows = TerminalFrameDiffer.GetDirtyRows(_lastFrame, frame);
+        _lastFrame = frame;
+        context.Custom(new TerminalSkiaDrawOperation(
+            new Rect(Bounds.Size),
+            _renderer,
+            frame,
+            overlays,
+            padding: (float)_padding.Left,
+            paddingTop: (float)_padding.Top,
+            drawCursor: Engine.CursorVisible && (_cursorOn || !IsFocused)));
+    }
+
+    public void SetSearchHighlights(IReadOnlyList<TerminalCellRange> highlights)
+    {
+        ArgumentNullException.ThrowIfNull(highlights);
+        _searchHighlights = highlights.ToArray();
+        InvalidateVisual();
+    }
+
+    internal IReadOnlyList<int> LastDirtyRows => _lastDirtyRows;
+
+    protected override AutomationPeer OnCreateAutomationPeer() => new TermControlAutomationPeer(this);
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        if (HandleMarkModeKey(e))
+        {
+            e.Handled = true;
+            base.OnKeyDown(e);
+            return;
+        }
+
+        var vt = ProcessKeyDownInput(
+            e.Key,
+            e.KeyModifiers,
+            e.PhysicalKey,
+            e.KeySymbol,
+            Engine.InputMode);
+        if (vt is not null)
+        {
+            e.Handled = true;
+        }
+
+        base.OnKeyDown(e);
+    }
+
+    protected override void OnKeyUp(KeyEventArgs e)
+    {
+        _pressedKeys.Remove(e.Key);
+        var mode = Engine.InputMode;
+        if (mode.Win32InputMode || mode.KittyFlags.HasFlag(KittyKeyboardFlags.ReportEventTypes))
+        {
+            var vt = KeyMapper.ToVt(
+                e.Key,
+                e.KeyModifiers,
+                e.PhysicalKey,
+                e.KeySymbol,
+                mode,
+                TerminalKeyEventType.Release);
+            if (vt is not null)
+            {
+                TryWriteInput(vt);
+                e.Handled = true;
+            }
+        }
+
+        base.OnKeyUp(e);
+    }
+
+    protected override void OnTextInput(TextInputEventArgs e)
+    {
+        if (ProcessTextInput(e.Text, Engine.InputMode) is not null)
+        {
+            e.Handled = true;
+        }
+
+        base.OnTextInput(e);
+    }
+
+    internal string? ProcessKeyDownInput(
+        Key key,
+        KeyModifiers modifiers,
+        PhysicalKey physicalKey,
+        string? keySymbol,
+        TerminalInputMode mode)
+    {
+        _pendingEncodedTextInput = null;
+        _suppressOptionTextInput = false;
+        var optionAsMeta = OperatingSystem.IsMacOS() &&
+                           mode.KittyFlags == KittyKeyboardFlags.None &&
+                           !mode.Win32InputMode;
+        keySymbol = KeyMapper.NormalizeOptionAsMetaSymbol(key, modifiers, keySymbol, optionAsMeta);
+        var eventType = _pressedKeys.Add(key)
+            ? TerminalKeyEventType.Press
+            : TerminalKeyEventType.Repeat;
+        var vt = KeyMapper.ToVt(
+            key,
+            modifiers,
+            physicalKey,
+            keySymbol,
+            mode,
+            eventType);
+        if (vt is null)
+        {
+            return null;
+        }
+
+        TryWriteInput(vt);
+        SetScrollOffset(0);
+        if (optionAsMeta &&
+            modifiers.HasFlag(KeyModifiers.Alt) &&
+            !modifiers.HasFlag(KeyModifiers.Control) &&
+            !modifiers.HasFlag(KeyModifiers.Meta) &&
+            vt.Length > 1 &&
+            vt[0] == '\u001b')
+        {
+            _suppressOptionTextInput = true;
+        }
+
+        if (IsTextInputCandidate(keySymbol) &&
+            (mode.Win32InputMode ||
+             mode.ModifyOtherKeys > 0 ||
+             (mode.KittyFlags != KittyKeyboardFlags.None &&
+              vt.StartsWith("\u001b[", StringComparison.Ordinal) &&
+              vt.EndsWith('u'))))
+        {
+            _pendingEncodedTextInput = keySymbol;
+        }
+        return vt;
+    }
+
+    internal string? ProcessTextInput(string? text, TerminalInputMode mode)
+    {
+        if (_suppressOptionTextInput)
+        {
+            _suppressOptionTextInput = false;
+            return null;
+        }
+
+        if (string.IsNullOrEmpty(text) || text is "\r" or "\n" or "\t")
+        {
+            return null;
+        }
+
+        var pending = _pendingEncodedTextInput;
+        _pendingEncodedTextInput = null;
+        if (string.Equals(pending, text, StringComparison.Ordinal))
+        {
+            return null;
+        }
+
+        var output = KeyMapper.EncodeKittyTextInput(text, mode.KittyFlags) ?? text;
+        TryWriteInput(output);
+        SetScrollOffset(0);
+        return output;
+    }
+
+    private static bool IsTextInputCandidate(string? text) =>
+        !string.IsNullOrEmpty(text) &&
+        text.EnumerateRunes().All(static rune => rune.Value is > 0x1F and not 0x7F);
+
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        Focus();
+        var point = e.GetCurrentPoint(this);
+        var (x, y) = HitTest(point.Position);
+        if (e.Pointer.Type == PointerType.Touch)
+        {
+            _touchPoint = point.Position;
+            e.Pointer.Capture(this);
+            e.Handled = true;
+            base.OnPointerPressed(e);
+            return;
+        }
+
+        if (Engine.MouseTracking && !BypassMouseTracking(e.KeyModifiers))
+        {
+            _pressedMouseButton = PointerButton(point);
+            WriteMouseInput(button: _pressedMouseButton, x, y, released: false, e.KeyModifiers);
+            e.Pointer.Capture(this);
+            e.Handled = true;
+            base.OnPointerPressed(e);
+            return;
+        }
+
+        var hyperlink = HitTestHyperlink(x, y);
+        if (point.Properties.IsRightButtonPressed && hyperlink is not null)
+        {
+            HyperlinkContextRequested?.Invoke(this, new TerminalHyperlinkEventArgs(hyperlink));
+            e.Handled = true;
+            base.OnPointerPressed(e);
+            return;
+        }
+
+        if (point.Properties.IsRightButtonPressed &&
+            Profile?.RightClickContextMenu != true)
+        {
+            if (_selection is null)
+            {
+                ObserveInteractionAsync("paste", PasteAsync());
+            }
+            else
+            {
+                ObserveInteractionAsync("copy", CopyAsync(InteractionOptions.Copy));
+                ClearSelection();
+            }
+
+            e.Handled = true;
+            base.OnPointerPressed(e);
+            return;
+        }
+
+        if (point.Properties.IsLeftButtonPressed &&
+            HasCommandModifier(e.KeyModifiers) &&
+            hyperlink is not null)
+        {
+            ObserveInteractionAsync("open hyperlink", OpenHyperlinkAsync(hyperlink));
+            e.Handled = true;
+            base.OnPointerPressed(e);
+            return;
+        }
+
+        if (point.Properties.IsLeftButtonPressed &&
+            (e.KeyModifiers & KeyModifiers.Alt) != 0 &&
+            Profile?.RepositionCursorWithMouse == true)
+        {
+            var sequence = TerminalInteractionModel.BuildCursorRepositionSequence(
+                Engine.CursorX,
+                Engine.CursorY,
+                x,
+                y,
+                Engine.ApplicationCursorKeys);
+            TryWriteInput(sequence);
+            e.Handled = true;
+            base.OnPointerPressed(e);
+            return;
+        }
+
+        if (point.Properties.IsLeftButtonPressed)
+        {
+            var mode = e.ClickCount switch
+            {
+                >= 3 => TerminalSelectionMode.Line,
+                2 => TerminalSelectionMode.Word,
+                _ when (e.KeyModifiers & KeyModifiers.Alt) != 0 => TerminalSelectionMode.Block,
+                _ => TerminalSelectionMode.Linear,
+            };
+            BeginSelection(x, y, mode);
+            e.Pointer.Capture(this);
+            e.Handled = true;
+        }
+
+        base.OnPointerPressed(e);
+    }
+
+    protected override void OnPointerMoved(PointerEventArgs e)
+    {
+        UpdateHoveredHyperlink(e.GetPosition(this));
+        if (e.Pointer.Type != PointerType.Touch &&
+            Engine.MouseTracking &&
+            !BypassMouseTracking(e.KeyModifiers) &&
+            (Engine.MouseTrackingMode == TerminalMouseTrackingMode.AllMotion ||
+             (Engine.MouseTrackingMode == TerminalMouseTrackingMode.ButtonEvent &&
+              _pressedMouseButton >= 0)))
+        {
+            var (mouseX, mouseY) = HitTest(e.GetPosition(this));
+            var button = (_pressedMouseButton >= 0 ? _pressedMouseButton : 3) | 32;
+            WriteMouseInput(button, mouseX, mouseY, released: false, e.KeyModifiers);
+            e.Handled = true;
+            base.OnPointerMoved(e);
+            return;
+        }
+
+        if (_touchPoint is { } previous)
+        {
+            var current = e.GetPosition(this);
+            var rows = (int)Math.Truncate((previous.Y - current.Y) / Math.Max(1, _cellHeight));
+            if (rows != 0)
+            {
+                ScrollBy(rows);
+                _touchPoint = current;
+            }
+
+            e.Handled = true;
+            base.OnPointerMoved(e);
+            return;
+        }
+
+        if (_selecting)
+        {
+            var (x, y) = HitTest(e.GetPosition(this));
+            UpdateSelection(x, y);
+            e.Handled = true;
+        }
+
+        base.OnPointerMoved(e);
+    }
+
+    protected override void OnPointerExited(PointerEventArgs e)
+    {
+        if (_hoveredHyperlink.Count != 0)
+        {
+            _hoveredHyperlink = [];
+            InvalidateVisual();
+        }
+
+        base.OnPointerExited(e);
+    }
+
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        if (Engine.MouseTracking && _pressedMouseButton >= 0)
+        {
+            var point = e.GetCurrentPoint(this);
+            var (x, y) = HitTest(point.Position);
+            WriteMouseInput(
+                button: PointerButton(e.InitialPressMouseButton),
+                x,
+                y,
+                released: true,
+                e.KeyModifiers);
+            _pressedMouseButton = -1;
+        }
+
+        _touchPoint = null;
+        EndSelection();
+        e.Pointer.Capture(null);
+        base.OnPointerReleased(e);
+    }
+
+    protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
+    {
+        if (HasCommandModifier(e.KeyModifiers) && InteractionOptions.ScrollToZoom)
+        {
+            AdjustFontSize(e.Delta.Y > 0 ? 1 : -1);
+            e.Handled = true;
+            base.OnPointerWheelChanged(e);
+            return;
+        }
+
+        if (Engine.MouseTracking && !BypassMouseTracking(e.KeyModifiers))
+        {
+            var (x, y) = HitTest(e.GetPosition(this));
+            var button = e.Delta.Y > 0 ? 64 : 65;
+            WriteMouseInput(button, x, y, released: false, e.KeyModifiers);
+            e.Handled = true;
+            base.OnPointerWheelChanged(e);
+            return;
+        }
+
+        if (Engine.AlternateBufferActive)
+        {
+            var steps = Math.Max(1, (int)Math.Round(Math.Abs(e.Delta.Y) * 3));
+            var up = e.Delta.Y > 0;
+            var sequence = Engine.ApplicationCursorKeys
+                ? (up ? "\u001bOA" : "\u001bOB")
+                : (up ? "\u001b[A" : "\u001b[B");
+            for (var i = 0; i < steps; i++)
+            {
+                TryWriteInput(sequence);
+            }
+
+            e.Handled = true;
+            base.OnPointerWheelChanged(e);
+            return;
+        }
+
+        var delta = (int)Math.Round(e.Delta.Y * 3);
+        SetScrollOffset(Engine.ScrollOffset + delta);
+        e.Handled = true;
+        base.OnPointerWheelChanged(e);
+    }
+
+    private void OnDragOver(object? sender, DragEventArgs e)
+    {
+        e.DragEffects = e.DataTransfer.Contains(DataFormat.File)
+            ? DragDropEffects.Copy
+            : DragDropEffects.None;
+        e.Handled = true;
+    }
+
+    private void OnDrop(object? sender, DragEventArgs e)
+    {
+        var files = e.DataTransfer.TryGetFiles();
+        if (files is null)
+        {
+            return;
+        }
+
+        var text = TerminalInteractionModel.FormatDroppedPaths(
+            files.Select(static file => file.TryGetLocalPath())
+                .Where(static path => !string.IsNullOrWhiteSpace(path))
+                .Select(static path => path!),
+            Profile?.DragDropDelimiter ?? " ");
+        if (string.IsNullOrEmpty(text) || !TryWriteInput(text))
+        {
+            return;
+        }
+
+        e.Handled = true;
+    }
+
+    internal static KeyModifiers CommandModifier { get; } =
+        OperatingSystem.IsMacOS() ? KeyModifiers.Meta : KeyModifiers.Control;
+
+    internal static bool HasCommandModifier(KeyModifiers modifiers) =>
+        (modifiers & CommandModifier) != 0;
+
+    internal static string ToPlatformHtmlClipboard(string html)
+    {
+        ArgumentNullException.ThrowIfNull(html);
+        if (!OperatingSystem.IsMacOS())
+        {
+            return html;
+        }
+
+        const string start = "<!--StartFragment-->";
+        const string end = "<!--EndFragment-->";
+        var startIndex = html.IndexOf(start, StringComparison.Ordinal);
+        var endIndex = html.IndexOf(end, StringComparison.Ordinal);
+        return startIndex >= 0 && endIndex > startIndex
+            ? html[(startIndex + start.Length)..endIndex]
+            : html;
+    }
+
+    private void OnOutput(object? sender, ReadOnlyMemory<byte> data)
+    {
+        lock (_outputLock)
+        {
+            if (!_acceptOutput)
+            {
+                return;
+            }
+
+            try
+            {
+                // Feed on the PTY thread so cursor-position reports (CSI 6n) go
+                // back to zsh before PROMPT_SP prints a spurious '%'.
+                Engine.Feed(data.Span);
+                AppendRecordingOutput(data.Span);
+            }
+            catch (Exception exception)
+            {
+                ReportInteractionError("Terminal output", exception);
+            }
+        }
+    }
+
+    private void DrainEngineInvalidation()
+    {
+        // Trailing edge: clear the flag before handling so an invalidation that
+        // arrives during handling is observed by the loop check below. A producer
+        // that exchanges the flag from 0 to 1 posts its own drain; one that finds
+        // it already 1 relies on this loop's recheck.
+        do
+        {
+            Interlocked.Exchange(ref _invalidationPending, 0);
+            HandleEngineInvalidated();
+        }
+        while (Volatile.Read(ref _invalidationPending) != 0);
+    }
+
+    private void HandleEngineInvalidated()
+    {
+        Interlocked.Increment(ref _invalidationDrains);
+        try
+        {
+            if (_selection is not null &&
+                (_selectionCoordinateVersion != Engine.Buffer.CoordinateVersion ||
+                 _selectionAlternateBuffer != Engine.AlternateBufferActive))
+            {
+                SetSelection(null);
+            }
+
+            AccessibilityTextChanged?.Invoke(this, EventArgs.Empty);
+            ScrollMarksChanged?.Invoke(this, EventArgs.Empty);
+            ViewportChanged?.Invoke(this, EventArgs.Empty);
+            _textInputMethodClient.NotifyCursorChanged();
+            InvalidateVisual();
+        }
+        catch (Exception exception)
+        {
+            ReportInteractionError("Terminal output", exception);
+        }
+    }
+
+    private void OnConnectionFaulted(object? sender, Exception exception) =>
+        Dispatcher.UIThread.Post(() => ReportInteractionError("Terminal connection", exception));
+
+    private void OnSessionExited(object? sender, TerminalExitInfo exit)
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            SessionExited?.Invoke(this, exit);
+            if (exit.ExitCode is int exitCode)
+            {
+                ProcessExited?.Invoke(this, exitCode);
+            }
+
+            if (exit.ShouldClose)
+            {
+                CloseRequested?.Invoke(this, EventArgs.Empty);
+            }
+        });
+    }
+
+    private (int X, int Y) HitTest(Point point)
+    {
+        var x = (int)Math.Floor((point.X - _padding.Left) / _cellWidth);
+        var y = (int)Math.Floor((point.Y - _padding.Top) / _cellHeight);
+        y = Math.Clamp(y, 0, Engine.Rows - 1);
+        var snapshot = Engine.CreateSnapshot().Buffer;
+        if ((uint)y < (uint)snapshot.Lines.Count &&
+            snapshot.Lines[y].Rendition != LineRendition.SingleWidth)
+        {
+            x /= 2;
+        }
+
+        return (Math.Clamp(x, 0, Engine.Columns - 1), y);
+    }
+
+    private bool MeasureGlyph(bool deferInvalidation = false)
+    {
+        var width = _renderer.CellSize.Width;
+        var height = _renderer.CellSize.Height;
+        if (Math.Abs(_cellWidth - width) < 0.001 &&
+            Math.Abs(_cellHeight - height) < 0.001)
+        {
+            return false;
+        }
+
+        _cellWidth = width;
+        _cellHeight = height;
+        if (deferInvalidation)
+        {
+            Dispatcher.UIThread.Post(InvalidateMeasure, DispatcherPriority.Background);
+        }
+        else
+        {
+            InvalidateMeasure();
+        }
+        return true;
+    }
+
+    private void UpdateSearchHighlights()
+    {
+        var snapshot = Engine.CreateSnapshot(includeHistory: true).Buffer;
+        var viewportTop = snapshot.HistoryCount - Engine.ScrollOffset;
+        var ranges = new List<TerminalCellRange>();
+        foreach (var match in _search.Matches)
+        {
+            for (var line = match.Start.Line; line <= match.End.Line; line++)
+            {
+                var visibleRow = line - viewportTop;
+                if (visibleRow < 0 || visibleRow >= snapshot.Rows)
+                {
+                    continue;
+                }
+
+                var start = line == match.Start.Line ? match.Start.Column : 0;
+                var endExclusive = line == match.End.Line ? match.End.Column : snapshot.Columns;
+                if (endExclusive > start)
+                {
+                    ranges.Add(new TerminalCellRange(
+                        visibleRow,
+                        start,
+                        endExclusive - 1,
+                        0x604080FF));
+                }
+            }
+        }
+
+        _searchHighlights = ranges;
+        InvalidateVisual();
+    }
+
+    public IReadOnlyList<TerminalScrollMark> GetScrollMarks()
+    {
+        var snapshot = Engine.CreateSnapshot(includeHistory: true).Buffer;
+        var marks = TerminalInteractionModel.GetScrollMarks(
+                snapshot,
+                _search.Matches,
+                _search.CurrentIndex)
+            .Where(mark => !_clearedScrollMarks.Contains((mark.Line, mark.Kind)))
+            .Concat(_userScrollMarks)
+            .OrderBy(static mark => mark.Line)
+            .ThenBy(static mark => mark.Kind)
+            .ToArray();
+        return marks;
+    }
+
+    public void AddMark(string? color = null)
+    {
+        var snapshot = Engine.CreateSnapshot(includeHistory: true).Buffer;
+        var line = _selection?.Anchor.Line ??
+                   snapshot.HistoryCount - Engine.ScrollOffset + Engine.CursorY;
+        line = Math.Clamp(line, 0, Math.Max(0, snapshot.Lines.Count - 1));
+        _userScrollMarks.RemoveAll(mark => mark.Line == line);
+        _userScrollMarks.Add(new TerminalScrollMark(
+            line,
+            (double)line / Math.Max(1, snapshot.Lines.Count - 1),
+            TerminalScrollMarkKind.User,
+            Color: color));
+        ScrollMarksChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void ClearMark()
+    {
+        var snapshot = Engine.CreateSnapshot(includeHistory: true).Buffer;
+        var start = _selection is null
+            ? snapshot.HistoryCount - Engine.ScrollOffset + Engine.CursorY
+            : Math.Min(_selection.Anchor.Line, _selection.Active.Line);
+        var end = _selection is null
+            ? start
+            : Math.Max(_selection.Anchor.Line, _selection.Active.Line);
+        _userScrollMarks.RemoveAll(mark => mark.Line >= start && mark.Line <= end);
+        foreach (var mark in TerminalInteractionModel.GetScrollMarks(snapshot, [], -1)
+                     .Where(mark => mark.Line >= start && mark.Line <= end))
+        {
+            _clearedScrollMarks.Add((mark.Line, mark.Kind));
+        }
+
+        ScrollMarksChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void ClearAllMarks()
+    {
+        var snapshot = Engine.CreateSnapshot(includeHistory: true).Buffer;
+        foreach (var mark in TerminalInteractionModel.GetScrollMarks(snapshot, [], -1))
+        {
+            _clearedScrollMarks.Add((mark.Line, mark.Kind));
+        }
+
+        _userScrollMarks.Clear();
+        ScrollMarksChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void ScrollToMark(ScrollToMarkDirection direction)
+    {
+        var marks = GetScrollMarks()
+            .Where(static mark => mark.Kind is not
+                TerminalScrollMarkKind.SearchMatch and not
+                TerminalScrollMarkKind.CurrentSearchMatch)
+            .OrderBy(static mark => mark.Line)
+            .ToArray();
+        var currentTop = Engine.HistoryCount - Engine.ScrollOffset;
+        var target = direction switch
+        {
+            ScrollToMarkDirection.First => marks.FirstOrDefault(),
+            ScrollToMarkDirection.Last => marks.LastOrDefault(),
+            ScrollToMarkDirection.Next => marks.FirstOrDefault(mark => mark.Line > currentTop),
+            _ => marks.LastOrDefault(mark => mark.Line < currentTop),
+        };
+        if (target is not null)
+        {
+            SetScrollOffset(Engine.HistoryCount - target.Line);
+        }
+        else
+        {
+            SetScrollOffset(direction is ScrollToMarkDirection.Next or ScrollToMarkDirection.Last
+                ? 0
+                : Engine.HistoryCount);
+        }
+    }
+
+    public bool ColorSelection(
+        string? foreground,
+        string? background,
+        MatchMode matchMode)
+    {
+        if (_selection is null ||
+            (!TryParseOptionalColor(foreground, out var foregroundColor) ||
+             !TryParseOptionalColor(background, out var backgroundColor)) ||
+            (foregroundColor is null && backgroundColor is null))
+        {
+            return false;
+        }
+
+        IReadOnlyList<TerminalSelection> selections = [_selection];
+        if (matchMode == MatchMode.All && BuildCopyPayload()?.Text is { Length: > 0 } text)
+        {
+            var snapshot = Engine.CreateSnapshot(includeHistory: true).Buffer;
+            selections = TextBufferSearch.FindAll(
+                    snapshot,
+                    text,
+                    new TextSearchOptions(CaseSensitive: true))
+                .Select(range => ToSelection(range, snapshot.Columns))
+                .ToArray();
+        }
+
+        foreach (var selection in selections)
+        {
+            var start = Min(selection.Anchor, selection.Active);
+            var end = Max(selection.Anchor, selection.Active);
+            Engine.Buffer.ApplyColors(
+                new BufferPosition(start.Line, start.Column),
+                new BufferPosition(end.Line, end.Column),
+                foregroundColor,
+                backgroundColor);
+        }
+
+        ClearSelection();
+        InvalidateVisual();
+        return true;
+    }
+
+    private static bool TryParseOptionalColor(string? value, out TermColor? color)
+    {
+        color = null;
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return true;
+        }
+
+        if (!ColorScheme.TryParseXtermColor(value, out var parsed))
+        {
+            return false;
+        }
+
+        color = TermColor.FromRgb(
+            (byte)(parsed >> 16),
+            (byte)(parsed >> 8),
+            (byte)parsed);
+        return true;
+    }
+
+    private static TerminalSelection ToSelection(BufferRange range, int columns)
+    {
+        var end = range.End;
+        if (end.Column > 0)
+        {
+            end = end with { Column = end.Column - 1 };
+        }
+        else if (end.Line > range.Start.Line)
+        {
+            end = new BufferPosition(end.Line - 1, columns - 1);
+        }
+
+        return new TerminalSelection(
+            new TerminalSelectionPoint(range.Start.Column, range.Start.Line),
+            new TerminalSelectionPoint(end.Column, end.Line));
+    }
+
+    public TerminalHyperlinkContext? HitTestHyperlink(int viewportColumn, int viewportRow)
+    {
+        var viewport = Engine.CreateSnapshot().Buffer;
+        var hyperlink = TerminalInteractionModel.HitTestHyperlink(
+            viewport,
+            new TerminalSelectionPoint(viewportColumn, viewportRow),
+            InteractionOptions.SafeUriSchemes,
+            InteractionOptions.DetectUrls);
+        if (hyperlink is null)
+        {
+            return null;
+        }
+
+        var offset = Engine.HistoryCount - Engine.ScrollOffset;
+        return hyperlink with
+        {
+            Start = hyperlink.Start with { Line = hyperlink.Start.Line + offset },
+            End = hyperlink.End with { Line = hyperlink.End.Line + offset },
+        };
+    }
+
+    public async Task<bool> OpenHyperlinkAsync(TerminalHyperlinkContext hyperlink)
+    {
+        ArgumentNullException.ThrowIfNull(hyperlink);
+        var args = new TerminalHyperlinkEventArgs(hyperlink);
+        HyperlinkOpenRequested?.Invoke(this, args);
+        if (args.Handled)
+        {
+            return true;
+        }
+
+        if (!hyperlink.CanOpen)
+        {
+            throw new InvalidOperationException($"The hyperlink scheme is not allowed: {hyperlink.Uri}");
+        }
+
+        var startInfo = new ProcessStartInfo(hyperlink.Uri)
+        {
+            UseShellExecute = true,
+        };
+        using var process = Process.Start(startInfo)
+            ?? throw new InvalidOperationException($"Unable to open hyperlink: {hyperlink.Uri}");
+        await Task.CompletedTask.ConfigureAwait(false);
+        return true;
+    }
+
+    public async Task CopyHyperlinkAsync(TerminalHyperlinkContext hyperlink)
+    {
+        ArgumentNullException.ThrowIfNull(hyperlink);
+        var clipboard = TopLevel.GetTopLevel(this)?.Clipboard
+            ?? throw new InvalidOperationException("No clipboard is available for this control.");
+        await clipboard.SetTextAsync(hyperlink.Uri).ConfigureAwait(true);
+    }
+
+    internal ImeContext GetImeContext()
+    {
+        var snapshot = Engine.CreateSnapshot(includeHistory: true).Buffer;
+        var lineIndex = Math.Clamp(snapshot.HistoryCount + snapshot.CursorY, 0, snapshot.Lines.Count - 1);
+        var cells = snapshot.Lines[lineIndex].Cells;
+        var output = new StringBuilder();
+        var cursorTextOffset = 0;
+        for (var column = 0; column < cells.Count; column++)
+        {
+            if (column == snapshot.CursorX)
+            {
+                cursorTextOffset = output.Length;
+            }
+
+            if (!cells[column].IsWideContinuation)
+            {
+                output.Append(cells[column].Text);
+            }
+        }
+
+        if (snapshot.CursorX >= cells.Count)
+        {
+            cursorTextOffset = output.Length;
+        }
+
+        var text = output.ToString();
+        var retainedLength = Math.Max(text.TrimEnd().Length, cursorTextOffset);
+        return new ImeContext(text[..retainedLength], Math.Min(cursorTextOffset, retainedLength));
+    }
+
+    internal Rect GetImeCursorRectangle()
+    {
+        return new Rect(
+            _padding.Left + (Engine.CursorX * _cellWidth),
+            _padding.Top + (Engine.CursorY * _cellHeight),
+            _cellWidth,
+            _cellHeight);
+    }
+
+    internal void SetImeSelectionOffset(int offset)
+    {
+        // IME caret moves must not inject arrow keys into the PTY. TUIs such as
+        // Claude Code / vim treat those as application input.
+        _ = offset;
+    }
+
+    internal void SetImeComposition(string text, int? cursorOffset)
+    {
+        _composition = string.IsNullOrEmpty(text)
+            ? null
+            : new TerminalCompositionOverlay(
+                Engine.CursorY,
+                Engine.CursorX,
+                text,
+                cursorOffset);
+        InvalidateVisual();
+        AccessibilityChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private async void SetClipboardFromTerminalObservedAsync(string text)
+    {
+        try
+        {
+            await SetClipboardFromTerminalAsync(text).ConfigureAwait(true);
+        }
+        catch (Exception exception)
+        {
+            ReportInteractionError("OSC 52 clipboard write", exception);
+        }
+    }
+
+    private async Task SetClipboardFromTerminalAsync(string text)
+    {
+        var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
+        if (clipboard is null)
+        {
+            throw new InvalidOperationException("OSC 52 requested a clipboard write, but no clipboard is available.");
+        }
+
+        await clipboard.SetTextAsync(text).ConfigureAwait(true);
+    }
+
+    private void ConfigureRenderer(ProfileSettings profile)
+    {
+        _renderer.Configure(CreateRendererSettings(profile, _fontSize, _shaderEffectsEnabled));
+    }
+
+    private static TerminalRendererSettings CreateRendererSettings(
+        ProfileSettings profile,
+        double fontSize,
+        bool shaderEffectsEnabled = true) =>
+        new()
+        {
+            FontFamily = profile.FontFace,
+            FontSize = (float)fontSize,
+            FontWeight = profile.FontWeight,
+            FallbackFontFamilies = OperatingSystem.IsMacOS()
+                ?
+                [
+                    "Cascadia Mono",
+                    "Menlo",
+                    "Monaco",
+                    "Zapf Dingbats",
+                    "Apple Symbols",
+                    "Symbol",
+                    "Noto Color Emoji",
+                    "Apple Color Emoji",
+                ]
+                :
+                [
+                    "Cascadia Mono",
+                    "Consolas",
+                    "Noto Color Emoji",
+                    "Segoe UI Emoji",
+                ],
+            Effect = profile.RetroTerminalEffect && shaderEffectsEnabled
+                ? TerminalRenderEffect.RetroScanlines
+                : TerminalRenderEffect.None,
+            FontSources =
+            [
+                new TerminalFontSource("Cascadia Mono", false, OpenCascadiaMono),
+                new TerminalFontSource("Cascadia Mono", true, OpenCascadiaMonoItalic),
+                new TerminalFontSource("Noto Color Emoji", false, OpenNotoColorEmoji),
+            ],
+        };
+
+    private void UpdateHoveredHyperlink(Point position)
+    {
+        var (x, y) = HitTest(position);
+        var snapshot = Engine.CreateSnapshot().Buffer;
+        var hyperlink = TerminalInteractionModel.HitTestHyperlink(
+            snapshot,
+            new TerminalSelectionPoint(x, y),
+            InteractionOptions.SafeUriSchemes,
+            InteractionOptions.DetectUrls);
+        IReadOnlyList<TerminalCellRange> next = hyperlink is null
+            ? []
+            : TerminalInteractionModel.GetHyperlinkOverlayRanges(hyperlink, snapshot.Columns);
+
+        if (!_hoveredHyperlink.SequenceEqual(next))
+        {
+            _hoveredHyperlink = next;
+            InvalidateVisual();
+        }
+    }
+
+    private IReadOnlyList<TerminalCellRange> CreateSelectionOverlays(TerminalRenderFrame frame)
+    {
+        if (_selection is null)
+        {
+            return [];
+        }
+
+        var range = TerminalInteractionModel.NormalizeCoordinates(
+            frame.Columns,
+            Engine.HistoryCount + frame.Rows,
+            _selection);
+        var viewportTop = Engine.HistoryCount - Engine.ScrollOffset;
+        var startRow = range.Start.Line - viewportTop;
+        var endRow = range.End.Line - viewportTop;
+        if (range.Mode != TerminalSelectionMode.Block)
+        {
+            if (endRow < 0 || startRow >= frame.Rows)
+            {
+                return [];
+            }
+
+            var startColumn = startRow < 0 ? 0 : range.Start.Column;
+            var endColumn = endRow >= frame.Rows ? frame.Columns - 1 : range.End.Column;
+            return TerminalOverlayPlanner.CreateSelection(
+                startColumn,
+                Math.Max(0, startRow),
+                endColumn,
+                Math.Min(frame.Rows - 1, endRow),
+                frame.Columns,
+                frame.Rows,
+                frame.SelectionColor);
+        }
+
+        var visibleStart = Math.Max(0, startRow);
+        var visibleEnd = Math.Min(frame.Rows - 1, endRow);
+        if (visibleStart > visibleEnd)
+        {
+            return [];
+        }
+
+        return Enumerable.Range(visibleStart, visibleEnd - visibleStart + 1)
+            .Select(row => new TerminalCellRange(
+                row,
+                range.Start.Column,
+                range.End.Column,
+                frame.SelectionColor))
+            .ToArray();
+    }
+
+    private void SetSelection(TerminalSelection? selection)
+    {
+        if (_selection == selection)
+        {
+            return;
+        }
+
+        _selection = selection;
+        _selectionCoordinateVersion = Engine.Buffer.CoordinateVersion;
+        _selectionAlternateBuffer = Engine.AlternateBufferActive;
+        SelectionChanged?.Invoke(this, EventArgs.Empty);
+        AccessibilityChanged?.Invoke(this, EventArgs.Empty);
+        InvalidateVisual();
+    }
+
+    private void BeginAndEndSelection(
+        int viewportColumn,
+        int viewportRow,
+        TerminalSelectionMode mode)
+    {
+        BeginSelection(viewportColumn, viewportRow, mode);
+        EndSelection();
+    }
+
+    private static TerminalSelectionPoint ViewportToBuffer(
+        TextBufferSnapshot snapshot,
+        int viewportColumn,
+        int viewportRow)
+    {
+        var top = snapshot.HistoryCount - snapshot.ScrollOffset;
+        return TerminalInteractionModel.Clamp(
+            snapshot,
+            new TerminalSelectionPoint(viewportColumn, top + viewportRow));
+    }
+
+    private static TerminalSelection OffsetSelection(TerminalSelection selection, int lineOffset) =>
+        selection with
+        {
+            Anchor = selection.Anchor with { Line = selection.Anchor.Line + lineOffset },
+            Active = selection.Active with { Line = selection.Active.Line + lineOffset },
+        };
+
+    private bool HandleMarkModeKey(KeyEventArgs e)
+    {
+        if (!_isMarkMode)
+        {
+            return false;
+        }
+
+        var extend = (e.KeyModifiers & KeyModifiers.Shift) != 0 || _selection is not null;
+        switch (e.Key)
+        {
+            case Key.Left:
+                MoveMarkCaret(-1, 0, extend);
+                return true;
+            case Key.Right:
+                MoveMarkCaret(1, 0, extend);
+                return true;
+            case Key.Up:
+                MoveMarkCaret(0, -1, extend);
+                return true;
+            case Key.Down:
+                MoveMarkCaret(0, 1, extend);
+                return true;
+            case Key.Home:
+                MoveMarkCaret(-Engine.Columns, 0, extend);
+                return true;
+            case Key.End:
+                MoveMarkCaret(Engine.Columns, 0, extend);
+                return true;
+            case Key.PageUp:
+                MoveMarkCaret(0, -Engine.Rows, extend);
+                return true;
+            case Key.PageDown:
+                MoveMarkCaret(0, Engine.Rows, extend);
+                return true;
+            case Key.Space:
+                SwitchSelectionEndpoint();
+                return true;
+            case Key.A when HasCommandModifier(e.KeyModifiers):
+                SelectAll();
+                return true;
+            case Key.W when HasCommandModifier(e.KeyModifiers):
+                ExpandSelectionToWord();
+                return true;
+            case Key.Enter:
+                ExitMarkMode();
+                return true;
+            case Key.Escape:
+                ExitMarkMode(clearSelection: true);
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void SendFocusChanged(bool focused)
+    {
+        if (Engine.FocusTracking)
+        {
+            TryWriteInput(focused ? "\u001b[I" : "\u001b[O");
+        }
+    }
+
+    private static bool BypassMouseTracking(KeyModifiers modifiers) =>
+        modifiers.HasFlag(KeyModifiers.Shift);
+
+    private void WriteMouseInput(
+        int button,
+        int x,
+        int y,
+        bool released,
+        KeyModifiers modifiers)
+    {
+        TryWriteInput(TerminalInteractionModel.BuildMouseSequence(
+            button,
+            x,
+            y,
+            released,
+            Engine.SgrMouse,
+            modifiers));
+    }
+
+    private static int PointerButton(PointerPoint point)
+    {
+        if (point.Properties.IsRightButtonPressed)
+        {
+            return 2;
+        }
+
+        if (point.Properties.IsMiddleButtonPressed)
+        {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    private static int PointerButton(MouseButton button) =>
+        button switch
+        {
+            MouseButton.Middle => 1,
+            MouseButton.Right => 2,
+            _ => 0,
+        };
+
+    private void OnTextInputMethodClientRequested(
+        object? sender,
+        TextInputMethodClientRequestedEventArgs e)
+    {
+        e.Client = _textInputMethodClient;
+    }
+
+    private async void ObserveInteractionAsync(string operation, Task task)
+    {
+        try
+        {
+            await task.ConfigureAwait(true);
+        }
+        catch (Exception exception)
+        {
+            ReportInteractionError(operation, exception);
+        }
+    }
+
+    private void ReportInteractionError(string operation, Exception exception) =>
+        InteractionError?.Invoke(this, new TerminalInteractionErrorEventArgs(operation, exception));
+
+
+    private double HorizontalPadding => _padding.Left + _padding.Right;
+
+    private double VerticalPadding => _padding.Top + _padding.Bottom;
+
+    internal static Thickness ParsePadding(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return new Thickness(8);
+        }
+
+        var parts = value.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        var numbers = new double[parts.Length];
+        for (var i = 0; i < parts.Length; i++)
+        {
+            if (!double.TryParse(parts[i], CultureInfo.InvariantCulture, out numbers[i]))
+            {
+                return new Thickness(8);
+            }
+        }
+
+        return numbers.Length switch
+        {
+            1 => new Thickness(numbers[0]),
+            2 => new Thickness(numbers[0], numbers[1], numbers[0], numbers[1]),
+            4 => new Thickness(numbers[0], numbers[1], numbers[2], numbers[3]),
+            _ => new Thickness(8),
+        };
+    }
+
+    internal static TerminalCursorStyle ResolveCursorStyle(int decscusr, string? profileShape) =>
+        decscusr switch
+        {
+            1 or 2 => TerminalCursorStyle.FilledBox,
+            3 or 4 => TerminalCursorStyle.Underscore,
+            5 or 6 => TerminalCursorStyle.Bar,
+            _ => ParseCursorStyle(profileShape),
+        };
+
+    internal static TerminalCursorStyle ParseCursorStyle(string? value) =>
+        value is not null && value.Equals("underscore", StringComparison.OrdinalIgnoreCase)
+            ? TerminalCursorStyle.Underscore
+            : value is not null && value.Equals("doubleUnderscore", StringComparison.OrdinalIgnoreCase)
+                ? TerminalCursorStyle.DoubleUnderscore
+                : value is not null && value.Equals("vintage", StringComparison.OrdinalIgnoreCase)
+                    ? TerminalCursorStyle.Vintage
+                    : value is not null && value.Equals("filledBox", StringComparison.OrdinalIgnoreCase)
+                        ? TerminalCursorStyle.FilledBox
+                        : value is not null && value.Equals("emptyBox", StringComparison.OrdinalIgnoreCase)
+                            ? TerminalCursorStyle.EmptyBox
+                            : TerminalCursorStyle.Bar;
+
+    private static Stream OpenCascadiaMono() =>
+        AssetLoader.Open(new Uri("avares://Devolutions.Terminal.Control/Assets/Fonts/CascadiaMono.ttf"));
+
+    private static Stream OpenCascadiaMonoItalic() =>
+        AssetLoader.Open(new Uri("avares://Devolutions.Terminal.Control/Assets/Fonts/CascadiaMonoItalic.ttf"));
+
+    private static Stream OpenNotoColorEmoji() =>
+        AssetLoader.Open(new Uri("avares://Devolutions.Terminal.Control/Assets/Fonts/NotoColorEmoji.ttf"));
+
+    private static TerminalCloseOnExitPolicy ToConnectionPolicy(CloseOnExitMode mode) =>
+        mode switch
+        {
+            CloseOnExitMode.Never => TerminalCloseOnExitPolicy.Never,
+            CloseOnExitMode.Graceful => TerminalCloseOnExitPolicy.Graceful,
+            CloseOnExitMode.Always => TerminalCloseOnExitPolicy.Always,
+            _ => TerminalCloseOnExitPolicy.Automatic,
+        };
+
+    private IReadOnlyDictionary<string, string?> BuildTerminalEnvironment(ProfileSettings profile)
+    {
+        var environment = new Dictionary<string, string?>(
+            profile.Environment,
+            StringComparer.OrdinalIgnoreCase)
+        {
+            ["WT_SESSION"] = _terminalSessionId.ToString("D"),
+            ["WT_PROFILE_ID"] = Guid.TryParse(profile.Guid, out var profileId)
+                ? profileId.ToString("B")
+                : profile.Guid,
+        };
+        var inheritedWslEnvironment = profile.ReloadEnvironmentVariables
+            ? Environment.GetEnvironmentVariable("WSLENV") ?? string.Empty
+            : string.Empty;
+        var wslEnvironment = profile.Environment.TryGetValue("WSLENV", out var configuredWslEnvironment)
+            ? configuredWslEnvironment ?? string.Empty
+            : inheritedWslEnvironment;
+        var wslVariables = new HashSet<string>(
+            wslEnvironment
+                .Split(':', StringSplitOptions.RemoveEmptyEntries)
+                .Select(static value => value.Split('/')[0]),
+            StringComparer.OrdinalIgnoreCase);
+        var additionalWslVariables = new List<string> { "WT_SESSION", "WT_PROFILE_ID" };
+        additionalWslVariables.AddRange(profile.Environment
+            .Where(static pair =>
+                pair.Value is not null &&
+                !pair.Key.Equals("PATH", StringComparison.OrdinalIgnoreCase) &&
+                !pair.Key.Equals("WSLENV", StringComparison.OrdinalIgnoreCase))
+            .Select(static pair => pair.Key));
+        var newWslVariables = new List<string>();
+        foreach (var variable in additionalWslVariables)
+        {
+            if (wslVariables.Add(variable))
+            {
+                newWslVariables.Add(variable);
+            }
+        }
+
+        if (newWslVariables.Count > 0)
+        {
+            var additions = string.Join(':', newWslVariables);
+            wslEnvironment = string.IsNullOrEmpty(wslEnvironment)
+                ? additions
+                : $"{additions}:{wslEnvironment}";
+        }
+
+        environment["WSLENV"] = wslEnvironment;
+        return environment;
+    }
+
+    internal readonly record struct ImeContext(string Text, int CursorTextOffset);
+}

@@ -62,3 +62,11 @@ regex, logical anchors, cancellation and native Find UI are GPL-3.0-or-later.
 Aster's native/mac-appkit shutdown bridge is new GPL-3.0-or-later source. It
 uses the system AppKit/dispatch APIs to wake the current app after graceful
 shutdown; Apple frameworks are supplied by macOS and are not redistributed.
+
+Aster's src/Terminal.Rendering adapts the MIT control/render source from the
+same pinned Devolutions commit. Original source hashes are in upstream.json;
+MIT attribution is retained in every copied file and licenses/Devolutions-MIT.txt.
+Font cell rounding and synthetic-bold drawing study iTerm2 FontSizeEstimator.m,
+PTYTextView.m and iTermTextDrawingHelper.m at the pinned iTerm commit. These
+C# adaptations are GPL-3.0-or-later, with attribution to George Nachman and
+contributors. No macOS font files or iTerm binary/assets are redistributed.

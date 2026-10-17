@@ -187,8 +187,8 @@ public sealed partial class DesktopTests
             Assert.Equal(0xFFA7ABF2u, saved.ResolveColors(false).Table[12]);
             Assert.Equal(0xFFFFFFFFu, saved.ResolveColors(false).Cursor);
             Assert.Equal(0xFFB3D7FFu, saved.ResolveColors(false).SelectionBackground);
-            var small = Devolutions.Terminal.TermControl.MeasureCell(saved.ToControlProfile());
-            var large = Devolutions.Terminal.TermControl.MeasureCell((saved with { FontSize = 24 }).ToControlProfile());
+            var small = Aster.Terminal.TermControl.MeasureCell(saved.ToControlProfile());
+            var large = Aster.Terminal.TermControl.MeasureCell((saved with { FontSize = 24 }).ToControlProfile());
             Assert.InRange(large.Width / small.Width, 1.9, 2.1);
             Assert.InRange(small.Height, 10, 20);
         }

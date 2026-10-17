@@ -85,12 +85,12 @@
       </ControlTheme>
       <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Dark">
-          <SolidColorBrush x:Key="WindowBackground">#15191E</SolidColorBrush>
+          <SolidColorBrush x:Key="WindowBackground">#14191E</SolidColorBrush>
           <SolidColorBrush x:Key="ChromeForeground">#E4E4E6</SolidColorBrush>
           <SolidColorBrush x:Key="TabHoverBackground">#2D2D35</SolidColorBrush>
           <SolidColorBrush x:Key="ControlBackground">#303034</SolidColorBrush>
           <SolidColorBrush x:Key="ControlBorder">#55555B</SolidColorBrush>
-          <SolidColorBrush x:Key="ChromeBackground">#21212F</SolidColorBrush>
+          <SolidColorBrush x:Key="ChromeBackground">#1F202E</SolidColorBrush>
           <SolidColorBrush x:Key="MutedForeground">#9B9BA8</SolidColorBrush>
           <SolidColorBrush x:Key="ScrollTrack">#22262B</SolidColorBrush>
           <SolidColorBrush x:Key="ScrollThumb">#919395</SolidColorBrush>

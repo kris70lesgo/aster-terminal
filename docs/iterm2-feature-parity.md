@@ -1,3 +1,9 @@
+> 0.13 rendering candidate: lossless reference alignment improves row geometry,
+> bold ANSI colours, Mac sRGB colour management, padding and glyph rendering.
+> Complete upstream UI parity and pixel identity remain unproven. See
+> [visual measurements](visual-parity.md); the released 0.12 functionality
+> matrix below is unchanged pending native acceptance.
+
 # iTerm2 feature inventory
 
 Audited 2026-10-14 at [iTerm2 `069b6e0dd8f3f0d82fc08ea5d294d28f7c5b986e`](https://github.com/gnachman/iTerm2/tree/069b6e0dd8f3f0d82fc08ea5d294d28f7c5b986e), dated 2026-10-12. Source paths below are relative to that tree. Status applies to the documented subset, with three-OS runtime evidence in test-matrix.md. Windows-only and Unix-only fixtures are explicitly skipped on other hosts. A = competition milestone; B = later parity. A feature can contain a verified subset and unstarted advanced behavior.

@@ -328,3 +328,21 @@ unchanged. The reference preset edits a profile transaction, never its command,
 environment, history or user startup files. TerminalWindowNavigation maintains
 weak references to open terminal windows for the displayed app-local numeric
 shortcut; closing a window renumbers the remaining hints.
+
+## Reference rendering pass, 0.13 candidate
+
+`src/Terminal.Rendering` is a third assembly containing the pinned MIT control
+and renderer under Aster namespaces. It owns drawing/input presentation, not
+VT parsing or process lifetime. The sealed packaged control could not expose
+row measurement or synthetic-bold behaviour. Source provenance and the small
+set of functional adaptations are documented in its README/upstream manifest.
+Core/Settings/Connection and embedded fonts remain supplied by the pinned
+package; each pane still owns its engine/control/connection. Asymmetric padding
+is shared by drawing, layout, selection, cursor and IME, and replay/tmux use the
+same measurements (10 horizontal / 4 vertical logical pixels per leaf).
+
+On macOS, use Avalonia's Metal backend with a software fallback. Tag each native
+terminal window and Metal layer as sRGB; Core Animation performs display-profile
+conversion. The palette never contains monitor-calibration-specific RGB values.
+Windows/Linux keep their existing native backends. CI runtime checks remain
+necessary; a build alone cannot establish colour or GUI parity.

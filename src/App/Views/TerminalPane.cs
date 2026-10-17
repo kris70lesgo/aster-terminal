@@ -6,7 +6,7 @@ using Aster.Sessions;
 using Aster.Sessions.Hosting;
 using Aster.Sessions.Protocols;
 using Aster.Sessions.ShellIntegration;
-using Devolutions.Terminal;
+using Aster.Terminal;
 using Devolutions.Terminal.Connection;
 using Aster.Sessions.Tmux;
 

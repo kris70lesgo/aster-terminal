@@ -20,6 +20,7 @@ internal static class TerminalWindowNavigation
         {
             window.Opened += (_, _) =>
             {
+                Platform.MacWindowColorSpace.Configure(window);
                 if (!_windows.Any(pair => pair.Window.TryGetTarget(out var target) && target == window))
                     _windows.Add((new(window), new(tabs)));
                 Refresh();

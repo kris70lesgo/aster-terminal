@@ -1,7 +1,7 @@
 using System.Text;
 using Aster.Sessions.Protocols;
 using Devolutions.Terminal.Core;
-using Devolutions.Terminal.Render;
+using Aster.Terminal.Render;
 using SkiaSharp;
 
 namespace Aster.Tests;

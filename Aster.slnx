@@ -2,6 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/App/App.csproj" />
     <Project Path="src/Terminal.Sessions/Terminal.Sessions.csproj" />
+    <Project Path="src/Terminal.Rendering/Terminal.Rendering.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Terminal.Tests/Terminal.Tests.csproj" />

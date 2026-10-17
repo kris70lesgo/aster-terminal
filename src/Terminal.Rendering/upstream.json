@@ -1,0 +1,73 @@
+{
+  "repository": "https://github.com/Devolutions/devolutions-terminal",
+  "commit": "fa23083f1bda1a60fe2b322c6cfab4a616af9edb",
+  "files": {
+    "Control/KeyMapper.cs": {
+      "upstream": "src/Devolutions.Terminal.Control/KeyMapper.cs",
+      "sha256": "0cf11252aae956b2e7db18d1a03064f1813a164596fc0bf68894cbcf764c0a86"
+    },
+    "Control/TermControl.cs": {
+      "upstream": "src/Devolutions.Terminal.Control/TermControl.cs",
+      "sha256": "03dbb4672b248c3c5ec7ce3b622d065ff971ce8155026693776e36a47c7d897a"
+    },
+    "Control/TermControlAutomationPeer.cs": {
+      "upstream": "src/Devolutions.Terminal.Control/TermControlAutomationPeer.cs",
+      "sha256": "a01f7d81af5ac577b7a5b473b8eed8e2af399005961e96d87e2e28e4ccda5df5"
+    },
+    "Control/TerminalInteractionContracts.cs": {
+      "upstream": "src/Devolutions.Terminal.Control/TerminalInteractionContracts.cs",
+      "sha256": "2be3b13b0be317e32033f5050f393d84ec4ca64378f1b29e79e3ac3ec695af33"
+    },
+    "Control/TerminalInteractionModel.cs": {
+      "upstream": "src/Devolutions.Terminal.Control/TerminalInteractionModel.cs",
+      "sha256": "2c54850cbf312b8d2a1e8ff81ace9ec557fbca0af39b1cbc2d1aa94f9a38cc6c"
+    },
+    "Control/TerminalSearchSession.cs": {
+      "upstream": "src/Devolutions.Terminal.Control/TerminalSearchSession.cs",
+      "sha256": "159dfa2235fcc06146b3ad167be7dec59dffac8ccf4fd7e01ce11af8fab01106"
+    },
+    "Control/TerminalSkiaDrawOperation.cs": {
+      "upstream": "src/Devolutions.Terminal.Control/TerminalSkiaDrawOperation.cs",
+      "sha256": "752e01c20b077124d152d7ad538d4fd38834e0ddfeebf349dfe1d841da6b76e6"
+    },
+    "Control/TerminalTextDocument.cs": {
+      "upstream": "src/Devolutions.Terminal.Control/TerminalTextDocument.cs",
+      "sha256": "d6716f0d8099a69dd35fe377b1c9d03b1922c01fc6f9acd47975f0832d9e41a3"
+    },
+    "Control/TerminalTextInputMethodClient.cs": {
+      "upstream": "src/Devolutions.Terminal.Control/TerminalTextInputMethodClient.cs",
+      "sha256": "c5a3a851fb9b4042ea86c8058a0645dcef88d498a64b20ec3a4ff247704c10ed"
+    },
+    "Render/BoundedResourceCache.cs": {
+      "upstream": "src/Devolutions.Terminal.Render/BoundedResourceCache.cs",
+      "sha256": "41542d91718e58bff33e6a35a71048f68569c172c6a736bf19af830b5e87909e"
+    },
+    "Render/RenderContracts.cs": {
+      "upstream": "src/Devolutions.Terminal.Render/RenderContracts.cs",
+      "sha256": "0fc332c28972e0111f49f702ff9ab1c4857bcea6b0825a6109ef7f099d6520fe"
+    },
+    "Render/SkiaTerminalRenderer.cs": {
+      "upstream": "src/Devolutions.Terminal.Render/SkiaTerminalRenderer.cs",
+      "sha256": "2650b36b6a3f06200aadb7780e197e2b218d3dde9196cab82ff080d818da5fd2"
+    },
+    "Render/TerminalFrameDiffer.cs": {
+      "upstream": "src/Devolutions.Terminal.Render/TerminalFrameDiffer.cs",
+      "sha256": "fa7079f009df031aa600979d5105511865cfdf6dae6051b626767870ccd09190"
+    },
+    "Render/TerminalOverlayPlanner.cs": {
+      "upstream": "src/Devolutions.Terminal.Render/TerminalOverlayPlanner.cs",
+      "sha256": "09ea1e20963fdd330a6786ea04c8e513b4a438e5cf3a5f3090e311277f1bb12e"
+    },
+    "Render/TerminalRenderPlanner.cs": {
+      "upstream": "src/Devolutions.Terminal.Render/TerminalRenderPlanner.cs",
+      "sha256": "16be38b72da3cced6d3eab781539d83ce2f12daa7708ee39e36b646630a2997b"
+    }
+  },
+  "adaptedExcerptSources": [
+    {
+      "upstream": "src/Devolutions.Terminal.Core/WcWidth.cs",
+      "sha256": "6a2557d175efd9d2d35ff91e02c7ba7def2eae8fe4ea4251d76765e66dd0498d",
+      "excerpt": "IsEmojiPresentationWide predicate only; no VT width changes"
+    }
+  ]
+}

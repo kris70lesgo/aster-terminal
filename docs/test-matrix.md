@@ -1,3 +1,12 @@
+# Rendering candidate 0.13 — verification in progress
+
+Added paint-time bold ANSI/extended/RGB/inverse checks, asymmetric cursor padding,
+native emoji font selection and 1×/2× Monaco geometry checks. Graphics regression
+now exercises Aster's adapted renderer; existing Find/replay/chrome/process tests
+exercise the adapted control. Native packages still require all three OS runs.
+A test setup race in the first geometry test was corrected by using AvaloniaFact,
+so its asset loader is initialized independently of test ordering.
+
 # Verification matrix — release 0.12.0, 2026-10-17
 
 Final source **e4e1646e98315136502b98866ac385f911de8827**, native CI

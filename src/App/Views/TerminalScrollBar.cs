@@ -3,7 +3,7 @@ using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
-using Devolutions.Terminal;
+using Aster.Terminal;
 
 namespace Aster.App.Views;
 

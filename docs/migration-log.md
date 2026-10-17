@@ -878,3 +878,25 @@ payload-v0.12.0.json, v0.12.0-{rid} and v0.12.0-macos-retina. The first CI
 numbering failures and repairs remain in installed-reference-v0.12.0. No dependency
 or upstream asset was introduced. OS font/compositing/menu differences and full
 upstream UI/features remain outside this acceptance; no contest submission.
+
+### 2026-10-17 — lossless pixel-reference rendering candidate (0.13)
+
+- Compared installed iTerm 3.7.4 and owned Aster windows using true PNG captures.
+  Found automation-inherited NO_COLOR and JPEG-encoded snapshots had obscured
+  earlier comparisons. Corrected the installed verifier's clean one-shot launch;
+  explicit application/profile NO_COLOR behaviour remains intact.
+- Added the pinned MIT control/render source as a separate presentation assembly,
+  with original hashes and retained notices. Engine/parser/connection stay pinned.
+- Aligned 7×17 Monaco cells, asymmetric margins, bold ANSI foregrounds, Mac sRGB
+  Metal surface, grayscale/native rasterization, synthetic bold/italic and native
+  emoji presentation. Replay/tmux share the same dimensions; no simulated output.
+- Local tests: 99 pass + 2 Windows-only skips (101 total). A preceding geometry
+  test setup race is fixed with AvaloniaFact. Native candidate baseline, recovery,
+  tmux exact-grid and hotkey fixtures pass; initial Python-client fixture timed
+  out before its first progress entry and exited cleanly with failure. Retain
+  artifacts/pixel-final-installed; do not treat it as successful final acceptance.
+- Full final native matrix and installed verification remain required. Lossless
+  cyan/red/background samples match; whole-window pixel identity is not claimed.
+- Official contest page rechecked at this rendering milestone: open source,
+  runnable per-target builds, before/after images and migration write-up still
+  required; 23 October 23:59 UTC deadline unchanged. No form submitted.

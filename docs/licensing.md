@@ -42,3 +42,16 @@ frameworks/libraries; no third-party implementation was copied and no new
 NuGet dependency is added. Full corresponding source/build instructions and
 GPL notices accompany the distributed app. The final binary dependency list
 and deployment target are checked during payload audit.
+
+## Presentation source adaptation, 0.13 candidate
+
+`src/Terminal.Rendering` vendors only Control and Render C# source from the
+already-pinned Devolutions commit under Aster namespaces. The retained MIT
+notice applies; original file hashes and paths are recorded in `upstream.json`.
+The locked package still supplies Core, Settings, Connection and embedded OFL
+fonts. It introduces no new external package/version or font distribution.
+Aster's font-metric and double-strike implementation studies pinned iTerm2's
+FontSizeEstimator.m, PTYTextView.m and iTermTextDrawingHelper.m; elect GPLv3 as
+above and retain attribution. The macOS colour-space bridge is Aster-authored
+and links AppKit/QuartzCore system frameworks only. Payload review must include
+Terminal.Rendering.dll and its corresponding source before publication.

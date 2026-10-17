@@ -9,6 +9,6 @@
   </ItemGroup>
   <Target Name="BuildMacAppKit" BeforeTargets="PrepareForBuild;GetCopyToOutputDirectoryItems" Condition="$([MSBuild]::IsOSPlatform('OSX'))" Inputs="$(MacAppKitSource);$(MSBuildThisFileFullPath)" Outputs="$(MacAppKitOutput)">
     <MakeDir Directories="$([System.IO.Path]::GetDirectoryName('$(MacAppKitOutput)'))" />
-    <Exec Command="clang -dynamiclib -fobjc-arc -O2 -mmacosx-version-min=15.0 $(MacAppKitArch) -framework AppKit -Wl,-install_name,@rpath/libaster-appkit.dylib &quot;$(MacAppKitSource)&quot; -o &quot;$(MacAppKitOutput)&quot;" />
+    <Exec Command="clang -dynamiclib -fobjc-arc -O2 -mmacosx-version-min=15.0 $(MacAppKitArch) -framework AppKit -framework QuartzCore -Wl,-install_name,@rpath/libaster-appkit.dylib &quot;$(MacAppKitSource)&quot; -o &quot;$(MacAppKitOutput)&quot;" />
   </Target>
 </Project>

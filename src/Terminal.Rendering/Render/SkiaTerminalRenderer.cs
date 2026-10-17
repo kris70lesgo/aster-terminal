@@ -1,0 +1,1709 @@
+// Derived from Devolutions.Terminal, fa23083f1bda1a60fe2b322c6cfab4a616af9edb.
+// Copyright (c) Devolutions Inc.; portions Copyright (c) Microsoft Corporation.
+// MIT notice: licenses/Devolutions-MIT.txt. Aster adaptations: 2026-10-17.
+using System.Text;
+using HarfBuzzBuffer = HarfBuzzSharp.Buffer;
+using Devolutions.Terminal.Core;
+using SkiaSharp;
+using SkiaSharp.HarfBuzz;
+
+namespace Aster.Terminal.Render;
+
+public sealed class SkiaTerminalRenderer : ITerminalRenderer, IDisposable
+{
+    private const float DipsPerPoint = 96f / 72f;
+    private static readonly string[] AsciiGlyphs = Enumerable.Range(0x21, 0x7e - 0x21 + 1)
+        .Select(static codepoint => ((char)codepoint).ToString())
+        .ToArray();
+    private readonly object _gate = new();
+    private readonly SKPaint _paint = new() { IsAntialias = true };
+    private readonly SKPaint _strokePaint = new()
+    {
+        IsAntialias = false,
+        Style = SKPaintStyle.Stroke,
+    };
+    private readonly SKPaint _blockPaint = new() { IsAntialias = false };
+    private readonly SKPath _powerlineRight = CreatePowerlinePath(pointsRight: true);
+    private readonly SKPath _powerlineLeft = CreatePowerlinePath(pointsRight: false);
+    private TerminalRendererSettings _settings;
+    private FontResolver _fonts;
+    private BoundedResourceCache<GlyphKey, CachedGlyph> _glyphs;
+    private BoundedResourceCache<RowPictureKey, SKPicture>? _rowPictures;
+    private HashSet<RowPictureKey>? _rowPictureCandidates;
+    private readonly Dictionary<long, CachedImage> _images = [];
+    private readonly HashSet<long> _invalidImages = [];
+    private long _imageBytes;
+    private readonly Func<GlyphKey, CachedGlyph> _shapeFactory;
+    private readonly Func<RowPictureKey, SKPicture> _recordRowFactory;
+    private RenderViewport _viewport;
+    private float _baseline;
+    private bool _disposed;
+
+    public SkiaTerminalRenderer(TerminalRendererSettings? settings = null)
+    {
+        _settings = Normalize(settings ?? new TerminalRendererSettings());
+        _fonts = new FontResolver(_settings);
+        _glyphs = CreateGlyphCache();
+        _rowPictures = CreateRowPictureCache();
+        _rowPictureCandidates = CreateRowPictureCandidates();
+        _shapeFactory = Shape;
+        _recordRowFactory = RecordRow;
+        MeasureCell();
+    }
+
+    public CellSize CellSize { get; private set; }
+
+    public GlyphCacheStatistics CacheStatistics
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _glyphs.Statistics;
+            }
+        }
+    }
+
+    public GlyphCacheStatistics RowCacheStatistics
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _rowPictures?.Statistics ?? default;
+            }
+        }
+    }
+
+    public int ResourceGeneration { get; private set; }
+
+    public string? LastResolvedFontFamily { get; private set; }
+
+    public void Configure(TerminalRendererSettings settings)
+    {
+        ArgumentNullException.ThrowIfNull(settings);
+        lock (_gate)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            var normalized = Normalize(settings);
+            if (normalized == _settings)
+            {
+                return;
+            }
+
+            ReleaseResources();
+            _settings = normalized;
+            _fonts = new FontResolver(_settings);
+            _glyphs = CreateGlyphCache();
+            _rowPictures = CreateRowPictureCache();
+            _rowPictureCandidates = CreateRowPictureCandidates();
+            MeasureCell();
+            ResourceGeneration++;
+        }
+    }
+
+    public void Resize(RenderViewport viewport)
+    {
+        lock (_gate)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            var scale = Math.Max(0.1, viewport.Scale);
+            var normalized = viewport with { Scale = scale };
+            if (Math.Abs(_viewport.Scale - normalized.Scale) > 0.001)
+            {
+                _rowPictures?.Clear();
+                _rowPictureCandidates?.Clear();
+                _glyphs.Clear();
+                _viewport = normalized;
+                MeasureCell();
+                ResourceGeneration++;
+                return;
+            }
+
+            _viewport = normalized;
+        }
+    }
+
+    public void Invalidate()
+    {
+        lock (_gate)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            _rowPictures?.Clear();
+            _rowPictureCandidates?.Clear();
+            _glyphs.Clear();
+            ResourceGeneration++;
+        }
+    }
+
+    public void Render(
+        SKCanvas canvas,
+        TerminalRenderFrame frame,
+        TerminalRenderOverlays overlays,
+        SKRect bounds,
+        float padding,
+        bool drawCursor,
+        float? paddingTop = null)
+    {
+        ArgumentNullException.ThrowIfNull(canvas);
+        ArgumentNullException.ThrowIfNull(frame);
+        ArgumentNullException.ThrowIfNull(overlays);
+        lock (_gate)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            _paint.Style = SKPaintStyle.Fill;
+            _paint.Color = ToColor(frame.Background);
+            canvas.DrawRect(bounds, _paint);
+            using var restore = new SKAutoCanvasRestore(canvas, true);
+            var offsetY = (paddingTop ?? padding) - padding;
+            canvas.Translate(0, offsetY);
+            bounds.Offset(0, -offsetY);
+            DrawImages(canvas, frame, bounds, padding, overText: false);
+
+            for (var rowIndex = 0; rowIndex < frame.RowsData.Count; rowIndex++)
+            {
+                var row = frame.RowsData[rowIndex];
+                // DRCS glyphs are frame-specific and cannot be replayed from a recorded row.
+                if (_rowPictures is null ||
+                    row.Rendition != LineRendition.SingleWidth ||
+                    frame.DrcsGlyphs.Count != 0)
+                {
+                    DrawRow(canvas, row, frame.Background, frame.Columns, frame.DrcsGlyphs, padding);
+                    continue;
+                }
+
+                var key = new RowPictureKey(row, frame.Background);
+                if (!_rowPictures.TryGetValue(key, out var picture))
+                {
+                    if (!_rowPictureCandidates!.Remove(key))
+                    {
+                        if (_rowPictureCandidates.Count >= _settings.RowPictureCacheCapacity)
+                        {
+                            _rowPictureCandidates.Clear();
+                        }
+
+                        _rowPictureCandidates.Add(key);
+                        DrawRow(canvas, row, frame.Background, frame.Columns, frame.DrcsGlyphs, padding);
+                        continue;
+                    }
+
+                    picture = _rowPictures.GetOrAdd(key, _recordRowFactory);
+                }
+
+                canvas.Save();
+                canvas.Translate(padding, padding + (row.RowIndex * (float)CellSize.Height));
+                canvas.DrawPicture(picture);
+                canvas.Restore();
+            }
+
+            // Kitty placements with a non-negative z-index composite over text.
+            DrawImages(canvas, frame, bounds, padding, overText: true);
+
+            DrawRanges(canvas, frame, overlays.Selection, padding);
+            DrawRanges(canvas, frame, overlays.Search, padding);
+            DrawRanges(canvas, frame, overlays.Hyperlink, padding);
+            DrawComposition(canvas, overlays.Composition, padding);
+
+            if (drawCursor && frame.CursorVisible)
+            {
+                DrawCursor(canvas, frame, padding);
+            }
+
+            DrawEffect(canvas, bounds);
+        }
+    }
+
+    private void DrawEffect(SKCanvas canvas, SKRect bounds)
+    {
+        if (_settings.Effect != TerminalRenderEffect.RetroScanlines ||
+            bounds.Width <= 0 ||
+            bounds.Height <= 0)
+        {
+            return;
+        }
+
+        canvas.Save();
+        canvas.ClipRect(bounds);
+        _paint.Style = SKPaintStyle.Fill;
+        _paint.BlendMode = SKBlendMode.SrcOver;
+
+        _paint.Color = new SKColor(16, 48, 64, 18);
+        canvas.DrawRect(bounds, _paint);
+
+        var minimumStride = Math.Max(2, (int)Math.Ceiling(3 * PhysicalPixel));
+        var boundedStride = Math.Max(
+            minimumStride,
+            (int)Math.Ceiling(bounds.Height / 2048f));
+        _paint.Color = new SKColor(0, 0, 0, 48);
+        for (var y = bounds.Top + boundedStride - 1; y < bounds.Bottom; y += boundedStride)
+        {
+            canvas.DrawRect(bounds.Left, y, bounds.Width, PhysicalPixel, _paint);
+        }
+
+        _paint.BlendMode = SKBlendMode.SrcOver;
+        canvas.Restore();
+    }
+
+    private void DrawComposition(
+        SKCanvas canvas,
+        TerminalCompositionOverlay? composition,
+        float padding)
+    {
+        if (composition is null || string.IsNullOrEmpty(composition.Text))
+        {
+            return;
+        }
+
+        var left = padding + (composition.Column * (float)CellSize.Width);
+        var top = padding + (composition.Row * (float)CellSize.Height);
+        _paint.Color = SKColors.White;
+        var typeface = _fonts.Resolve(composition.Text.AsSpan(), CellFlags.None);
+        using var font = CreateFont(typeface, CellFlags.None);
+        canvas.DrawText(composition.Text, left, top + _baseline, SKTextAlign.Left, font, _paint);
+
+        _strokePaint.Color = SKColors.White;
+        _strokePaint.StrokeWidth = PhysicalPixel;
+        var width = Math.Max(
+            (float)CellSize.Width,
+            DisplayWidth(composition.Text) * (float)CellSize.Width);
+        canvas.DrawLine(left, top + (float)CellSize.Height - 1, left + width, top + (float)CellSize.Height - 1, _strokePaint);
+
+        if (composition.CursorOffset is { } cursor)
+        {
+            var cursorLeft = left + (DisplayWidth(composition.Text, cursor) * (float)CellSize.Width);
+            canvas.DrawLine(cursorLeft, top, cursorLeft, top + (float)CellSize.Height, _strokePaint);
+        }
+    }
+
+    private static int DisplayWidth(string text, int utf16Limit = int.MaxValue)
+    {
+        var width = 0;
+        var consumed = 0;
+        foreach (var rune in text.EnumerateRunes())
+        {
+            if (consumed + rune.Utf16SequenceLength > utf16Limit)
+            {
+                break;
+            }
+
+            width += Math.Max(0, WcWidth.Width(rune));
+            consumed += rune.Utf16SequenceLength;
+        }
+
+        return width;
+    }
+
+    public void Dispose()
+    {
+        lock (_gate)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            ReleaseResources();
+            _paint.Dispose();
+            _strokePaint.Dispose();
+            _blockPaint.Dispose();
+            _powerlineRight.Dispose();
+            _powerlineLeft.Dispose();
+            _disposed = true;
+        }
+    }
+
+    private void DrawRow(
+        SKCanvas canvas,
+        TerminalRenderRow row,
+        uint background,
+        int columns,
+        IReadOnlyDictionary<int, DrcsGlyph>? drcsGlyphs,
+        float padding)
+    {
+        var top = padding + ((float)row.RowIndex * (float)CellSize.Height);
+        var restore = row.Rendition != LineRendition.SingleWidth;
+        if (restore)
+        {
+            canvas.Save();
+            canvas.ClipRect(new SKRect(
+                padding,
+                top,
+                padding + (columns * (float)CellSize.Width),
+                top + (float)CellSize.Height));
+            var doubleHeight = row.Rendition is
+                LineRendition.DoubleHeightTop or LineRendition.DoubleHeightBottom;
+            var anchorY = row.Rendition == LineRendition.DoubleHeightBottom
+                ? top - (float)CellSize.Height
+                : top;
+            canvas.Translate(padding, anchorY);
+            canvas.Scale(2, doubleHeight ? 2 : 1);
+            canvas.Translate(-padding, -top);
+        }
+
+        for (var runIndex = 0; runIndex < row.Runs.Count; runIndex++)
+        {
+            var run = row.Runs[runIndex];
+            var runLeft = padding + (run.StartColumn * (float)CellSize.Width);
+            var runWidth = run.CellCount * (float)CellSize.Width;
+            if (run.Attributes.Background != background)
+            {
+                _paint.Color = ToColor(run.Attributes.Background);
+                canvas.DrawRect(runLeft, top, runWidth, (float)CellSize.Height, _paint);
+            }
+
+            if ((run.Attributes.Flags & CellFlags.Invisible) == 0)
+            {
+                DrawClusters(canvas, run, top, padding, drcsGlyphs: drcsGlyphs);
+            }
+
+            DrawDecorations(canvas, run, top, padding);
+        }
+
+        if (restore)
+        {
+            canvas.Restore();
+        }
+    }
+
+    private void DrawImages(
+        SKCanvas canvas,
+        TerminalRenderFrame frame,
+        SKRect bounds,
+        float padding,
+        bool overText)
+    {
+        if (!overText)
+        {
+            if (frame.Images.Count == 0)
+            {
+                if (_images.Count > 0)
+                {
+                    foreach (var image in _images.Values)
+                    {
+                        image.Dispose();
+                    }
+
+                    _images.Clear();
+                    _imageBytes = 0;
+                }
+
+                return;
+            }
+
+            var activeIds = frame.Images.Select(static image => image.Id).ToHashSet();
+            foreach (var staleId in _images.Keys.Where(id => !activeIds.Contains(id)).ToArray())
+            {
+                _imageBytes -= _images[staleId].ByteSize;
+                _images[staleId].Dispose();
+                _images.Remove(staleId);
+            }
+
+            _invalidImages.RemoveWhere(id => !activeIds.Contains(id));
+        }
+        else if (frame.Images.Count == 0 || frame.Images.All(static image => image.Kitty is null))
+        {
+            return;
+        }
+
+        // Under-text pass: everything except non-negative-z kitty placements.
+        // Over-text pass: kitty placements with z >= 0, in z order.
+        var ordered = overText
+            ? frame.Images.Where(static i => i.Kitty is { ZIndex: >= 0 }).OrderBy(static i => i.Kitty!.ZIndex)
+            : frame.Images.Where(static i => i.Kitty is null || i.Kitty.ZIndex < 0);
+
+        var viewport = new SKRect(
+            bounds.Left + padding,
+            bounds.Top + padding,
+            Math.Max(bounds.Left + padding, bounds.Right - padding),
+            Math.Max(bounds.Top + padding, bounds.Bottom - padding));
+        canvas.Save();
+        canvas.ClipRect(viewport);
+        _paint.Color = SKColors.White;
+        foreach (var image in ordered)
+        {
+            if (_invalidImages.Contains(image.Id))
+            {
+                continue;
+            }
+
+            var columnScale = (uint)image.AnchorRow < (uint)frame.RowsData.Count &&
+                              frame.RowsData[image.AnchorRow].Rendition != LineRendition.SingleWidth
+                ? 2
+                : 1;
+            var left = padding + (image.AnchorColumn * columnScale * (float)CellSize.Width);
+            var top = padding + (image.AnchorRow * (float)CellSize.Height);
+            if (image.Kitty is { } kittyPlacement)
+            {
+                left += kittyPlacement.PixelOffsetX;
+                top += kittyPlacement.PixelOffsetY;
+            }
+
+            if (left >= viewport.Right || top >= viewport.Bottom)
+            {
+                continue;
+            }
+
+            if (!_images.TryGetValue(image.Id, out var cached))
+            {
+                var decoded = DecodeImage(image);
+                if (decoded is null)
+                {
+                    _invalidImages.Add(image.Id);
+                    continue;
+                }
+
+                var byteSize = checked((long)decoded.RowBytes * decoded.Height);
+                if (byteSize > _settings.DecodedImageCacheByteCapacity)
+                {
+                    decoded.Dispose();
+                    _invalidImages.Add(image.Id);
+                    continue;
+                }
+
+                while (_images.Count > 0 &&
+                       _imageBytes + byteSize > _settings.DecodedImageCacheByteCapacity)
+                {
+                    var oldest = _images.First();
+                    oldest.Value.Dispose();
+                    _imageBytes -= oldest.Value.ByteSize;
+                    _images.Remove(oldest.Key);
+                }
+
+                cached = new CachedImage(decoded, byteSize);
+                _images.Add(image.Id, cached);
+                _imageBytes += byteSize;
+            }
+
+            var destination = ImageDestination(image, cached.Bitmap, left, top, viewport);
+            if (image.Kitty is { CropWidth: > 0, CropHeight: > 0 } cropped)
+            {
+                var cropX = Math.Clamp(cropped.CropX, 0, cached.Bitmap.Width - 1);
+                var cropY = Math.Clamp(cropped.CropY, 0, cached.Bitmap.Height - 1);
+                var source = SKRect.Create(
+                    cropX,
+                    cropY,
+                    Math.Min(cropped.CropWidth, cached.Bitmap.Width - cropX),
+                    Math.Min(cropped.CropHeight, cached.Bitmap.Height - cropY));
+                canvas.DrawBitmap(cached.Bitmap, source, destination, _paint);
+            }
+            else
+            {
+                canvas.DrawBitmap(cached.Bitmap, destination, _paint);
+            }
+        }
+
+        canvas.Restore();
+    }
+
+    private static SKBitmap? DecodeImage(TerminalImageOverlay image)
+    {
+        if (image.Sixel is { } sixel)
+        {
+            var bitmap = new SKBitmap(
+                sixel.Width,
+                sixel.Height,
+                SKColorType.Bgra8888,
+                SKAlphaType.Premul);
+            var indices = sixel.PixelIndices.Span;
+            var palette = sixel.Palette.Span;
+            var colors = new SKColor[indices.Length];
+            for (var index = 0; index < colors.Length; index++)
+            {
+                var colorIndex = indices[index];
+                colors[index] = colorIndex == SixelImage.TransparentColorIndex
+                    ? SKColors.Transparent
+                    : new SKColor(palette[colorIndex]);
+            }
+
+            bitmap.Pixels = colors;
+            return bitmap;
+        }
+
+        if (image.Kitty is { Data.Rgba32Pixels: { } rgbaPixels } kittyRaw)
+        {
+            var raw = kittyRaw.Data;
+            var bitmap = new SKBitmap(
+                raw.Width,
+                raw.Height,
+                SKColorType.Rgba8888,
+                SKAlphaType.Unpremul);
+            var pixels = new SKColor[raw.Width * raw.Height];
+            for (var index = 0; index < pixels.Length; index++)
+            {
+                var offset = index * 4;
+                pixels[index] = new SKColor(
+                    rgbaPixels[offset],
+                    rgbaPixels[offset + 1],
+                    rgbaPixels[offset + 2],
+                    rgbaPixels[offset + 3]);
+            }
+
+            bitmap.Pixels = pixels;
+            return bitmap;
+        }
+
+        if (image.Kitty is { Data.EncodedData: { } kittyEncoded })
+        {
+            return DecodeCodecImage(kittyEncoded);
+        }
+
+        if (image.InlineImage is not { } inline)
+        {
+            return null;
+        }
+
+        return DecodeCodecImage(inline.Data.ToArray());
+    }
+
+    private static SKBitmap? DecodeCodecImage(byte[] encoded)
+    {
+        using var data = SKData.CreateCopy(encoded);
+        using var codec = SKCodec.Create(data);
+        if (codec is null ||
+            codec.Info.Width is <= 0 or > TerminalImageLimits.MaximumPixelDimension ||
+            codec.Info.Height is <= 0 or > TerminalImageLimits.MaximumPixelDimension ||
+            (long)codec.Info.Width * codec.Info.Height > TerminalImageLimits.MaximumPixelCount)
+        {
+            return null;
+        }
+
+        var decoded = new SKBitmap(codec.Info.Width, codec.Info.Height, SKColorType.Bgra8888, SKAlphaType.Premul);
+        var decodeResult = codec.GetPixels(decoded.Info, decoded.GetPixels());
+        if (decodeResult is SKCodecResult.Success or SKCodecResult.IncompleteInput)
+        {
+            return decoded;
+        }
+
+        decoded.Dispose();
+        return null;
+    }
+
+    private SKRect ImageDestination(
+        TerminalImageOverlay image,
+        SKBitmap bitmap,
+        float left,
+        float top,
+        SKRect bounds)
+    {
+        var naturalWidth = (float)bitmap.Width;
+        var naturalHeight = (float)bitmap.Height;
+        if (image.Sixel is not null)
+        {
+            // The engine retains physical cell pixels; the canvas uses DIPs.
+            var sixelWidth = naturalWidth * (float)(image.CellGeometry.CellWidth / 10) * PhysicalPixel;
+            var sixelHeight = naturalHeight * (float)(image.CellGeometry.CellHeight / 20) * PhysicalPixel;
+            return SKRect.Create(
+                left,
+                top,
+                Math.Min(Math.Max(0.1f, sixelWidth), bounds.Right - left),
+                Math.Min(Math.Max(0.1f, sixelHeight), bounds.Bottom - top));
+        }
+
+        if (image.Kitty is { } kitty)
+        {
+            // Source extent after crop; display size from c/r cells when given,
+            // preserving aspect when only one axis is specified (kitty semantics).
+            var sourceWidth = kitty.CropWidth > 0 && kitty.CropHeight > 0
+                ? Math.Min(kitty.CropWidth, bitmap.Width - Math.Clamp(kitty.CropX, 0, bitmap.Width - 1))
+                : naturalWidth;
+            var sourceHeight = kitty.CropWidth > 0 && kitty.CropHeight > 0
+                ? Math.Min(kitty.CropHeight, bitmap.Height - Math.Clamp(kitty.CropY, 0, bitmap.Height - 1))
+                : naturalHeight;
+            float kittyWidth;
+            float kittyHeight;
+            if (kitty.Columns > 0 && kitty.Rows > 0)
+            {
+                kittyWidth = kitty.Columns * (float)CellSize.Width;
+                kittyHeight = kitty.Rows * (float)CellSize.Height;
+            }
+            else if (kitty.Columns > 0)
+            {
+                kittyWidth = kitty.Columns * (float)CellSize.Width;
+                kittyHeight = sourceHeight * (kittyWidth / Math.Max(0.1f, sourceWidth));
+            }
+            else if (kitty.Rows > 0)
+            {
+                kittyHeight = kitty.Rows * (float)CellSize.Height;
+                kittyWidth = sourceWidth * (kittyHeight / Math.Max(0.1f, sourceHeight));
+            }
+            else
+            {
+                kittyWidth = sourceWidth;
+                kittyHeight = sourceHeight;
+            }
+
+            return SKRect.Create(
+                left,
+                top,
+                Math.Min(Math.Max(0.1f, kittyWidth), bounds.Right - left),
+                Math.Min(Math.Max(0.1f, kittyHeight), bounds.Bottom - top));
+        }
+
+        if (image.InlineImage is not { } inline)
+        {
+            return SKRect.Create(left, top, naturalWidth, naturalHeight);
+        }
+
+
+        var width = ResolveDimension(
+            inline.Metadata.Width,
+            naturalWidth,
+            (float)CellSize.Width,
+            bounds.Width);
+        var height = ResolveDimension(
+            inline.Metadata.Height,
+            naturalHeight,
+            (float)CellSize.Height,
+            bounds.Height);
+        if (inline.Metadata.PreserveAspectRatio)
+        {
+            var scale = Math.Min(width / naturalWidth, height / naturalHeight);
+            if (inline.Metadata.Width.Kind == TerminalImageDimensionKind.Auto)
+            {
+                width = naturalWidth * (height / naturalHeight);
+            }
+            else if (inline.Metadata.Height.Kind == TerminalImageDimensionKind.Auto)
+            {
+                height = naturalHeight * (width / naturalWidth);
+            }
+            else
+            {
+                width = naturalWidth * scale;
+                height = naturalHeight * scale;
+            }
+        }
+
+        return SKRect.Create(left, top, width, height);
+    }
+
+    private static float ResolveDimension(
+        TerminalImageDimension dimension,
+        float natural,
+        float cell,
+        float available) =>
+        dimension.Kind switch
+        {
+            TerminalImageDimensionKind.Cells => (float)dimension.Value * cell,
+            TerminalImageDimensionKind.Pixels => (float)dimension.Value,
+            TerminalImageDimensionKind.Percent => (float)(dimension.Value / 100) * available,
+            _ => natural,
+        };
+
+    private void DrawClusters(
+        SKCanvas canvas,
+        TerminalRenderRun run,
+        float top,
+        float padding,
+        uint? foregroundOverride = null,
+        IReadOnlyDictionary<int, DrcsGlyph>? drcsGlyphs = null)
+    {
+        _paint.Color = ToColor(foregroundOverride ?? run.Attributes.Foreground);
+        for (var clusterIndex = 0; clusterIndex < run.Clusters.Count; clusterIndex++)
+        {
+            var cluster = run.Clusters[clusterIndex];
+            if (IsWhitespace(run.Text.AsSpan(cluster.TextOffset, cluster.TextLength)))
+            {
+                continue;
+            }
+
+            var cellLeft = padding + (cluster.StartColumn * (float)CellSize.Width);
+            var cellWidth = cluster.CellCount * (float)CellSize.Width;
+            if (TryDrawDrcs(
+                canvas,
+                run.Text.AsSpan(cluster.TextOffset, cluster.TextLength),
+                cellLeft,
+                top,
+                cellWidth,
+                run.Attributes.Foreground,
+                drcsGlyphs))
+            {
+                continue;
+            }
+
+            if (TryDrawBlockElement(
+                canvas,
+                run.Text.AsSpan(cluster.TextOffset, cluster.TextLength),
+                cellLeft,
+                top,
+                cellWidth))
+            {
+                continue;
+            }
+
+            if (TryDrawPowerline(
+                canvas,
+                run.Text.AsSpan(cluster.TextOffset, cluster.TextLength),
+                cellLeft,
+                top,
+                cellWidth))
+            {
+                continue;
+            }
+
+            var asciiGlyph = _settings.ReuseAsciiGlyphs && CanReuseAsciiGlyph(run.Text, cluster)
+                ? AsciiGlyphs[run.Text[cluster.TextOffset] - 0x21]
+                : null;
+            var key = new GlyphKey(
+                asciiGlyph ?? run.Text,
+                asciiGlyph is null ? cluster.TextOffset : 0,
+                asciiGlyph is null ? cluster.TextLength : 1,
+                run.Attributes.Flags & (CellFlags.Bold | CellFlags.Italic),
+                _settings.FontSize,
+                _viewport.Scale);
+            var glyph = _glyphs.GetOrAdd(key, _shapeFactory);
+            var centered = Math.Max(0, (cellWidth - glyph.Width) * 0.5f);
+            canvas.DrawText(glyph.Blob, cellLeft + centered, top + _baseline, _paint);
+            // CoreText's synthetic bold uses a second strike, shifted one Retina
+            // pixel, rather than expanding every outline in all directions.
+            if (glyph.DoubleStrike)
+                canvas.DrawText(glyph.Blob, cellLeft + centered + (_viewport.Scale > 1 ? 0.5f : 0), top + _baseline, _paint);
+        }
+    }
+
+    private bool TryDrawDrcs(
+        SKCanvas canvas,
+        ReadOnlySpan<char> text,
+        float left,
+        float top,
+        float width,
+        uint foreground,
+        IReadOnlyDictionary<int, DrcsGlyph>? glyphs)
+    {
+        if (glyphs is null ||
+            glyphs.Count == 0 ||
+            Rune.DecodeFromUtf16(text, out var rune, out var consumed) != System.Buffers.OperationStatus.Done ||
+            consumed != text.Length)
+        {
+            return false;
+        }
+
+        DrcsGlyph? match = null;
+        foreach (var glyph in glyphs.Values)
+        {
+            if (glyph.PrivateUseRune == rune)
+            {
+                match = glyph;
+                break;
+            }
+        }
+
+        if (match is null || match.Width <= 0 || match.Height <= 0)
+        {
+            return false;
+        }
+
+        var pixelWidth = width / match.Width;
+        var pixelHeight = (float)CellSize.Height / match.Height;
+        var color = ToColor(foreground);
+        var mask = match.AlphaMask.Span;
+        for (var y = 0; y < match.Height; y++)
+        {
+            for (var x = 0; x < match.Width; x++)
+            {
+                var alpha = mask[(y * match.Width) + x];
+                if (alpha == 0)
+                {
+                    continue;
+                }
+
+                _paint.Color = color.WithAlpha((byte)((color.Alpha * alpha) / 255));
+                canvas.DrawRect(
+                    left + (x * pixelWidth),
+                    top + (y * pixelHeight),
+                    pixelWidth,
+                    pixelHeight,
+                    _paint);
+            }
+        }
+
+        return true;
+    }
+
+    private bool TryDrawBlockElement(
+        SKCanvas canvas,
+        ReadOnlySpan<char> text,
+        float left,
+        float top,
+        float width)
+    {
+        Rune.DecodeFromUtf16(text, out var rune, out var consumed);
+        if (consumed != text.Length)
+        {
+            return false;
+        }
+
+        var height = (float)CellSize.Height;
+        _blockPaint.Color = _paint.Color;
+        switch (rune.Value)
+        {
+            case 0x2580:
+                DrawBlock(canvas, left, top, width, height / 2);
+                return true;
+            case >= 0x2581 and <= 0x2588:
+                {
+                    var fraction = rune.Value - 0x2580;
+                    var blockHeight = height * fraction / 8;
+                    DrawBlock(canvas, left, top + height - blockHeight, width, blockHeight);
+                    return true;
+                }
+            case >= 0x2589 and <= 0x258F:
+                {
+                    var fraction = 0x2590 - rune.Value;
+                    DrawBlock(canvas, left, top, width * fraction / 8, height);
+                    return true;
+                }
+            case 0x2590:
+                DrawBlock(canvas, left + (width / 2), top, width / 2, height);
+                return true;
+            case 0x2594:
+                DrawBlock(canvas, left, top, width, height / 8);
+                return true;
+            case 0x2595:
+                DrawBlock(canvas, left + (width * 7 / 8), top, width / 8, height);
+                return true;
+            case >= 0x2596 and <= 0x259F:
+                DrawQuadrantBlock(canvas, rune.Value, left, top, width, height);
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void DrawQuadrantBlock(
+        SKCanvas canvas,
+        int value,
+        float left,
+        float top,
+        float width,
+        float height)
+    {
+        const int upperLeft = 1;
+        const int upperRight = 2;
+        const int lowerLeft = 4;
+        const int lowerRight = 8;
+        var quadrants = value switch
+        {
+            0x2596 => lowerLeft,
+            0x2597 => lowerRight,
+            0x2598 => upperLeft,
+            0x2599 => upperLeft | lowerLeft | lowerRight,
+            0x259A => upperLeft | lowerRight,
+            0x259B => upperLeft | upperRight | lowerLeft,
+            0x259C => upperLeft | upperRight | lowerRight,
+            0x259D => upperRight,
+            0x259E => upperRight | lowerLeft,
+            0x259F => upperRight | lowerLeft | lowerRight,
+            _ => 0,
+        };
+        var halfWidth = width / 2;
+        var halfHeight = height / 2;
+        if ((quadrants & upperLeft) != 0)
+        {
+            DrawBlock(canvas, left, top, halfWidth, halfHeight);
+        }
+
+        if ((quadrants & upperRight) != 0)
+        {
+            DrawBlock(canvas, left + halfWidth, top, halfWidth, halfHeight);
+        }
+
+        if ((quadrants & lowerLeft) != 0)
+        {
+            DrawBlock(canvas, left, top + halfHeight, halfWidth, halfHeight);
+        }
+
+        if ((quadrants & lowerRight) != 0)
+        {
+            DrawBlock(canvas, left + halfWidth, top + halfHeight, halfWidth, halfHeight);
+        }
+    }
+
+    private void DrawBlock(
+        SKCanvas canvas,
+        float left,
+        float top,
+        float width,
+        float height) =>
+        canvas.DrawRect(left, top, width, height, _blockPaint);
+
+    private bool TryDrawPowerline(
+        SKCanvas canvas,
+        ReadOnlySpan<char> text,
+        float left,
+        float top,
+        float width)
+    {
+        Rune.DecodeFromUtf16(text, out var rune, out var consumed);
+        if (consumed != text.Length)
+        {
+            return false;
+        }
+
+        var right = left + width;
+        var bottom = top + (float)CellSize.Height;
+        var middle = top + ((float)CellSize.Height * 0.5f);
+        switch (rune.Value)
+        {
+            case 0xE0A0:
+                DrawPowerlineBranch(canvas, left, top, width, (float)CellSize.Height);
+                return true;
+            case 0xE0A1:
+                DrawPowerlineLineNumber(canvas, left, top, width, (float)CellSize.Height);
+                return true;
+            case 0xE0A2:
+                DrawPowerlineLock(canvas, left, top, width, (float)CellSize.Height);
+                return true;
+            case 0xE0A3:
+                DrawPowerlineColumnNumber(canvas, left, top, width, (float)CellSize.Height);
+                return true;
+            case 0xE0B0:
+                DrawScaledPath(canvas, _powerlineRight, left, top, width, (float)CellSize.Height);
+                return true;
+            case 0xE0B1:
+                canvas.DrawLine(left, top, right, middle, _paint);
+                canvas.DrawLine(right, middle, left, bottom, _paint);
+                return true;
+            case 0xE0B2:
+                DrawScaledPath(canvas, _powerlineLeft, left, top, width, (float)CellSize.Height);
+                return true;
+            case 0xE0B3:
+                canvas.DrawLine(right, top, left, middle, _paint);
+                canvas.DrawLine(left, middle, right, bottom, _paint);
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void DrawPowerlineBranch(
+        SKCanvas canvas,
+        float left,
+        float top,
+        float width,
+        float height)
+    {
+        var radius = Math.Max(1, Math.Min(width, height) * 0.09f);
+        var stemX = left + (width * 0.32f);
+        var upperY = top + (height * 0.22f);
+        var middleY = top + (height * 0.5f);
+        var lowerY = top + (height * 0.78f);
+        var branchX = left + (width * 0.72f);
+        _paint.StrokeWidth = Math.Max(1, width * 0.1f);
+        canvas.DrawLine(stemX, upperY, stemX, lowerY, _paint);
+        canvas.DrawLine(stemX, middleY, branchX, middleY, _paint);
+        canvas.DrawCircle(stemX, upperY, radius, _paint);
+        canvas.DrawCircle(stemX, lowerY, radius, _paint);
+        canvas.DrawCircle(branchX, middleY, radius, _paint);
+    }
+
+    private void DrawPowerlineLineNumber(
+        SKCanvas canvas,
+        float left,
+        float top,
+        float width,
+        float height)
+    {
+        var stroke = Math.Max(1, width * 0.1f);
+        _paint.StrokeWidth = stroke;
+        canvas.DrawLine(left + (width * 0.38f), top + (height * 0.2f), left + (width * 0.28f), top + (height * 0.8f), _paint);
+        canvas.DrawLine(left + (width * 0.72f), top + (height * 0.2f), left + (width * 0.62f), top + (height * 0.8f), _paint);
+        canvas.DrawLine(left + (width * 0.2f), top + (height * 0.42f), left + (width * 0.8f), top + (height * 0.42f), _paint);
+        canvas.DrawLine(left + (width * 0.16f), top + (height * 0.62f), left + (width * 0.76f), top + (height * 0.62f), _paint);
+    }
+
+    private void DrawPowerlineLock(
+        SKCanvas canvas,
+        float left,
+        float top,
+        float width,
+        float height)
+    {
+        var bodyLeft = left + (width * 0.2f);
+        var bodyTop = top + (height * 0.45f);
+        var bodyWidth = width * 0.6f;
+        var bodyHeight = height * 0.4f;
+        canvas.DrawRect(bodyLeft, bodyTop, bodyWidth, bodyHeight, _paint);
+        _strokePaint.Color = _paint.Color;
+        _strokePaint.StrokeWidth = Math.Max(1, width * 0.1f);
+        canvas.DrawArc(
+            new SKRect(
+                left + (width * 0.3f),
+                top + (height * 0.15f),
+                left + (width * 0.7f),
+                top + (height * 0.6f)),
+            180,
+            180,
+            false,
+            _strokePaint);
+    }
+
+    private void DrawPowerlineColumnNumber(
+        SKCanvas canvas,
+        float left,
+        float top,
+        float width,
+        float height)
+    {
+        _paint.StrokeWidth = Math.Max(1, width * 0.1f);
+        var upper = top + (height * 0.22f);
+        var lower = top + (height * 0.78f);
+        canvas.DrawLine(left + (width * 0.28f), upper, left + (width * 0.28f), lower, _paint);
+        canvas.DrawLine(left + (width * 0.5f), upper, left + (width * 0.5f), lower, _paint);
+        canvas.DrawLine(left + (width * 0.72f), upper, left + (width * 0.72f), lower, _paint);
+    }
+
+    private void DrawScaledPath(
+        SKCanvas canvas,
+        SKPath path,
+        float left,
+        float top,
+        float width,
+        float height)
+    {
+        canvas.Save();
+        canvas.Translate(left, top);
+        canvas.Scale(width, height);
+        canvas.DrawPath(path, _paint);
+        canvas.Restore();
+    }
+
+    private static SKPath CreatePowerlinePath(bool pointsRight)
+    {
+        var path = new SKPath();
+        if (pointsRight)
+        {
+            path.MoveTo(0, 0);
+            path.LineTo(1, 0.5f);
+            path.LineTo(0, 1);
+        }
+        else
+        {
+            path.MoveTo(1, 0);
+            path.LineTo(0, 0.5f);
+            path.LineTo(1, 1);
+        }
+
+        path.Close();
+        return path;
+    }
+
+    private void DrawDecorations(
+        SKCanvas canvas,
+        TerminalRenderRun run,
+        float top,
+        float padding)
+    {
+        var flags = run.Attributes.Flags;
+        var underline = (flags & CellFlags.Underline) != 0 || run.Attributes.HyperlinkUri is not null;
+        var doubleUnderline = (flags & CellFlags.DoubleUnderline) != 0;
+        var curly = (flags & CellFlags.CurlyUnderline) != 0;
+        var overline = (flags & CellFlags.Overline) != 0;
+        var strike = (flags & CellFlags.Strikethrough) != 0;
+        if (!underline && !doubleUnderline && !curly && !overline && !strike)
+        {
+            return;
+        }
+
+        _paint.Color = ToColor(run.Attributes.Foreground);
+        _paint.StrokeWidth = PhysicalPixel;
+        var left = padding + (run.StartColumn * (float)CellSize.Width);
+        var right = left + (run.CellCount * (float)CellSize.Width);
+        var underlineY = top + _baseline + Math.Max(1, (float)CellSize.Height * 0.08f);
+        if (overline)
+        {
+            canvas.DrawLine(left, top + PhysicalPixel, right, top + PhysicalPixel, _paint);
+        }
+
+        if (doubleUnderline)
+        {
+            canvas.DrawLine(left, underlineY, right, underlineY, _paint);
+            canvas.DrawLine(
+                left,
+                underlineY + (2 * PhysicalPixel),
+                right,
+                underlineY + (2 * PhysicalPixel),
+                _paint);
+        }
+        else if (curly)
+        {
+            var amplitude = Math.Max(1, (float)CellSize.Height * 0.06f);
+            var previousX = left;
+            var previousY = underlineY;
+            for (var x = left + 2; x <= right; x += 2)
+            {
+                var y = underlineY + ((((int)(x - left) / 2) % 2 == 0) ? amplitude : -amplitude);
+                canvas.DrawLine(previousX, previousY, x, y, _paint);
+                previousX = x;
+                previousY = y;
+            }
+        }
+        else if (underline)
+        {
+            canvas.DrawLine(left, underlineY, right, underlineY, _paint);
+        }
+
+        if (strike)
+        {
+            var y = top + ((float)CellSize.Height * 0.5f);
+            canvas.DrawLine(left, y, right, y, _paint);
+        }
+    }
+
+    private void DrawRanges(
+        SKCanvas canvas,
+        TerminalRenderFrame frame,
+        IReadOnlyList<TerminalCellRange> ranges,
+        float padding)
+    {
+        for (var index = 0; index < ranges.Count; index++)
+        {
+            var range = ranges[index];
+            var scale = (uint)range.Row < (uint)frame.RowsData.Count &&
+                        frame.RowsData[range.Row].Rendition != LineRendition.SingleWidth
+                ? 2
+                : 1;
+            var start = Math.Max(0, range.StartColumn * scale);
+            var end = Math.Max(start, (range.EndColumn * scale) + scale - 1);
+            _paint.Color = ToColor(range.Color);
+            canvas.DrawRect(
+                padding + (start * (float)CellSize.Width),
+                padding + (range.Row * (float)CellSize.Height),
+                (end - start + 1) * (float)CellSize.Width,
+                (float)CellSize.Height,
+                _paint);
+        }
+    }
+
+    private void DrawCursor(SKCanvas canvas, TerminalRenderFrame frame, float padding)
+    {
+        var horizontalScale = (uint)frame.CursorY < (uint)frame.RowsData.Count &&
+                              frame.RowsData[frame.CursorY].Rendition != LineRendition.SingleWidth
+            ? 2
+            : 1;
+        var left = padding + (frame.CursorX * horizontalScale * (float)CellSize.Width);
+        var top = padding + (frame.CursorY * (float)CellSize.Height);
+        var width = horizontalScale * (float)CellSize.Width;
+        var height = (float)CellSize.Height;
+        _paint.Color = ToColor(frame.CursorColor);
+        _paint.Style = SKPaintStyle.Fill;
+
+        switch (frame.CursorStyle)
+        {
+            case TerminalCursorStyle.Underscore:
+                canvas.DrawRect(left, top + height - Math.Max(2, height * 0.1f), width, Math.Max(2, height * 0.1f), _paint);
+                break;
+            case TerminalCursorStyle.DoubleUnderscore:
+                var lineHeight = Math.Max(1, height * 0.07f);
+                canvas.DrawRect(left, top + height - lineHeight, width, lineHeight, _paint);
+                canvas.DrawRect(left, top + height - (lineHeight * 3), width, lineHeight, _paint);
+                break;
+            case TerminalCursorStyle.Vintage:
+                var vintageHeight = Math.Max(1, height * frame.CursorHeightPercentage / 100f);
+                canvas.DrawRect(left, top + height - vintageHeight, width, vintageHeight, _paint);
+                break;
+            case TerminalCursorStyle.FilledBox:
+                canvas.DrawRect(left, top, width, height, _paint);
+                RedrawCursorCell(canvas, frame, padding, left, top, width, height);
+                break;
+            case TerminalCursorStyle.EmptyBox:
+                _strokePaint.Color = _paint.Color;
+                _strokePaint.StrokeWidth = PhysicalPixel;
+                canvas.DrawRect(left, top, width, height, _strokePaint);
+                break;
+            default:
+                canvas.DrawRect(left, top, Math.Max(1, width * 0.12f), height, _paint);
+                break;
+        }
+    }
+
+    private void RedrawCursorCell(
+        SKCanvas canvas,
+        TerminalRenderFrame frame,
+        float padding,
+        float left,
+        float top,
+        float width,
+        float height)
+    {
+        if (frame.CursorY < 0 || frame.CursorY >= frame.RowsData.Count)
+        {
+            return;
+        }
+
+        var row = frame.RowsData[frame.CursorY];
+        for (var index = 0; index < row.Runs.Count; index++)
+        {
+            var run = row.Runs[index];
+            if (frame.CursorX < run.StartColumn ||
+                frame.CursorX >= run.StartColumn + run.CellCount ||
+                (run.Attributes.Flags & CellFlags.Invisible) != 0)
+            {
+                continue;
+            }
+
+            canvas.Save();
+            canvas.ClipRect(new SKRect(left, top, left + width, top + height));
+            DrawClusters(
+                canvas,
+                run,
+                top,
+                padding,
+                CursorTextColor(frame.CursorColor, run.Attributes.Background),
+                frame.DrcsGlyphs);
+            canvas.Restore();
+            return;
+        }
+    }
+
+    private CachedGlyph Shape(GlyphKey key)
+    {
+        var typeface = _fonts.Resolve(key.Text.AsSpan(key.Offset, key.Length), key.Flags);
+        LastResolvedFontFamily = typeface.FamilyName;
+        using var shapingFont = CreateFont(typeface, key.Flags);
+        using var shaper = new SKShaper(typeface);
+        using var buffer = new HarfBuzzBuffer();
+        buffer.AddUtf16(key.Text, key.Offset, key.Length);
+        buffer.GuessSegmentProperties();
+        var result = shaper.Shape(buffer, shapingFont);
+        using var font = CreateFont(typeface, key.Flags);
+        var glyphData = new byte[result.Codepoints.Length * sizeof(ushort)];
+        for (var index = 0; index < result.Codepoints.Length; index++)
+        {
+            var glyph = checked((ushort)result.Codepoints[index]);
+            glyphData[index * 2] = (byte)glyph;
+            glyphData[(index * 2) + 1] = (byte)(glyph >> 8);
+        }
+
+        var blob = SKTextBlob.CreatePositioned(
+            glyphData,
+            SKTextEncoding.GlyphId,
+            font,
+            result.Points) ?? throw new InvalidOperationException("Skia could not create a shaped glyph run.");
+        return new CachedGlyph(blob, result.Width, typeface.FamilyName, OperatingSystem.IsMacOS() && !typeface.FamilyName.Contains("Emoji", StringComparison.OrdinalIgnoreCase) && ShouldEmbolden(typeface, key.Flags));
+    }
+
+    private SKFont CreateFont(SKTypeface typeface, CellFlags flags) =>
+        new(typeface, _settings.FontSize)
+        {
+            Embolden = !OperatingSystem.IsMacOS() && ShouldEmbolden(typeface, flags),
+            Edging = OperatingSystem.IsMacOS() ? SKFontEdging.Antialias : SKFontEdging.SubpixelAntialias,
+            ForceAutoHinting = !OperatingSystem.IsMacOS(),
+            Hinting = OperatingSystem.IsMacOS() ? SKFontHinting.None : SKFontHinting.Full,
+            SkewX = ShouldSkew(typeface, flags) ? -0.2f : 0,
+            Subpixel = true,
+        };
+
+    private void MeasureCell()
+    {
+        var typeface = _fonts.Resolve("M".AsSpan(), CellFlags.None);
+        using var font = CreateFont(typeface, CellFlags.None);
+        font.GetFontMetrics(out var metrics);
+        var width = Math.Max(1, font.MeasureText("0"));
+        // Round the ascent/descent outwards separately, as a terminal cell must
+        // contain both. At Monaco 12 this yields the reference's 17-point rows.
+        var height = Math.Max(1, Math.Ceiling(-metrics.Ascent) + Math.Ceiling(metrics.Descent) + Math.Ceiling(metrics.Leading));
+        var scale = Math.Max(0.1, _viewport.Scale == 0 ? 1 : _viewport.Scale);
+        CellSize = new CellSize(
+            Math.Max(1, Math.Round(width * scale, MidpointRounding.AwayFromZero) / scale),
+            Math.Max(1, Math.Round(height * scale, MidpointRounding.AwayFromZero) / scale));
+        _baseline = (float)(
+            Math.Round(
+                (-metrics.Ascent + ((CellSize.Height - height) * 0.5)) * scale,
+                MidpointRounding.AwayFromZero) /
+            scale);
+    }
+
+    private void ReleaseResources()
+    {
+        _rowPictures?.Dispose();
+        _rowPictureCandidates?.Clear();
+        _glyphs.Dispose();
+        _fonts.Dispose();
+        foreach (var image in _images.Values)
+        {
+            image.Dispose();
+        }
+
+        _images.Clear();
+        _imageBytes = 0;
+        _invalidImages.Clear();
+    }
+
+    private BoundedResourceCache<GlyphKey, CachedGlyph> CreateGlyphCache() =>
+        new(_settings.GlyphCacheCapacity);
+
+    private BoundedResourceCache<RowPictureKey, SKPicture>? CreateRowPictureCache() =>
+        _settings.RowPictureCacheCapacity > 0
+            ? new(_settings.RowPictureCacheCapacity, RowPictureKeyComparer.Instance)
+            : null;
+
+    private HashSet<RowPictureKey>? CreateRowPictureCandidates() =>
+        _settings.RowPictureCacheCapacity > 0
+            ? new(RowPictureKeyComparer.Instance)
+            : null;
+
+    private SKPicture RecordRow(RowPictureKey key)
+    {
+        using var recorder = new SKPictureRecorder();
+        var width = (float)CellSize.Width;
+        var height = (float)CellSize.Height;
+        var lastColumn = key.Row.Runs.Count == 0
+            ? 0
+            : key.Row.Runs[^1].StartColumn + key.Row.Runs[^1].CellCount;
+        var canvas = recorder.BeginRecording(
+            new SKRect(-width, -height, (lastColumn + 1) * width, 2 * height));
+        DrawRow(canvas, key.Row with { RowIndex = 0 }, key.Background, 0, null, 0);
+        return recorder.EndRecording() ?? throw new InvalidOperationException("Skia could not record a terminal row.");
+    }
+
+    private static TerminalRendererSettings Normalize(TerminalRendererSettings settings) =>
+        settings with
+        {
+            FontFamily = string.IsNullOrWhiteSpace(settings.FontFamily)
+                ? "Cascadia Mono"
+                : settings.FontFamily.Trim(),
+            FontSize = Math.Clamp(settings.FontSize, 1, 100) * DipsPerPoint,
+            FontWeight = Math.Clamp(settings.FontWeight, 100, 1000),
+            GlyphCacheCapacity = Math.Max(1, settings.GlyphCacheCapacity),
+            RowPictureCacheCapacity = Math.Max(0, settings.RowPictureCacheCapacity),
+            DecodedImageCacheByteCapacity = Math.Max(
+                4L * 1024 * 1024,
+                settings.DecodedImageCacheByteCapacity),
+        };
+
+    private static bool IsWhitespace(ReadOnlySpan<char> text)
+    {
+        foreach (var character in text)
+        {
+            if (!char.IsWhiteSpace(character))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool CanReuseAsciiGlyph(string text, TerminalTextCluster cluster)
+    {
+        var offset = cluster.TextOffset;
+        return cluster.TextLength == 1 &&
+               text[offset] is >= '\u0021' and <= '\u007e' &&
+               (offset == 0 || text[offset - 1] is >= '\u0020' and <= '\u007e') &&
+               (offset + 1 == text.Length || text[offset + 1] is >= '\u0020' and <= '\u007e');
+    }
+
+    private float PhysicalPixel => 1f / (float)Math.Max(0.1, _viewport.Scale == 0 ? 1 : _viewport.Scale);
+
+    private static SKColor ToColor(uint argb) => new(
+        (byte)((argb >> 16) & 0xFF),
+        (byte)((argb >> 8) & 0xFF),
+        (byte)(argb & 0xFF),
+        (byte)(argb >> 24));
+
+    private bool ShouldEmbolden(SKTypeface typeface, CellFlags flags) =>
+        !typeface.IsBold &&
+        ((flags & CellFlags.Bold) != 0 || _settings.FontWeight >= 600);
+
+    private static bool ShouldSkew(SKTypeface typeface, CellFlags flags) =>
+        (flags & CellFlags.Italic) != 0 && !typeface.IsItalic;
+
+    private static uint CursorTextColor(uint cursorColor, uint cellBackground)
+    {
+        var cursorLuminance = Luminance(cursorColor);
+        if (Math.Abs(cursorLuminance - Luminance(cellBackground)) >= 96)
+        {
+            return cellBackground;
+        }
+
+        return cursorLuminance >= 128 ? 0xFF000000 : 0xFFFFFFFF;
+    }
+
+    private static double Luminance(uint argb) =>
+        (((argb >> 16) & 0xFF) * 0.2126) +
+        (((argb >> 8) & 0xFF) * 0.7152) +
+        ((argb & 0xFF) * 0.0722);
+
+    private readonly record struct GlyphKey(
+        string Text,
+        int Offset,
+        int Length,
+        CellFlags Flags,
+        float FontSize,
+        double Scale)
+    {
+        public bool Equals(GlyphKey other) =>
+            Offset == other.Offset &&
+            Length == other.Length &&
+            Flags == other.Flags &&
+            FontSize.Equals(other.FontSize) &&
+            Scale.Equals(other.Scale) &&
+            string.Equals(Text, other.Text, StringComparison.Ordinal);
+
+        public override int GetHashCode()
+        {
+            var hash = new HashCode();
+            hash.Add(Flags);
+            hash.Add(FontSize);
+            hash.Add(Scale);
+            hash.Add(Offset);
+            hash.Add(Length);
+            hash.Add(Text, StringComparer.Ordinal);
+            return hash.ToHashCode();
+        }
+    }
+
+    private readonly record struct RowPictureKey(TerminalRenderRow Row, uint Background);
+
+    private sealed class RowPictureKeyComparer : IEqualityComparer<RowPictureKey>
+    {
+        public static RowPictureKeyComparer Instance { get; } = new();
+
+        public bool Equals(RowPictureKey x, RowPictureKey y)
+        {
+            if (x.Background != y.Background || x.Row.Runs.Count != y.Row.Runs.Count)
+            {
+                return false;
+            }
+
+            for (var index = 0; index < x.Row.Runs.Count; index++)
+            {
+                var a = x.Row.Runs[index];
+                var b = y.Row.Runs[index];
+                if (a.StartColumn != b.StartColumn ||
+                    a.CellCount != b.CellCount ||
+                    a.Attributes != b.Attributes ||
+                    !string.Equals(a.Text, b.Text, StringComparison.Ordinal) ||
+                    a.Clusters.Count != b.Clusters.Count)
+                {
+                    return false;
+                }
+
+                for (var cluster = 0; cluster < a.Clusters.Count; cluster++)
+                {
+                    if (a.Clusters[cluster] != b.Clusters[cluster])
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public int GetHashCode(RowPictureKey key)
+        {
+            var hash = new HashCode();
+            hash.Add(key.Background);
+            for (var index = 0; index < key.Row.Runs.Count; index++)
+            {
+                var run = key.Row.Runs[index];
+                hash.Add(run.StartColumn);
+                hash.Add(run.CellCount);
+                hash.Add(run.Attributes);
+                hash.Add(run.Text, StringComparer.Ordinal);
+                for (var clusterIndex = 0; clusterIndex < run.Clusters.Count; clusterIndex++)
+                {
+                    hash.Add(run.Clusters[clusterIndex]);
+                }
+            }
+
+            return hash.ToHashCode();
+        }
+    }
+
+    private sealed class CachedImage(SKBitmap bitmap, long byteSize) : IDisposable
+    {
+        public SKBitmap Bitmap { get; } = bitmap;
+        public long ByteSize { get; } = byteSize;
+        public void Dispose() => Bitmap.Dispose();
+    }
+
+    private sealed class CachedGlyph(SKTextBlob blob, float width, string familyName, bool doubleStrike) : IDisposable
+    {
+        public SKTextBlob Blob { get; } = blob;
+        public float Width { get; } = width;
+        public string FamilyName { get; } = familyName;
+        public bool DoubleStrike { get; } = doubleStrike;
+        public void Dispose() => Blob.Dispose();
+    }
+
+    private sealed class FontResolver : IDisposable
+    {
+        private readonly TerminalRendererSettings _settings;
+        private readonly Dictionary<FontKey, SKTypeface> _faces = [];
+        private readonly List<SourceFace> _sourceFaces = [];
+        private readonly string[] _families;
+
+        public FontResolver(TerminalRendererSettings settings)
+        {
+            _settings = settings;
+            _families = [settings.FontFamily, .. settings.FallbackFontFamilies];
+            for (var index = 0; index < settings.FontSources.Count; index++)
+            {
+                var source = settings.FontSources[index];
+                using var stream = source.OpenStream();
+                var face = SKTypeface.FromStream(stream);
+                if (face is not null)
+                {
+                    _sourceFaces.Add(new SourceFace(source.FamilyName, source.Italic, face));
+                }
+            }
+        }
+
+        public SKTypeface Resolve(ReadOnlySpan<char> text, CellFlags flags)
+        {
+            var styleWeight = (flags & CellFlags.Bold) != 0
+                ? Math.Max(_settings.FontWeight, (int)SKFontStyleWeight.Bold)
+                : _settings.FontWeight;
+            var styleSlant = (flags & CellFlags.Italic) != 0
+                ? SKFontStyleSlant.Italic
+                : SKFontStyleSlant.Upright;
+            var style = new SKFontStyle(
+                styleWeight,
+                (int)SKFontStyleWidth.Normal,
+                styleSlant);
+            Rune.DecodeFromUtf16(text, out var firstRune, out _);
+            // Prefer colour fonts for default emoji presentation (or VS16),
+            // while VS15 explicitly retains text presentation. A monochrome
+            // symbol in the primary font must not hide the native emoji face.
+            if (!text.Contains('\uFE0E') && (text.Contains('\uFE0F') || IsEmojiPresentation(firstRune.Value)))
+            {
+                var emojiFamily = OperatingSystem.IsMacOS() ? "Apple Color Emoji" : "Noto Color Emoji";
+                var emoji = GetSourceFace(emojiFamily, false) ?? GetFamily(emojiFamily, 400, SKFontStyleSlant.Upright, SKFontStyle.Normal);
+                if (emoji is not null && emoji.ContainsGlyphs(text[..firstRune.Utf16SequenceLength])) return emoji;
+            }
+            foreach (var family in _families)
+            {
+                var source = GetSourceFace(family, styleSlant == SKFontStyleSlant.Italic);
+                if (source is not null && source.ContainsGlyphs(text))
+                {
+                    return source;
+                }
+
+                var face = GetFamily(family, styleWeight, styleSlant, style);
+                if (face is not null && face.ContainsGlyphs(text))
+                {
+                    return face;
+                }
+            }
+
+            Rune.DecodeFromUtf16(text, out var rune, out _);
+            var matched = SKFontManager.Default.MatchCharacter(
+                _settings.FontFamily,
+                style,
+                null,
+                rune.Value);
+            if (matched is null)
+            {
+                return GetFamily(
+                    _settings.FontFamily,
+                    styleWeight,
+                    styleSlant,
+                    style) ?? SKTypeface.Default;
+            }
+
+            var fallback = GetFamily(matched.FamilyName, styleWeight, styleSlant, style);
+            if (fallback is null)
+            {
+                _faces.Add(new FontKey(matched.FamilyName, styleWeight, styleSlant), matched);
+                return matched;
+            }
+
+            matched.Dispose();
+            return fallback;
+        }
+
+        // Emoji presentation ranges from pinned MIT Core/WcWidth.cs.
+        private static bool IsEmojiPresentation(int v) =>
+            v is 0x231A or 0x231B or 0x23F0 or 0x23F3 or
+                0x25FD or 0x25FE or 0x2614 or 0x2615 or 0x267F or 0x2693 or
+                0x26A1 or 0x26AA or 0x26AB or 0x26BD or 0x26BE or 0x26C4 or
+                0x26C5 or 0x26CE or 0x26D4 or 0x26EA or 0x26F2 or 0x26F3 or
+                0x26F5 or 0x26FA or 0x26FD or 0x2705 or 0x270A or 0x270B or
+                0x2728 or 0x274C or 0x274E or 0x2753 or 0x2754 or 0x2755 or
+                0x2757 or 0x2795 or 0x2796 or 0x2797 or 0x27B0 or 0x27BF or
+                >= 0x23E9 and <= 0x23EC or
+                >= 0x2648 and <= 0x2653 or
+                >= 0x1F1E6 and <= 0x1F1FF or
+                >= 0x1F300 and <= 0x1FAFF;
+    
+
+        public void Dispose()
+        {
+            foreach (var face in _faces.Values.Distinct())
+            {
+                face.Dispose();
+            }
+
+            foreach (var source in _sourceFaces)
+            {
+                source.Typeface.Dispose();
+            }
+
+            _faces.Clear();
+            _sourceFaces.Clear();
+        }
+
+        private SKTypeface? GetSourceFace(string family, bool italic)
+        {
+            SKTypeface? regular = null;
+            for (var index = 0; index < _sourceFaces.Count; index++)
+            {
+                var source = _sourceFaces[index];
+                if (!source.FamilyName.Equals(family, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                if (source.Italic == italic)
+                {
+                    return source.Typeface;
+                }
+
+                if (!source.Italic)
+                {
+                    regular = source.Typeface;
+                }
+            }
+
+            return regular;
+        }
+
+        private SKTypeface? GetFamily(
+            string family,
+            int weight,
+            SKFontStyleSlant slant,
+            SKFontStyle style)
+        {
+            var key = new FontKey(family, weight, slant);
+            if (_faces.TryGetValue(key, out var cached))
+            {
+                return cached;
+            }
+
+            var face = SKFontManager.Default.MatchFamily(family, style);
+            if (face is null)
+            {
+                return null;
+            }
+
+            _faces.Add(key, face);
+            return face;
+        }
+
+        private readonly record struct FontKey(
+            string Family,
+            int Weight,
+            SKFontStyleSlant Slant);
+
+        private sealed record SourceFace(
+            string FamilyName,
+            bool Italic,
+            SKTypeface Typeface);
+    }
+}

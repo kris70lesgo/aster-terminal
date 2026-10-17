@@ -186,7 +186,7 @@ public sealed class TmuxWindow : Window
     {
         if (node.PaneId is { } id) return _panes[id];
         var grid = new Grid();
-        var cell = Devolutions.Terminal.TermControl.MeasureCell(_profile.ToControlProfile(ActualThemeVariant == ThemeVariant.Light), RenderScaling);
+        var cell = Aster.Terminal.TermControl.MeasureCell(_profile.ToControlProfile(ActualThemeVariant == ThemeVariant.Light), RenderScaling);
         var sizes = string.Join(",1,", node.Children.Select(c => (node.Vertical ? Required(c, cell.Width, cell.Height).Height : Required(c, cell.Width, cell.Height).Width).ToString(System.Globalization.CultureInfo.InvariantCulture) + "*"));
         if (node.Vertical) grid.RowDefinitions = new(sizes); else grid.ColumnDefinitions = new(sizes);
         for (var i = 0; i < node.Children.Count; i++)
@@ -199,7 +199,7 @@ public sealed class TmuxWindow : Window
     }
     private static (double Width, double Height) Required(TmuxLayout node, double cellWidth, double cellHeight)
     {
-        if (node.PaneId is not null) return (node.Columns * cellWidth + 10 + TerminalScrollBar.GutterWidth, node.Rows * cellHeight + 10);
+        if (node.PaneId is not null) return (node.Columns * cellWidth + 10 + TerminalScrollBar.GutterWidth, node.Rows * cellHeight + 4);
         var children = node.Children.Select(c => Required(c, cellWidth, cellHeight)).ToArray();
         return node.Vertical ? (children.Max(c => c.Width), children.Sum(c => c.Height) + children.Length - 1)
             : (children.Sum(c => c.Width) + children.Length - 1, children.Max(c => c.Height));
@@ -209,7 +209,7 @@ public sealed class TmuxWindow : Window
     private async Task ResizeClientAsync()
     {
         if (_closing || !IsReady) return;
-        var cell = Devolutions.Terminal.TermControl.MeasureCell(_profile.ToControlProfile(ActualThemeVariant == ThemeVariant.Light), RenderScaling);
+        var cell = Aster.Terminal.TermControl.MeasureCell(_profile.ToControlProfile(ActualThemeVariant == ThemeVariant.Light), RenderScaling);
         if (_tabs.SelectedItem is not TabItem { Content: Grid content } || content.Bounds.Width <= 0 || content.Bounds.Height <= 0 || _layouts.Count == 0) return;
         // Account for each pane's padding and pixel dividers. tmux reserves whole
         // character separators. Control clients have no rendered status rows.

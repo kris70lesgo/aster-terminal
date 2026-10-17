@@ -2,8 +2,28 @@
 // Aster Terminal native AppKit shutdown bridge, 2026.
 #import <AppKit/AppKit.h>
 #import <dispatch/dispatch.h>
+#import <QuartzCore/CAMetalLayer.h>
 
 static BOOL armed = NO;
+
+static void useSrgb(CALayer *layer, CGColorSpaceRef space)
+{
+    if ([layer isKindOfClass:[CAMetalLayer class]])
+        ((CAMetalLayer *)layer).colorspace = space;
+    for (CALayer *child in layer.sublayers) useSrgb(child, space);
+}
+
+// Avalonia's untagged GPU surface otherwise uses the monitor's device RGB.
+// Tag the backing layer, letting Core Animation adapt to the current display.
+__attribute__((visibility("default"))) void aster_appkit_srgb_window(void *handle)
+{
+    if (![NSThread isMainThread] || handle == NULL) return;
+    NSWindow *window = (__bridge NSWindow *)handle;
+    window.colorSpace = [NSColorSpace sRGBColorSpace];
+    CGColorSpaceRef space = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
+    useSrgb(window.contentView.layer, space);
+    CGColorSpaceRelease(space);
+}
 
 static void wakeExit(NSApplication *application, unsigned attempts)
 {

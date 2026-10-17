@@ -1,8 +1,8 @@
 using Avalonia.Threading;
 using Aster.Sessions.Protocols;
 using Aster.Sessions.Search;
-using Devolutions.Terminal;
-using Devolutions.Terminal.Render;
+using Aster.Terminal;
+using Aster.Terminal.Render;
 
 namespace Aster.App.Services;
 

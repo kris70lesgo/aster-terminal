@@ -12,7 +12,16 @@ internal static class Program
         if (args is ["--session-host", var descriptor]) return Aster.Sessions.Hosting.SessionHost.RunAsync(descriptor).GetAwaiter().GetResult();
         if (args is ["--benchmark", var report]) return Services.TerminalBenchmark.Run(report);
         int exitCode;
-        try { exitCode = AppBuilder.Configure<App>().UsePlatformDetect().LogToTrace().StartWithClassicDesktopLifetime(args); }
+        try
+        {
+            var builder = AppBuilder.Configure<App>().UsePlatformDetect();
+            if (OperatingSystem.IsMacOS())
+                builder.With(new AvaloniaNativePlatformOptions
+                {
+                    RenderingMode = [AvaloniaNativeRenderingMode.Metal, AvaloniaNativeRenderingMode.Software]
+                });
+            exitCode = builder.LogToTrace().StartWithClassicDesktopLifetime(args);
+        }
         finally { Platform.MacExitWakeup.Stop(); }
         if (args.Contains("--scripting-smoke"))
         {

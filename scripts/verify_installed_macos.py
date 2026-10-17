@@ -41,6 +41,11 @@ def main():
     base = args.report.expanduser().absolute()
     base.mkdir(parents=True, exist_ok=False)
     results = []
+    # LaunchServices normally starts a GUI shell without the automation host's
+    # colour suppression. Do not change the app's handling of explicit NO_COLOR.
+    launch_environment = dict(os.environ)
+    for name in ("NO_COLOR", "TERM", "COLORTERM"):
+        launch_environment.pop(name, None)
 
     def run(arguments, expected, abrupt=False):
         if expected.exists():
@@ -51,7 +56,7 @@ def main():
             "cua-driver", "call", "launch_app", json.dumps({
                 "name": "Aster Terminal", "creates_new_application_instance": True,
                 "additional_arguments": arguments,
-            }), "--compact"], text=True)
+            }), "--compact", "--no-daemon"], text=True, env=launch_environment)
         instance = json.loads(launch)
         assert instance["bundle_id"] == "io.asterterminal.desktop"
         pid = instance["pid"]

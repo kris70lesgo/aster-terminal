@@ -1,3 +1,33 @@
+# Lossless reference pass — 0.13 candidate
+
+This pass compares actual PNG captures from `screenshot(format=png)`. The
+`get_window_state` screenshot path may contain JPEG bytes even with a .png name;
+those captures are unsuitable for pixel measurements. Earlier normal Aster
+launches also inherited automation's NO_COLOR=1. A clean one-shot driver launch
+removes that comparison artifact; the app still respects explicit NO_COLOR.
+
+The installed iTerm 3.7.4 reference is 587×462 logical / 1174×924 physical pixels.
+At Monaco 12, both display scales now measure 7×17 logical cells. Low ANSI bold
+foregrounds select bright palette entries at paint time. Terminal padding is
+5 horizontal, 4 top and 0 bottom; drawing, selection/IME, replay and tmux use
+those same coordinates. Mac rendering uses grayscale antialiasing, native
+hinting and second-strike synthetic bold with a 0.2 italic shear. Native colour
+emoji receive presentation priority, including the prompt's coffee symbol.
+
+An sRGB-tagged Metal layer lets macOS apply the monitor's own ICC profile.
+Measured cyan (142,250,253), red (208,126,120) and background (21,25,30) now match
+the lossless reference samples. These are observed display values, not portable
+palette constants. The logical background is #14191E; header is #1F202E. The
+reference and Aster quote/date baselines align at this geometry. Public evidence
+must use owned fixture screens; private user shell captures remain unpublished.
+
+Full pixel identity is **not established**: antialiasing edge pixels, some
+caption/gutter details, activity/cursor state and available platform fonts still
+need separate comparison. A text-region score cannot establish whole-window
+identity. Windows/Linux do not bundle Monaco or Apple's colour emoji font.
+Current candidate native verification is recorded separately below when complete;
+the following 0.12 record remains historical released evidence.
+
 # iTerm2 visual alignment — installed reference 3.7.4
 
 The current target is the user's installed `/Applications/iTerm.app`: its bundle

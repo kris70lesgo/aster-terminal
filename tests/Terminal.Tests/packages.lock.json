@@ -413,7 +413,14 @@
         "dependencies": {
           "Avalonia.Desktop": "[12.1.4, )",
           "Avalonia.Themes.Fluent": "[12.1.4, )",
+          "Terminal.Rendering": "[1.0.0, )",
           "Terminal.Sessions": "[1.0.0, )"
+        }
+      },
+      "terminal.rendering": {
+        "type": "Project",
+        "dependencies": {
+          "Devolutions.Terminal.Control": "[2026.3.4, )"
         }
       },
       "terminal.sessions": {

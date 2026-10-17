@@ -35,10 +35,10 @@ public sealed record TerminalProfile(string Name, string Command, string Directo
         FontSize = FontSize * 72d / 96d,
         FontFace = FontFamily,
         Foreground = Foreground ?? (light ? "#243044" : "#DCDCDC"),
-        Background = Background ?? (light ? "#FAFAFC" : "#15191E"),
+        Background = Background ?? (light ? "#FAFAFC" : "#14191E"),
         CursorColor = light ? "#243044" : "#FFFFFF",
         SelectionBackground = light ? "#B9D3EF" : "#B3D7FF",
-        Padding = "5",
+        Padding = "5,4,5,0",
         CursorShape = CursorShape,
         HistorySize = HistorySize,
         CloseOnExit = CloseOnExitMode.Never,
@@ -64,7 +64,7 @@ public sealed record TerminalProfile(string Name, string Command, string Directo
         {
             Name = light ? "Aster Light" : "Aster Dark",
             Foreground = Color(Foreground ?? (light ? "#243044" : "#DCDCDC")),
-            Background = Color(Background ?? (light ? "#FAFAFC" : "#15191E")),
+            Background = Color(Background ?? (light ? "#FAFAFC" : "#14191E")),
             Cursor = light ? 0xFF243044 : 0xFFFFFFFF,
             SelectionBackground = light ? 0xFFB9D3EF : 0xFFB3D7FF,
             // Reference profile's 16 ANSI colours, read without importing its

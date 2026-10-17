@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Aster.Terminal</RootNamespace>
+    <RuntimeIdentifiers>osx-arm64;win-x64;linux-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Retain pinned Core/Connection/Settings and the licensed embedded fonts.
+         Only the control/render sources are adapted locally. -->
+    <PackageReference Include="Devolutions.Terminal.Control" Version="2026.3.4" />
+  </ItemGroup>
+</Project>

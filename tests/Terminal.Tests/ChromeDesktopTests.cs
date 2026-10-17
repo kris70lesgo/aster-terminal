@@ -133,7 +133,7 @@ public sealed partial class DesktopTests
             SendKey(window, Key.Enter);
             var bar = pane.GetVisualDescendants().OfType<TerminalScrollBar>().Single();
             await Until(() => Text(pane).Contains("HISTORY_160") && bar.Maximum > 50);
-            Assert.Equal(12, bar.Bounds.Width);
+            Assert.Equal(TerminalScrollBar.GutterWidth, bar.Bounds.Width);
             Assert.Equal(pane.Terminal.Engine.HistoryCount, bar.Maximum);
             Assert.Equal(pane.Terminal.Engine.Rows, bar.ViewportSize);
             var thumb = bar.GetVisualDescendants().OfType<Thumb>().Single();

@@ -50,9 +50,9 @@ public static class DesktopSmoke
             var chrome = window.FindControl<TerminalTabs>("Tabs")!;
             var addTab = chrome.GetVisualDescendants().OfType<Button>().Single(b => b.Name == "NewTabButton");
             var scrollbar = Panes(window)[0].GetVisualDescendants().OfType<TerminalScrollBar>().Single();
-            if (addTab.IsEffectivelyVisible || !chrome.WindowShortcut.EndsWith("1") || Math.Abs(scrollbar.Bounds.Width - 12) > .1)
+            if (addTab.IsEffectivelyVisible || !chrome.WindowShortcut.EndsWith("1") || Math.Abs(scrollbar.Bounds.Width - TerminalScrollBar.GutterWidth) > .1)
                 throw new InvalidOperationException("Reference single-window caption or terminal scrollback gutter differs.");
-            checks.Add("Single-tab caption hides insertion button, displays working window-number shortcut and reserves 12-point real-history scrollbar");
+            checks.Add($"Single-tab caption hides insertion button, displays working window-number shortcut and reserves {TerminalScrollBar.GutterWidth}-point real-history scrollbar");
             var columns = terminal.Engine.Columns;
             var resizeWatch = Stopwatch.StartNew();
             window.Width = 850; window.Height = 570;

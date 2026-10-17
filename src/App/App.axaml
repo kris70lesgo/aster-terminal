@@ -50,7 +50,6 @@
         <Style Selector="^.single /template/ ScrollViewer#HeaderViewport"><Setter Property="IsVisible" Value="False" /></Style>
         <Style Selector="^.single /template/ TextBlock#WindowCaption"><Setter Property="IsVisible" Value="True" /></Style>
         <Style Selector="^.inactive /template/ TextBlock#WindowCaption"><Setter Property="Opacity" Value="0.6" /></Style>
-        <Style Selector="^.inactive TabItem"><Setter Property="Opacity" Value="0.65" /></Style>
       </ControlTheme>
       <ControlTheme x:Key="SettingsCategoryTheme" TargetType="TabItem">
         <Setter Property="FontSize" Value="11" /><Setter Property="Padding" Value="14,5" /><Setter Property="MinWidth" Value="76" />
@@ -96,6 +95,7 @@
       <Setter Property="Padding" Value="10,4" />
     </Style>
     <Style Selector="Button.chrome-button"><Setter Property="Background" Value="Transparent" /><Setter Property="BorderThickness" Value="0" /><Setter Property="Foreground" Value="{DynamicResource MutedForeground}" /></Style>
+    <Style Selector="views|TerminalTabs.inactive TabItem"><Setter Property="Opacity" Value="0.65" /></Style>
     <Style Selector="views|TerminalTabs TabItem"><Setter Property="Theme" Value="{StaticResource TerminalTabTheme}" /></Style>
     <Style Selector="TabControl.settings-toolbar TabItem"><Setter Property="Theme" Value="{StaticResource SettingsCategoryTheme}" /></Style>
     <Style Selector="TabControl.profile-segments TabItem"><Setter Property="Theme" Value="{StaticResource SettingsSegmentTheme}" /></Style>

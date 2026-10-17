@@ -755,3 +755,11 @@ verify caption actions, compact/overflow tabs, minimum Settings navigation and
 cleanup; existing tab/Find/tmux/persistence tests are retained. Native acceptance
 now captures Appearance and compact Settings. Exact Windows/Linux/macOS and
 installed Retina verification remain pending at this source checkpoint.
+
+The final local source passes 80 tests + 2 Windows-only skips (82 total).
+A late inactive-caption selector initially built but failed template loading in
+the new desktop regression; moving its descendant rule out of ControlTheme
+resolved it. Failure evidence is retained in ui-alignment-investigation-v0.11.0.
+Earlier CI candidates were cancelled before release; final native checks must
+use the corrected source. Settings icons are original outlined vectors, and
+inactive title/tab dimming follows the reference's background-window treatment.

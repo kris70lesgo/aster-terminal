@@ -261,6 +261,71 @@ public static class TerminalInteractionModel
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant,
         TimeSpan.FromMilliseconds(50));
 
+    private static readonly Regex[] SmartSelectionPatterns =
+    [
+        new(@"(?:https?://|ftp://|www\.)[^\s<>""'`]+", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(50)),
+        new(@"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(50)),
+        new(@"(?:[0-9]{1,3}\.){3}[0-9]{1,3}", RegexOptions.CultureInvariant | RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(50)),
+        new(@"/[A-Z0-9._~+/-]+", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(50)),
+    ];
+
+    /// <summary>
+    /// Selects a URL, email, IPv4 address, or absolute path under the pointer.
+    /// The caller controls whether this iTerm-style gesture is enabled.
+    /// </summary>
+    public static TerminalSelection? SmartSelectAt(TextBufferSnapshot snapshot, TerminalSelectionPoint point)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        point = Clamp(snapshot, point);
+        var cells = snapshot.Lines[point.Line].Cells;
+        var text = new StringBuilder();
+        var columns = new List<int>();
+        for (var column = 0; column < cells.Count; column++)
+        {
+            var cell = cells[column];
+            if (cell.IsWideContinuation) continue;
+            var value = string.IsNullOrEmpty(cell.Text) ? " " : cell.Text;
+            text.Append(value);
+            for (var i = 0; i < value.Length; i++) columns.Add(column);
+        }
+
+        var line = text.ToString();
+        var character = columns.FindIndex(column => column == point.Column);
+        if (character < 0) return null;
+
+        foreach (var pattern in SmartSelectionPatterns)
+        {
+            MatchCollection matches;
+            try { matches = pattern.Matches(line); }
+            catch (RegexMatchTimeoutException) { continue; }
+            foreach (Match match in matches)
+            {
+                if (!match.Success || character < match.Index || character >= match.Index + match.Length) continue;
+                if (pattern == SmartSelectionPatterns[2] && !IsValidIpv4(match.Value)) continue;
+                var start = columns[match.Index];
+                var lastCharacter = match.Index + match.Length - 1;
+                if (pattern == SmartSelectionPatterns[0])
+                {
+                    while (lastCharacter >= match.Index && ".,;:!?)]}".Contains(line[lastCharacter])) lastCharacter--;
+                    if (lastCharacter < match.Index) continue;
+                }
+                var end = columns[lastCharacter];
+                return new TerminalSelection(
+                    new TerminalSelectionPoint(start, point.Line),
+                    new TerminalSelectionPoint(end, point.Line),
+                    TerminalSelectionMode.Word);
+            }
+        }
+        return null;
+    }
+
+    private static bool IsValidIpv4(string value)
+    {
+        var parts = value.Split('.');
+        return parts.Length == 4 && parts.All(part =>
+            byte.TryParse(part, NumberStyles.None, CultureInfo.InvariantCulture, out _));
+    }
+
     public static TerminalHyperlinkContext? HitTestHyperlink(
         TextBufferSnapshot snapshot,
         TerminalSelectionPoint point,

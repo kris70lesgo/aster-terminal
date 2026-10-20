@@ -10,11 +10,11 @@ public sealed class WindowCaption : Border
 {
     private readonly TextBlock _title = new() { FontSize = 13, FontWeight = FontWeight.SemiBold,
         HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center,
-        TextTrimming = TextTrimming.CharacterEllipsis };
+        TextTrimming = TextTrimming.CharacterEllipsis, RenderTransform = new TranslateTransform(0, -1.5) };
     private Window? _owner;
     public WindowCaption()
     {
-        Height = 32; BorderThickness = new Thickness(0, 0, 0, 1);
+        Height = 29; BorderThickness = new Thickness(0, 0, 0, 2);
         this.Bind(BackgroundProperty, this.GetResourceObservable("ChromeBackground"));
         this.Bind(BorderBrushProperty, this.GetResourceObservable("TabDivider"));
         var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("78,*,78") };
@@ -36,7 +36,7 @@ public sealed class WindowCaption : Border
     public static Control Wrap(Window window, Control content)
     {
         window.WindowDecorations = WindowDecorations.BorderOnly; window.ExtendClientAreaToDecorationsHint = true;
-        var root = new Grid { RowDefinitions = new RowDefinitions("32,*") };
+        var root = new Grid { RowDefinitions = new RowDefinitions("29,*") };
         root.Children.Add(new WindowCaption()); Grid.SetRow(content, 1); root.Children.Add(content); return root;
     }
 }

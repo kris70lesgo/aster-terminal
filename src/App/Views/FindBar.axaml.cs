@@ -43,7 +43,7 @@ public partial class FindBar : Border
         ToolTip.SetTip(SearchStatus, SearchStatus.Text);
     }
     private Task SearchAsync(bool previous = false, bool navigate = true, bool debounce = false) =>
-        _pane?.Find.SearchAsync(new FindOptions(SearchBox.Text ?? "", RegexBox.IsChecked == true, MatchCaseBox.IsChecked == true, WholeWordBox.IsChecked == true), previous, navigate, debounce) ?? Task.CompletedTask;
+        _pane?.Find.SearchAsync(new FindOptions(SearchBox.Text ?? "", RegexBox.IsChecked == true, MatchCaseBox.IsChecked == true, WholeWordBox.IsChecked == true, SmartCaseBox.IsChecked == true), previous, navigate, debounce) ?? Task.CompletedTask;
     private async void Observe(Task task)
     {
         try { await task; }

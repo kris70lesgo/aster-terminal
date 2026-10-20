@@ -29,7 +29,7 @@ public sealed partial class DesktopTests
             await Until(() => Text(pane).Contains("FIND_東京é"));
             SendKey(window, Key.F, OperatingSystem.IsMacOS() ? RawInputModifiers.Meta : RawInputModifiers.Control | RawInputModifiers.Shift);
             var box = window.FindControl<FindBar>("SearchBar")!.FindControl<TextBox>("SearchBox")!; var regex = window.FindControl<FindBar>("SearchBar")!.FindControl<ToggleButton>("RegexBox")!;
-            var matchCase = window.FindControl<FindBar>("SearchBar")!.FindControl<ToggleButton>("MatchCaseBox")!; var word = window.FindControl<FindBar>("SearchBar")!.FindControl<ToggleButton>("WholeWordBox")!;
+            var matchCase = window.FindControl<FindBar>("SearchBar")!.FindControl<ToggleButton>("MatchCaseBox")!; var smartCase = window.FindControl<FindBar>("SearchBar")!.FindControl<ToggleButton>("SmartCaseBox")!; var word = window.FindControl<FindBar>("SearchBar")!.FindControl<ToggleButton>("WholeWordBox")!;
             regex.IsChecked = true; box.Text = "^FIND_alpha[0-9]+$";
             await Until(() => !pane.Find.Busy && pane.Find.Matches.Count == 2);
             Assert.Equal(0, pane.Find.CurrentIndex); Assert.Equal("1 / 2", pane.Find.Status);
@@ -42,6 +42,15 @@ public sealed partial class DesktopTests
             box.Text = "["; await Until(() => pane.Find.Status.StartsWith("Invalid regex"));
             box.Text = "^FIND_DOES_NOT_EXIST$"; box.Text = "^FIND_東京é$"; word.IsChecked = false;
             await Until(() => !pane.Find.Busy && pane.Find.Matches.Count == 1 && !pane.Find.Status.StartsWith("Invalid"));
+            matchCase.IsChecked = false; regex.IsChecked = true; smartCase.IsChecked = true;
+            box.Text = "^FIND_alpha[0-9]+$";
+            await Until(() => !pane.Find.Busy && pane.Find.Matches.Count == 1);
+            box.Text = "^find_alpha[0-9]+$";
+            await Until(() => !pane.Find.Busy && pane.Find.Matches.Count == 2);
+            smartCase.IsChecked = false; box.Text = "^FIND_alpha[0-9]+$";
+            await Until(() => !pane.Find.Busy && pane.Find.Matches.Count == 2);
+            box.Text = "^FIND_東京é$";
+            await Until(() => !pane.Find.Busy && pane.Find.Matches.Count == 1);
             window.Width = 620; await Task.Delay(100, TestContext.Current.CancellationToken);
             Assert.True(box.Bounds.Width >= 99); Assert.True(window.FindControl<Border>("SearchBar")!.IsVisible);
             SendKey(window, Key.Escape); await Until(() => !window.FindControl<Border>("SearchBar")!.IsVisible);

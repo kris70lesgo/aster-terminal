@@ -6,14 +6,15 @@
     <Style Selector="ToggleButton"><Setter Property="MinHeight" Value="26" /><Setter Property="Height" Value="26" /><Setter Property="FontSize" Value="12" /></Style>
     <Style Selector="TextBlock"><Setter Property="FontSize" Value="11" /></Style>
   </Border.Styles>
-  <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+  <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
     <TextBox x:Name="SearchBox" AutomationProperties.Name="Find terminal output" MinWidth="100" PlaceholderText="Find" KeyDown="SearchKeyDown" TextChanged="SearchTextChanged" />
     <ToggleButton x:Name="MatchCaseBox" Grid.Column="1" Content="Aa" AutomationProperties.Name="Match case" ToolTip.Tip="Match case" IsCheckedChanged="SearchOptionChanged" Margin="6,0,0,0" MinWidth="30" Padding="6,3" />
-    <ToggleButton x:Name="RegexBox" Grid.Column="2" Content=".*" AutomationProperties.Name="Regular expression" ToolTip.Tip="Regular expression" IsCheckedChanged="SearchOptionChanged" Margin="4,0,0,0" MinWidth="30" Padding="6,3" />
-    <ToggleButton x:Name="WholeWordBox" Grid.Column="3" Padding="6,3" Content="Word" AutomationProperties.Name="Whole word" ToolTip.Tip="Whole word" IsCheckedChanged="SearchOptionChanged" Margin="4,0,0,0" />
-    <Button Grid.Column="4" Content="↑" AutomationProperties.Name="Previous match" ToolTip.Tip="Previous match (Shift+Enter)" Click="PreviousClicked" Margin="6,0,0,0" />
-    <Button Grid.Column="5" Content="↓" AutomationProperties.Name="Next match" ToolTip.Tip="Next match (Enter)" Click="NextClicked" Margin="4,0,0,0" />
-    <TextBlock x:Name="SearchStatus" Grid.Column="6" MaxWidth="180" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="8,0" />
-    <Button Grid.Column="7" Content="×" AutomationProperties.Name="Close find" ToolTip.Tip="Close find (Escape)" Click="DoneClicked" />
+    <ToggleButton x:Name="SmartCaseBox" Grid.Column="2" Content="aA" AutomationProperties.Name="Smart case" ToolTip.Tip="Smart case: uppercase query letters match exactly" IsCheckedChanged="SearchOptionChanged" Margin="4,0,0,0" MinWidth="30" Padding="6,3" />
+    <ToggleButton x:Name="RegexBox" Grid.Column="3" Content=".*" AutomationProperties.Name="Regular expression" ToolTip.Tip="Regular expression" IsCheckedChanged="SearchOptionChanged" Margin="4,0,0,0" MinWidth="30" Padding="6,3" />
+    <ToggleButton x:Name="WholeWordBox" Grid.Column="4" Padding="6,3" Content="Word" AutomationProperties.Name="Whole word" ToolTip.Tip="Whole word" IsCheckedChanged="SearchOptionChanged" Margin="4,0,0,0" />
+    <Button Grid.Column="5" Content="↑" AutomationProperties.Name="Previous match" ToolTip.Tip="Previous match (Shift+Enter)" Click="PreviousClicked" Margin="6,0,0,0" />
+    <Button Grid.Column="6" Content="↓" AutomationProperties.Name="Next match" ToolTip.Tip="Next match (Enter)" Click="NextClicked" Margin="4,0,0,0" />
+    <TextBlock x:Name="SearchStatus" Grid.Column="7" MaxWidth="180" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="8,0" />
+    <Button Grid.Column="8" Content="×" AutomationProperties.Name="Close find" ToolTip.Tip="Close find (Escape)" Click="DoneClicked" />
   </Grid>
 </Border>

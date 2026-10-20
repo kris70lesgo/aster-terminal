@@ -5,7 +5,7 @@ namespace Aster.Tests;
 
 public sealed class FindTests
 {
-    private static FindResult Find(ItermTerminalEngine engine, string query, bool regex = false, bool matchCase = false, bool word = false) => ScrollbackSearch.Find(engine.CaptureFindSnapshot(TestContext.Current.CancellationToken), new(query, regex, matchCase, word), TestContext.Current.CancellationToken);
+    private static FindResult Find(ItermTerminalEngine engine, string query, bool regex = false, bool matchCase = false, bool word = false, bool smartCase = false) => ScrollbackSearch.Find(engine.CaptureFindSnapshot(TestContext.Current.CancellationToken), new(query, regex, matchCase, word, smartCase), TestContext.Current.CancellationToken);
     [Fact]
     public void UnicodeCanonicalGraphemesWideCellsAndSoftWrapsMapToWholeDisplayCells()
     {
@@ -34,6 +34,20 @@ public sealed class FindTests
         Assert.Empty(Find(engine, "^", regex: true).Hits);
         Assert.Single(Find(engine, "東京", word: false).Hits);
         Assert.Empty(Find(engine, "東京", word: true).Hits); // Adjacent decimal digits remain a word.
+    }
+    [Fact]
+    public void SmartCaseIsOptInAndDetectsUnicodeUppercaseForLiteralsAndRegex()
+    {
+        using var engine = new ItermTerminalEngine(40, 4);
+        engine.Feed("alpha ALPHA Alpha\r\ncafé CAFÉ Café\r\nERROR 12\r\nerror 7");
+
+        Assert.Equal(3, Find(engine, "alpha").Hits.Count); // Existing default stays insensitive.
+        Assert.Equal(3, Find(engine, "alpha", smartCase: true).Hits.Count);
+        Assert.Single(Find(engine, "Alpha", smartCase: true).Hits);
+        Assert.Equal(3, Find(engine, "café", smartCase: true).Hits.Count);
+        Assert.Single(Find(engine, "CAFÉ", smartCase: true).Hits);
+        Assert.Equal(2, Find(engine, "error [0-9]+", regex: true, smartCase: true).Hits.Count);
+        Assert.Single(Find(engine, "ERROR [0-9]+", regex: true, smartCase: true).Hits);
     }
     [Fact]
     public void LogicalAnchorsSurviveReflowAndEvictionButNeverResetOrAnotherBuffer()

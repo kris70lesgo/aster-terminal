@@ -1,0 +1,63 @@
+{
+  "checkedAtUtc": "2026-10-19T15:03:20Z",
+  "officialAnnouncement": {
+    "url": "https://avaloniaui.net/blog/avalonia-port-challenge",
+    "sha256": "cba282b92562c03e7079e918c6a6d6777c168a7169a829352898f8fa99177351",
+    "entryDeadlineUtc": "2026-10-23T23:59:00Z",
+    "openSourceRequirements": [
+      "Public GitHub repository under an OSI-approved licence",
+      "Builds for each targeted platform",
+      "Before-and-after screenshots",
+      "Migration write-up in the README"
+    ]
+  },
+  "release": {
+    "tag": "v0.13.0",
+    "url": "https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.13.0",
+    "publishedAtUtc": "2026-10-17T13:13:14Z",
+    "targetCommit": "51d9488fec25b9fe83afe407d3e94421365211e8",
+    "assets": [
+      {
+        "archive": "aster-terminal-0.13.0-osx-arm64.zip",
+        "sha256": "f1c28a62ec30b28ec59e1fc54aaa3eb5bbc471396f93f48c153c459a9cbd2f6b",
+        "publishedChecksumMatchesManifest": true
+      },
+      {
+        "archive": "aster-terminal-0.13.0-win-x64.zip",
+        "sha256": "7510e1cb5ad5861344dc83c0ec98a6daed59076425c5a2b67af02d818960552d",
+        "publishedChecksumMatchesManifest": true
+      },
+      {
+        "archive": "aster-terminal-0.13.0-linux-x64.tar.gz",
+        "sha256": "0b00e5e90441016e38fa2beac74146b429699c1ae237fdc65b2d89573081e5d3",
+        "publishedChecksumMatchesManifest": true
+      }
+    ],
+    "nativeCiEvidence": "ci-v0.13.0.json",
+    "payloadEvidence": "payload-v0.13.0.json"
+  },
+  "repositoryDeliverables": {
+    "publicRepository": "https://github.com/kris70lesgo/aster-terminal",
+    "licenseFilePresent": true,
+    "readmeMigrationWriteUpPresent": true,
+    "readmeImageLinksChecked": 9,
+    "missingLocalReadmeImages": 0,
+    "originalITermReferencePresent": true
+  },
+  "entryForm": {
+    "url": "https://docs.google.com/forms/d/e/1FAIpQLSfJsgz1HRHKsxH0yRnn2wcvbZ-tSkmnjDXxIhE5YjM1v3lVkg/viewform",
+    "inspection": "Read-only; no answers entered or submitted.",
+    "submitted": false,
+    "entrantResponsesRequired": [
+      "Name, email and GitHub username",
+      "Country of residence and age selection",
+      "Acceptance of the terms and privacy policy",
+      "Confirmation that the submission is original work and properly licensed"
+    ],
+    "repositoryAndWriteUpCanBeLinked": true
+  },
+  "releaseCandidate": {
+    "candidate": "Public v0.13.0",
+    "uncommittedPaneSwapAndSmartCaseChangesIncluded": false
+  }
+}

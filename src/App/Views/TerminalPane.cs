@@ -37,10 +37,10 @@ public sealed class TerminalPane : Border
     public event EventHandler? Activated;
     public event EventHandler<string>? TitleChanged;
 
-    public TerminalPane(TerminalProfile profile, bool light = false, bool copyOnSelect = false, bool replayEnabled = true, SessionCatalog? sessions = null, HostedSession? recovered = null, IRestartableTerminalConnection? connection = null)
+    public TerminalPane(TerminalProfile profile, bool light = false, bool copyOnSelect = false, bool replayEnabled = true, SessionCatalog? sessions = null, HostedSession? recovered = null, IRestartableTerminalConnection? connection = null, bool doubleClickSmartSelection = false)
     {
         Profile = profile;
-        SessionTitle = profile.Name;
+        SessionTitle = profile.InitialSessionTitle;
         BorderThickness = new Thickness(0);
         _engine = new ItermTerminalEngine(historySize: profile.HistorySize);
         _engine.ConfigureTriggers(profile.Triggers);
@@ -65,7 +65,7 @@ public sealed class TerminalPane : Border
         {
             ConnectionFactory = _ => connection ?? (_hosted is not null ? _hosted : PlatformConnectionFactory.Create()),
             AccessibleName = $"{profile.Name} terminal",
-            InteractionOptions = new() { CopyOnSelect = copyOnSelect }
+            InteractionOptions = new() { CopyOnSelect = copyOnSelect, DoubleClickSmartSelection = doubleClickSmartSelection }
         };
         Find = new(_engine, Terminal);
         _scrollbar = new(Terminal);
@@ -149,11 +149,11 @@ public sealed class TerminalPane : Border
         Replay.Append(snapshot, scheme, DateTimeOffset.UtcNow);
         _capturedRevision = revision;
     }
-    public void ApplyAppearance(TerminalProfile profile, bool light, bool copyOnSelect)
+    public void ApplyAppearance(TerminalProfile profile, bool light, bool copyOnSelect, bool doubleClickSmartSelection = false)
     {
         Profile = profile; _light = light;
         _engine.ConfigureTriggers(profile.Triggers);
-        Terminal.InteractionOptions = Terminal.InteractionOptions with { CopyOnSelect = copyOnSelect };
+        Terminal.InteractionOptions = Terminal.InteractionOptions with { CopyOnSelect = copyOnSelect, DoubleClickSmartSelection = doubleClickSmartSelection };
         if (_close is null && Terminal.Profile is not null)
         {
             Terminal.Engine.Scheme = profile.ResolveColors(light);

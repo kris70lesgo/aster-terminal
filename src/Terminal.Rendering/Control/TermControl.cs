@@ -712,6 +712,18 @@ public sealed class TermControl : Avalonia.Controls.Control
         _selecting = true;
     }
 
+    private bool BeginSmartSelection(int viewportColumn, int viewportRow)
+    {
+        var viewport = Engine.CreateSnapshot().Buffer;
+        var selected = TerminalInteractionModel.SmartSelectAt(
+            viewport,
+            new TerminalSelectionPoint(viewportColumn, viewportRow));
+        if (selected is null) return false;
+        SetSelection(OffsetSelection(selected, Engine.HistoryCount - Engine.ScrollOffset));
+        _selecting = true;
+        return true;
+    }
+
     public void UpdateSelection(int viewportColumn, int viewportRow)
     {
         if (_selection is null)
@@ -2179,7 +2191,8 @@ public sealed class TermControl : Avalonia.Controls.Control
                 _ when (e.KeyModifiers & KeyModifiers.Alt) != 0 => TerminalSelectionMode.Block,
                 _ => TerminalSelectionMode.Linear,
             };
-            BeginSelection(x, y, mode);
+            if (mode != TerminalSelectionMode.Word || !InteractionOptions.DoubleClickSmartSelection || !BeginSmartSelection(x, y))
+                BeginSelection(x, y, mode);
             e.Pointer.Capture(this);
             e.Handled = true;
         }

@@ -1,10 +1,11 @@
 using Devolutions.Terminal.Settings;
 using Devolutions.Terminal.Core;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Aster.Sessions;
 
-public sealed record TerminalProfile(string Name, string Command, string Directory, double FontSize = 12)
+public sealed partial record TerminalProfile(string Name, string Command, string Directory, double FontSize = 12)
 {
     public const double HorizontalPadding = 10;
     public const double VerticalPadding = 4;
@@ -18,6 +19,28 @@ public sealed record TerminalProfile(string Name, string Command, string Directo
     public bool ShellIntegration { get; init; }
     public List<Aster.Sessions.Triggers.OutputTrigger> Triggers { get; init; } = [];
     public Dictionary<string, string> EnvironmentVariables { get; init; } = new();
+
+    /// <summary>Initial caption matching iTerm's login-shell title; later VT titles still override it.</summary>
+    public string InitialSessionTitle
+    {
+        get
+        {
+            var match = LoginShellCommand().Match(Command);
+            if (!match.Success) return Name;
+
+            var shellName = Path.GetFileNameWithoutExtension(match.Groups["shell"].Value);
+            if (!string.Equals(Name, shellName, StringComparison.OrdinalIgnoreCase)) return Name;
+
+            var startsLoginShell = match.Groups["args"].Value
+                .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)
+                .Any(argument => argument is "-l" or "--login" or "-li" or "-il");
+            return startsLoginShell ? "-" + shellName : Name;
+        }
+    }
+
+    [GeneratedRegex("^\\s*(?:exec\\s+)?['\"]?(?<shell>(?:/[^'\"\\s]+/)?(?:bash|zsh))['\"]?(?<args>(?:\\s+(?:-l|-i|-d|-il|-li|--login))*)\\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex LoginShellCommand();
+
     public static TerminalProfile Default()
     {
         var shell = OperatingSystem.IsWindows() ? "powershell.exe" : Environment.GetEnvironmentVariable("SHELL");
@@ -38,7 +61,7 @@ public sealed record TerminalProfile(string Name, string Command, string Directo
         FontSize = FontSize * 72d / 96d,
         FontFace = FontFamily,
         Foreground = Foreground ?? (light ? "#243044" : "#DCDCDC"),
-        Background = Background ?? (light ? "#FAFAFC" : "#14191E"),
+        Background = Background ?? (light ? "#FAFAFC" : "#15191E"),
         CursorColor = light ? "#243044" : "#FFFFFF",
         SelectionBackground = light ? "#B9D3EF" : "#B3D7FF",
         Padding = PaddingText,
@@ -67,7 +90,7 @@ public sealed record TerminalProfile(string Name, string Command, string Directo
         {
             Name = light ? "Aster Light" : "Aster Dark",
             Foreground = Color(Foreground ?? (light ? "#243044" : "#DCDCDC")),
-            Background = Color(Background ?? (light ? "#FAFAFC" : "#14191E")),
+            Background = Color(Background ?? (light ? "#FAFAFC" : "#15191E")),
             Cursor = light ? 0xFF243044 : 0xFFFFFFFF,
             SelectionBackground = light ? 0xFFB9D3EF : 0xFFB3D7FF,
             // Reference profile's 16 ANSI colours, read without importing its

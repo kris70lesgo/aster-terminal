@@ -18,6 +18,7 @@ namespace Aster.App.Views;
 
 public partial class MainWindow : Window
 {
+    private sealed record QuickChoice(string Caption, Func<Task> Open);
     private sealed class Workspace
     {
         private static int _nextScriptingId;
@@ -100,7 +101,7 @@ public partial class MainWindow : Window
     {
         foreach (var pane in _workspaces.SelectMany(w => w.Panes))
         {
-            pane.ApplyAppearance(_settings.Profiles.FirstOrDefault(p => p.Id == pane.Profile.Id) ?? pane.Profile, Light, _settings.CopyOnSelect);
+            pane.ApplyAppearance(_settings.Profiles.FirstOrDefault(p => p.Id == pane.Profile.Id) ?? pane.Profile, Light, _settings.CopyOnSelect, _settings.DoubleClickSmartSelection);
             pane.SetReplayEnabled(_settings.ScreenReplayEnabled);
         }
     }
@@ -161,7 +162,7 @@ public partial class MainWindow : Window
 
     private TerminalPane CreatePane(Workspace workspace, TerminalProfile profile, HostedSession? recovered = null)
     {
-        var pane = new TerminalPane(profile, Light, _settings.CopyOnSelect, _settings.ScreenReplayEnabled, _settings.KeepSessionsAlive || recovered is not null ? _sessions : null, recovered);
+        var pane = new TerminalPane(profile, Light, _settings.CopyOnSelect, _settings.ScreenReplayEnabled, _settings.KeepSessionsAlive || recovered is not null ? _sessions : null, recovered, doubleClickSmartSelection: _settings.DoubleClickSmartSelection);
         workspace.Panes.Add(pane);
         pane.Activated += (_, _) => Activate(workspace, pane);
         pane.TitleChanged += (_, _) => { if (workspace.Active == pane) UpdateTitle(workspace); };
@@ -394,6 +395,8 @@ public partial class MainWindow : Window
             case "PreviousTab": CycleTab(-1); break;
             case "MoveTabLeft": Observe(MoveCurrentTabAsync(-1)); break;
             case "MoveTabRight": Observe(MoveCurrentTabAsync(1)); break;
+            case "MovePaneBackward": Observe(MoveActivePaneAsync(-1)); break;
+            case "MovePaneForward": Observe(MoveActivePaneAsync(1)); break;
             case "NextPane": CyclePane(1); break;
             case "PreviousPane": CyclePane(-1); break;
             case "ZoomPane": ZoomPane(); break;
@@ -436,13 +439,21 @@ public partial class MainWindow : Window
     }
     private async Task OpenQuicklyAsync()
     {
-        var choices = _workspaces.SelectMany(w => w.Panes.Select(p => (Caption: $"{p.SessionTitle} · {p.Profile.Name} · {p.Terminal.Engine.WorkingDirectory}", Workspace: w, Pane: p))).ToList();
-        var index = await DialogWindow.Choose(this, "Open quickly", choices.Select(c => c.Caption).ToArray());
-        if (index is >= 0)
+        var choices = _workspaces.SelectMany(workspace => workspace.Panes.Select(pane =>
         {
-            var choice = choices[index.Value]; Tabs.SelectedItem = choice.Workspace.Tab; Unzoom(choice.Workspace);
-            Activate(choice.Workspace, choice.Pane); choice.Pane.Terminal.Focus();
-        }
+            var path = pane.Terminal.Engine.WorkingDirectory;
+            var caption = $"Session · {pane.SessionTitle} · {pane.Profile.Name} · {path}";
+            return new QuickChoice(caption, () =>
+            {
+                Tabs.SelectedItem = workspace.Tab; Unzoom(workspace);
+                Activate(workspace, pane); pane.Terminal.Focus();
+                return Task.CompletedTask;
+            });
+        })).ToList();
+        choices.AddRange(_settings.Profiles.Select(profile => new QuickChoice(
+            $"New tab · {profile.Name} · {profile.Command}", () => NewTabAsync(profile))));
+        var index = await DialogWindow.Choose(this, "Open quickly", choices.Select(choice => choice.Caption).ToArray());
+        if (index is >= 0) await choices[index.Value].Open();
     }
     private async Task RenameAsync()
     {
@@ -486,6 +497,8 @@ public partial class MainWindow : Window
     private void PreferencesClicked(object? sender, RoutedEventArgs e) => Observe(PreferencesAsync());
     private void ZoomPaneClicked(object? sender, RoutedEventArgs e) => ZoomPane();
     private void NextPaneClicked(object? sender, RoutedEventArgs e) => CyclePane(1);
+    private void MovePaneBackwardClicked(object? sender, RoutedEventArgs e) => Observe(MoveActivePaneAsync(-1));
+    private void MovePaneForwardClicked(object? sender, RoutedEventArgs e) => Observe(MoveActivePaneAsync(1));
     private void NextTabClicked(object? sender, RoutedEventArgs e) => CycleTab(1);
     private void RenameClicked(object? sender, RoutedEventArgs e) => Observe(RenameAsync());
     private void OpenQuicklyClicked(object? sender, RoutedEventArgs e) => Observe(OpenQuicklyAsync());

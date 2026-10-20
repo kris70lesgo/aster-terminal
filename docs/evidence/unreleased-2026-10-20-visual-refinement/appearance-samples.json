@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-20",
+  "reference": {
+    "application": "iTerm2 3.7.4",
+    "source": "User-supplied screenshot; private shell capture omitted from repository",
+    "imageSize": [1188, 928],
+    "samples": {
+      "caption": { "pixel": [600, 20], "rgb": [33, 33, 45], "hex": "#21212D" },
+      "tabDivider": { "pixel": [600, 54], "rgb": [35, 35, 35], "hex": "#232323" },
+      "headerBottomEdge": { "pixel": [600, 56], "rgb": [34, 34, 34], "hex": "#222222" },
+      "terminal": { "pixel": [600, 100], "rgb": [21, 25, 30], "hex": "#15191E" },
+      "trafficLights": [
+        { "pixel": [34, 24], "rgb": [236, 103, 101], "hex": "#EC6765" },
+        { "pixel": [80, 24], "rgb": [242, 202, 68], "hex": "#F2CA44" },
+        { "pixel": [126, 24], "rgb": [101, 196, 102], "hex": "#65C466" }
+      ]
+    }
+  },
+  "aster": {
+    "capture": "native-smoke/reference-window.png",
+    "imageSize": [1174, 924],
+    "renderScale": 2,
+    "samples": {
+      "caption": { "pixel": [500, 20], "rgb": [33, 33, 45], "hex": "#21212D" },
+      "tabDivider": { "pixel": [500, 54], "rgb": [35, 35, 35], "hex": "#232323" },
+      "headerBottomEdge": { "pixel": [500, 56], "rgb": [34, 34, 34], "hex": "#222222" },
+      "terminal": { "pixel": [500, 100], "rgb": [21, 25, 30], "hex": "#15191E" },
+      "trafficLights": [
+        { "pixel": [34, 24], "rgb": [236, 103, 101], "hex": "#EC6765" },
+        { "pixel": [80, 24], "rgb": [242, 202, 68], "hex": "#F2CA44" },
+        { "pixel": [126, 24], "rgb": [101, 196, 102], "hex": "#65C466" }
+      ]
+    }
+  },
+  "comparison": {
+    "sampledColorsMatchExactly": true,
+    "captionSeparatorAndTrafficLightSamplesMatchExactly": true,
+    "referenceWindowFrameSizeLogical": [587, 462],
+    "asterWindowFrameSizeLogical": [587, 462],
+    "trafficLightCenterPositionsLogical": [[17, 12], [40, 12], [63, 12]],
+    "wholeWindowPixelIdentityEstablished": false,
+    "limitations": [
+      "Reference and Aster captures show different shell output.",
+      "Both frames are 587x462 logical pixels, but the reference is a screen capture and Aster is a 2x Avalonia render-target capture.",
+      "Measured frame samples and traffic-light centers match; no whole-window image similarity score was calculated.",
+      "Native window shadow, rounded frame rasterization, title text, scrollbar, terminal text rasterization and shell content were not scored."
+    ]
+  }
+}

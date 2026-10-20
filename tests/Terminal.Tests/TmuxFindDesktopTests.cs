@@ -32,6 +32,7 @@ public sealed partial class DesktopTests
             var box = bar.FindControl<TextBox>("SearchBox")!;
             var regex = bar.FindControl<ToggleButton>("RegexBox")!;
             var matchCase = bar.FindControl<ToggleButton>("MatchCaseBox")!;
+            var smartCase = bar.FindControl<ToggleButton>("SmartCaseBox")!;
             var word = bar.FindControl<ToggleButton>("WholeWordBox")!;
             regex.IsChecked = true; box.Text = "^TMUX_FIND_alpha[0-9]+$";
             await Until(() => !first.Find.Busy && first.Find.Matches.Count == 2);
@@ -44,6 +45,15 @@ public sealed partial class DesktopTests
             await Until(() => !first.Find.Busy && first.Find.Matches.Count == 1);
             box.Text = "["; await Until(() => first.Find.Status.StartsWith("Invalid regex"));
             box.Text = "^NEVER_EXECUTE_THIS_COMMAND$"; box.Text = "^TMUX_FIND_東京é$"; word.IsChecked = false;
+            await Until(() => !first.Find.Busy && first.Find.Matches.Count == 1);
+            matchCase.IsChecked = false; regex.IsChecked = true; smartCase.IsChecked = true;
+            box.Text = "^TMUX_FIND_alpha[0-9]+$";
+            await Until(() => !first.Find.Busy && first.Find.Matches.Count == 1);
+            box.Text = "^tmux_find_alpha[0-9]+$";
+            await Until(() => !first.Find.Busy && first.Find.Matches.Count == 2);
+            smartCase.IsChecked = false; box.Text = "^TMUX_FIND_alpha[0-9]+$";
+            await Until(() => !first.Find.Busy && first.Find.Matches.Count == 2);
+            box.Text = "^TMUX_FIND_東京é$";
             await Until(() => !first.Find.Busy && first.Find.Matches.Count == 1);
             Assert.DoesNotContain("NEVER_EXECUTE_THIS_COMMAND", Text(first));
             window.Width = 620; await window.SynchronizeSizeAsync();

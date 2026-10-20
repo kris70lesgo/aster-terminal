@@ -8,9 +8,9 @@
     <Style Selector="TextBlock"><Setter Property="FontSize" Value="12" /></Style>
     <Style Selector="TabItem"><Setter Property="FontSize" Value="12" /><Setter Property="Padding" Value="12,6" /></Style>
   </Window.Styles>
-  <Grid RowDefinitions="32,*,Auto,Auto">
-    <Border x:Name="SettingsCaption" Background="{DynamicResource ChromeBackground}" BorderBrush="{DynamicResource TabDivider}" BorderThickness="0,0,0,1">
-      <Grid ColumnDefinitions="78,*,78"><views:WindowButtons /><TextBlock Grid.Column="1" Text="Settings" FontSize="13" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" /></Grid>
+  <Grid RowDefinitions="29,*,Auto,Auto">
+    <Border x:Name="SettingsCaption" Background="{DynamicResource ChromeBackground}" BorderBrush="{DynamicResource TabDivider}" BorderThickness="0,0,0,2">
+      <Grid ColumnDefinitions="78,*,78"><views:WindowButtons /><TextBlock x:Name="SettingsTitle" Grid.Column="1" Text="Settings" FontSize="13" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" /></Grid>
     </Border>
     <TabControl x:Name="SettingsTabs" Grid.Row="1" SelectedIndex="2" Classes="settings-toolbar" Margin="12,0">
       <TabItem x:Name="GeneralCategory">
@@ -32,6 +32,7 @@
           <CheckBox x:Name="RestoreLayoutBox" Content="Reopen tabs and split layouts on launch" />
           <TextBlock Text="Reopened panes start new shells. Running processes do not survive quitting." TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}" />
           <CheckBox x:Name="CopyOnSelectBox" Content="Copy text automatically after selection" />
+          <CheckBox x:Name="SmartSelectionBox" Content="Smart-select URLs, email addresses, IP addresses and paths on double-click" />
           <CheckBox x:Name="ConfirmCloseBox" Content="Confirm before closing running sessions" />
           <TextBlock Text="Settings file:" Foreground="{DynamicResource MutedForeground}" /><TextBlock x:Name="SettingsPath" TextWrapping="Wrap" FontSize="11" />
         </StackPanel>

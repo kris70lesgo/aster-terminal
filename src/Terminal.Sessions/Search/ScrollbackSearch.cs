@@ -12,7 +12,7 @@ using Devolutions.Terminal.Core;
 
 namespace Aster.Sessions.Search;
 
-public sealed record FindOptions(string Query, bool Regex = false, bool CaseSensitive = false, bool WholeWord = false);
+public sealed record FindOptions(string Query, bool Regex = false, bool CaseSensitive = false, bool WholeWord = false, bool SmartCase = false);
 public sealed record FindHit(TerminalImageAnchor Start, TerminalImageAnchor End);
 public sealed record FindSnapshot(TextBufferSnapshot Buffer, long Epoch, long Revision, bool Limited);
 public sealed record FindVisibleRange(int Row, int StartColumn, int EndColumn, bool Current);
@@ -34,8 +34,11 @@ public static class ScrollbackSearch
         string query;
         try { query = options.Query.Normalize(NormalizationForm.FormC); }
         catch (ArgumentException) { return Result(error: "Find text contains invalid Unicode."); }
+        var smartCaseSensitive = options.SmartCase && query.EnumerateRunes().Any(rune =>
+            Rune.GetUnicodeCategory(rune) is UnicodeCategory.UppercaseLetter or UnicodeCategory.TitlecaseLetter);
+        var caseSensitive = options.CaseSensitive || smartCaseSensitive;
         Regex? regex = null;
-        try { if (options.Regex) regex = new Regex(query, RegexOptions.CultureInvariant | (options.CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase), TimeSpan.FromMilliseconds(25)); }
+        try { if (options.Regex) regex = new Regex(query, RegexOptions.CultureInvariant | (caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase), TimeSpan.FromMilliseconds(25)); }
         catch (RegexParseException error) { return Result(error: $"Invalid regex at character {error.Offset + 1}."); }
         var hits = new List<FindHit>(); var watch = Stopwatch.StartNew(); var totalText = 0;
         var warning = snapshot.Limited ? "Older output was outside the search limit." : null;
@@ -71,7 +74,7 @@ public static class ScrollbackSearch
                         while (start <= text.Length - query.Length)
                         {
                             token.ThrowIfCancellationRequested();
-                            var index = text.IndexOf(query, start, options.CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+                            var index = text.IndexOf(query, start, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
                             if (index < 0) break;
                             Add(index, query.Length); start = index + Math.Max(1, query.Length);
                             if (hits.Count >= MaximumHits) return Result(hits, "First 10,000 matches shown.");

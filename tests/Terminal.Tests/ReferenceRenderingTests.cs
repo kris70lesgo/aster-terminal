@@ -1,4 +1,5 @@
 using Aster.Sessions;
+using Aster.Sessions.Persistence;
 using Aster.Sessions.Protocols;
 using Aster.Terminal;
 using Aster.Terminal.Render;
@@ -24,10 +25,22 @@ public sealed class ReferenceRenderingTests
         canvas.Clear(SKColors.Magenta);
         renderer.Render(canvas, frame, TerminalRenderOverlays.Empty,
             new SKRect(0, 0, 100, 100), 5, true, paddingTop: 4);
-        Assert.Equal(new SKColor(20, 25, 30), bitmap.GetPixel(0, 0));
-        Assert.Equal(new SKColor(20, 25, 30), bitmap.GetPixel(99, 99));
-        Assert.Equal(new SKColor(20, 25, 30), bitmap.GetPixel(5, 3));
+        Assert.Equal(new SKColor(21, 25, 30), bitmap.GetPixel(0, 0));
+        Assert.Equal(new SKColor(21, 25, 30), bitmap.GetPixel(99, 99));
+        Assert.Equal(new SKColor(21, 25, 30), bitmap.GetPixel(5, 3));
         Assert.Equal(SKColors.White, bitmap.GetPixel(5, 4));
+    }
+
+    [Fact]
+    public void FreshWindowAndDarkTerminalUseTheMeasuredItermReferenceDefaults()
+    {
+        var settings = AppSettings.Default();
+        var profile = TerminalProfile.Default();
+
+        Assert.Equal(587, settings.WindowWidth);
+        Assert.Equal(462, settings.WindowHeight);
+        Assert.Equal("#15191E", profile.ToControlProfile().Background);
+        Assert.Equal(0xFF15191Eu, profile.ResolveColors(false).Background);
     }
 
     [Fact]

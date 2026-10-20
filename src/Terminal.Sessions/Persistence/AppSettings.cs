@@ -23,12 +23,13 @@ public sealed record AppSettings
     public bool KeepSessionsAlive { get; init; } = true;
     public bool RestoreLayout { get; init; } = true;
     public bool CopyOnSelect { get; init; }
+    public bool DoubleClickSmartSelection { get; init; }
     public bool ShowStatusBar { get; init; }
     public bool AlwaysShowTabBar { get; init; }
     public bool ScreenReplayEnabled { get; init; } = true;
     public bool ConfirmClose { get; init; } = true;
-    public double WindowWidth { get; init; } = 1080;
-    public double WindowHeight { get; init; } = 680;
+    public double WindowWidth { get; init; } = 587;
+    public double WindowHeight { get; init; } = 462;
     public List<TabLayout> Layout { get; init; } = [];
     public Dictionary<string, string> Shortcuts { get; init; } = new();
 

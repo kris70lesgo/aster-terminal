@@ -39,7 +39,7 @@ public sealed partial class DesktopTests
             Assert.Equal(WindowDecorations.BorderOnly, window.WindowDecorations);
             var tabs = window.FindControl<TerminalTabs>("Tabs")!;
             Assert.Contains("single", tabs.Classes);
-            Assert.Equal(32, tabs.GetVisualDescendants().OfType<Border>().Single(b => b.Name == "WindowHeader").Bounds.Height);
+            Assert.Equal(29, tabs.GetVisualDescendants().OfType<Border>().Single(b => b.Name == "WindowHeader").Bounds.Height);
             Assert.False(VisualButton(window, "NewTabButton").IsEffectivelyVisible);
             Assert.EndsWith("1", tabs.WindowShortcut);
             CaptureChrome(window, "single-dark");

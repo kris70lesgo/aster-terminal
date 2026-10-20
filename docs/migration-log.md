@@ -1,5 +1,33 @@
 # Migration log
 
+## 2026-10-19 — Pane reordering, Smart Case, and caption refinement
+
+- Added Session-menu and configurable keyboard commands for moving the active
+  pane backward or forward in pane navigation order. The live terminal control
+  changes slots while both PTY processes and split geometry stay in place. The
+  actions are also exported through the native macOS menu.
+- Added an optional `aA` Smart Case toggle to normal and tmux Find. Lowercase
+  literal/regex queries remain case-insensitive; uppercase Unicode letters make
+  that query case-sensitive. Existing defaults remain unchanged.
+- Refined the default caption for standard bash/zsh login profiles to use
+  iTerm's `-bash`/`-zsh` title convention. Custom profile names remain intact,
+  and later VT title changes continue to update the tab and window title.
+- Verification on macOS 26.7.2/Arm64: solution build has zero warnings/errors;
+  full suite has 108 passed, 2 Windows-only skips and zero failures. New tests
+  exercise literal/regex Unicode Smart Case in both Find windows, plus real
+  shell pane swaps across nested/shared splits, stable process IDs and closing a
+  moved pane, and login-shell caption formatting. TRX and native package-smoke evidence are in
+  `evidence/unreleased-2026-10-19-macos-arm64/`.
+- `scripts/package.py --rid osx-arm64 --smoke` passes against the current
+  working tree, including the original Python client, session recovery, native
+  hotkey registration and tmux control. The first attempt exposed a missing
+  pinned `iterm2` package in the default local Python; the isolated requirements
+  venv fixed the test setup and the repeat passed. The physical cross-app chord
+  remains skipped.
+- Current-source Windows/Linux runtime acceptance is pending. These changes
+  are not in the published v0.13.0 release; the local package retains its
+  version number only for test execution and is not a submission artifact.
+
 ## 2026-10-14 — Initialization and first slice
 
 - Empty unborn Git repository; no existing work overwritten. Host macOS 26.7, arm64, installed SDK 9.0.318. Installed verified SDK 10.0.402 in ignored `.research/dotnet`; pinned Avalonia 12.1.4.
@@ -938,3 +966,49 @@ with residual edge differences documented without a whole-window score. Only
 curated statistics are published; private shell images remain ignored. Original
 two-tab startup layout was restored after closing only owned temporary windows,
 while current appearance/other settings and older user sessions are preserved.
+
+### 2026-10-20 — fresh-install visual defaults
+
+Sampled the user's iTerm2 3.7.4 screenshot: the dark caption is #21212D and the
+terminal surface is #15191E. Updated Aster's dark chrome and profile background
+to those values, and changed only fresh-install window geometry to 587×462 logical
+pixels, matching the controlled reference size. Existing saved window geometry
+is retained. The ANSI black entry remains #14191E. Added regression coverage for
+the fresh defaults and rendered terminal background. The current README captures
+still show different shell contents; whole-window pixel identity is not claimed.
+
+### 2026-10-20 — iTerm screenshot frame alignment
+
+Measured the user-provided 3.7.4 reference: 587×462 logical frame, 29-point
+header, separator pixels #232323/#222222, and active traffic-light fills
+#EC6765/#F2CA44/#65C466 at the same 17/40/63-point centers used by the Aster
+caption. Applied those values and captured Aster at physical 2× resolution.
+Selected header, separator, terminal-surface, and control-center samples match
+the reference exactly. Full screenshot identity is not established because
+shell output/title and capture methods differ; shadow, corners and text raster
+were not scored. `dotnet test Aster.slnx` passes 109 tests (two Windows-only
+skips); the native macOS smoke passes its real-shell, rendering, layout, Find,
+settings and cleanup checks. Evidence is under
+`docs/evidence/unreleased-2026-10-20-visual-refinement/`.
+
+### 2026-10-20 — searchable Open Quickly palette
+
+Expanded Open Quickly from a pane switcher into a compact launcher for live
+sessions and configured profiles. Results use case-insensitive subsequence
+matching with prefix/contiguous ranking; selection switches to an existing pane
+or opens a new tab with the selected profile. Added a centered, resizable palette
+with result count, empty state, keyboard navigation, and a search-first focus.
+Six scoring regression cases pass. Full solution test run: 115 passed, two
+Windows-only skips. Current macOS native smoke passes all 16 existing checks;
+the smoke suite does not exercise the launcher dialog itself.
+
+### 2026-10-20 — opt-in smart selection
+
+Added an iTerm-style General preference for double-click semantic selection.
+The bounded selector recognizes web URLs, email addresses, valid IPv4 addresses
+and absolute paths on the clicked terminal row, with ordinary word selection as
+the fallback. The preference defaults off to match iTerm2's documented source
+default. Selecting output never launches a URI, executes a command or performs
+another host action. Preference persistence and selection ranges have focused
+regressions, including two pointer clicks through the terminal control. Full
+solution tests pass 121 cases with two Windows-only skips.

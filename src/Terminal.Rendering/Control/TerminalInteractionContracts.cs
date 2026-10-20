@@ -133,6 +133,7 @@ public sealed record TerminalInteractionOptions
     public IReadOnlySet<string> SafeUriSchemes { get; init; } =
         new HashSet<string>(["http", "https", "mailto"], StringComparer.OrdinalIgnoreCase);
     public bool CopyOnSelect { get; init; }
+    public bool DoubleClickSmartSelection { get; init; }
     public bool ScrollToZoom { get; init; } = true;
     public bool DetectUrls { get; init; } = true;
     public string AmbiguousWidth { get; init; } = "narrow";

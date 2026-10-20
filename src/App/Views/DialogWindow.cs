@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Aster.App.Services;
 
 namespace Aster.App.Views;
 
@@ -18,16 +19,41 @@ public static class DialogWindow
     }
     public static async Task<int?> Choose(Window owner, string title, IReadOnlyList<string> choices)
     {
-        var dialog = new Window { RequestedThemeVariant = owner.ActualThemeVariant, Title = title, Width = 620, Height = 400, WindowStartupLocation = WindowStartupLocation.CenterOwner };
-        var query = new TextBox { PlaceholderText = "Search titles, profiles and working directories" };
-        var list = new ListBox();
-        var indices = Enumerable.Range(0, choices.Count).ToList();
-        void Update() { indices = Enumerable.Range(0, choices.Count).Where(i => choices[i].Contains(query.Text ?? "", StringComparison.OrdinalIgnoreCase)).ToList(); list.ItemsSource = indices.Select(i => choices[i]).ToArray(); list.SelectedIndex = indices.Count > 0 ? 0 : -1; }
+        var dialog = new Window { RequestedThemeVariant = owner.ActualThemeVariant, Title = title, Width = 600, Height = 420, MinWidth = 420, MinHeight = 280, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        var query = new TextBox { Name = "QuickSearchBox", PlaceholderText = "Search sessions and profiles", MinHeight = 34, Padding = new Thickness(10, 6), FontSize = 14 };
+        var list = new ListBox { Name = "QuickSearchResults", Margin = new Thickness(0, 10, 0, 0), SelectionMode = SelectionMode.Single };
+        var empty = new TextBlock { Text = "No matching sessions or profiles", IsVisible = false, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Opacity = .65 };
+        var count = new TextBlock { FontSize = 11, Opacity = .65, VerticalAlignment = VerticalAlignment.Center };
+        var indices = new List<int>();
+        void Update()
+        {
+            indices = Enumerable.Range(0, choices.Count)
+                .Select(i => (Index: i, Score: QuickSearch.Score(query.Text ?? "", choices[i])))
+                .Where(result => result.Score.HasValue)
+                .OrderByDescending(result => result.Score)
+                .ThenBy(result => result.Index)
+                .Select(result => result.Index)
+                .ToList();
+            list.ItemsSource = indices.Select(i => choices[i]).ToArray();
+            list.SelectedIndex = indices.Count > 0 ? 0 : -1;
+            empty.IsVisible = indices.Count == 0;
+            count.Text = indices.Count == 1 ? "1 result" : $"{indices.Count} results";
+        }
         void Select() { if (list.SelectedIndex >= 0) dialog.Close((int?)indices[list.SelectedIndex]); }
-        var grid = new Grid { Margin = new Thickness(16), RowDefinitions = new RowDefinitions("Auto,*") }; grid.Children.Add(query); Grid.SetRow(list, 1); grid.Children.Add(list); dialog.Content = WindowCaption.Wrap(dialog, grid);
+        var grid = new Grid { Margin = new Thickness(16), RowDefinitions = new RowDefinitions("Auto,*,Auto") };
+        grid.Children.Add(query);
+        var results = new Grid(); results.Children.Add(list); results.Children.Add(empty); Grid.SetRow(results, 1); grid.Children.Add(results);
+        Grid.SetRow(count, 2); count.Margin = new Thickness(2, 10, 0, 0); grid.Children.Add(count);
+        dialog.Content = WindowCaption.Wrap(dialog, grid);
         query.TextChanged += (_, _) => Update(); list.DoubleTapped += (_, _) => Select();
-        dialog.KeyDown += (_, e) => { if (e.Key == Avalonia.Input.Key.Enter) Select(); if (e.Key == Avalonia.Input.Key.Escape) dialog.Close(); if (e.Key == Avalonia.Input.Key.Down && list.SelectedIndex + 1 < indices.Count) list.SelectedIndex++; if (e.Key == Avalonia.Input.Key.Up && list.SelectedIndex > 0) list.SelectedIndex--; };
-        Update(); dialog.Opened += (_, _) => query.Focus();
+        dialog.KeyDown += (_, e) =>
+        {
+            if (e.Key == Avalonia.Input.Key.Enter) { Select(); e.Handled = true; }
+            else if (e.Key == Avalonia.Input.Key.Escape) { dialog.Close(); e.Handled = true; }
+            else if (e.Key == Avalonia.Input.Key.Down && list.SelectedIndex + 1 < indices.Count) { list.SelectedIndex++; e.Handled = true; }
+            else if (e.Key == Avalonia.Input.Key.Up && list.SelectedIndex > 0) { list.SelectedIndex--; e.Handled = true; }
+        };
+        Update(); dialog.Opened += (_, _) => { query.Focus(); query.CaretIndex = query.Text?.Length ?? 0; };
         return await dialog.ShowDialog<int?>(owner);
     }
     public static async Task<bool> Confirm(Window owner, string title, string message, string accept = "Close sessions")

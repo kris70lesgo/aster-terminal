@@ -5,10 +5,16 @@ active pane's retained output. Literal, case-insensitive matching is the default
 The compact bar offers:
 
 - **Aa**: match case.
+- **aA**: enable smart case; queries with uppercase letters match exactly, while
+  all-lowercase queries remain case-insensitive.
 - **`.*`**: use regular expressions.
 - **Word**: match whole Unicode words (letters, digits, underscores and marks).
 - **↑ / ↓**, **Shift+Enter / Enter**: previous / next, wrapping through results.
 - **Escape / ×**: clear highlights, close Find and return focus to the terminal.
+
+Smart Case is a current-working-tree addition, not part of the published v0.13.0
+packages. Current-source runtime verification is on macOS; Windows/Linux
+acceptance is pending.
 
 The count shows the selected result and the captured total. The current match
 has a distinct highlight. Find leaves the user's terminal selection/clipboard
@@ -21,13 +27,14 @@ on every frame: the status reports when the captured count needs refresh. Logica
 cell anchors retain the selected match across resize/reflow when it remains in
 history. Reset, alternate-buffer changes or eviction invalidate stale positions.
 
-Regex is .NET syntax, with case-insensitive matching unless Aa is selected. Soft
-wraps form one logical line; hard newlines separate matches. NFC-normalized text
+Regex is .NET syntax, with case-insensitive matching unless Aa is selected or
+smart case is enabled and the query contains uppercase letters. Soft wraps form
+one logical line; hard newlines separate matches. NFC-normalized text
 allows composed/decomposed queries to find the same displayed grapheme. A match
 cannot split a combining, wide or emoji cell. Regex zero-length matches are not
 selected. Trailing default blank cells at a hard line end are omitted. ICU-only
-syntax, cross-hard-line regex, smart case and output filtering are outside this
-subset. Version 0.9.0 applies this same bar to explicit native tmux windows;
+syntax, cross-hard-line regex and output filtering are outside this subset.
+Version 0.9.0 applies this same bar to explicit native tmux windows;
 it searches output retained since attach. Existing tmux server history outside
 the hydrated viewport is not imported or searched. Switching tmux panes/tabs
 rebinds Find; detaching cancels it while leaving server shells alive. Final native Unix package

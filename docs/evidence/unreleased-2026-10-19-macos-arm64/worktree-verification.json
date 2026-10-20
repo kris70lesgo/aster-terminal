@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-19",
+  "status": "passed_with_platform_gaps",
+  "source": {
+    "baseCommit": "51d9488fec25b9fe83afe407d3e94421365211e8",
+    "workingTreeChangesIncluded": true,
+    "publishedRelease": "v0.13.0",
+    "changesIncludedInPublishedRelease": false
+  },
+  "host": {
+    "os": "macOS 26.7.2",
+    "architecture": "Arm64",
+    "sdk": ".NET 10.0.402",
+    "runtime": ".NET 10.0.13"
+  },
+  "build": {
+    "command": ".research/dotnet/dotnet build Aster.slnx --no-restore",
+    "passed": true,
+    "warnings": 0,
+    "errors": 0
+  },
+  "tests": {
+    "command": ".research/dotnet/dotnet test Aster.slnx --no-restore --logger 'trx;LogFileName=acceptance.trx' --results-directory docs/evidence/unreleased-2026-10-19-macos-arm64",
+    "total": 110,
+    "passed": 108,
+    "failed": 0,
+    "skipped": 2,
+    "skippedReason": "Windows-only ConPTY acceptance tests",
+    "results": "acceptance.trx"
+  },
+  "nativePackageSmoke": {
+    "command": "ASTER_DOTNET=.research/dotnet/dotnet ASTER_PYTHON=.research/contest-venv/bin/python python3 scripts/package.py --rid osx-arm64 --smoke",
+    "passed": true,
+    "report": "native-smoke/native-smoke.json",
+    "additionalPassingChecks": [
+      "Python scripting client",
+      "abrupt-exit session recovery",
+      "tmux control and attach/detach"
+    ],
+    "physicalCrossAppHotkey": "skipped; automated Carbon registration, dispatch, and unregister passed"
+  },
+  "localTestArchive": {
+    "filename": "artifacts/packages/aster-terminal-0.13.0-osx-arm64.zip",
+    "sha256": "5f238fa9754b1957485a6482f5241b611bb6a44a14d332c1c52a5e771ef9657f",
+    "published": false,
+    "includedInEvidence": false
+  },
+  "platformGaps": [
+    "Windows working-tree build and runtime validation pending",
+    "Linux working-tree build and runtime validation pending"
+  ]
+}

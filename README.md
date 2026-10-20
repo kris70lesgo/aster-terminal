@@ -86,6 +86,7 @@ is not survived; an 8 MiB in-memory journal has explicit text-checkpoint limits.
 | Next / previous tab | Ctrl+Tab / Ctrl+Shift+Tab | Ctrl+Tab / Ctrl+Shift+Tab |
 | Move tab left / right | Ctrl+Shift+PageUp / Ctrl+Shift+PageDown | Ctrl+Shift+PageUp / Ctrl+Shift+PageDown |
 | Next / previous pane | Cmd+] / Cmd+[ | Ctrl+Shift+] / Ctrl+Shift+[ |
+| Move pane backward / forward | Cmd+Option+PageUp / PageDown | Ctrl+Shift+Alt+PageUp / PageDown |
 | Zoom pane | Cmd+Enter | Ctrl+Shift+Enter |
 | Screen replay | Cmd+Alt+B | Ctrl+Shift+Alt+B |
 | Preferences | Cmd+, | Ctrl+Shift+, |
@@ -93,12 +94,20 @@ is not survived; an 8 MiB in-memory journal has explicit text-checkpoint limits.
 | Previous / next command mark | Cmd+Up / Cmd+Down | Ctrl+Shift+Up / Ctrl+Shift+Down |
 | Interrupt a foreground process | Ctrl+C | Ctrl+C |
 
+Pane swapping, Smart Case, and the iTerm-style login-shell caption are additions
+in the current working tree; they are not included in the published v0.13.0
+downloads. Their current-source runtime verification is macOS-only; see the
+[working-tree test evidence](docs/test-matrix.md).
+
 Drag normal terminal tabs to reorder them, using the insertion marker, or use
 Session → Move tab left/right. Keyboard moves wrap at the ends. The same live
 shells, splits, zoom, Find focus and scripting identities survive the move;
 saved layouts retain the order. Escape or releasing outside a tab header cancels
-a drag. Groups/pinning, moves between windows, pane dragging and tmux server
-window ordering remain separate parity gaps.
+a drag. Session → Move pane backward/forward (or the shortcuts above) swaps the
+active live terminal with its neighbor in pane navigation order while retaining
+the split geometry and both shell processes. Pointer pane dragging,
+groups/pinning, moves between windows and tmux server window ordering remain
+separate parity gaps.
 
 The UI keeps the terminal in focus: no permanent toolbar or pane footer, an
 automatically hidden single-tab strip, thin split dividers and native macOS
@@ -136,9 +145,10 @@ searches output retained in Aster since attach, including the initial viewport;
 it does not import the tmux server’s entire earlier history. Pane/tab changes
 rebind it, and detach cancels pending work while preserving server shells.
 
-Find offers regex, case and whole-word controls, result counts and wrapping
-Enter/Shift+Enter navigation. Escape closes the compact bar. Background searches
-use logical Unicode anchors across soft wraps; Enter refreshes changed output.
+Find offers regex, case, optional smart-case and whole-word controls, result
+counts and wrapping Enter/Shift+Enter navigation. Escape closes the compact bar.
+Background searches use logical Unicode anchors across soft wraps; Enter refreshes
+changed output.
 Invalid patterns and bounded partial results are explicit. See [Find](docs/find.md)
 for limits; the tmux control window retains its literal prompt.
 

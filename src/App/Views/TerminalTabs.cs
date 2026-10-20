@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Chrome;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Media;
 using Avalonia.VisualTree;
 using Avalonia.Threading;
 
@@ -36,7 +37,13 @@ public sealed class TerminalTabs : TabControl
         base.OnApplyTemplate(e);
         _viewport = e.NameScope.Find<ScrollViewer>("HeaderViewport");
         if (_viewport is not null) _viewport.SizeChanged += (_, _) => RefreshHeader();
-        if (e.NameScope.Find<Button>("NewTabButton") is { } add) add.Click += (_, _) => NewTabRequested?.Invoke(this, EventArgs.Empty);
+        if (e.NameScope.Find<TextBlock>("WindowCaption") is { } caption) caption.RenderTransform = new TranslateTransform(0, -1.5);
+        if (e.NameScope.Find<TextBlock>("WindowShortcut") is { } shortcut) shortcut.RenderTransform = new TranslateTransform(0, -1.5);
+        if (e.NameScope.Find<Button>("NewTabButton") is { } add)
+        {
+            add.RenderTransform = new TranslateTransform(0, -1.5);
+            add.Click += (_, _) => NewTabRequested?.Invoke(this, EventArgs.Empty);
+        }
         if (e.NameScope.Find<Border>("WindowHeader") is { } header)
             WindowButtons.EnableCaptionDrag(header);
         RefreshHeader();

@@ -48,11 +48,12 @@ public static class DesktopSmoke
                 throw new InvalidOperationException("Shared compact caption/window controls missing.");
             checks.Add("Shared compact iTerm-style caption and functional window controls configured");
             var chrome = window.FindControl<TerminalTabs>("Tabs")!;
+            var header = chrome.GetVisualDescendants().OfType<Border>().Single(b => b.Name == "WindowHeader");
             var addTab = chrome.GetVisualDescendants().OfType<Button>().Single(b => b.Name == "NewTabButton");
             var scrollbar = Panes(window)[0].GetVisualDescendants().OfType<TerminalScrollBar>().Single();
-            if (addTab.IsEffectivelyVisible || !chrome.WindowShortcut.EndsWith("1") || Math.Abs(scrollbar.Bounds.Width - TerminalScrollBar.GutterWidth) > .1)
+            if (addTab.IsEffectivelyVisible || !chrome.WindowShortcut.EndsWith("1") || Math.Abs(header.Bounds.Height - 29) > .1 || Math.Abs(scrollbar.Bounds.Width - TerminalScrollBar.GutterWidth) > .1)
                 throw new InvalidOperationException("Reference single-window caption or terminal scrollback gutter differs.");
-            checks.Add($"Single-tab caption hides insertion button, displays working window-number shortcut and reserves {TerminalScrollBar.GutterWidth}-point real-history scrollbar");
+            checks.Add($"Single-tab 29-point caption hides insertion button, displays working window-number shortcut and reserves {TerminalScrollBar.GutterWidth}-point real-history scrollbar");
             var columns = terminal.Engine.Columns;
             var resizeWatch = Stopwatch.StartNew();
             window.Width = 850; window.Height = 570;
@@ -232,6 +233,7 @@ public static class DesktopSmoke
                 passed = failure is null, os = System.Runtime.InteropServices.RuntimeInformation.OSDescription,
                 architecture = System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture.ToString(),
                 timestamp = DateTimeOffset.UtcNow, renderScaling, startupToShellOutputMs = startupMs, nativeResizeToGridMs = resizeMs, initialWorkingSetBytes = workingSetBytes,
+                screenshotsUsePhysicalRenderScale = true,
                 measurementScope = "One native acceptance launch; startup includes sentinel command/polling. Resize includes dispatcher/polling. Not a cold-start or comparative benchmark.",
                 checks, error = failure?.ToString()
             }, new JsonSerializerOptions { WriteIndented = true }));
@@ -266,7 +268,10 @@ public static class DesktopSmoke
     }
     private static void SaveImage(Window window, string file)
     {
-        using var bitmap = new RenderTargetBitmap(new PixelSize((int)window.Bounds.Width, (int)window.Bounds.Height), new Vector(96, 96));
+        var scale = Math.Max(1, window.RenderScaling);
+        var width = Math.Max(1, (int)Math.Ceiling(window.Bounds.Width * scale));
+        var height = Math.Max(1, (int)Math.Ceiling(window.Bounds.Height * scale));
+        using var bitmap = new RenderTargetBitmap(new PixelSize(width, height), new Vector(96 * scale, 96 * scale));
         bitmap.Render(window); bitmap.Save(file, PngBitmapEncoderOptions.Default);
     }
 }

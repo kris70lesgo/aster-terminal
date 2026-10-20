@@ -13,10 +13,11 @@ public sealed class WindowButtons : UserControl
 {
     private Window? _window;
     private readonly Button[] _buttons;
-    private static readonly string[] Colors = ["#FF5F57", "#FEBC2E", "#28C840"];
+    private static readonly string[] Colors = ["#EC6765", "#F2CA44", "#65C466"];
     public WindowButtons()
     {
-        var panel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 9, Margin = new Thickness(9, 0, 9, 0), VerticalAlignment = VerticalAlignment.Center };
+        var panel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 9, Margin = new Thickness(10, 0, 8, 0), VerticalAlignment = VerticalAlignment.Center,
+            RenderTransform = new TranslateTransform(0, -1.5) };
         string[] labels = ["Close window", "Minimize window", "Maximize window"];
         string[] shapes = ["M1,1 L7,7 M7,1 L1,7", "M1,4 L7,4", "M1,1 L7,1 L7,7 L1,7 Z"];
         _buttons = Enumerable.Range(0, 3).Select(i =>

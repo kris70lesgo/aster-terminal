@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Aster.App.Services;
 using Aster.Sessions;
 using Aster.Sessions.Persistence;
@@ -25,6 +26,7 @@ public partial class PreferencesWindow : Window
         _profiles = store.Settings.Profiles.ToList();
         _defaultId = store.Settings.DefaultProfileId;
         InitializeComponent();
+        SettingsTitle.RenderTransform = new TranslateTransform(0, -1.5);
         WindowButtons.EnableCaptionDrag(SettingsCaption);
         TriggerEditorHost.Content = _triggerEditor;
         ProfileList.SelectionChanged += ProfileSelected;
@@ -40,6 +42,7 @@ public partial class PreferencesWindow : Window
         KeepSessionsAliveBox.IsChecked = store.Settings.KeepSessionsAlive;
         RestoreLayoutBox.IsChecked = store.Settings.RestoreLayout;
         CopyOnSelectBox.IsChecked = store.Settings.CopyOnSelect;
+        SmartSelectionBox.IsChecked = store.Settings.DoubleClickSmartSelection;
         ConfirmCloseBox.IsChecked = store.Settings.ConfirmClose;
         SettingsPath.Text = store.Path;
         ResetShortcuts(false);
@@ -139,6 +142,7 @@ public partial class PreferencesWindow : Window
             ScriptingPort = (int)(ScriptingPortBox.Value ?? 1912),
             HotkeyWindowEnabled = HotkeyWindowBox.IsChecked == true,
             KeepSessionsAlive = KeepSessionsAliveBox.IsChecked == true, RestoreLayout = RestoreLayoutBox.IsChecked == true, CopyOnSelect = CopyOnSelectBox.IsChecked == true,
+            DoubleClickSmartSelection = SmartSelectionBox.IsChecked == true,
             ConfirmClose = ConfirmCloseBox.IsChecked == true, Shortcuts = shortcuts,
         };
         _store.Save(settings);

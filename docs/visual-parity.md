@@ -1,3 +1,42 @@
+# Unreleased visual refinement — 2026-10-20
+
+The user-supplied iTerm2 3.7.4 screenshot confirms a 587×462 logical frame, a
+29-point caption, the two 1-point separator rows, and traffic-light centers at
+(17,12), (40,12), and (63,12) logical pixels. The fresh Aster window now uses
+that size, header height, separator colors, and sampled control colors. The
+caption, separator, terminal-surface, and traffic-light center samples match
+exactly. Existing saved window geometry is preserved; the ANSI black palette
+entry remains separately #14191E. Regression coverage checks the terminal
+surface and fresh-install defaults. A native Mac smoke capture at the same
+logical size (2× physical resolution) is in
+[reference-window.png](evidence/unreleased-2026-10-20-visual-refinement/native-smoke/reference-window.png).
+The sample coordinates and limitations are in
+[appearance-samples.json](evidence/unreleased-2026-10-20-visual-refinement/appearance-samples.json).
+
+The frame geometry and selected UI pixels match, but the complete screenshots
+are not pixel-identical: they contain different shell output and title text, and
+the reference is a screen capture while Aster is a render-target capture.
+Native shadow/corners, scrollbar details, text rasterization, and a whole-window
+similarity score remain unverified. The private shell screenshot is not copied
+into repository evidence. This screenshot-specific 29-point measurement
+supersedes the earlier 32-point observation recorded below.
+
+# Unreleased UI refinement — 2026-10-19
+
+Read-only comparison against the installed iTerm2 3.7.4 at 587×462 logical
+pixels confirms the current single-window caption, traffic-light positions,
+32-point header, dark surface colour and scrollback gutter align with the
+reference. The live comparison exposed one visible default-state difference:
+iTerm names a login shell `-zsh`/`-bash`, while Aster showed the profile's bare
+shell name. Standard bash/zsh login profiles now use that iTerm title convention
+until the shell emits its own VT title. Custom profile names stay unchanged.
+Regression coverage is recorded in
+`evidence/unreleased-2026-10-19-macos-arm64/acceptance.trx`.
+
+This is a focused caption refinement, not a claim of complete pixel identity;
+the reference's private shell screenshot is not included in the repository.
+The current-source Windows/Linux visual checks remain pending.
+
 # Lossless reference pass — release 0.13.0
 
 This pass compares actual PNG captures from `screenshot(format=png)`. The

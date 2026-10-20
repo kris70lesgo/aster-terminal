@@ -27,6 +27,52 @@ setup race was fixed with AvaloniaFact. The verifier temporarily wakes/holds the
 physical display and releases its assertion afterward; startup logs record the
 observed no-display RenderTimer error rather than crediting it as GUI support.
 
+## Unreleased working-tree verification — 2026-10-19
+
+The current working tree adds Session-menu/shortcut pane swapping, opt-in
+Smart Case for literal and regex Find, and iTerm-style initial titles for
+standard bash/zsh login profiles. On macOS 26.7.2/Arm64, the full solution
+build passes with zero warnings/errors; the full suite passes **108 tests with
+2 Windows-only skips and zero failures**. The TRX is in
+`evidence/unreleased-2026-10-19-macos-arm64/acceptance.trx`.
+
+Focused desktop tests use real shell processes. They verify that pane swaps in
+nested and shared splits preserve the existing process IDs, shell output and
+close behavior; Find tests cover Unicode uppercase detection in literal and
+regex queries in both normal and tmux windows; caption tests cover login-shell
+titles while preserving custom profile names. A self-contained local macOS
+package also passes the native smoke suite, including real PTY output, recovery,
+the original Python client, and tmux. Captures and reports are in
+`evidence/unreleased-2026-10-19-macos-arm64/native-smoke/`. The first package
+attempt lacked the pinned Python test client in the default interpreter; the
+repeat used the isolated `.research/contest-venv` and passed.
+
+These changes are **not** in the published v0.13.0 archives. This local package
+still carries version 0.13.0 and is test output, not a release candidate.
+Current-source native validation on Windows and Linux remains pending; the
+physical cross-application hotkey check was skipped on this Mac. Do not use the
+local package hash as a submission download.
+
+## Unreleased visual refinement — 2026-10-20
+
+The fresh-install window now defaults to the controlled iTerm reference size
+(587×462 logical pixels) and screenshot-measured 29-point caption, with the two
+separator rows and sampled traffic-light colors; existing saved sizes remain
+unchanged. Dark chrome and terminal background use the supplied iTerm2 3.7.4
+samples (#21212D and #15191E); ANSI black remains #14191E. `dotnet test Aster.slnx`
+passes 121 tests with 2 Windows-only skips. Open Quickly fuzzy-searches live pane
+sessions and configured profiles; smart selection can be enabled in General
+preferences to select a URL, email, IPv4 address, or absolute path on double-click.
+Focused tests cover fuzzy ranking, the recognized selections, invalid IP input,
+and preference persistence. A native macOS 26.7.2/Arm64 smoke run
+at 2× passes its real-shell, layout, replay, graphics, Find, settings and cleanup
+checks, and records a 1174×924 physical render-target screenshot. Captures and
+report: `evidence/unreleased-2026-10-20-visual-refinement/`. These are
+current-source working-tree results, not new release archives. Selected frame
+samples and control centers match the supplied reference; full screenshot pixel
+identity is not established. Current-source native UI validation on Windows/Linux
+remains pending.
+
 # Historical verification — release 0.12.0, 2026-10-17
 
 Final source **e4e1646e98315136502b98866ac385f911de8827**, native CI

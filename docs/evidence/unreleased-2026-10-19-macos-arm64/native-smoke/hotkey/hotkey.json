@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "timestamp": "2026-10-19T15:39:17.201548+00:00",
+  "os": "macOS 26.7.2",
+  "renderScaling": 2,
+  "checks": [
+    "Native system-wide Control\u002BAlt\u002BSpace registration succeeds",
+    "macOS Carbon event dispatcher routes the registered signature/id to the native callback",
+    "Native unregister/re-register succeeds without leaking the binding"
+  ],
+  "skips": [
+    "Actual cross-application summon requires a physical/manual test or an authorised CI input injector."
+  ],
+  "error": null
+}

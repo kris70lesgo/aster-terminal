@@ -20,6 +20,7 @@ public sealed class HotkeyWindowService : IDisposable
     public bool IsRegistered => _registration is not null;
     public MainWindow? Window => _window;
     public string? RegistrationError { get; private set; }
+    public bool? LastMacActivationRequestSucceeded { get; private set; }
     public HotkeyWindowService(Func<Action, Action<Exception>, IDisposable>? register = null)
     { _register = register ?? ((pressed, failed) => NativeGlobalHotkey.Register(pressed, failed)); }
     public void Configure(SettingsStore store)
@@ -64,17 +65,16 @@ public sealed class HotkeyWindowService : IDisposable
             var window = new MainWindow(_store, hotkeyWindow: true) { ShowActivated = true };
             _window = window; window.Closed += (_, _) => { if (_window == window) _window = null; };
         }
-        if (OperatingSystem.IsMacOS()) ActivateMacApplication();
         if (!_window.IsVisible) _window.Show();
         if (_window.WindowState == WindowState.Minimized) _window.WindowState = WindowState.Normal;
+        if (OperatingSystem.IsMacOS()) LastMacActivationRequestSucceeded = ActivateMacApplication();
         _window.Activate();
     }
 
-    private static void ActivateMacApplication()
+    private static bool ActivateMacApplication()
     {
         var application = SendPointer(objc_getClass("NSRunningApplication"), sel_registerName("currentApplication"));
-        if (application != IntPtr.Zero)
-            SendBoolUnsigned(application, sel_registerName("activateWithOptions:"), 2); // NSApplicationActivateIgnoringOtherApps
+        return application != IntPtr.Zero && SendBoolUnsigned(application, sel_registerName("activateWithOptions:"), 2); // NSApplicationActivateIgnoringOtherApps
     }
 
     [DllImport("/usr/lib/libobjc.A.dylib")] private static extern IntPtr objc_getClass(string name);

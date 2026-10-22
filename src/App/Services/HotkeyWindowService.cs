@@ -20,7 +20,7 @@ public sealed class HotkeyWindowService : IDisposable
     public bool IsRegistered => _registration is not null;
     public MainWindow? Window => _window;
     public string? RegistrationError { get; private set; }
-    public bool? LastMacActivationRequestSucceeded { get; private set; }
+    public bool? LastMacActivationSucceeded { get; private set; }
     public HotkeyWindowService(Func<Action, Action<Exception>, IDisposable>? register = null)
     { _register = register ?? ((pressed, failed) => NativeGlobalHotkey.Register(pressed, failed)); }
     public void Configure(SettingsStore store)
@@ -67,20 +67,54 @@ public sealed class HotkeyWindowService : IDisposable
         }
         if (!_window.IsVisible) _window.Show();
         if (_window.WindowState == WindowState.Minimized) _window.WindowState = WindowState.Normal;
-        if (OperatingSystem.IsMacOS()) LastMacActivationRequestSucceeded = ActivateMacApplication();
         _window.Activate();
+        if (OperatingSystem.IsMacOS() && Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime && lifetime.Windows.Contains(_window))
+            ActivateMacApplicationEventually(_window);
     }
 
-    private static bool ActivateMacApplication()
+    private async void ActivateMacApplicationEventually(MainWindow window)
+    {
+        try
+        {
+            // Carbon hotkey callbacks arrive inside an AppKit event turn. macOS 14+
+            // can ignore app activation requested synchronously from that callback.
+            // Yield once, then retry briefly while the user-triggered summon is pending.
+            await Task.Yield();
+            for (var attempt = 0; attempt < 20; attempt++)
+            {
+                if (_disposed || _window != window || !window.IsVisible) return;
+                ActivateMacApplication();
+                window.Activate();
+                if (MacApplicationIsActive() && window.IsActive)
+                {
+                    LastMacActivationSucceeded = true;
+                    return;
+                }
+                await Task.Delay(50);
+            }
+            LastMacActivationSucceeded = false;
+        }
+        catch (Exception error) when (error is DllNotFoundException or EntryPointNotFoundException)
+        { LastMacActivationSucceeded = false; }
+    }
+
+    private static void ActivateMacApplication()
     {
         var application = SendPointer(objc_getClass("NSRunningApplication"), sel_registerName("currentApplication"));
-        return application != IntPtr.Zero && SendBoolUnsigned(application, sel_registerName("activateWithOptions:"), 2); // NSApplicationActivateIgnoringOtherApps
+        if (application != IntPtr.Zero) SendBoolUnsigned(application, sel_registerName("activateWithOptions:"), 2); // NSApplicationActivateIgnoringOtherApps
+    }
+
+    private static bool MacApplicationIsActive()
+    {
+        var application = SendPointer(objc_getClass("NSRunningApplication"), sel_registerName("currentApplication"));
+        return application != IntPtr.Zero && SendBool(application, sel_registerName("isActive"));
     }
 
     [DllImport("/usr/lib/libobjc.A.dylib")] private static extern IntPtr objc_getClass(string name);
     [DllImport("/usr/lib/libobjc.A.dylib")] private static extern IntPtr sel_registerName(string name);
     [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")] private static extern IntPtr SendPointer(IntPtr receiver, IntPtr selector);
     [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")] [return: MarshalAs(UnmanagedType.I1)] private static extern bool SendBoolUnsigned(IntPtr receiver, IntPtr selector, nuint value);
+    [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")] [return: MarshalAs(UnmanagedType.I1)] private static extern bool SendBool(IntPtr receiver, IntPtr selector);
 
     public void Dispose() { if (_disposed) return; _disposed = true; _registration?.Dispose(); _registration = null; }
 }

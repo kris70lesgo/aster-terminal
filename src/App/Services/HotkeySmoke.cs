@@ -87,7 +87,7 @@ public static class HotkeySmoke
                 await FocusPeer(peer); await InjectChord();
             }
             await Until(() => service.Window is { IsVisible: true, IsActive: true }, manual ? 180 : 30,
-                () => $"registered={service.IsRegistered}; callbackCount={globalCallbacks}; macActivationRequest={service.LastMacActivationRequestSucceeded}; windowCreated={service.Window is not null}; windowVisible={service.Window?.IsVisible}; windowActive={service.Window?.IsActive}; peerPid={peer?.Id}; foregroundPid={(OperatingSystem.IsMacOS() ? MacForegroundPid() : 0)}");
+                () => $"registered={service.IsRegistered}; callbackCount={globalCallbacks}; macActivationSucceeded={service.LastMacActivationSucceeded}; windowCreated={service.Window is not null}; windowVisible={service.Window?.IsVisible}; windowActive={service.Window?.IsActive}; peerPid={peer?.Id}; foregroundPid={(OperatingSystem.IsMacOS() ? MacForegroundPid() : 0)}");
             terminalWindow = service.Window!;
             await Until(() => Pane(terminalWindow) is { Terminal.IsRunning: true } && Text(Pane(terminalWindow)!).Contains("ASTER_READY>"));
             var pane = Pane(terminalWindow)!; var session = pane.HostedSession!.Id;

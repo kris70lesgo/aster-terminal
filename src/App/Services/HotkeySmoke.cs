@@ -50,6 +50,7 @@ public static class HotkeySmoke
         try
         {
             var callbacks = 0;
+            var globalCallbacks = 0;
             using (NativeGlobalHotkey.Register(() => Interlocked.Increment(ref callbacks)))
             {
                 checks.Add("Native system-wide Control+Alt+Space registration succeeds");
@@ -70,7 +71,12 @@ public static class HotkeySmoke
             var profile = new TerminalProfile("Hotkey acceptance", OperatingSystem.IsWindows() ? "cmd.exe /Q" : "export PS1='ASTER_READY> '; exec /bin/sh", Path.GetTempPath())
             { EnvironmentVariables = new() { ["PROMPT"] = "ASTER_READY$G" } };
             store.Save(store.Settings with { Profiles = [profile], DefaultProfileId = profile.Id, RestoreLayout = false, ConfirmClose = false, KeepSessionsAlive = true, HotkeyWindowEnabled = true });
-            service = new(); service.Configure(store);
+            service = new((pressed, failed) => NativeGlobalHotkey.Register(() =>
+            {
+                Interlocked.Increment(ref globalCallbacks);
+                pressed();
+            }, failed));
+            service.Configure(store);
             if (global)
             {
                 var executable = Path.Combine(AppContext.BaseDirectory, OperatingSystem.IsWindows() ? "Aster.Terminal.exe" : "Aster.Terminal");
@@ -80,7 +86,8 @@ public static class HotkeySmoke
                 await Until(() => File.Exists(Path.Combine(report, "peer/peer.json")));
                 await FocusPeer(peer); await InjectChord();
             }
-            await Until(() => service.Window is { IsVisible: true, IsActive: true }, manual ? 180 : 30);
+            await Until(() => service.Window is { IsVisible: true, IsActive: true }, manual ? 180 : 30,
+                () => $"registered={service.IsRegistered}; callbackCount={globalCallbacks}; windowCreated={service.Window is not null}; windowVisible={service.Window?.IsVisible}; windowActive={service.Window?.IsActive}; peerPid={peer?.Id}; foregroundPid={(OperatingSystem.IsMacOS() ? MacForegroundPid() : 0)}");
             terminalWindow = service.Window!;
             await Until(() => Pane(terminalWindow) is { Terminal.IsRunning: true } && Text(Pane(terminalWindow)!).Contains("ASTER_READY>"));
             var pane = Pane(terminalWindow)!; var session = pane.HostedSession!.Id;
@@ -125,8 +132,8 @@ public static class HotkeySmoke
         pane.Terminal.RaiseEvent(new TextInputEventArgs { RoutedEvent = InputElement.TextInputEvent, Text = text });
         pane.Terminal.RaiseEvent(new KeyEventArgs { RoutedEvent = InputElement.KeyDownEvent, Key = Key.Enter });
     }
-    private static async Task Until(Func<bool> condition, int seconds = 30)
-    { var watch = Stopwatch.StartNew(); while (!condition()) { if (watch.Elapsed > TimeSpan.FromSeconds(seconds)) throw new TimeoutException("Native hotkey acceptance timed out."); await Task.Delay(25); } }
+    private static async Task Until(Func<bool> condition, int seconds = 30, Func<string>? timeoutDetails = null)
+    { var watch = Stopwatch.StartNew(); while (!condition()) { if (watch.Elapsed > TimeSpan.FromSeconds(seconds)) throw new TimeoutException("Native hotkey acceptance timed out." + (timeoutDetails is null ? "" : " " + timeoutDetails())); await Task.Delay(25); } }
     private static void Image(Window window, string path)
     {
         using var bitmap = new RenderTargetBitmap(new PixelSize(Math.Max(1, (int)window.Bounds.Width), Math.Max(1, (int)window.Bounds.Height)), new Vector(96, 96));

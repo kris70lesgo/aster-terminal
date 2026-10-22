@@ -56,6 +56,15 @@ public sealed partial class DesktopTests
             await Task.Delay(25);
         }
     }
+    private static async Task Until(Func<bool> condition, Func<string> timeoutDetails)
+    {
+        var watch = Stopwatch.StartNew();
+        while (!condition())
+        {
+            if (watch.Elapsed > TimeSpan.FromSeconds(10)) throw new TimeoutException("Desktop acceptance condition not met: " + timeoutDetails());
+            await Task.Delay(25);
+        }
+    }
     private static string Text(TerminalPane pane) => TerminalBufferExport.ToPlainText(pane.Terminal.Engine.CreateSnapshot(true).Buffer);
     private static TerminalPane[] Panes(Window window) => window.GetVisualDescendants().OfType<TerminalPane>().ToArray();
 

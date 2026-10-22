@@ -27,7 +27,9 @@ public sealed partial class DesktopTests
             await Until(() => !string.IsNullOrWhiteSpace(Text(pane)));
             pane.Terminal.RaiseEvent(new TextInputEventArgs { RoutedEvent = InputElement.TextInputEvent, Text = OperatingSystem.IsWindows() ? "echo __TRIGGER_OUTPUT__" : "printf '%s%s\\n' '__TRIGGER_' 'OUTPUT__'" });
             pane.Terminal.RaiseEvent(new KeyEventArgs { RoutedEvent = InputElement.KeyDownEvent, Key = Key.Enter });
-            await Until(() => engine.TriggerMatches.Count == 1);
+            await Until(() => Text(pane).Contains("__TRIGGER_OUTPUT__"), () => "shell did not echo trigger fixture: " + Text(pane));
+            await Until(() => engine.TriggerMatches.Count == 1,
+                () => $"trigger did not match (matches={engine.TriggerMatches.Count}, configured={pane.Profile.Triggers.Count}); buffer: {Text(pane)}");
             Assert.Equal("Build error", engine.TriggerMatches[0].Name);
             Assert.Contains(engine.CreateSnapshot(true).Buffer.Lines.SelectMany(l => l.Cells), c => c.Attributes.Background == TermColor.FromRgb(155, 48, 56));
             await Until(() => pane.GetVisualDescendants().OfType<Button>().Any(b => Equals(b.Content, "Triggered lines (1)") && b.IsVisible));

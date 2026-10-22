@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using System.Runtime.InteropServices;
 using Aster.App.Views;
 using Aster.Sessions.Hotkeys;
 using Aster.Sessions.Persistence;
@@ -60,12 +61,26 @@ public sealed class HotkeyWindowService : IDisposable
         if (_disposed || _store is null) return;
         if (_window is null)
         {
-            var window = new MainWindow(_store, hotkeyWindow: true) { ShowActivated = false };
+            var window = new MainWindow(_store, hotkeyWindow: true) { ShowActivated = true };
             _window = window; window.Closed += (_, _) => { if (_window == window) _window = null; };
         }
+        if (OperatingSystem.IsMacOS()) ActivateMacApplication();
         if (!_window.IsVisible) _window.Show();
         if (_window.WindowState == WindowState.Minimized) _window.WindowState = WindowState.Normal;
         _window.Activate();
     }
+
+    private static void ActivateMacApplication()
+    {
+        var application = SendPointer(objc_getClass("NSRunningApplication"), sel_registerName("currentApplication"));
+        if (application != IntPtr.Zero)
+            SendBoolUnsigned(application, sel_registerName("activateWithOptions:"), 2); // NSApplicationActivateIgnoringOtherApps
+    }
+
+    [DllImport("/usr/lib/libobjc.A.dylib")] private static extern IntPtr objc_getClass(string name);
+    [DllImport("/usr/lib/libobjc.A.dylib")] private static extern IntPtr sel_registerName(string name);
+    [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")] private static extern IntPtr SendPointer(IntPtr receiver, IntPtr selector);
+    [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")] [return: MarshalAs(UnmanagedType.I1)] private static extern bool SendBoolUnsigned(IntPtr receiver, IntPtr selector, nuint value);
+
     public void Dispose() { if (_disposed) return; _disposed = true; _registration?.Dispose(); _registration = null; }
 }

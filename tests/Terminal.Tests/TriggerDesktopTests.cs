@@ -17,14 +17,14 @@ public sealed partial class DesktopTests
     [AvaloniaFact]
     public async Task RealShellTriggersHighlightHistoryAndLiveProfileChanges()
     {
-        var profile = new TerminalProfile("triggers", OperatingSystem.IsWindows() ? "cmd.exe /Q" : "export PS1='ASTER_READY> '; exec /bin/sh", Path.GetTempPath())
-        { Triggers = [new() { Pattern = "^__TRIGGER_OUTPUT__$", Name = "Build error" }] };
+        var profile = new TerminalProfile("triggers", OperatingSystem.IsWindows() ? "cmd.exe /Q /K prompt ASTER_READY$G" : "export PS1='ASTER_READY> '; exec /bin/sh", Path.GetTempPath())
+        { Triggers = [new() { Pattern = "^__TRIGGER_OUTPUT__$", Name = "Build error" }], EnvironmentVariables = new() { ["PROMPT"] = "ASTER_READY$G" } };
         var window = new MainWindow(profile); window.Show(); TerminalPane? pane = null;
         try
         {
             await Until(() => Panes(window).Length == 1 && Panes(window)[0].Terminal.IsRunning);
             pane = Panes(window)[0]; var engine = (ItermTerminalEngine)pane.Terminal.Engine;
-            await Until(() => !string.IsNullOrWhiteSpace(Text(pane)));
+            await Until(() => Text(pane).Contains("ASTER_READY>"), () => "shell prompt not ready: " + Text(pane));
             pane.Terminal.RaiseEvent(new TextInputEventArgs { RoutedEvent = InputElement.TextInputEvent, Text = OperatingSystem.IsWindows() ? "echo __TRIGGER_OUTPUT__" : "printf '%s%s\\n' '__TRIGGER_' 'OUTPUT__'" });
             pane.Terminal.RaiseEvent(new KeyEventArgs { RoutedEvent = InputElement.KeyDownEvent, Key = Key.Enter });
             await Until(() => Text(pane).Contains("__TRIGGER_OUTPUT__"), () => "shell did not echo trigger fixture: " + Text(pane));

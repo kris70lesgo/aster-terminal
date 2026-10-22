@@ -19,12 +19,14 @@ public sealed partial class DesktopTests
     [AvaloniaFact]
     public async Task FindBarSearchesRealOutputWithOptionsNavigationErrorsAndPaneIsolation()
     {
-        var window = new MainWindow(new TerminalProfile("Find acceptance", OperatingSystem.IsWindows() ? "cmd.exe /Q" : "export PS1='FIND_READY> '; exec /bin/sh", Path.GetTempPath()));
+        var profile = new TerminalProfile("Find acceptance", OperatingSystem.IsWindows() ? "cmd.exe /Q /K prompt FIND_READY$G" : "export PS1='FIND_READY> '; exec /bin/sh", Path.GetTempPath());
+        var window = new MainWindow(profile);
         window.Show();
         try
         {
             await Until(() => Panes(window).Length == 1 && Panes(window)[0].Terminal.IsRunning);
             var pane = Panes(window)[0];
+            await Until(() => Text(pane).Contains("FIND_READY>"), () => "shell prompt not ready: " + Text(pane));
             FindCommand(pane, OperatingSystem.IsWindows() ? "echo FIND_Alpha42&echo FIND_alpha7&echo FIND_alphabet9&echo FIND_alpha&echo FIND_東京é" : "printf '\\nFIND_%s\\n' 'Alpha42' 'alpha7' 'alphabet9' 'alpha' '東京é'");
             await Until(() => Text(pane).Contains("FIND_東京é"), () => "shell output not received: " + Text(pane));
             SendKey(window, Key.F, OperatingSystem.IsMacOS() ? RawInputModifiers.Meta : RawInputModifiers.Control | RawInputModifiers.Shift);

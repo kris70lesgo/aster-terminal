@@ -1,262 +1,105 @@
 # Aster Terminal
 
-A real C#/Avalonia terminal bringing a documented subset of **iTerm2** workflows
-to macOS, Windows and Linux. Independent project; no iTerm2 endorsement.
-GPL-3.0-or-later. **Version 0.14.0 is the competition release; full iTerm2 parity
-is a separate milestone.**
+[![Release](https://img.shields.io/github/v/release/kris70lesgo/aster-terminal?display_name=tag&label=release)](https://github.com/kris70lesgo/aster-terminal/releases/latest)
+[![Build and native acceptance](https://github.com/kris70lesgo/aster-terminal/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/kris70lesgo/aster-terminal/actions/workflows/build.yml)
+[![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 
-[Download v0.14.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.14.0)
-· [Runtime evidence](docs/test-matrix.md) · [Feature boundaries](docs/iterm2-feature-parity.md)
+**A native desktop terminal for macOS, Windows, and Linux, built with C# and Avalonia.** Aster ports a documented, tested subset of [iTerm2](https://iterm2.com/) workflows to three desktop platforms while using each platform's real shell process. It is an independent project and is not endorsed by or affiliated with the iTerm2 authors.
 
-Version 0.14.0 aligns rendering with lossless captures of installed **iTerm2
-3.7.4**: 7×17 Monaco cells at 12 points, corrected margins and history gutter,
-bright ANSI bold colours, Mac sRGB colour management, grayscale antialiasing,
-synthetic bold/italic and native colour emoji. It adapts the already-pinned MIT
-control/render source in a separate native presentation assembly; parser and
-process connections stay pinned. All three native packages pass the 123-case
-suite with platform-specific skips and complete real-process package smoke.
-Preferences → Profiles → Text → **Use iTerm reference appearance** selects
-Monaco 12 on Mac or bundled Cascadia Mono 12 elsewhere; Save/Cancel stays
-transactional. [Measurements and remaining differences](docs/visual-parity.md)
-explicitly distinguish this from complete pixel/UI parity.
+[Download Aster 0.14.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.14.0) · [See what works](docs/iterm2-feature-parity.md) · [Read the migration report](docs/migration-report.md) · [Review verification](docs/test-matrix.md)
 
-Enable the optional summon window in Preferences → General with
-**Ctrl+Alt+Space** (Control+Option+Space on macOS). The chord shows a dedicated
-terminal; pressing it while active hides it while its shell keeps running.
-Global summon/hide/show passes on macOS 15, Windows and Linux X11 in native CI,
-including the same live shell across hide and resummon. Wayland is unsupported;
-key conflicts are reported. A physical attempt on the local macOS 26 workstation
-using the previous installed build was not detected.
+## Screenshots
 
-The optional Python API now works with the original **iterm2 2.30** client for
-real window/tab/pane creation, command input, Unicode screen reads, layout/focus
-notifications and session close. Enable it in Preferences → General, then use the
-bundled `Scripting/aster_script.py` launcher. It is disabled by default and grants
-trusted scripts terminal control. See [setup and supported APIs](docs/scripting.md).
-Version 0.8.1 fixes the reproduced Mac exit stall and stops scripting transport
-without waiting for an unfinished UI action. Fresh installed-package checks now
-require PID exit and a clean native main-loop return; earlier failures remain in
-the [runtime evidence](docs/test-matrix.md).
+The first image is an installed iTerm2 3.6.6 reference. The second is Aster 0.14.0 running a controlled real-shell acceptance fixture. They show the source application and the port; they are **not** matched captures and do not establish pixel-identical UI. The [visual parity report](docs/visual-parity.md) records the exact reference version, measured similarities, and remaining differences.
 
-## Install
+| iTerm2 reference | Aster Terminal |
+| --- | --- |
+| ![Installed iTerm2 3.6.6 terminal reference](docs/evidence/iterm2-original.png) | ![Aster Terminal 0.14.0 native package running a real shell acceptance fixture](docs/evidence/v0.14.0-osx-arm64/dark.png) |
 
-Packages include the .NET runtime. Extract the complete archive, preserving its
-folders; no SDK, account or subscription is required.
+More native captures: [split panes](docs/evidence/v0.14.0-osx-arm64/splits.png) · [Find](docs/evidence/v0.14.0-osx-arm64/find-compact.png) · [settings](docs/evidence/v0.14.0-osx-arm64/preferences-general.png) · [inline graphics](docs/evidence/v0.14.0-osx-arm64/graphics.png).
 
-| Download | Run | Platform scope |
-|---|---|---|
-| `aster-terminal-0.14.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15.7.9 |
-| `aster-terminal-0.14.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
-| `aster-terminal-0.14.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
+## What works
 
-Extract the Mac ZIP with Finder/Archive Utility (or `ditto`) to preserve signing
-metadata. macOS is ad-hoc signed, without Developer ID notarization. For a downloaded copy,
-use the macOS **Privacy & Security → Open Anyway** flow if Gatekeeper blocks it.
-Windows is unsigned and may display SmartScreen; inspect the source and verify
-the supplied SHA-256 before choosing to run it. No system security setting needs
-to be disabled.
+- **Real terminal sessions.** Each pane owns a real local shell using forkpty on macOS/Linux or ConPTY on Windows. Tabs and split panes keep independent processes; resize, signals, input, and cleanup are exercised against packaged builds.
+- **Everyday terminal workflows.** Tabs, horizontal and vertical splits, pane focus and zoom, profile-based shells, scrollback, copy/paste, Find, command marks, and configurable keys.
+- **Search and navigation.** Fuzzy Open Quickly finds live panes and profiles. Find supports regular expressions, case and whole-word options, Unicode-aware matches, result navigation, and bounded work.
+- **iTerm2 appearance work.** The reference profile applies Monaco 12 on macOS and matches measured cell size, margins, scrollbar spacing, and selected window colours. These are scoped measurements; full-window screenshot identity remains unverified.
+- **Optional integrations.** The original `iterm2` Python client can control a tested core subset when local scripting is enabled. macOS/Linux can attach to an existing tmux session in control mode. Both integrations are disabled or opt-in where they grant terminal control.
+- **Useful terminal extras.** Bounded text-screen replay, shell recovery after UI loss, output highlights/bookmarks, and tested subsets of sixel, iTerm2 OSC 1337 PNG, and kitty RGBA graphics.
+- **No cloud account required.** Aster adds no telemetry, cloud sync, or AI service. VT output cannot write to the host clipboard or trigger notifications or other host actions.
 
-Linux needs desktop/font libraries: `libfontconfig1 libx11-6 libice6 libsm6
-libxrender1 libxi6 libxrandr2 libxcursor1 libegl1 libgl1` on Ubuntu, in addition
-to .NET's system requirements. Install `fonts-noto-cjk` for CJK glyph fallback;
-fonts unavailable on the host appear as missing glyphs. The portable desktop entry expects
-`Aster.Terminal` on PATH; set its Exec to the extracted binary's absolute path
-when installing it in your desktop menu. The native PTY helper is already included.
+Aster does not claim full iTerm2 feature or visual parity. Unsupported and partial areas—including automatic `tmux -CC`, Wayland, broad IME/DPI coverage, AppleScript, and parts of the upstream scripting and graphics APIs—are tracked in the [parity inventory](docs/iterm2-feature-parity.md) and [visual report](docs/visual-parity.md).
 
-## Use
+## Download and run
 
-Each pane starts an independent local shell: `$SHELL` on Unix, PowerShell on
-Windows. Shell → New tab with profile selects another installed shell, including
-Command Prompt. Preferences configures profiles, command/cwd/environment, fonts,
-colours, cursor, history, theme, close confirmation and shortcuts. Settings save
-atomically with backup recovery. Saved layouts start fresh shells. With live
-recovery enabled (the default), separate local hosts keep actual shell processes
-alive across UI loss; startup reconnects detached sessions. Shell → Detach and
-close window preserves them intentionally. Normal pane/window close terminates
-them. Settings → General can disable hosting for new panes. Host/OS termination
-is not survived; an 8 MiB in-memory journal has explicit text-checkpoint limits.
+Release archives are self-contained and include the .NET runtime. Download the archive for your platform from the [0.14.0 release](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.14.0), extract the **complete** archive, and launch the app from its extracted folder.
 
-| Action | macOS | Windows/Linux |
-|---|---|---|
-| New tab / window | Cmd+T / Cmd+N | Ctrl+Shift+T / Ctrl+Shift+N |
-| Split right / below | Cmd+D / Cmd+Shift+D | Ctrl+Shift+D / Ctrl+Shift+Alt+D |
-| Close pane | Cmd+W | Ctrl+Shift+W |
-| Find | Cmd+F | Ctrl+Shift+F |
-| Copy / paste | Cmd+C / Cmd+V | Ctrl+Shift+C / Ctrl+Shift+V |
-| Next / previous tab | Ctrl+Tab / Ctrl+Shift+Tab | Ctrl+Tab / Ctrl+Shift+Tab |
-| Move tab left / right | Ctrl+Shift+PageUp / Ctrl+Shift+PageDown | Ctrl+Shift+PageUp / Ctrl+Shift+PageDown |
-| Next / previous pane | Cmd+] / Cmd+[ | Ctrl+Shift+] / Ctrl+Shift+[ |
-| Move pane backward / forward | Cmd+Option+PageUp / PageDown | Ctrl+Shift+Alt+PageUp / PageDown |
-| Zoom pane | Cmd+Enter | Ctrl+Shift+Enter |
-| Screen replay | Cmd+Alt+B | Ctrl+Shift+Alt+B |
-| Preferences | Cmd+, | Ctrl+Shift+, |
-| Larger / smaller font | Cmd+Shift+= / Cmd+minus | Ctrl+Shift+= / Ctrl+Shift+minus |
-| Previous / next command mark | Cmd+Up / Cmd+Down | Ctrl+Shift+Up / Ctrl+Shift+Down |
-| Interrupt a foreground process | Ctrl+C | Ctrl+C |
+| Platform | Package | Run | Verified environment |
+| --- | --- | --- | --- |
+| macOS, Apple Silicon | `aster-terminal-0.14.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications and open it | macOS 15.7.9; macOS 15+ is the target |
+| Windows, x64 | `aster-terminal-0.14.0-win-x64.zip` | Run `Aster.Terminal.exe` from the extracted folder | Hosted Windows Server 2025; Windows 11 is the intended desktop target |
+| Linux, x64 | `aster-terminal-0.14.0-linux-x64.tar.gz` | Run `./Aster.Terminal` in the extracted folder | Ubuntu 24.04 with X11/Xvfb; other distributions and Wayland are unverified |
 
-Version 0.14.0 adds fuzzy **Open Quickly** across live sessions and profiles,
-live pane swapping while preserving split layout and shell processes, opt-in
-Smart Case search, iTerm-style `-zsh`/`-bash` startup captions, and opt-in
-double-click selection for URLs, email addresses, IPv4 addresses and absolute
-paths. The focused UI and real-process tests run on all three targets; details
-and platform skips are recorded in the [test matrix](docs/test-matrix.md).
+The macOS archive is ad-hoc signed and is not notarized with a Developer ID. Extract it with Finder/Archive Utility or `ditto` to preserve its signing metadata. If Gatekeeper blocks it, use macOS **Privacy & Security → Open Anyway**. The Windows archive is unsigned and may prompt SmartScreen. Verify the published SHA-256 checksums before running either package; do not disable system protections.
 
-Drag normal terminal tabs to reorder them, using the insertion marker, or use
-Session → Move tab left/right. Keyboard moves wrap at the ends. The same live
-shells, splits, zoom, Find focus and scripting identities survive the move;
-saved layouts retain the order. Escape or releasing outside a tab header cancels
-a drag. Session → Move pane backward/forward (or the shortcuts above) swaps the
-active live terminal with its neighbor in pane navigation order while retaining
-the split geometry and both shell processes. Pointer pane dragging,
-groups/pinning, moves between windows and tmux server window ordering remain
-separate parity gaps.
+On Ubuntu, install the desktop libraries if they are missing:
 
-The UI keeps the terminal in focus: no permanent toolbar or pane footer, an
-automatically hidden single-tab strip, thin split dividers and native macOS
-menus. Settings divides profile editing into General, Text, Colours and Triggers. General
-can enable the optional status bar or always-visible tab strip. Existing profiles
-keep their chosen fonts; fresh macOS profiles use Monaco 12.
+```sh
+sudo apt install libfontconfig1 libx11-6 libice6 libsm6 libxrender1 \
+  libxi6 libxrandr2 libxcursor1 libegl1 libgl1
+```
 
-Profiles can highlight matching output or bookmark completed lines. Configure
-Settings → Profiles → Triggers; **Triggered lines** appears in a pane after a
-match and navigates back to its retained scrollback. Rules never execute host
-actions. See [output rules](docs/output-rules.md) for examples and bounds.
-Incoming output preserves a scrolled view until those lines leave history.
+For CJK fallback glyphs, install `fonts-noto-cjk`. A font unavailable on the host may render as a missing-glyph box. The included desktop entry expects `Aster.Terminal` on `PATH`; set its `Exec` entry to the extracted binary's full path when adding it to a desktop menu.
 
-Inline graphics acceptance covers sixel, iTerm2 OSC1337 PNG and direct-data kitty
-RGBA, including actual rendered pixels from real shell output on each target.
-Other image variants/animation and graphics in replay remain unverified.
+## First steps
 
-Screen replay stores a bounded history of visible text screens in memory. Open
-Session → Instant replay, then seek with the slider or arrow keys; Escape closes
-it. Shells keep running. Recording stops and history clears when disabled in
-Settings → General or when a pane closes. Text, Unicode, colours, grid dimensions
-and cursor position/visibility are covered; images and binary iTerm2 DVR files
-are not. See the [architecture](docs/architecture.md) for capture and budget limits.
+Each pane starts an independent shell: `$SHELL` on Unix and PowerShell on Windows. Use **Shell → New tab with profile** to select another installed shell. Preferences configure profiles, startup directory and command, environment variables, fonts, colours, cursor, scrollback, theme, and shortcuts. Settings save atomically with backup recovery.
 
-On macOS/Linux with tmux installed, create a session (for example,
-`tmux new-session -d -s work`), then choose Shell → Attach tmux session and enter
-`work`. Its windows and panes appear as native controls. The tmux menu creates
-windows/splits, closes panes, finds text and detaches; common tab/split/copy/paste/
-find/close shortcuts work. Closing the control window detaches while tmux keeps
-the shells. This is explicit local `-C` control attach; automatic in-shell `-CC`,
-SSH/WSL attach and complete historical VT/graphics hydration remain unfinished.
+| Action | macOS | Windows / Linux |
+| --- | --- | --- |
+| New tab / window | `⌘T` / `⌘N` | `Ctrl+Shift+T` / `Ctrl+Shift+N` |
+| Split right / below | `⌘D` / `⌘⇧D` | `Ctrl+Shift+D` / `Ctrl+Shift+Alt+D` |
+| Find | `⌘F` | `Ctrl+Shift+F` |
+| Copy / paste | `⌘C` / `⌘V` | `Ctrl+Shift+C` / `Ctrl+Shift+V` |
+| Close pane | `⌘W` | `Ctrl+Shift+W` |
+| Preferences | `⌘,` | `Ctrl+Shift+,` |
+| Summon terminal (optional) | `Ctrl+Option+Space` | `Ctrl+Alt+Space` |
 
-Normal and native tmux panes share the compact Find bar in 0.9.0. Tmux Find
-searches output retained in Aster since attach, including the initial viewport;
-it does not import the tmux server’s entire earlier history. Pane/tab changes
-rebind it, and detach cancels pending work while preserving server shells.
+The optional global summon key is enabled in Preferences → General. Pressing it opens the terminal; pressing it again while the window is active hides the window while the shell continues running. It works while Aster is running; it is not a system-wide launcher when the app is closed. Linux currently requires X11, and key conflicts are reported.
 
-Find offers regex, case, optional smart-case and whole-word controls, result
-counts and wrapping Enter/Shift+Enter navigation. Escape closes the compact bar.
-Background searches use logical Unicode anchors across soft wraps; Enter refreshes
-changed output.
-Invalid patterns and bounded partial results are explicit. See [Find](docs/find.md)
-for limits; the tmux control window retains its literal prompt.
+For the complete shortcut list and workflow details, see [Find](docs/find.md), [scripting setup](docs/scripting.md), [output rules](docs/output-rules.md), and the [architecture guide](docs/architecture.md).
 
-Enable command marks in a bash or zsh
-profile to load the bundled original shell integration; user startup files are
-preserved and never edited. OSC title/cwd/host/status metadata is display-only.
-VT clipboard writes and notifications are disabled. Multiline paste prompts
-before sending text to the shell. No telemetry, cloud sync or AI services are added.
+### tmux
+
+On macOS or Linux with tmux installed, create a session such as `tmux new-session -d -s work`, then choose **Shell → Attach tmux session** and enter `work`. Aster displays its windows and panes as native controls; closing Aster detaches while tmux keeps the shells alive. This is an explicit local control-mode attach. Automatic in-shell `tmux -CC`, SSH/WSL attach, Windows tmux, and importing the server's entire earlier history are outside the verified subset.
+
+### Session recovery and replay
+
+With live recovery enabled, a separate local host can keep shell processes alive when the UI exits unexpectedly or a window is detached. Aster reconnects detached sessions at startup. Normal pane/window close ends the shell; operating-system shutdown is not survived. An 8 MiB in-memory journal has explicit text-checkpoint limits; it is not a complete backup of terminal graphics or history. Screen replay keeps a bounded in-memory history of text screens while the shell continues to run. See [architecture and limits](docs/architecture.md).
 
 ## Build and verify
 
-Install SDK **10.0.402**; macOS requires Command Line Tools/cc and Linux requires
-cc/libutil development headers. Mac builds also compile the small AppKit exit
-bridge with clang against system frameworks. Unix compatibility tests also require vim, less,
-tmux and zsh. Dependencies and upstream sources are pinned.
+The supported SDK is **.NET 10.0.402**. Unix builds need `clang`/`cc` for the pinned PTY helper; Linux also needs `libutil` development headers. macOS builds compile a small AppKit bridge with the system compiler. The repository pins dependencies and includes the required licensing notices.
 
 ```sh
 dotnet restore Aster.slnx --locked-mode
 dotnet build Aster.slnx -c Release --no-restore
 dotnet test Aster.slnx -c Release --no-build
 dotnet run --project src/App
-python3 scripts/package.py --rid osx-arm64 --smoke
 ```
 
-Use the native target RID (`win-x64`, `linux-x64`, `osx-arm64`) for packaging on
-its OS. `--smoke` executes the **final self-contained binary** with a real desktop
-backend and shell, checks input/resize/layout/cleanup, and captures actual native
-renders. Linux CI runs this under Xvfb. The engine benchmark is reproducible with
-`Aster.Terminal --benchmark benchmark.json`; native startup/memory/grid resize
-measurements are in the smoke report. On this workstation the SDK is in
-`.research/dotnet`; set `DOTNET_ROOT` to that directory for framework-dependent runs.
+The final 0.14.0 source passed [native CI run 39748978754](https://github.com/kris70lesgo/aster-terminal/actions/runs/39748978754): 123 test cases on each OS, with platform-specific skips and zero failures. The self-contained packages also passed native desktop and real-shell acceptance checks. macOS and Linux each passed 121 tests with 2 Windows-only skips; Windows passed 112 with 11 Unix-only skips. [Full reports and scope](docs/test-matrix.md) · [Release notes](docs/release-notes-v0.14.0.md).
 
-For an installed Mac archive, native checks can also run through the background
-`cua-driver` launcher (test tool required), with an existing Python environment
-containing `scripts/python/requirements.txt`:
+Build a self-contained package on the matching target OS with `python3 scripts/package.py --rid <rid> --smoke`, replacing `<rid>` with `osx-arm64`, `win-x64`, or `linux-x64`. The smoke check launches the final package with a desktop backend and real shell and verifies input, resize, layout, rendering, and cleanup. Linux CI runs it under Xvfb. A successful compile alone does not establish native GUI support.
 
-```sh
-python3 scripts/verify_installed_macos.py --report artifacts/mac-check --python .research/api-python/bin/python --repeat-scripting 3
-```
+## How the port is built
 
-The report folder must be fresh. This verifies actual process exits and native
-main-loop return; it does not inject physical keys or establish IME coverage.
+Aster began from an empty repository on **14 October 2026** for the [Avalonia Port Challenge](https://avaloniaui.net/blog/avalonia-port-challenge). iTerm2 is a native macOS application built around AppKit, Metal, CoreText, and long-lived forkpty servers. Aster rewrites the window, session, and profile layer in Avalonia, uses ConPTY on Windows and forkpty on Unix, and reuses the pinned MIT Devolutions terminal engine with an isolated presentation-source adaptation for reference rendering. It also adapts selected iTerm2 terminal protocols and bundles the upstream bash/zsh integrations with attribution.
 
-## Migration write-up
+The 0.14.0 candidate was prepared on **22 October 2026**, an eight-calendar-day delivery span. No timesheet, AI-credit ledger, or cloud/tool invoices were retained, so hands-on hours and cash/AI cost are **unmeasured**; commit timestamps are not a reliable substitute. Tools used included Codex, .NET, Avalonia, GitHub Actions, and local terminal tooling. The [migration report](docs/migration-report.md) describes design choices and problems encountered; [performance evidence](docs/performance.md) reports a defined workload without claiming superiority.
 
-Started from an empty repository on **2026-10-14** for the
-[Avalonia Port Challenge](https://avaloniaui.net/blog/avalonia-port-challenge).
-iTerm2 source is pinned at `069b6e0dd8f3f0d82fc08ea5d294d28f7c5b986e`.
-Its AppKit/Metal/CoreText UI and long-lived forkpty servers require different
-boundaries on portable desktops. Aster rewrites the window/session/profile layer
-in Avalonia, reuses Devolutions' MIT terminal engine and adapts its pinned
-control/render sources for reference drawing. It uses ConPTY on
-Windows and a native forkpty relay on Unix. It adapts iTerm2's semantic exit-code
-scan and metadata protocols and bundles its actual bash/zsh integration scripts.
-This is a behavior migration, not a literal translation of the Metal renderer.
+## Scope, licensing, and attribution
 
-Practical problems included a missing Unix helper in the NuGet package, an
-Avalonia Headless/xUnit version mismatch, Linux background jobs retaining the PTY,
-font/colour settings that the control did not apply automatically, and renderer
-disposal racing a queued draw. Recovery exposed ConPTY terminating a live shell
-when frontend detach cancelled an accepted write; host-lifetime input fixed it.
-Lossless UI comparison additionally exposed automation-inherited NO_COLOR,
-JPEG snapshots with .png names, sRGB/display-profile differences and asymmetric
-padding that painting did not honour. The adapted presentation sources retain
-upstream hashes/notices and isolate these changes from VT/process work.
-Native tmux required byte-preserving parsing, ordered server-owned grids and
-correct pixel padding/divider budgets. Each was reproduced and repaired. The hosted
-pipeline runs real-process tests and launches the final package on all three OSes;
-it verifies more than compilation. Tests cover UTF-8/VT state, malformed output,
-profiles/recovery, clipboard/search, independent panes, full-screen vim/tmux/less,
-opt-in shell hooks, titles, resizing and cleanup. Exact results and limitations
-are in the [test matrix](docs/test-matrix.md).
+Aster is licensed under [GPL-3.0-or-later](LICENSE). It preserves upstream attribution, dependency notices, and license texts in source and release packages. The audited reuse and distribution basis are recorded in [licensing notes](docs/licensing.md) and the [dependency source map](docs/dependency-source-map.md). iTerm2 source is pinned at [`069b6e0`](https://github.com/gnachman/iTerm2/tree/069b6e0dd8f3f0d82fc08ea5d294d28f7c5b986e); Aster is an independent port and does not imply endorsement by the iTerm2 project.
 
-The project began on 14 October 2026; the submission candidate was prepared on
-22 October, an eight-calendar-day delivery span. No timesheet, AI-credit ledger,
-or tool/cloud invoices were retained, so hands-on hours, AI spend and total cash
-cost are **unmeasured**; commit timestamps cannot reconstruct them reliably.
-Tools used were Codex, .NET, Avalonia, GitHub Actions and local terminal tools.
-[Performance evidence](docs/performance.md) is measured on a defined workload
-and makes no superiority claim.
-
-![Original iTerm2 3.6.6 startup reference](docs/evidence/iterm2-original.png)
-![Aster native dark theme with actual shell output](docs/evidence/v0.14.0-osx-arm64/dark.png)
-![Aster compact Unicode regex Find](docs/evidence/v0.14.0-osx-arm64/find-compact.png)
-![Aster compact Settings at minimum width](docs/evidence/v0.14.0-osx-arm64/preferences-compact.png)
-![Aster native profile output rules](docs/evidence/v0.14.0-osx-arm64/preferences-triggers.png)
-![Aster shell-generated inline graphics](docs/evidence/v0.14.0-osx-arm64/graphics.png)
-![Aster native tmux control panes](docs/evidence/v0.14.0-osx-arm64/tmux/tmux-splits.png)
-![Aster compact Find in native tmux](docs/evidence/v0.14.0-osx-arm64/tmux/tmux-find-compact.png)
-
-Original screenshot © George Nachman/contributors; installed iTerm2 3.6.6 is a
-different version from the installed 3.7.4 reference used for selected frame
-measurements. Aster images are real native-window captures from controlled shell
-fixtures; they are not matched-output pixel comparisons. The complete screenshots
-are **not pixel-identical**. [Screenshot provenance](docs/evidence/README.md)
-distinguishes historical references from final package captures.
-
-Automatic in-shell tmux `-CC`, remote control attach, complete iTerm2 DVR compatibility,
-full trigger action/plist compatibility, complete Python API compatibility, customizable hotkeys/Wayland support and complete graphics
-parity remain **Milestone B**, with individual statuses in the parity matrix.
-Physical IME/AltGr, native clipboard gestures, multi-monitor/DPI and live SSH
-coverage are still manual test gaps. A running dependency feature is not credited
-as verified Aster behavior without acceptance evidence.
-
-See the [submission checklist](docs/contest-submission.md), [migration report](docs/migration-report.md), and [architecture](docs/architecture.md),
-[migration log](docs/migration-log.md), [licensing](docs/licensing.md),
-[dependency sources](docs/dependency-source-map.md), and
-[challenge checklist](docs/challenge-compliance.md). The app and evidence are
-released; no contest form submission or judging outcome is claimed.
+For the detailed feature-by-feature status, see the [iTerm2 parity inventory](docs/iterm2-feature-parity.md). For the challenge checklist and prepared evidence links, see [contest submission preparation](docs/contest-submission.md); the repository does not submit an entry on anyone's behalf.

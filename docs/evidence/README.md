@@ -1,5 +1,21 @@
 # Screenshot and runtime evidence
 
+## Release candidate 0.14.0 — source 0d5ca38 / CI run 39748978754
+
+`v0.14.0-osx-arm64`, `v0.14.0-win-x64` and `v0.14.0-linux-x64` contain final
+123-case TRX results, native shell/window renders and native acceptance reports
+from the exact source commit linked above. Each target passes its full test suite
+with platform-only skips, a real packaged window/PTY run, the system-wide hotkey
+summon/hide/resummon test, original Python-client control, and live session
+recovery. macOS/Linux also pass native tmux control mode. Hosted captures are 1×;
+the optional Mac-local 2× development capture is pre-release evidence and does
+not establish full screenshot identity.
+
+`ci-v0.14.0.json` records per-target counts and runtime reports. The exact three
+release archives, SHA-256 values, notice inventory and extracted Mac signature
+audit are in `payload-v0.14.0.json`. macOS is ad-hoc signed without Developer ID
+notarization; Windows is unsigned. Private user shell captures are excluded.
+
 ## Historical release 0.9.0
 
 `v0.9.0-{rid}` contains final 78-test/native package reports/images from source

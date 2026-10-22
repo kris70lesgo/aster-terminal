@@ -1,4 +1,4 @@
-# Unreleased visual refinement — 2026-10-20
+# iTerm screenshot frame alignment — shipped in 0.14.0 (measurements 2026-10-20)
 
 The user-supplied iTerm2 3.7.4 screenshot confirms a 587×462 logical frame, a
 29-point caption, the two 1-point separator rows, and traffic-light centers at
@@ -7,9 +7,8 @@ that size, header height, separator colors, and sampled control colors. The
 caption, separator, terminal-surface, and traffic-light center samples match
 exactly. Existing saved window geometry is preserved; the ANSI black palette
 entry remains separately #14191E. Regression coverage checks the terminal
-surface and fresh-install defaults. A native Mac smoke capture at the same
-logical size (2× physical resolution) is in
-[reference-window.png](evidence/unreleased-2026-10-20-visual-refinement/native-smoke/reference-window.png).
+surface and fresh-install defaults. A pre-release native Mac smoke capture at the same logical size (2× physical
+resolution) is in [reference-window.png](evidence/unreleased-2026-10-20-visual-refinement/native-smoke/reference-window.png). Final hosted package screenshots are 1× and are retained under `evidence/v0.14.0-*`.
 The sample coordinates and limitations are in
 [appearance-samples.json](evidence/unreleased-2026-10-20-visual-refinement/appearance-samples.json).
 
@@ -21,7 +20,7 @@ similarity score remain unverified. The private shell screenshot is not copied
 into repository evidence. This screenshot-specific 29-point measurement
 supersedes the earlier 32-point observation recorded below.
 
-# Unreleased UI refinement — 2026-10-19
+# Login-shell caption refinement — included in 0.14.0 (2026-10-19)
 
 Read-only comparison against the installed iTerm2 3.7.4 at 587×462 logical
 pixels confirms the current single-window caption, traffic-light positions,
@@ -35,7 +34,7 @@ Regression coverage is recorded in
 
 This is a focused caption refinement, not a claim of complete pixel identity;
 the reference's private shell screenshot is not included in the repository.
-The current-source Windows/Linux visual checks remain pending.
+The final source and native packages are verified on Windows/Linux in CI run 39748978754; exact side-by-side visual measurements remain macOS-only.
 
 # Lossless reference pass — release 0.13.0
 
@@ -80,6 +79,17 @@ quote mask overlaps 89.37% under the documented threshold. Those selected crops
 are **not** a whole-window similarity score; bright antialiasing edges still
 show differences. [Structured measurement evidence](evidence/pixel-reference-v0.13.0.json)
 contains the method, crop bounds, image hashes and limits without user images.
+
+## Final 0.14.0 screenshots
+
+The published package captures in `evidence/v0.14.0-*` come from native
+macOS/Windows windows and Linux X11 under Xvfb, with real shell sessions. They
+are 1× hosted captures of controlled acceptance output. The iTerm screenshot is
+an installed 3.6.6 startup reference, while the frame measurements use a separate
+installed 3.7.4 reference. Shell output, caption, window chrome, fonts and capture
+scale differ, so these images document the port and do **not** establish pixel
+identity. Measured frame geometry and selected colour centers are described
+above; full-window comparison remains unproven.
 
 The following 0.12 record is historical released evidence.
 

@@ -1,0 +1,66 @@
+{
+  "sourceCommit": "0d5ca3813703fce55fcdd8801e7c37918729ca74",
+  "runId": 39748978754,
+  "runUrl": "https://github.com/kris70lesgo/aster-terminal/actions/runs/39748978754",
+  "conclusion": "success",
+  "verifiedAt": "2026-10-22",
+  "targets": {
+    "osx-arm64": {
+      "os": "macOS 15.7.9",
+      "architecture": "Arm64",
+      "tests": {
+        "total": 123,
+        "passed": 121,
+        "skipped": 2,
+        "failed": 0
+      },
+      "nativePackageAcceptancePassed": true,
+      "nativeChecks": 16,
+      "globalHotkeyPassed": true,
+      "globalHotkeyChecks": 6,
+      "originalPythonClientPassed": true,
+      "liveShellRecoveryPassed": true,
+      "tmuxControlModePassed": true,
+      "captureScaling": 1,
+      "evidenceDirectory": "docs/evidence/v0.14.0-osx-arm64"
+    },
+    "win-x64": {
+      "os": "Microsoft Windows 10.0.26100",
+      "architecture": "X64",
+      "tests": {
+        "total": 123,
+        "passed": 112,
+        "skipped": 11,
+        "failed": 0
+      },
+      "nativePackageAcceptancePassed": true,
+      "nativeChecks": 15,
+      "globalHotkeyPassed": true,
+      "globalHotkeyChecks": 5,
+      "originalPythonClientPassed": true,
+      "liveShellRecoveryPassed": true,
+      "tmuxControlModePassed": null,
+      "captureScaling": 1,
+      "evidenceDirectory": "docs/evidence/v0.14.0-win-x64"
+    },
+    "linux-x64": {
+      "os": "Ubuntu 24.04.5 LTS",
+      "architecture": "X64",
+      "tests": {
+        "total": 123,
+        "passed": 121,
+        "skipped": 2,
+        "failed": 0
+      },
+      "nativePackageAcceptancePassed": true,
+      "nativeChecks": 15,
+      "globalHotkeyPassed": true,
+      "globalHotkeyChecks": 5,
+      "originalPythonClientPassed": true,
+      "liveShellRecoveryPassed": true,
+      "tmuxControlModePassed": true,
+      "captureScaling": 1,
+      "evidenceDirectory": "docs/evidence/v0.14.0-linux-x64"
+    }
+  }
+}

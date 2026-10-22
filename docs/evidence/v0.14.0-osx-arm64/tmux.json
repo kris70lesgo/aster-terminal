@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "processId": 4549,
+  "timestamp": "2026-10-22T08:39:24.344494+00:00",
+  "os": "macOS 15.7.9",
+  "renderScaling": 1,
+  "checks": [
+    "Native tmux Find searches real shell output with regex/case/whole-word/NFC Unicode, navigation, invalid patterns and a usable 620-width bar; Escape clears matches",
+    "Switching tmux panes rebinds Find and clears the previous pane\u0027s matches",
+    "Native Avalonia panes mirror actual tmux nested splits; independent routed input and Unicode output",
+    "Native window resize reaches tmux PTYs and stty reports matching dimensions",
+    "Every native pane uses tmux\u0027s exact PTY grid and fits its cells without clipping",
+    "Detaching cancels pending Find without terminating tmux-owned shells",
+    "Closing the native control window detaches; a new native window recovers the same live shell variable"
+  ],
+  "expectedSize": "27 57",
+  "initialKernelSize": "27 57",
+  "kernelSize": "27 57",
+  "kernelWaitMs": 70.1632,
+  "error": null
+}

@@ -1,4 +1,28 @@
-# Verification matrix — release 0.13.0, 2026-10-17
+# Verification matrix — release 0.14.0, 2026-10-22
+
+Runtime source **0d5ca3813703fce55fcdd8801e7c37918729ca74**, native CI
+[39748978754](https://github.com/kris70lesgo/aster-terminal/actions/runs/39748978754):
+**123 tests on each target**. macOS/Linux each pass 121 with 2 Windows-only
+skips; Windows passes 112 with 11 Unix-only skips. All report zero failures.
+Final self-contained packages pass native window/PTY, resizing, rendering,
+preferences, Find, tabs/splits and cleanup checks. Each OS also passes the
+system-wide hotkey summon/hide/resummon against an isolated foreground peer,
+original Python-client scripting, and live-session recovery. macOS/Linux also
+pass tmux control mode. Exact TRX, native reports and screenshots are under
+`evidence/v0.14.0-{osx-arm64,win-x64,linux-x64}`; run and payload hashes are in
+`ci-v0.14.0.json` and `payload-v0.14.0.json`.
+
+This run verifies the current Open Quickly fuzzy launcher, live pane swapping,
+opt-in Smart Case, login-shell captions and opt-in semantic selection through
+shared cross-platform test cases. Hosted captures use 1× rendering. Earlier
+local macOS 2× captures in `unreleased-2026-10-20-visual-refinement/` are
+pre-release development evidence; full screenshot pixel identity is not claimed.
+Native OS support is established on macOS 15.7.9, hosted Windows x64 build
+10.0.26100, and Ubuntu 24.04 X11/Xvfb. Wayland, wider DPI/monitor/IME
+coverage and physical drag gestures remain gaps. The macOS archive is ad-hoc
+signed and is not Developer ID notarized; Windows is unsigned.
+
+## Historical verification — release 0.13.0, 2026-10-17
 
 Runtime source **1a4ff56cbda02076575a11b12966db09383f9b63**, native CI
 [39034987649](https://github.com/kris70lesgo/aster-terminal/actions/runs/39034987649):
@@ -27,10 +51,10 @@ setup race was fixed with AvaloniaFact. The verifier temporarily wakes/holds the
 physical display and releases its assertion afterward; startup logs record the
 observed no-display RenderTimer error rather than crediting it as GUI support.
 
-## Unreleased working-tree verification — 2026-10-19
+### Pre-release development evidence — 2026-10-19
 
-The current working tree adds Session-menu/shortcut pane swapping, opt-in
-Smart Case for literal and regex Find, and iTerm-style initial titles for
+At that pre-release stage, the working tree added Session-menu/shortcut pane
+swapping, opt-in Smart Case for literal and regex Find, and iTerm-style initial titles for
 standard bash/zsh login profiles. On macOS 26.7.2/Arm64, the full solution
 build passes with zero warnings/errors; the full suite passes **108 tests with
 2 Windows-only skips and zero failures**. The TRX is in
@@ -47,13 +71,11 @@ the original Python client, and tmux. Captures and reports are in
 attempt lacked the pinned Python test client in the default interpreter; the
 repeat used the isolated `.research/contest-venv` and passed.
 
-These changes are **not** in the published v0.13.0 archives. This local package
-still carries version 0.13.0 and is test output, not a release candidate.
-Current-source native validation on Windows and Linux remains pending; the
-physical cross-application hotkey check was skipped on this Mac. Do not use the
-local package hash as a submission download.
+These pre-release local checks were superseded by v0.14.0. Final three-OS package
+acceptance and archive checks are recorded in the current matrix above; the local
+2× screenshot remains Mac-only and does not prove full pixel identity.
 
-## Unreleased visual refinement — 2026-10-20
+### Pre-release development evidence — 2026-10-20
 
 The fresh-install window now defaults to the controlled iTerm reference size
 (587×462 logical pixels) and screenshot-measured 29-point caption, with the two
@@ -67,11 +89,9 @@ Focused tests cover fuzzy ranking, the recognized selections, invalid IP input,
 and preference persistence. A native macOS 26.7.2/Arm64 smoke run
 at 2× passes its real-shell, layout, replay, graphics, Find, settings and cleanup
 checks, and records a 1174×924 physical render-target screenshot. Captures and
-report: `evidence/unreleased-2026-10-20-visual-refinement/`. These are
-current-source working-tree results, not new release archives. Selected frame
-samples and control centers match the supplied reference; full screenshot pixel
-identity is not established. Current-source native UI validation on Windows/Linux
-remains pending.
+report: `evidence/unreleased-2026-10-20-visual-refinement/`. These local development captures preceded 0.14.0 CI. Selected frame samples and
+control centers match the supplied reference; full screenshot pixel identity is
+not established. Cross-platform package acceptance is recorded above.
 
 # Historical verification — release 0.12.0, 2026-10-17
 

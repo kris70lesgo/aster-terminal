@@ -234,7 +234,6 @@ and makes no superiority claim.
 
 ![Original iTerm2 3.6.6 startup reference](docs/evidence/iterm2-original.png)
 ![Aster native dark theme with actual shell output](docs/evidence/v0.14.0-osx-arm64/dark.png)
-![Aster at the installed reference window size](docs/evidence/v0.14.0-osx-arm64/reference-window.png)
 ![Aster compact Unicode regex Find](docs/evidence/v0.14.0-osx-arm64/find-compact.png)
 ![Aster compact Settings at minimum width](docs/evidence/v0.14.0-osx-arm64/preferences-compact.png)
 ![Aster native profile output rules](docs/evidence/v0.14.0-osx-arm64/preferences-triggers.png)
@@ -243,9 +242,11 @@ and makes no superiority claim.
 ![Aster compact Find in native tmux](docs/evidence/v0.14.0-osx-arm64/tmux/tmux-find-compact.png)
 
 Original screenshot © George Nachman/contributors; installed iTerm2 3.6.6 is a
-different version and geometry from the source audit. Captures show actual
-applications. [Screenshot provenance](docs/evidence/README.md) distinguishes
-historical startup references from final native acceptance captures.
+different version from the installed 3.7.4 reference used for selected frame
+measurements. Aster images are real native-window captures from controlled shell
+fixtures; they are not matched-output pixel comparisons. The complete screenshots
+are **not pixel-identical**. [Screenshot provenance](docs/evidence/README.md)
+distinguishes historical references from final package captures.
 
 Automatic in-shell tmux `-CC`, remote control attach, complete iTerm2 DVR compatibility,
 full trigger action/plist compatibility, complete Python API compatibility, customizable hotkeys/Wayland support and complete graphics
@@ -254,7 +255,7 @@ Physical IME/AltGr, native clipboard gestures, multi-monitor/DPI and live SSH
 coverage are still manual test gaps. A running dependency feature is not credited
 as verified Aster behavior without acceptance evidence.
 
-See [migration report](docs/migration-report.md), [architecture](docs/architecture.md),
+See the [submission checklist](docs/contest-submission.md), [migration report](docs/migration-report.md), and [architecture](docs/architecture.md),
 [migration log](docs/migration-log.md), [licensing](docs/licensing.md),
 [dependency sources](docs/dependency-source-map.md), and
 [challenge checklist](docs/challenge-compliance.md). The app and evidence are

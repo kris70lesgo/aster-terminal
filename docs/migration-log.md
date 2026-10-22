@@ -1012,3 +1012,28 @@ default. Selecting output never launches a URI, executes a command or performs
 another host action. Preference persistence and selection ranges have focused
 regressions, including two pointer clicks through the terminal control. Full
 solution tests pass 121 cases with two Windows-only skips.
+
+
+### 2026-10-22 — 0.14.0 competition candidate verified
+
+- Added final version metadata and documented the cross-platform UI additions:
+  fuzzy Open Quickly, process-preserving pane swaps, opt-in Smart Case, login-shell
+  captions and semantic double-click selection.
+- Final source `0d5ca3813703fce55fcdd8801e7c37918729ca74` passes GitHub Actions run
+  39748978754 on macOS 15.7.9/arm64, Windows x64 and Ubuntu 24.04/x64. Each
+  target reports 123 tests with zero failures (121 pass + 2 platform skips on
+  macOS/Linux; 112 pass + 11 platform skips on Windows). All three self-contained
+  packages pass native window, real-process, resize, rendering, tab/split,
+  scripting, recovery and global summon checks; Unix also passes tmux control mode.
+- The final Mac package archive extracts with a valid ad-hoc signature. Archive
+  sidecar hashes match, required project/dependency notices are present, and the
+  published payload scan found no user settings, shell history, credentials or
+  test payload. The Mac signature is not Developer ID notarized.
+- Rechecked official contest rules on 2026-10-22: public OSI-licensed source,
+  target downloads, before/after screenshots and a short README migration/cost
+  account remain required; closing time is 23 October 23:59 UTC. The versioned
+  archive and final evidence are in `payload-v0.14.0.json`, `ci-v0.14.0.json` and
+  `test-matrix.md`. Contest entry form and personal declarations remain with the
+  entrant; no form was submitted.
+- Full pixel identity remains unproven, and direct development hours/AI spend/
+  cash costs were not tracked; the README says so explicitly.

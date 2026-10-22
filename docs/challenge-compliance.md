@@ -1,27 +1,27 @@
 # Avalonia Port Challenge compliance
 
-Verified 2026-10-19 (UTC) for the public 0.13.0 competition release. This is a completed project checklist with explicit remaining entrant/form items, not a claim of submission.
-Authority for every contest rule below: [official announcement, published 2026-08-28](https://avaloniaui.net/blog/avalonia-port-challenge).
+Verified 2026-10-22 (UTC) for the 0.14.0 submission candidate. This project checklist covers public materials and clearly separates the entrant-only form declarations; it does not claim the entry has been submitted. Authority for the current rules is the [official announcement](https://avaloniaui.net/blog/avalonia-port-challenge), rechecked today.
 
 | Rule / requirement | Verification date | Status | Repository evidence / remaining work |
 |---|---|---|---|
-| Original application predates contest opening; ports and rewrites allowed | 2026-10-19 | VERIFIED, candidate eligible | iTerm2 predates 2026; pinned source inventory in `iterm2-feature-parity.md`. This is a rewrite of a subset, not a claim of full parity. |
-| Someone else's application may be ported if its licence permits | 2026-10-19 | VERIFIED; audit complete for reused subset | `licensing.md`: upstream COPYING grants GPLv2-or-later, full application effectively GPLv3. Aster uses GPL-3.0-or-later. |
-| Copyleft port cannot be closed source | 2026-10-19 | VERIFIED; compliant public GPL source | GPL source and notices in this repository; no closed-source distribution planned. |
-| Open-source entry: public GitHub repository with OSI-approved licence | 2026-10-19 | COMPLETE | Public https://github.com/kris70lesgo/aster-terminal; LICENSE, source, adapted scripts/helper and build scripts. Dependency notices/source map reviewed. |
-| Downloadable builds for each targeted platform | 2026-10-19 | COMPLETE | Public v0.13.0 release contains macOS arm64, Windows x64 and Linux x64 archives plus SHA-256 files. Each published checksum matches `payload-v0.13.0.json`; native evidence is in `test-matrix.md` and `ci-v0.13.0.json`. |
-| Before-and-after screenshots | 2026-10-19 | COMPLETE with limits | README links the original iTerm2 3.6.6 reference and native Aster screenshots; all nine local image references resolve. Different version/profile/geometry are disclosed; no pixel identity is asserted. |
-| Mandatory short migration write-up covering actual costs, in README for open source | 2026-10-19 | COMPLETE | README contains the migration write-up, decisions/problems and unmeasured cost declaration; migration-log/report/performance provide supporting detail. |
-| Five judging dimensions: migration difficulty/completeness, application quality, cross-platform implementation, engineering quality, usefulness of write-up | 2026-10-19 | VERIFIED; evidence mapped | `migration-report.md`, `test-matrix.md`, feature matrix. |
-| Best Cross-Platform Port: one codebase shipping cleanly on Windows, macOS, Linux | 2026-10-19 | VERIFIED; three-OS subset demonstrated | Shared Avalonia host/platform adapters; hosted real-process tests and native self-contained package acceptance on macOS/Windows/Linux. Scope and manual gaps in `test-matrix.md`. |
-| Best IT Pro Tool: sysadmin/security/networking/remote access tooling | 2026-10-19 | VERIFIED; secondary candidate | Interactive terminal scope fits category description; category acceptance is judges' decision. |
-| Solo entry or team up to three; one prize per team | 2026-10-19 | VERIFIED; entrant details UNVERIFIED | Human entrant/team declaration needed at submission. AI assistance explicitly allowed. |
-| Deadline 23 October 2026, 23:59 UTC; winners 6 November | 2026-10-19 | VERIFIED | Official page was fetched live; deadline is 24 October 2026, 05:29 India time. Do not assume extension. |
-| Submit via linked entry form | 2026-10-19 | VERIFIED link; submission OPEN | Form was opened read-only. It requires entrant name, email, GitHub username, repository/write-up and further eligibility/legal responses. The user must provide truthful personal declarations. No submission performed. |
-| Mobile/WebAssembly receive additional recognition | 2026-10-19 | VERIFIED; out of current scope | Desktop terminal takes priority. |
-| Required minimum terminal feature list | 2026-10-19 | No prescribed list found | Announcement evaluates completeness and quality; Phase 1/2 acceptance criteria are project goals, not invented contest rules. |
+| Original application predates contest opening; ports and rewrites allowed | 2026-10-22 | VERIFIED, candidate eligible | iTerm2 predates 2026; pinned source inventory in `iterm2-feature-parity.md`. Aster is an independent rewrite of a documented subset, not full parity. |
+| Someone else's application may be ported if its licence permits | 2026-10-22 | VERIFIED for reused scope | `licensing.md`: upstream COPYING grants GPLv2-or-later; Aster is GPL-3.0-or-later. Reused components and notices are listed and preserved. |
+| Copyleft port cannot be closed source | 2026-10-22 | VERIFIED | Public source and release payload are GPL; required project/dependency notices ship in every archive. |
+| Public repository under an OSI-approved licence | 2026-10-22 | COMPLETE | [Public GitHub repository](https://github.com/kris70lesgo/aster-terminal), GPL-3.0-or-later source, adapted scripts/helpers and build files. |
+| Downloadable builds for each target platform | 2026-10-22 | COMPLETE after v0.14.0 release publication | macOS arm64, Windows x64 and Linux x64 archives plus SHA-256 sidecars are audited in `payload-v0.14.0.json`; final native run is `ci-v0.14.0.json`. |
+| Before-and-after screenshots | 2026-10-22 | COMPLETE with limits | README links the original iTerm2 startup reference and native Aster captures. Different app/reference versions and output are identified; whole-window pixel identity is not claimed. |
+| Short migration write-up in README, including actual costs | 2026-10-22 | COMPLETE; direct cost unmeasured | README describes architecture, problems, eight calendar days of delivery and states that hands-on hours, AI spend and cash outlay were not tracked. No numerical cost is fabricated. |
+| Five judging dimensions: migration difficulty/completeness, application quality, cross-platform implementation, engineering quality, usefulness of write-up | 2026-10-22 | Evidence mapped | `migration-report.md`, `test-matrix.md`, `iterm2-feature-parity.md` and README. |
+| Best Cross-Platform Port: one codebase shipping on Windows, macOS and Linux | 2026-10-22 | Three-platform subset verified | Avalonia host/platform adapters and final self-contained package acceptance on all three OSes in CI run 39748978754. Limits remain explicit in `test-matrix.md`. |
+| Best IT Pro Tool | 2026-10-22 | Plausible category candidate | A terminal is an interactive IT tool; category selection and judging remain the entrant's choice. |
+| Solo entry or team of up to three; one prize per team | 2026-10-22 | Rules verified; entrant declaration remains | Human entrant/team details and eligibility declarations belong in the form. AI assistance is allowed. |
+| Deadline 23 October 2026, 23:59 UTC; winners 6 November | 2026-10-22 | VERIFIED from official page | Deadline is 24 October 2026, 05:29 IST. Do not assume an extension. |
+| Submit using the linked entry form | 2026-10-22 | Entrant action remains | User asked that the form not be submitted. The entrant must complete personal and legal declarations truthfully. No submission was made. |
+| Mobile/WebAssembly receive additional recognition | 2026-10-22 | Verified; not implemented | Current project targets desktop terminal workflows. |
+| Required minimum terminal feature list | 2026-10-22 | No prescriptive list found | Judges assess migration and resulting quality; project parity scope is documented separately. |
 
-Reverify at architectural eligibility changes, major milestones, release-artifact preparation, and immediately before submission. Retain this dated audit; do not refetch unchanged rules for routine edits.
+Recheck the official announcement immediately before the entrant submits. Form-specific declaration wording and the entrant's eligibility are not verified here. The unused iTerm2 submodules are not claimed as audited or imported. The project is not represented as complete iTerm2 feature/UI parity.
+
 
 Ambiguities: form-specific declarations/terms are UNVERIFIED; no official guarantee of acceptance for a subset rewrite. Unused iTerm2 submodules are not imported or asserted fully audited; current reused components have their own source/notice audit. Public source is published. Entrant/team declaration and form submission remain separate from completing the app; recheck rules immediately before submission.
 
@@ -115,16 +115,10 @@ notice checks pass. Private user shell captures are not published; isolated
 real-shell fixture captures document the UI. No new dependency/upstream asset.
 Entrant identity/form declarations remain unverified; no form submitted.
 
-2026-10-19 final submission preflight: the official announcement was fetched
-live and still requires public source/licence, builds for each target, before-
-and-after screenshots, and an open-source README migration write-up. The
-23 October 23:59 UTC deadline is unchanged. GitHub identifies v0.13.0 as the
-latest public release at commit 51d9488; all three downloadable archives and
-their SHA-256 files are present, and the remote hashes match
-`payload-v0.13.0.json`. README image links, including the original iTerm2
-reference, resolve locally. The current v0.13.0 evidence is in `ci-v0.13.0.json`,
-`payload-v0.13.0.json`, `test-matrix.md` and
-`challenge-preflight-2026-10-19.json`. The entry form was inspected without
-submission; personal identity, eligibility and legal confirmations remain for
-the entrant. Unreleased working-tree UI changes are excluded from this public
-candidate. No contest submission is claimed.
+Historical 2026-10-19 preflight (superseded by the 2026-10-22 table above):
+the announcement then required public source/licence, builds for each target,
+before-and-after screenshots, and an open-source README migration write-up. At
+that point v0.13.0 was latest; its artifacts and checksum audit remain historical
+evidence. The entry form was inspected without submission; personal identity,
+eligibility and legal confirmations remain for the entrant. UI work subsequently
+entered v0.14.0 as documented above.

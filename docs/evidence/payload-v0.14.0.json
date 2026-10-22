@@ -51,7 +51,9 @@
       "nativeAcceptancePassed": true,
       "macOSCodeSignature": "valid ad-hoc signature; verified after archive extraction; not Developer ID notarized",
       "archivePayloadEntries": 427,
-      "appleDoubleMetadataEntries": 404
+      "appleDoubleMetadataEntries": 404,
+      "sha256SidecarSha256": "f61e79e134f6ad7c0be6de854b38e0838d18e2973a9575082eda49a3e5aa5ff9",
+      "publicReleaseAssetPresent": true
     },
     "win-x64": {
       "archive": "aster-terminal-0.14.0-win-x64.zip",
@@ -96,7 +98,9 @@
       "unixExecutablePermissionPresent": null,
       "nativeAcceptancePassed": true,
       "macOSCodeSignature": null,
-      "archivePayloadEntries": 417
+      "archivePayloadEntries": 417,
+      "sha256SidecarSha256": "cc3bd1c1f9c8ec7de6586b1335f95fa031e6621e041a7fd8aac88066035270f9",
+      "publicReleaseAssetPresent": true
     },
     "linux-x64": {
       "archive": "aster-terminal-0.14.0-linux-x64.tar.gz",
@@ -141,7 +145,13 @@
       "unixExecutablePermissionPresent": true,
       "nativeAcceptancePassed": true,
       "macOSCodeSignature": null,
-      "archivePayloadEntries": 421
+      "archivePayloadEntries": 421,
+      "sha256SidecarSha256": "0965cee3255fb04a615d8c0f6fe07e4c57b3f26d67029bb678fce8758681859a",
+      "publicReleaseAssetPresent": true
     }
-  }
+  },
+  "publishedReleaseUrl": "https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.14.0",
+  "publishedAt": "2026-10-22T08:56:16Z",
+  "expectedPublishedAssets": 6,
+  "githubAssetDigestMatches": true
 }

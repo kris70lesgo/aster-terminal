@@ -1,6 +1,6 @@
 # Screenshot and runtime evidence
 
-## Release candidate 0.14.0 — source 0d5ca38 / CI run 39748978754
+## Published release 0.14.0 — source 0d5ca38 / CI run 39748978754
 
 `v0.14.0-osx-arm64`, `v0.14.0-win-x64` and `v0.14.0-linux-x64` contain final
 123-case TRX results, native shell/window renders and native acceptance reports

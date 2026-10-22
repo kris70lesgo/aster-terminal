@@ -12,8 +12,8 @@ has not been filled or sent.
 - Windows x64: <https://github.com/kris70lesgo/aster-terminal/releases/download/v0.14.0/aster-terminal-0.14.0-win-x64.zip>
 - Linux x64: <https://github.com/kris70lesgo/aster-terminal/releases/download/v0.14.0/aster-terminal-0.14.0-linux-x64.tar.gz>
 - Migration write-up: [README migration section](../README.md#migration-write-up)
-- Before screenshot: [iTerm2 reference](evidence/iterm2-original.png)
-- After screenshot: [Aster native shell window](evidence/v0.14.0-osx-arm64/dark.png)
+- Before screenshot: [iTerm2 reference](evidence/iterm2-original.png) · [direct GitHub image](https://github.com/kris70lesgo/aster-terminal/blob/main/docs/evidence/iterm2-original.png)
+- After screenshot: [Aster native shell window](evidence/v0.14.0-osx-arm64/dark.png) · [direct GitHub image](https://github.com/kris70lesgo/aster-terminal/blob/main/docs/evidence/v0.14.0-osx-arm64/dark.png)
 - Three-platform test/evidence record: [verification matrix](test-matrix.md), [CI JSON](evidence/ci-v0.14.0.json), [payload audit](evidence/payload-v0.14.0.json)
 - Contest announcement and entry form: <https://avaloniaui.net/blog/avalonia-port-challenge> (the form is linked near the end of the official page; its current destination is <https://docs.google.com/forms/d/e/1FAIpQLSfJsgz1HRHKsxH0yRnn2wcvbZ-tSkmnjDXxIhE5YjM1v3lVkg/viewform?usp=send_form>).
 

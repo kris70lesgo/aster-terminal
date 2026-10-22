@@ -1,6 +1,6 @@
 # Avalonia Port Challenge compliance
 
-Verified 2026-10-22 (UTC) for the 0.14.0 submission candidate. This project checklist covers public materials and clearly separates the entrant-only form declarations; it does not claim the entry has been submitted. Authority for the current rules is the [official announcement](https://avaloniaui.net/blog/avalonia-port-challenge), rechecked today.
+Verified 2026-10-22 (UTC) for the public 0.14.0 release. This project checklist covers public materials and clearly separates the entrant-only form declarations; it does not claim the entry has been submitted. Authority for the current rules is the [official announcement](https://avaloniaui.net/blog/avalonia-port-challenge), rechecked today.
 
 | Rule / requirement | Verification date | Status | Repository evidence / remaining work |
 |---|---|---|---|
@@ -8,7 +8,7 @@ Verified 2026-10-22 (UTC) for the 0.14.0 submission candidate. This project chec
 | Someone else's application may be ported if its licence permits | 2026-10-22 | VERIFIED for reused scope | `licensing.md`: upstream COPYING grants GPLv2-or-later; Aster is GPL-3.0-or-later. Reused components and notices are listed and preserved. |
 | Copyleft port cannot be closed source | 2026-10-22 | VERIFIED | Public source and release payload are GPL; required project/dependency notices ship in every archive. |
 | Public repository under an OSI-approved licence | 2026-10-22 | COMPLETE | [Public GitHub repository](https://github.com/kris70lesgo/aster-terminal), GPL-3.0-or-later source, adapted scripts/helpers and build files. |
-| Downloadable builds for each target platform | 2026-10-22 | COMPLETE after v0.14.0 release publication | macOS arm64, Windows x64 and Linux x64 archives plus SHA-256 sidecars are audited in `payload-v0.14.0.json`; final native run is `ci-v0.14.0.json`. |
+| Downloadable builds for each target platform | 2026-10-22 | COMPLETE | Public [v0.14.0 release](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.14.0) has macOS arm64, Windows x64 and Linux x64 archives plus SHA-256 sidecars. All match `payload-v0.14.0.json`; final native run is `ci-v0.14.0.json`. |
 | Before-and-after screenshots | 2026-10-22 | COMPLETE with limits | README links the original iTerm2 startup reference and native Aster captures. Different app/reference versions and output are identified; whole-window pixel identity is not claimed. |
 | Short migration write-up in README, including actual costs | 2026-10-22 | COMPLETE; direct cost unmeasured | README describes architecture, problems, eight calendar days of delivery and states that hands-on hours, AI spend and cash outlay were not tracked. No numerical cost is fabricated. |
 | Five judging dimensions: migration difficulty/completeness, application quality, cross-platform implementation, engineering quality, usefulness of write-up | 2026-10-22 | Evidence mapped | `migration-report.md`, `test-matrix.md`, `iterm2-feature-parity.md` and README. |
@@ -122,3 +122,12 @@ that point v0.13.0 was latest; its artifacts and checksum audit remain historica
 evidence. The entry form was inspected without submission; personal identity,
 eligibility and legal confirmations remain for the entrant. UI work subsequently
 entered v0.14.0 as documented above.
+
+
+2026-10-22 final release verification: v0.14.0 is published at
+https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.14.0. GitHub exposes all
+six expected assets (three packages and three SHA-256 files); each archive digest
+reported by GitHub matches the local CI artifact and each downloaded sidecar
+contains that archive's matching hash. The entry form remains unsubmitted at the
+user's direction. Only entrant identity and truthful eligibility/legal responses
+remain before the user submits.

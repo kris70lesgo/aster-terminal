@@ -1014,7 +1014,7 @@ regressions, including two pointer clicks through the terminal control. Full
 solution tests pass 121 cases with two Windows-only skips.
 
 
-### 2026-10-22 — 0.14.0 competition candidate verified
+### 2026-10-22 — 0.14.0 competition release published
 
 - Added final version metadata and documented the cross-platform UI additions:
   fuzzy Open Quickly, process-preserving pane swaps, opt-in Smart Case, login-shell
@@ -1033,7 +1033,8 @@ solution tests pass 121 cases with two Windows-only skips.
   target downloads, before/after screenshots and a short README migration/cost
   account remain required; closing time is 23 October 23:59 UTC. The versioned
   archive and final evidence are in `payload-v0.14.0.json`, `ci-v0.14.0.json` and
-  `test-matrix.md`. Contest entry form and personal declarations remain with the
-  entrant; no form was submitted.
+  `test-matrix.md`. All six assets are public at the v0.14.0 GitHub release, and
+  remote asset digests/sidecar contents were checked. Contest entry form and
+  personal declarations remain with the entrant; no form was submitted.
 - Full pixel identity remains unproven, and direct development hours/AI spend/
   cash costs were not tracked; the README says so explicitly.

@@ -2,20 +2,19 @@
 
 A real C#/Avalonia terminal bringing a documented subset of **iTerm2** workflows
 to macOS, Windows and Linux. Independent project; no iTerm2 endorsement.
-GPL-3.0-or-later. **Version 0.13.0 is the competition release; full iTerm2 parity
+GPL-3.0-or-later. **Version 0.14.0 is the competition release; full iTerm2 parity
 is a separate milestone.**
 
-[Download v0.13.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.13.0)
+[Download v0.14.0](https://github.com/kris70lesgo/aster-terminal/releases/tag/v0.14.0)
 · [Runtime evidence](docs/test-matrix.md) · [Feature boundaries](docs/iterm2-feature-parity.md)
 
-Version 0.13.0 aligns rendering with lossless captures of installed **iTerm2
+Version 0.14.0 aligns rendering with lossless captures of installed **iTerm2
 3.7.4**: 7×17 Monaco cells at 12 points, corrected margins and history gutter,
 bright ANSI bold colours, Mac sRGB colour management, grayscale antialiasing,
 synthetic bold/italic and native colour emoji. It adapts the already-pinned MIT
 control/render source in a separate native presentation assembly; parser and
-process connections stay pinned. All three native packages pass 101 test cases
-(with platform-specific skips). The exact Mac CI archive also passes eight
-installed fixture exits at 2×, including three original Python-client runs.
+process connections stay pinned. All three native packages pass the 123-case
+suite with platform-specific skips and complete real-process package smoke.
 Preferences → Profiles → Text → **Use iTerm reference appearance** selects
 Monaco 12 on Mac or bundled Cascadia Mono 12 elsewhere; Save/Cancel stays
 transactional. [Measurements and remaining differences](docs/visual-parity.md)
@@ -24,9 +23,10 @@ explicitly distinguish this from complete pixel/UI parity.
 Enable the optional summon window in Preferences → General with
 **Ctrl+Alt+Space** (Control+Option+Space on macOS). The chord shows a dedicated
 terminal; pressing it while active hides it while its shell keeps running.
-Global summon/hide/show passes on macOS, Windows and Linux X11 in native CI.
-Wayland is unsupported; key conflicts are reported. A physical attempt on the
-local macOS 26 workstation was not detected and remains unverified.
+Global summon/hide/show passes on macOS 15, Windows and Linux X11 in native CI,
+including the same live shell across hide and resummon. Wayland is unsupported;
+key conflicts are reported. A physical attempt on the local macOS 26 workstation
+using the previous installed build was not detected.
 
 The optional Python API now works with the original **iterm2 2.30** client for
 real window/tab/pane creation, command input, Unicode screen reads, layout/focus
@@ -45,9 +45,9 @@ folders; no SDK, account or subscription is required.
 
 | Download | Run | Platform scope |
 |---|---|---|
-| `aster-terminal-0.13.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15 and 26, including installed 2× Retina |
-| `aster-terminal-0.13.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
-| `aster-terminal-0.13.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
+| `aster-terminal-0.14.0-osx-arm64.zip` | Move **Aster Terminal.app** to Applications; launch it | Apple Silicon, macOS 15+; native checks on macOS 15.7.9 |
+| `aster-terminal-0.14.0-win-x64.zip` | Run **Aster.Terminal.exe** from the extracted folder | Windows x64 with ConPTY; tested on hosted Windows Server 2025. Windows 11 is the intended desktop target |
+| `aster-terminal-0.14.0-linux-x64.tar.gz` | Run **./Aster.Terminal** inside the extracted directory | Ubuntu 24.04 x64, X11/Xvfb verified; other distributions and native Wayland remain unverified |
 
 Extract the Mac ZIP with Finder/Archive Utility (or `ditto`) to preserve signing
 metadata. macOS is ad-hoc signed, without Developer ID notarization. For a downloaded copy,
@@ -94,10 +94,12 @@ is not survived; an 8 MiB in-memory journal has explicit text-checkpoint limits.
 | Previous / next command mark | Cmd+Up / Cmd+Down | Ctrl+Shift+Up / Ctrl+Shift+Down |
 | Interrupt a foreground process | Ctrl+C | Ctrl+C |
 
-Pane swapping, Smart Case, and the iTerm-style login-shell caption are additions
-in the current working tree; they are not included in the published v0.13.0
-downloads. Their current-source runtime verification is macOS-only; see the
-[working-tree test evidence](docs/test-matrix.md).
+Version 0.14.0 adds fuzzy **Open Quickly** across live sessions and profiles,
+live pane swapping while preserving split layout and shell processes, opt-in
+Smart Case search, iTerm-style `-zsh`/`-bash` startup captions, and opt-in
+double-click selection for URLs, email addresses, IPv4 addresses and absolute
+paths. The focused UI and real-process tests run on all three targets; details
+and platform skips are recorded in the [test matrix](docs/test-matrix.md).
 
 Drag normal terminal tabs to reorder them, using the insertion marker, or use
 Session → Move tab left/right. Keyboard moves wrap at the ends. The same live
@@ -222,20 +224,23 @@ profiles/recovery, clipboard/search, independent panes, full-screen vim/tmux/les
 opt-in shell hooks, titles, resizing and cleanup. Exact results and limitations
 are in the [test matrix](docs/test-matrix.md).
 
-No human-hours or AI-credit ledger was maintained; development time and AI cost
-are **unmeasured**, rather than estimated. Tools used were Codex, .NET, Avalonia,
-GitHub Actions and local terminal tools. [Performance evidence](docs/performance.md)
-is measured on a defined workload and makes no superiority claim.
+The project began on 14 October 2026; the submission candidate was prepared on
+22 October, an eight-calendar-day delivery span. No timesheet, AI-credit ledger,
+or tool/cloud invoices were retained, so hands-on hours, AI spend and total cash
+cost are **unmeasured**; commit timestamps cannot reconstruct them reliably.
+Tools used were Codex, .NET, Avalonia, GitHub Actions and local terminal tools.
+[Performance evidence](docs/performance.md) is measured on a defined workload
+and makes no superiority claim.
 
 ![Original iTerm2 3.6.6 startup reference](docs/evidence/iterm2-original.png)
-![Aster native dark theme with actual shell output](docs/evidence/v0.13.0-osx-arm64/dark.png)
-![Aster at the installed reference window size](docs/evidence/v0.13.0-osx-arm64/reference-window.png)
-![Aster compact Unicode regex Find](docs/evidence/v0.13.0-osx-arm64/find-compact.png)
-![Aster compact Settings at minimum width](docs/evidence/v0.13.0-osx-arm64/preferences-compact.png)
-![Aster native profile output rules](docs/evidence/v0.13.0-osx-arm64/preferences-triggers.png)
-![Aster shell-generated inline graphics](docs/evidence/v0.13.0-osx-arm64/graphics.png)
-![Aster native tmux control panes](docs/evidence/v0.13.0-osx-arm64/tmux/tmux-splits.png)
-![Aster compact Find in native tmux](docs/evidence/v0.13.0-osx-arm64/tmux/tmux-find-compact.png)
+![Aster native dark theme with actual shell output](docs/evidence/v0.14.0-osx-arm64/dark.png)
+![Aster at the installed reference window size](docs/evidence/v0.14.0-osx-arm64/reference-window.png)
+![Aster compact Unicode regex Find](docs/evidence/v0.14.0-osx-arm64/find-compact.png)
+![Aster compact Settings at minimum width](docs/evidence/v0.14.0-osx-arm64/preferences-compact.png)
+![Aster native profile output rules](docs/evidence/v0.14.0-osx-arm64/preferences-triggers.png)
+![Aster shell-generated inline graphics](docs/evidence/v0.14.0-osx-arm64/graphics.png)
+![Aster native tmux control panes](docs/evidence/v0.14.0-osx-arm64/tmux/tmux-splits.png)
+![Aster compact Find in native tmux](docs/evidence/v0.14.0-osx-arm64/tmux/tmux-find-compact.png)
 
 Original screenshot © George Nachman/contributors; installed iTerm2 3.6.6 is a
 different version and geometry from the source audit. Captures show actual

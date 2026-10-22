@@ -52,7 +52,9 @@ remains Milestone B. The README contains the mandatory public write-up.
    Test regressions exercise failures as well as success. Performance numbers
    describe actual workloads and expose the expense of full-history snapshots.
 5. **Usefulness/costs:** migration-log.md records concrete failures/repairs.
-   Human hours and AI credit costs were not tracked and remain unmeasured.
+   The project ran from 14 to 22 October 2026 (eight calendar days). No
+   timesheet, AI-credit ledger or tool/cloud invoice records were retained;
+   hands-on hours and total cash/AI spend are explicitly unmeasured.
    Public GPL source/build scripts and full dependency notices accompany binaries.
    Upstream GPL mismatch is resolved from the explicit COPYING grant; exact
    dependency sources and native licence alternatives are documented separately.
